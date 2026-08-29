@@ -238,7 +238,7 @@ export function PickupPage() {
               >
                 <div className="flex items-center gap-2">
                   <ShoppingCart className="w-4 h-4 text-brand-gold" />
-                  <span className="text-sm font-bold text-brand-dark-blue">Order Summary (USD)</span>
+                  <span className="text-sm font-bold text-brand-dark-blue">Order Summary</span>
                   <span className="text-xs bg-brand-gold/10 text-brand-gold font-bold px-2 py-0.5 rounded-full">{items.length} item{items.length !== 1 ? 's' : ''}</span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -374,7 +374,7 @@ export function PickupPage() {
           {/* Right Column: Order Summary (Desktop) */}
           <div className="hidden lg:block lg:col-span-4 sticky top-24">
             <div className="bg-white/80 p-6 rounded-3xl shadow-sm border border-brand-gold/20">
-              <h3 className="font-serif font-bold text-brand-dark-blue mb-6 text-xl">Order Summary (USD)</h3>
+              <h3 className="font-serif font-bold text-brand-dark-blue mb-6 text-xl">Order Summary</h3>
               
               <div className="space-y-4 max-h-[40vh] overflow-y-auto hide-scrollbar pr-2 mb-6">
                 {items.map(item => (

@@ -269,56 +269,28 @@ export function CartPage() {
               ))}
             </div>            {/* Right Column: Summary & Checkout */}
             <div className="lg:col-span-4 space-y-6 lg:sticky lg:top-24">
-              <div className="animate-cart-summary flex gap-3 p-5 bg-white/80 rounded-3xl border border-brand-gold/20 shadow-sm">
-            <div className="flex-1 relative">
-              <input 
-                type="text" 
-                value={couponCode}
-                onChange={(e) => setCouponCode(e.target.value)}
-                disabled={!!appliedCoupon}
-                placeholder="Enter Coupon Code" 
-                className="w-full bg-white border border-brand-gold/20 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold transition-all disabled:bg-brand-beige disabled:text-gray-500 text-brand-dark-blue placeholder-gray-400"
-              />
-            </div>
-            {appliedCoupon ? (
-              <button onClick={() => { removeCoupon(); setCouponCode(''); }} className="bg-red-50 text-red-500 font-bold text-sm px-6 py-3 border border-red-200 rounded-xl hover:bg-red-100 transition-colors shadow-sm">
-                REMOVE
-              </button>
-            ) : (
-              <button onClick={handleApplyCoupon} className="bg-brand-dark-blue text-brand-gold font-bold text-sm px-6 py-3 border border-brand-dark-blue rounded-xl hover:opacity-90 transition-opacity shadow-sm">
-                APPLY
-              </button>
-            )}
-          </div>
+              {/* Bill Details */}
+              <div className="animate-cart-summary bg-white/80 p-5 rounded-2xl shadow-sm border border-brand-gold/20">
+                <h3 className="font-serif font-bold text-brand-dark-blue mb-4 pb-4 border-b border-brand-gold/10 text-lg">Price Details</h3>
+                <div className="space-y-3">
+                  <div className="flex justify-between text-sm text-brand-dark-blue/80">
+                    <span>Item Total ({items.length} items)</span>
+                    <span className="font-medium text-brand-dark-blue">₹{subtotal.toFixed(2)}</span>
+                  </div>
 
-          {/* Bill Details */}
-          <div className="animate-cart-summary bg-white/80 p-5 rounded-2xl shadow-sm border border-brand-gold/20">
-            <h3 className="font-serif font-bold text-brand-dark-blue mb-4 pb-4 border-b border-brand-gold/10 text-lg">Price Details (USD)</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm text-brand-dark-blue/80">
-                <span>Item Total ({items.length} items)</span>
-                <span className="font-medium text-brand-dark-blue">₹{subtotal.toFixed(2)}</span>
-              </div>
-              {appliedCoupon && (
-                <div className="flex justify-between text-sm text-brand-gold">
-                  <span>Coupon Discount ({appliedCoupon.code})</span>
-                  <span className="font-medium">- ${getDiscount().toFixed(2)}</span>
+                  <div className="flex justify-between font-bold text-brand-dark-blue text-lg md:text-xl pt-5 mt-3 border-t border-dashed border-brand-gold/30">
+                    <span>Grand Total</span>
+                    <span className="text-brand-gold">₹{grandTotal.toFixed(2)}</span>
+                  </div>
+                  
+                  <button 
+                    onClick={handleCheckout}
+                    className="hidden lg:flex w-full mt-6 bg-brand-dark-blue text-brand-gold font-bold text-base rounded-xl py-4 shadow-lg shadow-brand-dark-blue/20 hover:shadow-xl hover:-translate-y-0.5 transition-all items-center justify-center gap-2"
+                  >
+                    Proceed to Checkout
+                  </button>
                 </div>
-              )}
-
-                <div className="flex justify-between font-bold text-brand-dark-blue text-lg md:text-xl pt-5 mt-3 border-t border-dashed border-brand-gold/30">
-                  <span>Grand Total</span>
-                  <span className="text-brand-gold">₹{grandTotal.toFixed(2)}</span>
-                </div>
-                
-                <button 
-                  onClick={handleCheckout}
-                  className="hidden lg:flex w-full mt-6 bg-brand-dark-blue text-brand-gold font-bold text-base rounded-xl py-4 shadow-lg shadow-brand-dark-blue/20 hover:shadow-xl hover:-translate-y-0.5 transition-all items-center justify-center gap-2"
-                >
-                  Proceed to Checkout
-                </button>
               </div>
-            </div>
             </div>
           </div>
         </div>
