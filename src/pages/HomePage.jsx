@@ -23,8 +23,8 @@ function InstagramIcon({ className, style }) {
     </svg>
   );
 }
-// ── Count-up hook (triggers when element enters viewport) ────────────────────
-function useCountUp(target, duration = 1800, suffix = '') {
+// ── Count-up hook (triggers when element enters viewport with smooth ease) ────
+function useCountUp(target, duration = 2000) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const started = useRef(false);
@@ -32,24 +32,36 @@ function useCountUp(target, duration = 1800, suffix = '') {
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    const startCounting = () => {
+      if (started.current) return;
+      started.current = true;
+      const startTime = performance.now();
+      const step = (now) => {
+        const elapsed = now - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        // Smooth Out-Expo / Cubic easing
+        const ease = 1 - Math.pow(1 - progress, 4);
+        const currentVal = Math.floor(ease * target);
+        setCount(currentVal);
+        if (progress < 1) {
+          requestAnimationFrame(step);
+        } else {
+          setCount(target);
+        }
+      };
+      requestAnimationFrame(step);
+    };
+
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !started.current) {
-          started.current = true;
-          const start = performance.now();
-          const step = (now) => {
-            const progress = Math.min((now - start) / duration, 1);
-            // Ease out cubic
-            const ease = 1 - Math.pow(1 - progress, 3);
-            setCount(Math.floor(ease * target));
-            if (progress < 1) requestAnimationFrame(step);
-            else setCount(target);
-          };
-          requestAnimationFrame(step);
+        if (entry.isIntersecting) {
+          startCounting();
         }
       },
-      { threshold: 0.3 }
+      { threshold: 0.05, rootMargin: '0px 0px -20px 0px' }
     );
+
     observer.observe(el);
     return () => observer.disconnect();
   }, [target, duration]);
@@ -58,80 +70,68 @@ function useCountUp(target, duration = 1800, suffix = '') {
 }
 
 // ── Individual stat tile ─────────────────────────────────────────────────────
-function StatTile({ icon: Icon, target, prefix = '', suffix = '', label, link, color = '#D4AF37', decimals = 0 }) {
-  const { count, ref } = useCountUp(Math.round(target * Math.pow(10, decimals)), 2000);
-  const displayVal = decimals > 0
-    ? (count / Math.pow(10, decimals)).toFixed(decimals)
-    : count;
+function StatTile({ icon: Icon, target, prefix = '', suffix = '', label, sublabel, color = '#D4AF37' }) {
+  const { count, ref } = useCountUp(target, 2200);
 
-  const inner = (
-    <div ref={ref} className="flex flex-col items-center gap-2 group cursor-default">
+  return (
+    <div ref={ref} className="flex flex-col items-center text-center p-4 rounded-2xl bg-white/[0.04] backdrop-blur-sm border border-white/[0.08] hover:border-[#D4AF37]/40 hover:bg-white/[0.07] transition-all duration-300 group cursor-default shadow-sm hover:-translate-y-1">
       <div
-        className="w-12 h-12 rounded-full flex items-center justify-center mb-1 shadow-lg transition-transform duration-300 group-hover:scale-110"
-        style={{ background: `${color}18`, border: `1.5px solid ${color}50` }}
+        className="w-13 h-13 md:w-14 md:h-14 rounded-2xl flex items-center justify-center mb-3 shadow-lg transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3"
+        style={{ background: `${color}20`, border: `1.5px solid ${color}60` }}
       >
-        <Icon className="w-5 h-5" style={{ color }} />
+        <Icon className="w-6 h-6 md:w-7 md:h-7 transition-colors" style={{ color }} />
       </div>
-      <div className="text-2xl md:text-3xl font-black text-white tracking-tight leading-none">
-        {prefix}{displayVal}{suffix}
+      <div className="text-2xl md:text-4xl font-black text-white tracking-tight leading-none mb-1.5 drop-shadow-sm font-sans">
+        {prefix}{count > 0 ? count.toLocaleString() : '0'}{suffix}
       </div>
-      <div className="text-[11px] md:text-xs font-semibold text-white/60 text-center leading-snug max-w-[100px]">{label}</div>
+      <div className="text-xs md:text-sm font-bold text-white/95 leading-tight mb-1">{label}</div>
+      {sublabel && (
+        <div className="text-[10px] md:text-[11px] font-medium text-white/50 leading-snug">{sublabel}</div>
+      )}
     </div>
   );
-
-  if (link) {
-    return (
-      <a href={link} target="_blank" rel="noopener noreferrer" className="contents">
-        <div ref={ref} className="flex flex-col items-center gap-2 group cursor-pointer">
-          <div
-            className="w-12 h-12 rounded-full flex items-center justify-center mb-1 shadow-lg transition-transform duration-300 group-hover:scale-110 group-hover:ring-2 ring-offset-2 ring-offset-[#0d1f3f]"
-            style={{ background: `${color}25`, border: `1.5px solid ${color}80`, ringColor: color }}
-          >
-            <Icon className="w-5 h-5" style={{ color }} />
-          </div>
-          <div className="text-2xl md:text-3xl font-black text-white tracking-tight leading-none group-hover:underline underline-offset-2">
-            {prefix}{displayVal}{suffix}
-          </div>
-          <div className="text-[11px] md:text-xs font-semibold text-white/60 text-center leading-snug max-w-[100px] group-hover:text-white/90 transition-colors">{label}</div>
-        </div>
-      </a>
-    );
-  }
-  return inner;
 }
 
 // ── Stats banner ─────────────────────────────────────────────────────────────
 function StatsBanner() {
   const stats = [
-    { icon: Award, target: 10, suffix: '+', label: 'Years of Experience', color: '#D4AF37' },
-    { icon: Package, target: 1000, suffix: '+', label: 'Orders Delivered', color: '#60a5fa' },
-    { icon: Users, target: 1000, suffix: '+', label: 'Happy Customers', color: '#f472b6' },
-    { icon: MapPin, target: 500, suffix: '+', label: 'Pick Up Orders', color: '#34d399' },
+    { icon: Award, target: 10, suffix: '+ Years', label: 'Decade of Heritage', sublabel: '10+ Years of Craftsmanship', color: '#D4AF37' },
+    { icon: Package, target: 1000, suffix: '+', label: 'Orders Delivered', sublabel: 'Safe Doorstep Delivery', color: '#60a5fa' },
+    { icon: Users, target: 1000, suffix: '+', label: 'Happy Customers', sublabel: '100% Satisfaction Rate', color: '#f472b6' },
+    { icon: MapPin, target: 500, suffix: '+', label: 'Pick Up Orders', sublabel: 'Personalized Boutique Care', color: '#34d399' },
   ];
 
   return (
-    <div className="animate-section px-4 md:px-8 mb-10">
+    <div className="animate-section px-4 md:px-8 mb-12">
       <div
-        className="relative rounded-2xl overflow-hidden py-8 px-6 md:px-10"
+        className="relative rounded-3xl overflow-hidden py-10 px-6 md:px-12"
         style={{
-          background: 'linear-gradient(135deg, #2A0845 0%, #4C1D95 60%, #2A0845 100%)',
-          boxShadow: '0 8px 40px rgba(8,24,58,0.35), inset 0 1px 0 rgba(212,175,55,0.15)'
+          background: 'linear-gradient(135deg, #1f0533 0%, #3b0764 50%, #1f0533 100%)',
+          boxShadow: '0 12px 48px rgba(8,24,58,0.4), inset 0 1px 0 rgba(212,175,55,0.2)'
         }}
       >
         {/* Decorative gold top border */}
         <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }} />
         {/* Subtle pattern */}
-        <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #D4AF37 1px, transparent 1px)', backgroundSize: '28px 28px' }} />
+        <div className="absolute inset-0 opacity-[0.04] pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #D4AF37 1px, transparent 1px)', backgroundSize: '24px 24px' }} />
 
         <div className="relative z-10">
-          {/* Heading */}
-          <div className="text-center mb-8">
-            <p className="text-[11px] font-bold tracking-[0.2em] uppercase text-[#D4AF37] mb-1">Our Journey So Far</p>
-            <h2 className="font-serif text-xl md:text-2xl font-bold text-white">Trusted by Thousands Across the Globe</h2>
+          {/* Heading & Subtitle Details */}
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[#D4AF37] text-[10px] md:text-xs font-bold tracking-[0.15em] uppercase mb-3">
+              <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+              A Decade of Heritage & Excellence
+            </div>
+            <h2 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 leading-tight">
+              Crafting Timeless Luxury & Trusted Globally
+            </h2>
+            <p className="text-xs md:text-sm text-white/70 leading-relaxed font-normal">
+              For over 10 years, Lydia Global Exim has delivered handcrafted, 18K/24K gold-plated waterproof & tarnish-free jewelry with uncompromised quality, authentic artistry, and dedicated care.
+            </p>
           </div>
 
           {/* Stats grid */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
             {stats.map((s, i) => (
               <StatTile key={i} {...s} />
             ))}
