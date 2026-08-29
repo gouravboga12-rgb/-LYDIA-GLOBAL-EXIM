@@ -1,0 +1,26 @@
+[
+  {
+    "id": "usr_g_1788003828008",
+    "email": "bogagourav69@gmail.com",
+    "name": "Gourav Boga",
+    "phone": "",
+    "country": "India",
+    "password": "",
+    "role": "customer",
+    "addresses": [],
+    "orders": [],
+    "created_at": "2026-08-29T11:43:48.008Z"
+  },
+  {
+    "id": "usr_1788004047611_sliee2",
+    "name": "test@gmail.com",
+    "email": "bogagourav10@gmail.com",
+    "phone": "IN:+917337401590",
+    "password": "$2b$10$N/HLXRoLjRC4GPgIUbdlnenqSNI/oQix1g4MRbNR3Zwu2ObOSf9IK",
+    "country": "India",
+    "role": "customer",
+    "addresses": [],
+    "orders": [],
+    "created_at": "2026-08-29T11:46:55.740Z"
+  }
+]

@@ -1,9 +1,8 @@
 import { create } from 'zustand';
+import { supabase } from '../utils/supabase';
 import defaultProducts from '../data/products.json';
 import defaultCategories from '../data/categories.json';
 import defaultOffers from '../data/offers.json';
-
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || "";
 
 export const useStoreData = create((set) => ({
   products: defaultProducts || [],
@@ -11,36 +10,25 @@ export const useStoreData = create((set) => ({
   offers: defaultOffers || [],
   loading: false,
   fetchData: async () => {
-    if (!BACKEND_URL) {
-      set({
-        products: defaultProducts,
-        categories: defaultCategories,
-        offers: defaultOffers,
-        loading: false
-      });
-      return;
-    }
-
     try {
-      set({ loading: false });
-      const [prodRes, catRes, offerRes] = await Promise.all([
-        fetch(`${BACKEND_URL}/general/products`).catch(() => null),
-        fetch(`${BACKEND_URL}/general/categories`).catch(() => null),
-        fetch(`${BACKEND_URL}/general/offers`).catch(() => null)
+      const [prodsRes, catsRes, offersRes] = await Promise.all([
+        supabase.from('products').select('*').order('id', { ascending: false }),
+        supabase.from('categories').select('*').order('id', { ascending: true }),
+        supabase.from('offers').select('*').eq('active', true)
       ]);
 
-      const prodData = prodRes && prodRes.ok ? await prodRes.json() : null;
-      const catData = catRes && catRes.ok ? await catRes.json() : null;
-      const offerData = offerRes && offerRes.ok ? await offerRes.json() : null;
+      const liveProducts = prodsRes.data && prodsRes.data.length > 0 ? prodsRes.data : defaultProducts;
+      const liveCategories = catsRes.data && catsRes.data.length > 0 ? catsRes.data : defaultCategories;
+      const liveOffers = offersRes.data && offersRes.data.length > 0 ? offersRes.data : defaultOffers;
 
       set({
-        products: (prodData && prodData.products && prodData.products.length > 0) ? prodData.products : defaultProducts,
-        categories: (catData && catData.categories && catData.categories.length > 0) ? catData.categories : defaultCategories,
-        offers: (offerData && offerData.offers && offerData.offers.length > 0) ? offerData.offers : defaultOffers,
+        products: liveProducts,
+        categories: liveCategories,
+        offers: liveOffers,
         loading: false
       });
     } catch (err) {
-      console.warn("Using offline store data fallback:", err.message);
+      console.warn("Using standalone catalog fallback:", err.message);
       set({
         products: defaultProducts,
         categories: defaultCategories,
@@ -50,4 +38,3 @@ export const useStoreData = create((set) => ({
     }
   }
 }));
-
