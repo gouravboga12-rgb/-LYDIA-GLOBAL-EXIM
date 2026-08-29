@@ -222,11 +222,10 @@ export function LoginPage() {
 
   return (
     <>
-      {/* DESKTOP VIEW (Unchanged, hidden on mobile) */}
+      {/* DESKTOP VIEW */}
       <div className="hidden lg:flex min-h-screen font-sans">
         {/* Left Panel — Brand Visual */}
         <div className="w-1/2 bg-brand-dark-blue flex flex-col items-center justify-center relative overflow-hidden px-16">
-          {/* Decorative circles */}
           <div className="absolute -top-24 -left-24 w-96 h-96 rounded-full border border-brand-gold/10"></div>
           <div className="absolute -bottom-24 -right-24 w-80 h-80 rounded-full border border-brand-gold/10"></div>
           <div className="absolute top-1/3 right-8 w-40 h-40 rounded-full bg-brand-gold/5"></div>
@@ -269,7 +268,7 @@ export function LoginPage() {
         </div>
 
         {/* Right Panel — Login Form */}
-        <div className="w-1/2 bg-brand-beige flex items-center justify-center px-6 py-12">
+        <div className="w-1/2 bg-[#FAEDE4] flex items-center justify-center px-6 py-12" style={{ backgroundColor: '#FAEDE4' }}>
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -363,11 +362,11 @@ export function LoginPage() {
       </div>
 
       {/* MOBILE VIEW */}
-      <div className="lg:hidden min-h-screen bg-[#FAF6F0] font-sans flex flex-col items-center justify-center px-5 py-5 overflow-y-auto">
+      <div className="lg:hidden min-h-screen bg-[#FAEDE4] font-sans flex flex-col items-center justify-center px-5 py-5 overflow-y-auto" style={{ backgroundColor: '#FAEDE4' }}>
         {/* Header / Logo & Headings */}
         <div className="flex flex-col items-center mb-3.5 text-center w-full max-w-sm">
           <Link to="/" className="hover:opacity-95 transition-opacity mb-1">
-            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-20 h-auto object-contain drop-shadow-sm" />
+            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-20 h-auto object-contain mix-blend-multiply" />
           </Link>
           <span className="font-serif font-bold text-base tracking-[0.1em] text-[#2A0845]">
             LYDIA GLOBAL EXIM

@@ -299,7 +299,7 @@ export function SignupPage() {
         </div>
 
         {/* Right Panel — Signup Form */}
-        <div className="w-1/2 bg-brand-beige flex items-center justify-center px-6 py-12">
+        <div className="w-1/2 bg-[#FAEDE4] flex items-center justify-center px-6 py-12" style={{ backgroundColor: '#FAEDE4' }}>
           <motion.div
             initial={{ opacity: 0, x: 30 }}
             animate={{ opacity: 1, x: 0 }}
@@ -537,11 +537,11 @@ export function SignupPage() {
       </div>
 
       {/* MOBILE VIEW */}
-      <div className="lg:hidden min-h-screen bg-[#FAF6F0] font-sans flex flex-col items-center justify-start px-5 py-6 overflow-y-auto">
+      <div className="lg:hidden min-h-screen bg-[#FAEDE4] font-sans flex flex-col items-center justify-start px-5 py-6 overflow-y-auto" style={{ backgroundColor: '#FAEDE4' }}>
         {/* Header / Logo */}
         <div className="flex flex-col items-center mb-3 text-center w-full max-w-sm">
           <Link to="/" className="hover:opacity-95 transition-opacity mb-1">
-            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-20 h-auto object-contain drop-shadow-sm" />
+            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-20 h-auto object-contain mix-blend-multiply" />
           </Link>
           <span className="font-serif font-bold text-base tracking-[0.1em] text-[#2A0845]">
             LYDIA GLOBAL EXIM
