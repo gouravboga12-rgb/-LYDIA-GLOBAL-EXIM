@@ -63,6 +63,10 @@ export function Footer() {
           {/* Contact Info */}
           <div className="flex flex-col gap-4">
             <h3 className="text-lg font-bold mb-2" style={{ color: '#C6A184' }}>Contact Us</h3>
+            <div className="flex items-start gap-3 text-sm text-gray-100/80">
+              <MapPin className="w-5 h-5 shrink-0 mt-0.5" style={{ color: '#C6A184' }} />
+              <span>8-20/SHR/401, Nizampet Road, Nizampet, Hyderabad, Medchal-Malkajgiri, Telangana – 500090</span>
+            </div>
             <div className="flex items-center gap-3 text-sm text-gray-100/80">
               <Phone className="w-5 h-5 shrink-0" style={{ color: '#C6A184' }} />
               <a href="tel:9014863411" className="hover:underline">+91 9014863411</a>

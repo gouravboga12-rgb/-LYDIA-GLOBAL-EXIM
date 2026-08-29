@@ -170,8 +170,7 @@ export function ContactPage() {
               </div>
               <div>
                 <h3 className="font-bold text-brand-dark-blue text-lg mb-1">Our Location</h3>
-                <p className="text-brand-dark-blue/70 text-sm leading-relaxed">Dallas, Texas</p>
-                <p className="text-brand-dark-blue/40 text-xs mt-1">Home-based boutique</p>
+                <p className="text-brand-dark-blue/70 text-sm leading-relaxed">8-20/SHR/401, Nizampet Road, Nizampet, Hyderabad, Medchal-Malkajgiri, Telangana – 500090</p>
               </div>
             </div>
 

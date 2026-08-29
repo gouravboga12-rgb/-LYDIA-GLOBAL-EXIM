@@ -8,11 +8,11 @@ import AddressAutocomplete from '../../components/AddressAutocomplete';
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const FROM_ADDRESS = {
   name: "LYDIA GLOBAL EXIM",
-  line1: "1-1-738, Vinayaka temple road",
-  city: "Koratla",
+  line1: "8-20/SHR/401, Nizampet Road, Nizampet",
+  city: "Hyderabad",
   state: "Telangana",
-  pincode: "",
-  phone: "+91 90326 75205",
+  pincode: "500090",
+  phone: "+91 9014863411",
 };
 
 const SHIPPING_STATUSES = ["pending", "paid", "processing", "shipped", "delivered", "cancelled"];

@@ -13,8 +13,9 @@ export function AppLayout({ children }) {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  // Determine if bottom nav should be shown
-  const showBottomNav = ['/', '/wishlist', '/profile', '/dashboard'].includes(pathname) || pathname.startsWith('/category/');
+  // Determine if bottom nav should be shown (shown on all pages except checkout)
+  const hideBottomNav = ['/checkout'].includes(pathname);
+  const showBottomNav = !hideBottomNav;
 
   return (
     <div className="min-h-screen bg-gray-100 flex justify-center w-full">

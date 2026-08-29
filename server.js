@@ -20,27 +20,43 @@ const JWT_SECRET = process.env.JWT_SECRET || 'lydia_global_exim_771892348_purity
 app.use(cors());
 app.use(express.json());
 
-// Persistent Local User & Address Store (JSON File DB)
-const DB_DIR = path.join(__dirname, 'server_data');
+// Persistent Local User & Address Store (JSON File DB with Vercel /tmp support)
+const SEED_FILE = path.join(__dirname, 'server_data', 'users.json');
+const DB_DIR = process.env.VERCEL ? '/tmp' : path.join(__dirname, 'server_data');
 const USERS_FILE = path.join(DB_DIR, 'users.json');
 
-if (!fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
-}
+try {
+  if (!fs.existsSync(DB_DIR)) {
+    fs.mkdirSync(DB_DIR, { recursive: true });
+  }
+} catch (e) {}
+
+let memoryUsers = [];
 
 function loadUsers() {
   try {
     if (fs.existsSync(USERS_FILE)) {
       return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
     }
+    if (fs.existsSync(SEED_FILE)) {
+      const seed = JSON.parse(fs.readFileSync(SEED_FILE, 'utf8'));
+      if (process.env.VERCEL) {
+        try { fs.writeFileSync(USERS_FILE, JSON.stringify(seed)); } catch(e) {}
+      }
+      return seed;
+    }
   } catch (e) {
     console.error('Error reading users DB:', e);
   }
-  return [];
+  return memoryUsers;
 }
 
 function saveUsers(users) {
+  memoryUsers = users;
   try {
+    if (!fs.existsSync(DB_DIR)) {
+      fs.mkdirSync(DB_DIR, { recursive: true });
+    }
     fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
   } catch (e) {
     console.error('Error saving users DB:', e);
