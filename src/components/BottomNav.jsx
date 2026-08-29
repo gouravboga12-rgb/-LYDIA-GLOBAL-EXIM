@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
-import { Home, Grid, Info, User, Search } from 'lucide-react';
+import { Home, Grid, Package, User, Search } from 'lucide-react';
 import { cn } from '../utils/cn';
 import { useAuthStore } from '../store/useAuthStore';
 
@@ -12,7 +12,7 @@ export function BottomNav() {
     { name: 'Home', icon: Home, path: '/' },
     { name: 'Categories', icon: Grid, path: '/category/all' },
     { name: 'Search', icon: Search, path: '/search' },
-    { name: 'About Us', icon: Info, path: '/about' },
+    { name: 'Orders', icon: Package, path: token ? '/my-orders' : '/login?redirect=/my-orders' },
     { name: 'Profile', icon: User, path: token ? '/dashboard' : '/login' },
   ];
 
@@ -25,9 +25,11 @@ export function BottomNav() {
             ? location.pathname === '/search'
             : tab.name === 'Categories'
               ? location.pathname.startsWith('/category')
-              : tab.name === 'Profile'
-                ? location.pathname === '/profile' || location.pathname === '/dashboard' || location.pathname === '/my-addresses'
-                : location.pathname === tab.path || (tab.name === 'About Us' && location.pathname.startsWith('/about'));
+              : tab.name === 'Orders'
+                ? location.pathname.startsWith('/my-orders') || location.pathname.startsWith('/order-tracking')
+                : tab.name === 'Profile'
+                  ? location.pathname === '/profile' || location.pathname === '/dashboard' || location.pathname === '/my-addresses'
+                  : location.pathname === tab.path;
 
           return (
             <NavLink key={tab.name} to={tab.path}
