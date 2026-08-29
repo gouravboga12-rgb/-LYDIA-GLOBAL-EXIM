@@ -407,52 +407,77 @@ export function HomePage() {
       </div>
 
       <div className="md:max-w-full mx-auto w-full pb-20 pt-4 md:pt-6">
-        {/* Categories Grid */}
-        <div className="animate-section px-4 md:px-24 mb-10">
-          <div className="flex justify-between items-center mb-6">
-            <h3 className="font-serif text-xl md:text-2xl text-gray-900">Shop by Category</h3>
-            <Link to="/category/all" className="text-sm font-semibold text-brand-accent flex items-center gap-1">View All <span className="text-lg leading-none">&rsaquo;</span></Link>
+        {/* Shop By Category (Matching Reference Image) */}
+        <div className="animate-section px-4 md:px-24 mb-14 text-center">
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <span className="h-[1px] w-12 sm:w-20 bg-[#D4AF37]/50" />
+            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.18em] uppercase text-[#2A0845]">
+              SHOP BY CATEGORY
+            </h2>
+            <span className="h-[1px] w-12 sm:w-20 bg-[#D4AF37]/50" />
           </div>
-          <div className="grid grid-cols-3 xs:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 sm:gap-3.5 md:gap-4">
-            {categories.map((cat, idx) => {
-              return (
-                <Link
-                  key={cat.id}
-                  to={`/category/${cat.id}`}
-                  className={`reveal-on-scroll reveal-delay-${(idx % 8) + 1} group flex flex-col h-full rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 bg-white border border-brand-gold/25`}
-                >
-                  <div className="aspect-square w-full flex items-center justify-center relative overflow-hidden bg-[#2A0845] p-0">
-                    {cat.image_url ? (
-                      <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out" />
-                    ) : (
-                      <Star className="w-8 h-8 text-brand-gold" strokeWidth={1.5} />
-                    )}
-                  </div>
-                  <div className="bg-brand-dark-blue flex items-center justify-center py-2 px-1.5 mt-auto border-t border-brand-gold/20 min-h-[32px] sm:min-h-[36px]">
-                    <span className="text-[11px] sm:text-xs font-bold text-white text-center leading-tight">
-                      {cat.name}
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
+
+          <div className="grid grid-cols-2 xs:grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-5 sm:gap-6 md:gap-4 items-start justify-center max-w-6xl mx-auto">
+            {categories.slice(0, 7).map((cat, idx) => (
+              <Link
+                key={cat.id}
+                to={`/category/${cat.id}`}
+                className={`reveal-on-scroll reveal-delay-${(idx % 7) + 1} group flex flex-col items-center`}
+              >
+                <div className="w-24 h-24 xs:w-26 xs:h-26 sm:w-28 sm:h-28 md:w-30 md:h-30 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-md bg-[#2A0845] relative flex items-center justify-center group-hover:scale-105 group-hover:shadow-xl transition-all duration-500 p-0">
+                  {cat.image_url ? (
+                    <img
+                      src={cat.image_url}
+                      alt={cat.name}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500 ease-out"
+                    />
+                  ) : (
+                    <Star className="w-8 h-8 text-brand-gold" strokeWidth={1.5} />
+                  )}
+                </div>
+                <span className="text-[11px] sm:text-xs font-bold tracking-wider text-[#2A0845] uppercase text-center mt-2.5 group-hover:text-[#B38827] transition-colors leading-tight">
+                  {cat.name}
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-8">
+            <Link
+              to="/category/all"
+              className="inline-block bg-[#2A0845] hover:bg-[#3b0764] text-[#D4AF37] text-xs font-bold px-8 py-3 rounded shadow-md tracking-[0.14em] uppercase transition-colors"
+            >
+              VIEW ALL CATEGORIES
+            </Link>
           </div>
         </div>
 
-        {/* Trending Products */}
+        {/* FEATURED PRODUCTS (Matching Reference Image) */}
         {products.filter(p => p.is_trending).length > 0 && (
-          <div className="animate-section mb-8">
-            <div className="flex justify-between items-center mb-4 px-4 md:px-24">
-              <h3 className="font-bold text-gray-900">Trending Products</h3>
-              <Link to="/category/all" className="text-xs font-semibold text-brand-orange">View all</Link>
+          <div className="animate-section mb-14 px-4 md:px-24 text-center">
+            <div className="flex items-center justify-center gap-4 mb-8">
+              <span className="h-[1px] w-12 sm:w-20 bg-[#D4AF37]/50" />
+              <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.18em] uppercase text-[#2A0845]">
+                FEATURED PRODUCTS
+              </h2>
+              <span className="h-[1px] w-12 sm:w-20 bg-[#D4AF37]/50" />
             </div>
 
-            <div className="flex gap-4 overflow-x-auto hide-scrollbar px-4 md:px-24 pb-2 md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible">
+            <div className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible max-w-7xl mx-auto">
               {products.filter(p => p.is_trending).slice(0, 5).map((product, pIdx) => (
-                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} w-[185px] xs:w-[210px] sm:w-[230px] md:w-auto shrink-0 hover:-translate-y-1 transition-transform`}>
+                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} w-[200px] xs:w-[220px] sm:w-[240px] md:w-auto shrink-0 hover:-translate-y-1 transition-transform text-left`}>
                   <ProductCard product={product} />
                 </div>
               ))}
+            </div>
+
+            <div className="mt-8">
+              <Link
+                to="/category/all"
+                className="inline-block bg-[#2A0845] hover:bg-[#3b0764] text-[#D4AF37] text-xs font-bold px-8 py-3 rounded shadow-md tracking-[0.14em] uppercase transition-colors"
+              >
+                VIEW ALL PRODUCTS
+              </Link>
             </div>
           </div>
         )}

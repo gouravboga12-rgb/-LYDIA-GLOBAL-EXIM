@@ -197,10 +197,14 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
         </button>
       </div>
 
-      <div className="relative aspect-square w-full bg-[#2A0845] overflow-hidden rounded-xl mb-3 flex items-center justify-center p-0 border border-[#D4AF37]/20 shadow-inner">
-        {activeOffer && (
-          <div className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
+      <div className="relative aspect-square w-full bg-[#2A0845] overflow-hidden rounded-xl mb-3 flex items-center justify-center p-0 border border-[#D4AF37]/30 shadow-inner">
+        {activeOffer ? (
+          <div className="absolute top-2.5 left-2.5 z-10 bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded shadow-sm">
             {parseFloat(activeOffer.discount_percentage)}% OFF
+          </div>
+        ) : (
+          <div className="absolute top-2.5 left-2.5 z-10 bg-[#2A0845]/90 text-[#D4AF37] text-[9px] font-bold px-2 py-0.5 rounded border border-[#D4AF37]/40 tracking-wider shadow-sm backdrop-blur-xs">
+            NEW
           </div>
         )}
         {firstImg ? (

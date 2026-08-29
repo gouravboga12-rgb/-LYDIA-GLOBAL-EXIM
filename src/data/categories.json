@@ -63,5 +63,19 @@
     "models": [],
     "image_url": "/images/jewelry_sets.png",
     "created_at": "2026-07-22T19:43:34.348Z"
+  },
+  {
+    "id": 10,
+    "name": "Hair Accessories",
+    "models": [],
+    "image_url": "/images/hair_accessories.png",
+    "created_at": "2026-07-22T19:43:35.000Z"
+  },
+  {
+    "id": 11,
+    "name": "Lifestyle Products",
+    "models": [],
+    "image_url": "/images/lifestyle.png",
+    "created_at": "2026-07-22T19:43:36.000Z"
   }
 ]
