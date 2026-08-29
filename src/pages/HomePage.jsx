@@ -482,59 +482,8 @@ export function HomePage() {
           </div>
         )}
 
-        {/* Festive Collection */}
-        {products.filter(p => p.is_festive).length > 0 && (
-          <div className="animate-section mb-8 px-4 md:px-24">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-gray-900">Festive Collection</h3>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
-              {products.filter(p => p.is_festive).slice(0, 5).map((product, pIdx) => (
-                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} hover:-translate-y-1 transition-transform`}>
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
         {/* ── Stats Banner ─────────────────────────────────────── */}
         <StatsBanner />
-
-        {/* Offers Section */}
-        {products.filter(p => p.is_offer).length > 0 && (
-          <div className="animate-section mb-8 px-4 md:px-24">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-gray-900">Special Offers</h3>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
-              {products.filter(p => p.is_offer).slice(0, 5).map((product, pIdx) => (
-                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} hover:-translate-y-1 transition-transform`}>
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Best Sellers */}
-        {products.filter(p => p.is_bestseller).length > 0 && (
-          <div className="animate-section mb-8 px-4 md:px-24">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-gray-900">Best Sellers</h3>
-            </div>
-
-            <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
-              {products.filter(p => p.is_bestseller).slice(0, 5).map((product, pIdx) => (
-                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} hover:-translate-y-1 transition-transform`}>
-                  <ProductCard product={product} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
 
         {/* Customer Reviews — Modern Testimonial Cards */}
         {reviews.length > 0 && (
