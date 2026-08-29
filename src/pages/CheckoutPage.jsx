@@ -1436,59 +1436,6 @@ export function CheckoutPage() {
             </div>
             )}
 
-            {/* Shipping Extra Options — shown BEFORE proceed buttons so user can configure before advancing */}
-            <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-brand-gold/20 space-y-4">
-              <h3 className="text-sm font-bold text-[#2A0845]">Extra Shipping Options</h3>
-              
-              {(() => {
-                const country = address.country || dialCountryCode || 'United States';
-                const isUS = (country.toLowerCase() === 'united states' || country === 'US');
-                return (
-                  <label className={`flex items-start gap-3 group ${isUS ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}>
-                    <input type="checkbox" checked={isUS && signatureRequired} onChange={e => {
-                      setSignatureRequired(e.target.checked);
-                      if (!e.target.checked) setInsuranceRequested(false);
-                    }} disabled={!isUS} className="mt-1 w-4 h-4 accent-brand-dark-blue rounded flex-shrink-0" />
-                    <div>
-                      <span className={`text-sm font-bold text-gray-800 ${isUS ? 'group-hover:text-brand-dark-blue transition-colors' : ''}`}>Signature Confirmation {isUS ? '(+$4.00)' : '(US Only)'}</span>
-                      {isUS && <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">Require a signature upon delivery for added security.</p>}
-                    </div>
-                  </label>
-                );
-              })()}
-
-              <div className="pt-3 border-t border-gray-100">
-                <label className={`flex items-start gap-3 group ${signatureRequired ? 'cursor-pointer' : 'opacity-50 cursor-not-allowed'}`}>
-                  <input type="checkbox" checked={signatureRequired && insuranceRequested} onChange={e => {
-                    setInsuranceRequested(e.target.checked);
-                    if (e.target.checked) {
-                      setInsuranceDeclaredValue((subtotal - discount + taxAmount).toFixed(2));
-                    }
-                  }} disabled={!signatureRequired} className="mt-1 w-4 h-4 accent-brand-dark-blue rounded flex-shrink-0" />
-                  <div>
-                    <span className={`text-sm font-bold text-gray-800 ${signatureRequired ? 'group-hover:text-brand-dark-blue transition-colors' : ''}`}>Additional Shipping Insurance {!signatureRequired && '(Requires Signature)'}</span>
-                    <p className="text-xs text-gray-500 mt-0.5 leading-relaxed">Check our <Link to="/shipping-policy" target="_blank" className="text-brand-dark-blue font-bold underline hover:text-brand-gold">Shipping Policy</Link> for more details about Shipping Insurance & Lost Package Claims.</p>
-                  </div>
-                </label>
-                
-                {insuranceRequested && (
-                  <div className="mt-3 ml-7 bg-gray-50 p-3 rounded-xl border border-gray-100">
-                    <label className="block mb-1.5 flex items-center gap-2">
-                      <span className="text-xs font-bold text-gray-700">Order insurance coverage (USD)</span>
-                      <span className="text-[10px] text-gray-500 font-medium italic">*Choose insurance coverage for your order</span>
-                    </label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</span>
-                      <input type="number" min="0" step="1" value={insuranceDeclaredValue} onChange={e => setInsuranceDeclaredValue(e.target.value)} placeholder="0.00" className="w-full bg-white border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30 transition-all" />
-                    </div>
-                    <p className="text-[10px] text-gray-500 mt-2 font-medium">
-                      Fee: 1.25% of declared value (US) or 1.50% (International). Added to total.
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-
             {/* Proceed button — new address form path */}
             {showNewAddressForm && (
               <div className="space-y-3">
