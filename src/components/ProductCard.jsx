@@ -112,8 +112,8 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
   if (layout === 'list') {
     return (
       <Link to={`/product/${product.id}${firstVariant.code ? `?variantCode=${encodeURIComponent(firstVariant.code)}` : ''}`} className="flex gap-4 p-4 bg-white rounded-xl shadow-sm mb-4 relative hover:shadow-md transition-shadow">
-        <div className="w-24 h-24 bg-white rounded-lg flex-shrink-0 p-2 relative border border-[#2A0845]/10">
-          <img src={firstImg} alt={product.name} className="w-full h-full object-contain" />
+        <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gray-50/80 rounded-xl flex-shrink-0 p-1 relative border border-[#2A0845]/10 flex items-center justify-center">
+          <img src={firstImg} alt={product.name} className="w-full h-full object-contain mix-blend-multiply" />
         </div>
         <div className="flex flex-col justify-center flex-grow">
           <div className="flex justify-between items-start pr-24">
@@ -197,14 +197,18 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
         </button>
       </div>
 
-      <div className="relative aspect-square bg-gray-50 overflow-hidden rounded-xl mb-3">
+      <div className="relative aspect-square w-full bg-gray-50/70 overflow-hidden rounded-xl mb-2.5 flex items-center justify-center">
         {activeOffer && (
           <div className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
             {parseFloat(activeOffer.discount_percentage)}% OFF
           </div>
         )}
         {firstImg ? (
-          <img src={firstImg} alt={product.name} className="w-full h-full object-contain p-2 mix-blend-multiply transition-transform duration-500 group-hover:scale-110" />
+          <img
+            src={firstImg}
+            alt={product.name}
+            className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-108"
+          />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
         )}

@@ -449,7 +449,7 @@ export function HomePage() {
 
             <div className="flex gap-4 overflow-x-auto hide-scrollbar px-4 md:px-24 pb-2 md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible">
               {products.filter(p => p.is_trending).slice(0, 5).map((product, pIdx) => (
-                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} w-[155px] xs:w-[165px] md:w-auto shrink-0 hover:-translate-y-1 transition-transform`}>
+                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} w-[185px] xs:w-[210px] sm:w-[230px] md:w-auto shrink-0 hover:-translate-y-1 transition-transform`}>
                   <ProductCard product={product} />
                 </div>
               ))}
