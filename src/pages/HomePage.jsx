@@ -390,7 +390,7 @@ export function HomePage() {
                     draggable={false}
                     className="w-full h-full object-cover object-center md:object-right transition-transform duration-1000 group-hover:scale-105 select-none pointer-events-none"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0]/95 via-[#FAF6F0]/75 sm:via-[#FAF6F0]/60 md:via-[#FAF6F0]/50 to-transparent z-10 pointer-events-none w-full md:w-[65%]"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0]/70 via-[#FAF6F0]/35 to-transparent z-10 pointer-events-none w-[70%] sm:w-[55%] md:w-[48%]"></div>
                 </div>
 
                 {/* Slide Content with safe left padding on mobile to never collide with the left arrow */}
