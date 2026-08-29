@@ -50,55 +50,15 @@
     animation: marquee 25s linear infinite;
     will-change: transform;
   }
-  /* Scroll Reveal & Entrance Animations (Normal Smooth Speed) */
+  /* Scroll Reveal & Entrance Animations (Safe Baseline) */
   .reveal-on-scroll,
-  .animate-section {
-    opacity: 0;
-    transform: translateY(24px);
-    transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1), transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
-  }
-
-  .reveal-on-scroll.is-revealed,
-  .animate-section.is-revealed {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  .reveal-on-scroll-left {
-    opacity: 0;
-    transform: translateX(-28px);
-    transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1), transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
-  }
-
-  .reveal-on-scroll-left.is-revealed {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
-  .reveal-on-scroll-right {
-    opacity: 0;
-    transform: translateX(28px);
-    transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1), transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
-  }
-
-  .reveal-on-scroll-right.is-revealed {
-    opacity: 1;
-    transform: translateX(0);
-  }
-
+  .animate-section,
+  .reveal-on-scroll-left,
+  .reveal-on-scroll-right,
   .reveal-on-scroll-scale {
-    opacity: 0;
-    transform: scale(0.95);
-    transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-    will-change: opacity, transform;
-  }
-
-  .reveal-on-scroll-scale.is-revealed {
     opacity: 1;
-    transform: scale(1);
+    transform: none;
+    transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   /* Stagger Delays */
