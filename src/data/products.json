@@ -1,5 +1,165 @@
 [
   {
+    "id": 101,
+    "name": "Kundan Necklace Set",
+    "category": "Necklaces",
+    "description": "Exquisite handcrafted Kundan Necklace Set plated in luxury 22k gold and micro-finish stones.",
+    "image_url": "/images/necklace.png",
+    "images": [
+      "/images/necklace.png"
+    ],
+    "is_trending": true,
+    "is_festive": true,
+    "is_bestseller": true,
+    "is_offer": false,
+    "stock": 50,
+    "rating": 5.0,
+    "variants": [
+      {
+        "color": "Royal Gold",
+        "images": [
+          "/images/necklace.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 2399,
+            "our_price": 1899,
+            "stock": 50
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 102,
+    "name": "Pearl Jhumka Earrings",
+    "category": "Earrings",
+    "description": "Exquisite handcrafted Pearl Jhumka Earrings plated in luxury 22k gold and micro-finish stones.",
+    "image_url": "/images/earrings.png",
+    "images": [
+      "/images/earrings.png"
+    ],
+    "is_trending": true,
+    "is_festive": true,
+    "is_bestseller": true,
+    "is_offer": false,
+    "stock": 50,
+    "rating": 5.0,
+    "variants": [
+      {
+        "color": "Royal Gold",
+        "images": [
+          "/images/earrings.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 1199,
+            "our_price": 699,
+            "stock": 50
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 103,
+    "name": "American Diamond Bangles",
+    "category": "Bangles",
+    "description": "Exquisite handcrafted American Diamond Bangles plated in luxury 22k gold and micro-finish stones.",
+    "image_url": "/images/bangles.png",
+    "images": [
+      "/images/bangles.png"
+    ],
+    "is_trending": true,
+    "is_festive": true,
+    "is_bestseller": true,
+    "is_offer": false,
+    "stock": 50,
+    "rating": 5.0,
+    "variants": [
+      {
+        "color": "Royal Gold",
+        "images": [
+          "/images/bangles.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 1799,
+            "our_price": 1299,
+            "stock": 50
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 104,
+    "name": "AD Stone Finger Ring",
+    "category": "Rings",
+    "description": "Exquisite handcrafted AD Stone Finger Ring plated in luxury 22k gold and micro-finish stones.",
+    "image_url": "/images/rings.png",
+    "images": [
+      "/images/rings.png"
+    ],
+    "is_trending": true,
+    "is_festive": true,
+    "is_bestseller": true,
+    "is_offer": false,
+    "stock": 50,
+    "rating": 5.0,
+    "variants": [
+      {
+        "color": "Royal Gold",
+        "images": [
+          "/images/rings.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 999,
+            "our_price": 499,
+            "stock": 50
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": 105,
+    "name": "Charm Bracelet",
+    "category": "Bracelets",
+    "description": "Exquisite handcrafted Charm Bracelet plated in luxury 22k gold and micro-finish stones.",
+    "image_url": "/images/bracelets.png",
+    "images": [
+      "/images/bracelets.png"
+    ],
+    "is_trending": true,
+    "is_festive": true,
+    "is_bestseller": true,
+    "is_offer": false,
+    "stock": 50,
+    "rating": 5.0,
+    "variants": [
+      {
+        "color": "Royal Gold",
+        "images": [
+          "/images/bracelets.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 1299,
+            "our_price": 799,
+            "stock": 50
+          }
+        ]
+      }
+    ]
+  },
+  {
     "id": 90,
     "name": "Royal Kundan & Pearl Bridal Choker Set with Maang Tikka",
     "description": "Exquisitely handcrafted Royal Kundan & Pearl Bridal Choker Set with Maang Tikka by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
@@ -133,7 +293,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:27.013Z",
     "is_festive": false,
@@ -295,7 +455,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:26.508Z",
     "is_festive": false,
@@ -506,7 +666,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:25.692Z",
     "is_festive": false,
@@ -587,7 +747,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:44:25.438Z",
     "is_festive": true,
@@ -652,7 +812,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:25.197Z",
     "is_festive": true,
@@ -782,7 +942,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:24.717Z",
     "is_festive": false,
@@ -847,7 +1007,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:24.478Z",
     "is_festive": true,
@@ -928,7 +1088,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:44:24.238Z",
     "is_festive": false,
@@ -1123,7 +1283,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:23.458Z",
     "is_festive": false,
@@ -1383,7 +1543,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:21.778Z",
     "is_festive": false,
@@ -1448,7 +1608,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:44:21.128Z",
     "is_festive": false,
@@ -1578,7 +1738,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:44:17.853Z",
     "is_festive": true,
@@ -1708,7 +1868,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:44:14.028Z",
     "is_festive": true,
@@ -1838,7 +1998,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:13.448Z",
     "is_festive": false,
@@ -1903,7 +2063,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:13.133Z",
     "is_festive": true,
@@ -1968,7 +2128,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:12.893Z",
     "is_festive": false,
@@ -2033,7 +2193,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:44:12.618Z",
     "is_festive": false,
@@ -2098,7 +2258,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:12.373Z",
     "is_festive": false,
@@ -2423,7 +2583,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:44:09.813Z",
     "is_festive": false,
@@ -2618,7 +2778,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:44:07.688Z",
     "is_festive": false,
@@ -2683,7 +2843,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:44:06.988Z",
     "is_festive": false,
@@ -3008,7 +3168,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:43:57.463Z",
     "is_festive": false,
@@ -3138,7 +3298,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:56.973Z",
     "is_festive": true,
@@ -3333,7 +3493,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:56.168Z",
     "is_festive": false,
@@ -3398,7 +3558,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:43:55.858Z",
     "is_festive": true,
@@ -3593,7 +3753,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:43:55.003Z",
     "is_festive": false,
@@ -3658,7 +3818,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:54.693Z",
     "is_festive": false,
@@ -3723,7 +3883,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:54.393Z",
     "is_festive": false,
@@ -3853,7 +4013,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:53.773Z",
     "is_festive": true,
@@ -3983,7 +4143,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:53.293Z",
     "is_festive": true,
@@ -4178,7 +4338,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:43:52.393Z",
     "is_festive": true,
@@ -4243,7 +4403,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:52.107Z",
     "is_festive": false,
@@ -4503,7 +4663,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:43:47.268Z",
     "is_festive": false,
@@ -4633,7 +4793,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:42.793Z",
     "is_festive": false,
@@ -4698,7 +4858,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:41.838Z",
     "is_festive": false,
@@ -4828,7 +4988,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:40.523Z",
     "is_festive": false,
@@ -5023,7 +5183,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:43:39.553Z",
     "is_festive": true,
@@ -5413,7 +5573,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:37.413Z",
     "is_festive": false,
@@ -5543,7 +5703,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:36.732Z",
     "is_festive": false,
@@ -5608,7 +5768,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:43:36.353Z",
     "is_festive": true,
@@ -5673,7 +5833,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": false,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": true,
     "created_at": "2026-07-22T19:43:36.112Z",
     "is_festive": false,
@@ -5868,7 +6028,7 @@
     "model": null,
     "is_active": true,
     "is_bestseller": true,
-    "is_trending": true,
+    "is_trending": false,
     "is_offer": false,
     "created_at": "2026-07-22T19:43:35.063Z",
     "is_festive": true,
