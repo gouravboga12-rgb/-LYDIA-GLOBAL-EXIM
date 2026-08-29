@@ -421,9 +421,9 @@ export function HomePage() {
                   to={`/category/${cat.id}`}
                   className={`reveal-on-scroll reveal-delay-${(idx % 8) + 1} group flex flex-col h-full rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 bg-white border border-brand-gold/25`}
                 >
-                  <div className="aspect-square w-full flex items-center justify-center relative overflow-hidden bg-white p-2">
+                  <div className="aspect-square w-full flex items-center justify-center relative overflow-hidden bg-[#2A0845] p-0">
                     {cat.image_url ? (
-                      <img src={cat.image_url} alt={cat.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ease-out" />
+                      <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-500 ease-out" />
                     ) : (
                       <Star className="w-8 h-8 text-brand-gold" strokeWidth={1.5} />
                     )}

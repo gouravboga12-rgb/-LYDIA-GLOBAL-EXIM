@@ -112,8 +112,8 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
   if (layout === 'list') {
     return (
       <Link to={`/product/${product.id}${firstVariant.code ? `?variantCode=${encodeURIComponent(firstVariant.code)}` : ''}`} className="flex gap-4 p-4 bg-white rounded-xl shadow-sm mb-4 relative hover:shadow-md transition-shadow">
-        <div className="w-28 h-28 sm:w-36 sm:h-36 bg-[#2A0845] rounded-xl flex-shrink-0 p-1 relative border border-[#D4AF37]/20 flex items-center justify-center overflow-hidden shadow-inner">
-          <img src={firstImg} alt={product.name} className="w-full h-full object-contain" />
+        <div className="w-28 h-28 sm:w-36 sm:h-36 bg-[#2A0845] rounded-xl flex-shrink-0 p-0 relative border border-[#D4AF37]/20 flex items-center justify-center overflow-hidden shadow-inner">
+          <img src={firstImg} alt={product.name} className="w-full h-full object-cover" />
         </div>
         <div className="flex flex-col justify-center flex-grow">
           <div className="flex justify-between items-start pr-24">
@@ -207,7 +207,7 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
           <img
             src={firstImg}
             alt={product.name}
-            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-108"
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-white/50">No Image</div>
