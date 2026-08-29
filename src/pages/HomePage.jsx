@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind, Bell, Droplet, Flower2, Cloud, Grid, Package, MapPin, Globe, Users, Store, ShieldCheck, Gem, Quote, CheckCircle2 } from 'lucide-react';
+import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind, Bell, Droplet, Flower2, Cloud, Grid, Package, MapPin, Globe, Users, Store, ShieldCheck, Gem, Quote, CheckCircle2, Award } from 'lucide-react';
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
 import { useStoreData } from '../store/useStoreData';
@@ -103,12 +103,10 @@ function StatTile({ icon: Icon, target, prefix = '', suffix = '', label, link, c
 // ── Stats banner ─────────────────────────────────────────────────────────────
 function StatsBanner() {
   const stats = [
-    { icon: InstagramIcon, target: 12.6, decimals: 1, suffix: 'K', label: 'Instagram Family', color: '#E1306C', link: 'https://www.instagram.com' },
-    { icon: Package, target: 1000, suffix: '+', label: 'Orders Delivered Across USA', color: '#D4AF37' },
-    { icon: MapPin, target: 500, suffix: '+', label: 'Pick Up Orders', color: '#60a5fa' },
-    { icon: Globe, target: 20, suffix: '+', label: 'International Orders', color: '#34d399' },
+    { icon: Award, target: 10, suffix: '+', label: 'Years of Experience', color: '#D4AF37' },
+    { icon: Package, target: 1000, suffix: '+', label: 'Orders Delivered', color: '#60a5fa' },
     { icon: Users, target: 1000, suffix: '+', label: 'Happy Customers', color: '#f472b6' },
-    { icon: Store, target: 15, suffix: '+', label: 'Offline Expo Stalls', color: '#a78bfa' },
+    { icon: MapPin, target: 500, suffix: '+', label: 'Pick Up Orders', color: '#34d399' },
   ];
 
   return (
@@ -133,7 +131,7 @@ function StatsBanner() {
           </div>
 
           {/* Stats grid */}
-          <div className="grid grid-cols-3 md:grid-cols-6 gap-6 md:gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
             {stats.map((s, i) => (
               <StatTile key={i} {...s} />
             ))}
