@@ -12,8 +12,8 @@ export function Footer() {
           {/* Brand Info */}
           <div className="flex flex-col gap-4">
             <Link to="/" className="flex items-center gap-3 hover:opacity-95 transition-opacity">
-              <div className="h-14 flex items-center justify-center shrink-0">
-                <img src={logoUrl} alt="LYDIA GLOBAL EXIM" className="h-14 w-auto rounded-xl object-contain shadow-md" />
+              <div className="h-14 bg-[#FAEDE4] rounded-xl px-2 py-1 flex items-center justify-center shrink-0 border border-brand-gold/30 shadow-md">
+                <img src={logoUrl} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
               </div>
               <div className="flex flex-col">
                 <span className="font-serif font-bold text-xl leading-tight tracking-[0.08em]" style={{ color: '#C6A184' }}>LYDIA GLOBAL EXIM</span>

@@ -185,7 +185,7 @@ function DesktopFullHeader({ cartCount, wishlistCount, token, user, handleLogout
         <div className="w-full mx-auto flex items-center justify-between">
 
           <Link to="/" className="flex items-center hover:opacity-95 transition-opacity">
-            <div className="h-[62px] flex items-center justify-center shrink-0">
+            <div className="h-[54px] bg-[#FAEDE4] rounded-xl px-2 py-1 flex items-center justify-center shrink-0 border border-brand-gold/30 shadow-sm">
               <img src={logo} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
             </div>
           </Link>
@@ -362,7 +362,7 @@ export function Header({ variant = 'default', title, showShare = false }) {
               className="px-5 py-4 flex items-center justify-between border-b border-brand-gold/15 bg-brand-dark-blue"
             >
               <div className="flex items-center">
-                <div className="h-12 flex items-center justify-center shrink-0">
+                <div className="h-11 bg-[#FAEDE4] rounded-lg px-2 py-0.5 flex items-center justify-center shrink-0 border border-brand-gold/30 shadow-sm">
                   <img src={logo} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
                 </div>
               </div>
@@ -544,7 +544,7 @@ export function Header({ variant = 'default', title, showShare = false }) {
               </button>
 
               <Link to="/" className="flex items-center z-20 min-w-0 shrink">
-                <div className="h-10 sm:h-11 flex items-center justify-center shrink-0">
+                <div className="h-10 sm:h-11 bg-[#FAEDE4] rounded-lg px-1.5 py-0.5 flex items-center justify-center shrink-0 border border-brand-gold/30 shadow-sm">
                   <img src={logo} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
                 </div>
               </Link>
