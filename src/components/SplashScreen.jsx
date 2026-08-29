@@ -81,7 +81,7 @@ export function SplashScreen({ onComplete }) {
   return (
     <div
       ref={container}
-      className="fixed inset-0 z-[100] bg-gradient-to-b from-[#140224] via-[#2A0845] to-[#140224] flex flex-col items-center justify-center w-full h-full overflow-hidden"
+      className="fixed inset-0 z-[100] bg-[#FAF6F0] flex flex-col items-center justify-center w-full h-full overflow-hidden"
     >
       {/* Fireworks container */}
       <div ref={fireworks} className="absolute inset-0 pointer-events-none" />
@@ -92,13 +92,13 @@ export function SplashScreen({ onComplete }) {
           <img
             src={logoImg}
             alt="LYDIA GLOBAL EXIM Logo"
-            className="w-48 md:w-64 max-w-[80vw] h-auto object-contain drop-shadow-[0_10px_35px_rgba(212,175,55,0.3)]"
+            className="w-48 md:w-64 max-w-[80vw] h-auto object-contain drop-shadow-md"
           />
         </div>
         <div className="flex flex-col items-center text-center mt-2">
-          <span className="text-white text-sm md:text-base tracking-[0.15em] font-medium" style={{ fontFamily: 'serif', letterSpacing: '0.12em' }}>
+          <span className="text-[#2A0845] text-sm md:text-base tracking-[0.15em] font-semibold" style={{ fontFamily: 'serif', letterSpacing: '0.12em' }}>
             Excellence &{' '}
-            <span className="text-[#D4AF37] font-bold">Premium Quality</span>
+            <span className="text-[#B38827] font-bold">Premium Quality</span>
           </span>
         </div>
       </div>
