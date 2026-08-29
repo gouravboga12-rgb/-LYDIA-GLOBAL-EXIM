@@ -14,6 +14,8 @@ export function AboutPage() {
     setCurrentImgIdx((prev) => (prev + 1) % slideshowImages.length);
   };
 
+  const smoothTransition = { duration: 0.95, ease: [0.22, 1, 0.36, 1] };
+
   return (
     <div className="bg-brand-beige min-h-screen pb-20 md:pb-12 font-sans">
       <Header title="Our Story" />
@@ -24,8 +26,9 @@ export function AboutPage() {
           {/* Image Section */}
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={smoothTransition}
             className="relative"
           >
             <div className="absolute -inset-4 bg-brand-gold/20 rounded-[32px] transform -rotate-3 z-0"></div>
@@ -39,10 +42,10 @@ export function AboutPage() {
                   initial={{ opacity: 0, scale: 1.05 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0 }}
-                  transition={{ duration: 0.4, ease: "easeInOut" }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
                   src={slideshowImages[currentImgIdx]} 
                   alt="Premium Gold Jewelry" 
-                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105"
+                  className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                 />
               </AnimatePresence>
               <div className="absolute inset-0 bg-gradient-to-t from-brand-dark-blue/90 via-brand-dark-blue/20 to-transparent pointer-events-none"></div>
@@ -64,8 +67,9 @@ export function AboutPage() {
           {/* Content Section */}
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ ...smoothTransition, delay: 0.15 }}
             className="flex flex-col justify-center space-y-8"
           >
             <div>
@@ -103,16 +107,23 @@ export function AboutPage() {
       {/* Trust & Quality Section */}
       <div className="bg-white py-16 md:py-24">
         <div className="px-4 md:px-24">
-          <div className="text-center mb-16">
+          <motion.div 
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={smoothTransition}
+            className="text-center mb-16"
+          >
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark-blue mb-4">The LYDIA GLOBAL EXIM Promise</h2>
             <p className="text-gray-600 max-w-2xl mx-auto">Committed to premium artisan craftsmanship, skin-safe metallurgy, and certified export-grade imitation jewelry.</p>
-          </div>
+          </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ ...smoothTransition, delay: 0.1 }}
               className="bg-brand-beige p-8 rounded-2xl border border-brand-gold/10 text-center hover:shadow-xl transition-shadow"
             >
               <div className="w-16 h-16 mx-auto bg-brand-dark-blue rounded-full flex items-center justify-center mb-6">
@@ -125,10 +136,10 @@ export function AboutPage() {
             </motion.div>
 
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ ...smoothTransition, delay: 0.25 }}
               className="bg-brand-beige p-8 rounded-2xl border border-brand-gold/10 text-center hover:shadow-xl transition-shadow"
             >
               <div className="w-16 h-16 mx-auto bg-brand-dark-blue rounded-full flex items-center justify-center mb-6">
@@ -141,10 +152,10 @@ export function AboutPage() {
             </motion.div>
 
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.4 }}
+              viewport={{ once: true, margin: "-50px" }}
+              transition={{ ...smoothTransition, delay: 0.4 }}
               className="bg-brand-beige p-8 rounded-2xl border border-brand-gold/10 text-center hover:shadow-xl transition-shadow"
             >
               <div className="w-16 h-16 mx-auto bg-brand-dark-blue rounded-full flex items-center justify-center mb-6">
@@ -165,7 +176,8 @@ export function AboutPage() {
           <motion.div 
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={smoothTransition}
             className="order-2 lg:order-1"
           >
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark-blue mb-6">Artistry Meets Modern Glamour</h2>
@@ -191,7 +203,8 @@ export function AboutPage() {
           <motion.div 
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ ...smoothTransition, delay: 0.15 }}
             className="order-1 lg:order-2 relative"
           >
             <div className="grid grid-cols-2 gap-4">

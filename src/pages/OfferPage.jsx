@@ -45,7 +45,7 @@ export function OfferPage() {
       <Header title={`Offer: ${activeOffer.title}`} showShare={true} />
       
       {/* Offer Banner */}
-      <div className="w-full bg-[#2A0845] relative overflow-hidden">
+      <div className="reveal-on-scroll w-full bg-[#2A0845] relative overflow-hidden">
         {/* Decorative elements */}
         <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37] opacity-10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-white opacity-5 rounded-full blur-2xl translate-y-1/4 -translate-x-1/4"></div>
@@ -78,7 +78,7 @@ export function OfferPage() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 md:px-8 py-6">
-        <div className="flex items-center justify-between mb-6 border-b border-[#2A0845]/10 pb-4">
+        <div className="reveal-on-scroll flex items-center justify-between mb-6 border-b border-[#2A0845]/10 pb-4">
           <h2 className="font-serif text-2xl font-bold text-[#2A0845]">
             Eligible Products <span className="text-[#2A0845]/50 text-base font-sans ml-2">({offerProducts.length})</span>
           </h2>
@@ -86,12 +86,14 @@ export function OfferPage() {
 
         {offerProducts.length > 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {offerProducts.map((product) => (
-              <ProductCard key={product.id} product={product} layout="grid" />
+            {offerProducts.map((product, pIdx) => (
+              <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 4) + 1}`}>
+                <ProductCard product={product} layout="grid" />
+              </div>
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-center">
+          <div className="reveal-on-scroll flex flex-col items-center justify-center py-20 text-center">
             <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-sm border border-[#2A0845]/10 mb-4">
               <span className="text-3xl">📿</span>
             </div>

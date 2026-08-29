@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BottomNav } from './BottomNav';
 import { Toast } from './Toast';
-
 import { Footer } from './Footer';
+import { ScrollRevealProvider } from './ScrollRevealProvider';
 
 export function AppLayout({ children }) {
   const { pathname } = useLocation();
@@ -18,21 +18,23 @@ export function AppLayout({ children }) {
   const showBottomNav = !hideBottomNav;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center w-full">
-      <div className="w-full md:max-w-full max-w-5xl mx-auto bg-white relative shadow-sm min-h-screen flex flex-col overflow-x-hidden">
-        <Toast />
-        
-        {/* Main Content Area */}
-        <main className={`flex-grow flex flex-col ${showBottomNav ? 'pb-20 md:pb-0' : 'pb-0'}`}>
-          {children}
-        </main>
-        
-        {/* Footer */}
-        <Footer />
-        
-        {/* Bottom Navigation */}
-        {showBottomNav && <BottomNav />}
+    <ScrollRevealProvider>
+      <div className="min-h-screen bg-gray-100 flex justify-center w-full">
+        <div className="w-full md:max-w-full max-w-5xl mx-auto bg-white relative shadow-sm min-h-screen flex flex-col overflow-x-hidden">
+          <Toast />
+          
+          {/* Main Content Area */}
+          <main className={`flex-grow flex flex-col ${showBottomNav ? 'pb-20 md:pb-0' : 'pb-0'}`}>
+            {children}
+          </main>
+          
+          {/* Footer */}
+          <Footer />
+          
+          {/* Bottom Navigation */}
+          {showBottomNav && <BottomNav />}
+        </div>
       </div>
-    </div>
+    </ScrollRevealProvider>
   );
 }

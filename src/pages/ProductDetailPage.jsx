@@ -519,7 +519,7 @@ export function ProductDetailPage() {
             </div>
 
             {/* Product Details Tabs */}
-            <div className="animate-info bg-white rounded-2xl shadow-sm border border-brand-beige/50 overflow-hidden mt-8">
+            <div className="reveal-on-scroll bg-white rounded-2xl shadow-sm border border-brand-beige/50 overflow-hidden mt-8">
               <div className="flex border-b border-gray-100">
                 <button 
                   onClick={() => setActiveTab('description')}
@@ -619,7 +619,7 @@ export function ProductDetailPage() {
             </div>
 
             {/* Customer Reviews — always visible below tabs */}
-            <div className="animate-info bg-white rounded-2xl shadow-sm border border-brand-beige/50 overflow-hidden mt-6">
+            <div className="reveal-on-scroll bg-white rounded-2xl shadow-sm border border-brand-beige/50 overflow-hidden mt-6">
               <div className="px-6 py-4 border-b border-gray-100">
                 <h3 className="font-bold text-brand-dark-blue text-lg">
                   Customer Reviews
@@ -721,7 +721,7 @@ export function ProductDetailPage() {
 
       {/* People Also Bought Section */}
       {relatedProducts.length > 0 && (
-        <div className="w-full max-w-7xl mx-auto px-4 md:px-8 mt-16 md:mt-24 mb-12">
+        <div className="reveal-on-scroll w-full max-w-7xl mx-auto px-4 md:px-8 mt-16 md:mt-24 mb-12">
           <div className="flex justify-between items-end mb-8">
             <h2 className="text-2xl md:text-3xl font-serif font-bold text-brand-dark-blue">
              Customers Also Bought
@@ -731,8 +731,10 @@ export function ProductDetailPage() {
             </button>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-            {relatedProducts.map(relProduct => (
-              <ProductCard key={relProduct.id} product={relProduct} />
+            {relatedProducts.map((relProduct, rIdx) => (
+              <div key={relProduct.id} className={`reveal-on-scroll reveal-delay-${(rIdx % 4) + 1}`}>
+                <ProductCard product={relProduct} />
+              </div>
             ))}
           </div>
         </div>

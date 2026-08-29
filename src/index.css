@@ -50,6 +50,66 @@
     animation: marquee 25s linear infinite;
     will-change: transform;
   }
+  /* Scroll Reveal & Entrance Animations (Normal Smooth Speed) */
+  .reveal-on-scroll,
+  .animate-section {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1), transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal-on-scroll.is-revealed,
+  .animate-section.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .reveal-on-scroll-left {
+    opacity: 0;
+    transform: translateX(-28px);
+    transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1), transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal-on-scroll-left.is-revealed {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .reveal-on-scroll-right {
+    opacity: 0;
+    transform: translateX(28px);
+    transition: opacity 0.95s cubic-bezier(0.22, 1, 0.36, 1), transform 0.95s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal-on-scroll-right.is-revealed {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .reveal-on-scroll-scale {
+    opacity: 0;
+    transform: scale(0.95);
+    transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1), transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+    will-change: opacity, transform;
+  }
+
+  .reveal-on-scroll-scale.is-revealed {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Stagger Delays */
+  .reveal-delay-1 { transition-delay: 70ms; }
+  .reveal-delay-2 { transition-delay: 140ms; }
+  .reveal-delay-3 { transition-delay: 210ms; }
+  .reveal-delay-4 { transition-delay: 280ms; }
+  .reveal-delay-5 { transition-delay: 350ms; }
+  .reveal-delay-6 { transition-delay: 420ms; }
+  .reveal-delay-7 { transition-delay: 490ms; }
+  .reveal-delay-8 { transition-delay: 560ms; }
 }
 
 body {

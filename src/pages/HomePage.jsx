@@ -305,8 +305,40 @@ export function HomePage() {
     link: b.link_url || '/category/all'
   })) : defaultHeroSlides;
 
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
+  const touchStartY = useRef(null);
+  const touchEndY = useRef(null);
+
   const nextSlide = () => setCurrentSlide(prev => (prev + 1) % activeSlides.length);
   const prevSlide = () => setCurrentSlide(prev => (prev - 1 + activeSlides.length) % activeSlides.length);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+    touchStartY.current = e.touches[0].clientY;
+    touchEndX.current = null;
+    touchEndY.current = null;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+    touchEndY.current = e.touches[0].clientY;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const diffX = touchStartX.current - touchEndX.current;
+    const diffY = touchStartY.current && touchEndY.current ? Math.abs(touchStartY.current - touchEndY.current) : 0;
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > diffY) {
+      if (diffX > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
 
   React.useEffect(() => {
     if (activeSlides.length <= 1) return;
@@ -315,18 +347,6 @@ export function HomePage() {
     }, 5000);
     return () => clearInterval(interval);
   }, [activeSlides.length]);
-  useGSAP(() => {
-    if (!loading) {
-      gsap.from('.animate-section', {
-        y: 40,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: 'power3.out',
-        clearProps: 'all'
-      });
-    }
-  }, { scope: container, dependencies: [loading] });
 
   const featuredProducts = products.slice(0, 5);
 
@@ -349,26 +369,32 @@ export function HomePage() {
 
       {/* Hero Banner Section with Horizontal Scroll & Left/Right Arrows */}
       <div className="animate-section py-2 md:py-6 px-3 sm:px-8 md:px-16 lg:px-24">
-        <div className="relative w-full h-[250px] xs:h-[280px] sm:h-[340px] md:h-[420px] rounded-2xl md:rounded-[24px] overflow-hidden shadow-xl border border-brand-gold/20 bg-[#FAF6F0] group">
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="relative w-full h-[250px] xs:h-[280px] sm:h-[340px] md:h-[420px] rounded-2xl md:rounded-[24px] overflow-hidden shadow-xl border border-brand-gold/20 bg-[#FAF6F0] group select-none touch-pan-y"
+        >
           {/* Slides Track */}
           <div
-            className="flex h-full w-full transition-transform duration-700 ease-in-out"
+            className="flex h-full w-full transition-transform duration-700 ease-in-out select-none"
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {activeSlides.map((slide) => (
-              <div key={slide.id} className="relative w-full h-full shrink-0 flex items-center">
+              <div key={slide.id} className="relative w-full min-w-full flex-[0_0_100%] h-full shrink-0 flex items-center overflow-hidden select-none">
                 {/* Background Image & Gradient Overlay */}
-                <div className="absolute inset-0 z-0">
+                <div className="absolute inset-0 z-0 select-none pointer-events-none">
                   <img
                     src={slide.image}
                     alt={slide.title}
-                    className="w-full h-full object-cover object-center md:object-right transition-transform duration-1000 group-hover:scale-105"
+                    draggable={false}
+                    className="w-full h-full object-cover object-center md:object-right transition-transform duration-1000 group-hover:scale-105 select-none pointer-events-none"
                   />
                   <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0]/95 via-[#FAF6F0]/75 sm:via-[#FAF6F0]/60 md:via-[#FAF6F0]/50 to-transparent z-10 pointer-events-none w-full md:w-[65%]"></div>
                 </div>
 
-                {/* Slide Content */}
-                <div className="relative flex flex-col justify-center pl-4 pr-2 xs:px-6 sm:px-10 md:px-16 py-3 z-10 w-[78%] xs:w-[75%] sm:w-[70%] md:w-[55%]">
+                {/* Slide Content with safe left padding on mobile to never collide with the left arrow */}
+                <div className="relative flex flex-col justify-center pl-11 xs:pl-12 sm:pl-14 md:pl-16 pr-3 xs:pr-6 sm:px-10 md:px-16 py-3 z-10 w-[82%] xs:w-[78%] sm:w-[70%] md:w-[55%] select-none">
                   <span className="text-[9px] md:text-xs font-bold uppercase tracking-wider text-[#B38827] mb-1 drop-shadow-sm">
                     {slide.tag}
                   </span>
@@ -393,16 +419,16 @@ export function HomePage() {
           <button
             onClick={prevSlide}
             aria-label="Previous Slide"
-            className="absolute left-1 xs:left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-6 h-6 xs:w-7 xs:h-7 md:w-10 md:h-10 rounded-full bg-white/80 md:bg-white/90 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-md transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 md:w-10 md:h-10 rounded-full bg-white/90 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-md transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
-            <ChevronLeft className="w-3.5 h-3.5 md:w-5 md:h-5" />
+            <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
           </button>
           <button
             onClick={nextSlide}
             aria-label="Next Slide"
-            className="absolute right-1 xs:right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-6 h-6 xs:w-7 xs:h-7 md:w-10 md:h-10 rounded-full bg-white/80 md:bg-white/90 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-md transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 md:w-10 md:h-10 rounded-full bg-white/90 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-md transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
-            <ChevronRight className="w-3.5 h-3.5 md:w-5 md:h-5" />
+            <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
           </button>
 
           {/* Slider Dots */}
@@ -428,7 +454,7 @@ export function HomePage() {
             <Link to="/category/all" className="text-sm font-semibold text-brand-accent flex items-center gap-1">View All <span className="text-lg leading-none">&rsaquo;</span></Link>
           </div>
           <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-y-6 gap-x-3">
-            {categories.map((cat) => {
+            {categories.map((cat, idx) => {
               const IconMap = {
                 Flame,
                 Sparkles,
@@ -444,7 +470,11 @@ export function HomePage() {
               const Icon = IconMap[cat.icon] || Star;
 
               return (
-                <Link key={cat.id} to={`/category/${cat.id}`} className="group flex flex-col h-full rounded-[14px] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 bg-brand-beige-darker border border-brand-gold/30">
+                <Link
+                  key={cat.id}
+                  to={`/category/${cat.id}`}
+                  className={`reveal-on-scroll reveal-delay-${(idx % 8) + 1} group flex flex-col h-full rounded-[14px] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 bg-brand-beige-darker border border-brand-gold/30`}
+                >
                   <div className="h-24 md:h-32 w-full flex items-center justify-center relative overflow-hidden bg-white/50">
                     {cat.image_url ? (
                       <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
@@ -471,34 +501,14 @@ export function HomePage() {
             </div>
 
             <div className="flex gap-4 overflow-x-auto hide-scrollbar px-4 md:px-24 pb-2 md:grid md:grid-cols-4 lg:grid-cols-5 md:overflow-visible">
-              {products.filter(p => p.is_trending).slice(0, 5).map(product => (
-                <div key={product.id} className="w-[140px] md:w-auto shrink-0 hover:-translate-y-1 transition-transform">
+              {products.filter(p => p.is_trending).slice(0, 5).map((product, pIdx) => (
+                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} w-[140px] md:w-auto shrink-0 hover:-translate-y-1 transition-transform`}>
                   <ProductCard product={product} />
                 </div>
               ))}
             </div>
           </div>
         )}
-
-        {/* Special Offers / Premium Collection Banner */}
-        {/* <div className="animate-section px-4 md:px-24 mb-12 flex justify-center mt-8">
-          <div className="relative w-full h-32 md:h-[300px] rounded-[24px] overflow-hidden shadow-lg border border-brand-gold/20 group">
-            <div className="absolute inset-0 z-0">
-              <img src="https://images.pexels.com/photos/1458867/pexels-photo-1458867.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2" alt="Jewelry Offers" className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-r from-brand-dark-blue via-brand-dark-blue/90 to-brand-dark-blue/0 z-10 pointer-events-none w-full md:w-[70%]"></div>
-            </div>
-            
-            <div className="absolute inset-0 z-20 flex flex-col justify-center px-6 md:px-12 pointer-events-none">
-              <div className="bg-brand-gold text-brand-dark-blue text-[10px] md:text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full w-fit mb-3 drop-shadow-sm pointer-events-auto">Today's Offers</div>
-              <h2 className="text-white text-xl md:text-4xl font-bold mb-4 leading-tight font-serif drop-shadow-md">
-                Get up to 50% OFF<br />on Diamond Collections
-              </h2>
-              <Link to="/category/all" className="bg-brand-gold text-brand-dark-blue text-[10px] md:text-sm font-bold px-6 py-2.5 md:px-8 md:py-3 rounded-xl w-fit hover:bg-white hover:scale-105 shadow-lg shadow-brand-gold/20 transition-all pointer-events-auto">
-                SHOP OFFERS
-              </Link>
-            </div>
-          </div>
-        </div> */}
 
         {/* Festive Collection */}
         {products.filter(p => p.is_festive).length > 0 && (
@@ -508,8 +518,8 @@ export function HomePage() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
-              {products.filter(p => p.is_festive).slice(0, 5).map(product => (
-                <div key={product.id} className="hover:-translate-y-1 transition-transform">
+              {products.filter(p => p.is_festive).slice(0, 5).map((product, pIdx) => (
+                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} hover:-translate-y-1 transition-transform`}>
                   <ProductCard product={product} />
                 </div>
               ))}
@@ -528,8 +538,8 @@ export function HomePage() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
-              {products.filter(p => p.is_offer).slice(0, 5).map(product => (
-                <div key={product.id} className="hover:-translate-y-1 transition-transform">
+              {products.filter(p => p.is_offer).slice(0, 5).map((product, pIdx) => (
+                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} hover:-translate-y-1 transition-transform`}>
                   <ProductCard product={product} />
                 </div>
               ))}
@@ -545,8 +555,8 @@ export function HomePage() {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-6">
-              {products.filter(p => p.is_bestseller).slice(0, 5).map(product => (
-                <div key={product.id} className="hover:-translate-y-1 transition-transform">
+              {products.filter(p => p.is_bestseller).slice(0, 5).map((product, pIdx) => (
+                <div key={product.id} className={`reveal-on-scroll reveal-delay-${(pIdx % 5) + 1} hover:-translate-y-1 transition-transform`}>
                   <ProductCard product={product} />
                 </div>
               ))}

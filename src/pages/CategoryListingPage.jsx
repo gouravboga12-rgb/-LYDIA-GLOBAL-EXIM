@@ -260,7 +260,7 @@ export function CategoryListingPage() {
       <Header title={categoryName} showShare={true} />
       
       {/* Category Banner */}
-      <div className="w-full bg-[#2A0845]">
+      <div className="reveal-on-scroll w-full bg-[#2A0845]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between p-6 md:px-12 md:py-8 gap-6">
           <div className="text-center md:text-left text-white max-w-xl">
             <h1 className="text-3xl md:text-5xl font-serif font-bold mb-3 tracking-wide">{categoryName}</h1>
@@ -277,7 +277,7 @@ export function CategoryListingPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
         
         {/* Filter and Sort Bar for Mobile / Top Bar for Desktop */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 bg-white p-3 md:p-4 rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#D4AF37]/20 gap-3">
+        <div className="reveal-on-scroll flex flex-col sm:flex-row sm:items-center justify-between mb-6 bg-white p-3 md:p-4 rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#D4AF37]/20 gap-3">
           <div className="flex items-center justify-between w-full sm:w-auto gap-4">
             <span className="text-sm font-bold text-[#2A0845] bg-[#D4AF37]/10 px-3 py-1.5 rounded-lg">{flattenedProducts.length} Items</span>
             {showOnlyOffers && (
@@ -308,19 +308,21 @@ export function CategoryListingPage() {
 
         <div className="flex gap-8 items-start">
           {/* Desktop Sidebar */}
-          <aside className="hidden lg:block w-64 shrink-0 bg-white p-6 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#D4AF37]/20 sticky top-24">
+          <aside className="reveal-on-scroll-left hidden lg:block w-64 shrink-0 bg-white p-6 rounded-2xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#D4AF37]/20 sticky top-24">
             <FilterSidebarContent />
           </aside>
 
           {/* Product Grid */}
           <div className="flex-1">
             <div className={layout === 'grid' ? 'grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6' : 'flex flex-col gap-4'}>
-              {flattenedProducts.map(product => (
-                <ProductCard key={product.uniqueListId} product={product} layout={layout} />
+              {flattenedProducts.map((product, pIdx) => (
+                <div key={product.uniqueListId} className={`reveal-on-scroll reveal-delay-${(pIdx % 6) + 1} h-full`}>
+                  <ProductCard product={product} layout={layout} />
+                </div>
               ))}
               
               {flattenedProducts.length === 0 && (
-                <div className="col-span-full py-20 text-center flex flex-col items-center bg-white rounded-2xl shadow-sm border border-[#D4AF37]/5">
+                <div className="reveal-on-scroll col-span-full py-20 text-center flex flex-col items-center bg-white rounded-2xl shadow-sm border border-[#D4AF37]/5">
                   <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 text-gray-400">
                     <Search className="w-6 h-6 text-[#D4AF37]/50" />
                   </div>

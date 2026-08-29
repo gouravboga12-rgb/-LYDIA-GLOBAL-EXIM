@@ -537,43 +537,36 @@ export function SignupPage() {
       </div>
 
       {/* MOBILE VIEW */}
-      <div className="lg:hidden min-h-screen bg-[#FAF6F0] font-sans flex flex-col items-center justify-start px-6 py-10 overflow-y-auto">
+      <div className="lg:hidden min-h-screen bg-[#FAF6F0] font-sans flex flex-col items-center justify-start px-5 py-6 overflow-y-auto">
         {/* Header / Logo */}
-        <div className="flex flex-col items-center mt-4">
-          <Link to="/" className="hover:opacity-95 transition-opacity">
-            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-28 h-auto object-contain drop-shadow-sm" />
+        <div className="flex flex-col items-center mb-3 text-center w-full max-w-sm">
+          <Link to="/" className="hover:opacity-95 transition-opacity mb-1">
+            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-20 h-auto object-contain drop-shadow-sm" />
           </Link>
-          <span className="font-serif font-bold text-xl tracking-[0.12em] text-[#2A0845] mt-2 text-center">
+          <span className="font-serif font-bold text-base tracking-[0.1em] text-[#2A0845]">
             LYDIA GLOBAL EXIM
           </span>
-          <span className="text-[#B38827] text-[10px] font-bold tracking-widest uppercase mt-4">
+          <span className="text-[#B38827] text-[10px] font-bold tracking-widest uppercase mt-1">
             {step === 'form' ? 'Get Started' : step === 'phone_otp' ? 'Step 1 of 2' : step === 'email_otp' ? 'Step 2 of 2' : step === 'google_extra' ? 'Almost Done' : 'Welcome!'}
           </span>
-          <p className="text-gray-600 text-xs text-center leading-relaxed max-w-[270px] mt-2">
-            {step === 'form'
-              ? 'Premium Stainless Steel PVD Gold Plated Jewelry — Waterproof, Tarnish-Free, and made for Everyday Luxury.'
-              : step === 'phone_otp' ? `OTP sent to ${form.phone}`
-              : step === 'email_otp' ? `OTP sent to ${form.email}`
-              : step === 'google_extra' ? 'Please complete your details to finish signing up.'
-              : 'Your account has been created successfully!'}
-          </p>
-        </div>
-
-        {/* Divider */}
-        <div className="flex items-center justify-center gap-2 w-full max-w-xs mt-5 mb-5">
-          <div className="h-px bg-[#D4AF37]/40 flex-1"></div>
-          <div className="w-1.5 h-1.5 rotate-45 bg-[#D4AF37]"></div>
-          <div className="h-px bg-[#D4AF37]/40 flex-1"></div>
+          {step !== 'form' && (
+            <p className="text-gray-600 text-xs text-center leading-relaxed max-w-[270px] mt-1">
+              {step === 'phone_otp' ? `OTP sent to ${form.phone}`
+                : step === 'email_otp' ? `OTP sent to ${form.email}`
+                : step === 'google_extra' ? 'Please complete your details to finish signing up.'
+                : 'Your account has been created successfully!'}
+            </p>
+          )}
         </div>
 
         {step === 'form' ? (
           <>
-            <div className="text-center mb-6">
-              <h2 className="text-3xl font-serif font-bold text-[#2A0845] mb-1.5">
-                Create <span className="text-[#B38827]">Account</span>
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-serif font-bold text-[#2A0845] mb-0.5">
+                Sign <span className="text-[#B38827]">Up</span>
               </h2>
-              <div className="w-8 h-1 bg-[#D4AF37] mx-auto rounded-full mb-2"></div>
-              <p className="text-gray-500 text-xs">Fill in your details to join.</p>
+              <div className="w-8 h-0.5 bg-[#D4AF37] mx-auto rounded-full mb-1"></div>
+              <p className="text-gray-500 text-[11px]">Fill in your details to join.</p>
             </div>
 
             <form onSubmit={handleSignup} className="w-full max-w-sm space-y-4">
