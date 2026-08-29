@@ -82,6 +82,7 @@ export function SplashScreen({ onComplete }) {
     <div
       ref={container}
       className="fixed inset-0 z-[100] bg-[#FAF6F0] flex flex-col items-center justify-center w-full h-full overflow-hidden"
+      style={{ backgroundColor: '#FAF6F0' }}
     >
       {/* Fireworks container */}
       <div ref={fireworks} className="absolute inset-0 pointer-events-none" />
