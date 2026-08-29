@@ -333,8 +333,8 @@ export function HomePage() {
       <Header variant="home" />
 
       {/* Hero Banner Section with Horizontal Scroll & Left/Right Arrows */}
-      <div className="animate-section py-3 md:py-6 px-4 md:px-16 lg:px-24">
-        <div className="relative w-full min-h-[350px] sm:h-80 md:h-[420px] rounded-[24px] overflow-hidden shadow-2xl border border-brand-gold/20 bg-brand-beige group">
+      <div className="animate-section py-2 md:py-6 px-3 sm:px-8 md:px-16 lg:px-24">
+        <div className="relative w-full h-[250px] xs:h-[280px] sm:h-[340px] md:h-[420px] rounded-2xl md:rounded-[24px] overflow-hidden shadow-xl border border-brand-gold/20 bg-[#FAF6F0] group">
           {/* Slides Track */}
           <div
             className="flex h-full w-full transition-transform duration-700 ease-in-out"
@@ -342,29 +342,30 @@ export function HomePage() {
           >
             {activeSlides.map((slide) => (
               <div key={slide.id} className="relative w-full h-full shrink-0 flex items-center">
+                {/* Background Image & Gradient Overlay */}
                 <div className="absolute inset-0 z-0">
                   <img
                     src={slide.image}
                     alt={slide.title}
                     className="w-full h-full object-cover object-right md:object-[center_35%] transition-transform duration-1000 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0] via-[#FAF6F0]/95 sm:via-[#FAF6F0]/90 md:via-[#FAF6F0]/80 to-[#FAF6F0]/0 z-10 pointer-events-none w-full md:w-[75%]"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0]/95 via-[#FAF6F0]/85 sm:via-[#FAF6F0]/75 md:via-[#FAF6F0]/70 to-transparent z-10 pointer-events-none w-full md:w-[70%]"></div>
                 </div>
 
                 {/* Slide Content */}
-                <div className="relative flex flex-col justify-center px-6 sm:px-10 md:px-16 py-8 z-10 w-[88%] sm:w-[75%] md:w-[60%]">
-                  <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#D4AF37] mb-1.5 drop-shadow-sm">
+                <div className="relative flex flex-col justify-center pl-4 pr-2 xs:px-6 sm:px-10 md:px-16 py-3 z-10 w-[78%] xs:w-[75%] sm:w-[70%] md:w-[55%]">
+                  <span className="text-[9px] md:text-xs font-bold uppercase tracking-wider text-[#B38827] mb-1 drop-shadow-sm">
                     {slide.tag}
                   </span>
-                  <h2 className="text-[#2A0845] text-xl sm:text-2xl md:text-4xl lg:text-[40px] font-bold mb-2 md:mb-3 leading-[1.2] font-serif tracking-wide drop-shadow-sm">
+                  <h2 className="text-[#2A0845] text-sm xs:text-base sm:text-2xl md:text-4xl font-bold mb-1 md:mb-2 leading-tight font-serif tracking-wide drop-shadow-sm line-clamp-2">
                     {slide.title}
                   </h2>
-                  <p className="text-gray-700 text-xs md:text-sm lg:text-[15px] mb-4 md:mb-6 max-w-[280px] sm:max-w-sm md:max-w-md leading-relaxed font-medium">
+                  <p className="text-gray-700 text-[10px] xs:text-[11px] sm:text-xs md:text-sm mb-2.5 md:mb-4 max-w-[210px] xs:max-w-[250px] sm:max-w-sm md:max-w-md leading-snug font-medium line-clamp-2">
                     {slide.subtitle}
                   </p>
                   <Link
                     to={slide.link}
-                    className="bg-[#2A0845] text-white text-[11px] md:text-xs font-bold px-6 py-2.5 md:px-8 md:py-3.5 rounded-xl w-fit shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all hover:bg-[#D4AF37] tracking-wider uppercase"
+                    className="bg-[#2A0845] text-white text-[10px] md:text-xs font-bold px-3.5 py-1.5 xs:px-4 xs:py-2 md:px-7 md:py-3 rounded-lg md:rounded-xl w-fit shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all hover:bg-[#D4AF37] tracking-wider uppercase active:scale-95"
                   >
                     SHOP NOW
                   </Link>
@@ -377,25 +378,25 @@ export function HomePage() {
           <button
             onClick={prevSlide}
             aria-label="Previous Slide"
-            className="absolute left-2.5 md:left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-white/70 md:bg-white/80 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute left-1 xs:left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-6 h-6 xs:w-7 xs:h-7 md:w-10 md:h-10 rounded-full bg-white/80 md:bg-white/90 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-md transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
-            <ChevronLeft className="w-4 h-4 md:w-6 md:h-6" />
+            <ChevronLeft className="w-3.5 h-3.5 md:w-5 md:h-5" />
           </button>
           <button
             onClick={nextSlide}
             aria-label="Next Slide"
-            className="absolute right-2.5 md:right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-white/70 md:bg-white/80 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute right-1 xs:right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-6 h-6 xs:w-7 xs:h-7 md:w-10 md:h-10 rounded-full bg-white/80 md:bg-white/90 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-md transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
-            <ChevronRight className="w-4 h-4 md:w-6 md:h-6" />
+            <ChevronRight className="w-3.5 h-3.5 md:w-5 md:h-5" />
           </button>
 
           {/* Slider Dots */}
-          <div className="absolute bottom-3 md:bottom-5 left-0 right-0 z-20 flex justify-center gap-2">
+          <div className="absolute bottom-2 md:bottom-3 left-0 right-0 z-20 flex justify-center gap-1.5 md:gap-2">
             {activeSlides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrentSlide(i)}
-                className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-[#2A0845] w-6 md:w-8' : 'bg-[#2A0845]/30 w-1.5 md:w-2 hover:bg-[#2A0845]/60'}`}
+                className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-[#2A0845] w-5 md:w-8' : 'bg-[#2A0845]/30 w-1.5 md:w-2 hover:bg-[#2A0845]/60'}`}
               />
             ))}
           </div>
