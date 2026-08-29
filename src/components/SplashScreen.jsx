@@ -93,7 +93,7 @@ export function SplashScreen({ onComplete }) {
           <img
             src={logoImg}
             alt="LYDIA GLOBAL EXIM Logo"
-            className="w-48 md:w-64 max-w-[80vw] h-auto object-contain mix-blend-multiply"
+            className="w-48 md:w-64 max-w-[80vw] h-auto object-contain"
           />
         </div>
         <div className="flex flex-col items-center text-center mt-2">

@@ -541,7 +541,7 @@ export function SignupPage() {
         {/* Header / Logo */}
         <div className="flex flex-col items-center mb-3 text-center w-full max-w-sm">
           <Link to="/" className="hover:opacity-95 transition-opacity mb-1">
-            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-20 h-auto object-contain mix-blend-multiply" />
+            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-20 h-auto object-contain" />
           </Link>
           <span className="font-serif font-bold text-base tracking-[0.1em] text-[#2A0845]">
             LYDIA GLOBAL EXIM
