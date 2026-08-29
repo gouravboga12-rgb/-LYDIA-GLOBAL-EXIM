@@ -269,17 +269,17 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
             </div>
 
             {/* Dual Action Buttons: Add to Cart & Buy Now */}
-            <div className="flex flex-col sm:grid sm:grid-cols-2 gap-1.5 mt-1">
+            <div className="grid grid-cols-2 gap-2 mt-2">
               <button
                 onClick={handleAddToCart}
-                className="w-full py-1.5 md:py-2 px-2 text-[11px] md:text-xs font-bold rounded-xl border border-[#2A0845]/30 text-[#2A0845] hover:bg-[#2A0845] hover:text-white transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95 bg-white whitespace-nowrap"
+                className="w-full py-2 px-2 text-xs font-bold rounded-xl border border-[#2A0845]/30 text-[#2A0845] hover:bg-[#2A0845] hover:text-white transition-all flex items-center justify-center gap-1.5 shadow-sm active:scale-95 bg-white whitespace-nowrap"
               >
-                <ShoppingCart className="w-3.5 h-3.5 shrink-0" />
+                <ShoppingCart className="w-4 h-4 shrink-0" />
                 <span>Add to Cart</span>
               </button>
               <button
                 onClick={handleBuyNow}
-                className="w-full py-1.5 md:py-2 px-2 text-[11px] md:text-xs font-bold rounded-xl bg-gradient-to-r from-[#2A0845] to-[#4C1D95] hover:from-[#D4AF37] hover:to-[#B38827] text-white transition-all flex items-center justify-center gap-1 shadow-sm active:scale-95 whitespace-nowrap"
+                className="w-full py-2 px-2 text-xs font-bold rounded-xl bg-gradient-to-r from-[#2A0845] to-[#4C1D95] hover:from-[#D4AF37] hover:to-[#B38827] text-white transition-all flex items-center justify-center gap-1 shadow-sm active:scale-95 whitespace-nowrap"
               >
                 <span>Buy Now</span>
               </button>
