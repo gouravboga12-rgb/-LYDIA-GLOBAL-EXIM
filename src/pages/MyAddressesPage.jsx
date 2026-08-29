@@ -182,8 +182,8 @@ function AddressForm({ onClose, onSave, saving, mapsLoaded, initial, shippingCon
   );
 
   return (
-    <div className="fixed inset-0 bg-black/60 z-50 flex items-end md:items-center justify-center">
-      <div className="bg-white rounded-t-3xl md:rounded-2xl w-full max-w-lg p-6 max-h-[92vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/60 z-[200] flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-white rounded-2xl w-full max-w-lg p-5 sm:p-6 max-h-[85vh] overflow-y-auto shadow-2xl my-auto flex flex-col">
         <div className="flex justify-between items-center mb-1">
           <h3 className="text-base font-bold text-gray-900">{initial ? 'Edit Address' : 'Add New Address'}</h3>
           <button onClick={onClose} className="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center hover:bg-gray-200">
@@ -258,7 +258,7 @@ function AddressForm({ onClose, onSave, saving, mapsLoaded, initial, shippingCon
         </label>
 
         <button onClick={handleSubmit} disabled={saving}
-          className="w-full mt-5 bg-brand-gold text-white font-bold py-3.5 rounded-xl text-sm hover:bg-gray-600 transition-colors disabled:opacity-60">
+          className="w-full mt-5 bg-[#2A0845] text-[#D4AF37] font-bold py-3.5 rounded-xl text-sm hover:bg-[#2A0845]/90 shadow-md transition-all disabled:opacity-60 shrink-0">
           {saving ? 'Saving...' : initial ? 'Update Address' : 'Save Address'}
         </button>
       </div>
