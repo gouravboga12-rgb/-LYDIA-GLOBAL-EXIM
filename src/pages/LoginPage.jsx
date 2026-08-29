@@ -176,11 +176,17 @@ export function LoginPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const redirect = searchParams.get('redirect') || '/';
-  const { login, googleLogin, loading, error } = useAuthStore();
+  const { login, googleLogin, loading, error, token, user } = useAuthStore();
   const [showPass, setShowPass] = useState(false);
   const [form, setForm] = useState({ email: '', password: '' });
   const [localError, setLocalError] = useState('');
   const [showForgot, setShowForgot] = useState(false);
+
+  useEffect(() => {
+    if (token) {
+      navigate(user?.role === 'admin' ? '/admin' : redirect, { replace: true });
+    }
+  }, [token, user, redirect, navigate]);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -188,35 +194,27 @@ export function LoginPage() {
     e.preventDefault();
     setLocalError('');
     const res = await login(form.email, form.password);
-    if (res.success) navigate(res.role === 'admin' ? '/admin' : redirect);
+    if (res.success) navigate(res.role === 'admin' ? '/admin' : redirect, { replace: true });
     else setLocalError(res.error);
-  };
-
-  const handleGoogleSuccess = async (tokenResponse) => {
-    setLocalError('');
-    const res = await googleLogin(tokenResponse.access_token || tokenResponse.credential || tokenResponse.id_token);
-    // Note: useGoogleLogin with flow: 'implicit' gives access_token. We can use googleAuth if it accepts id_token or access_token.
-    // To get id_token, we should use standard credentialResponse from GoogleLogin, OR use implicit flow but backend needs userinfo endpoint.
-    // Wait, the backend verifyIdToken expects an id_token!
-    // So we should NOT use `useGoogleLogin` which only gives access_token unless we use flow: 'auth-code'.
-    // Actually, `useGoogleLogin` with flow default gives an access token.
-    // Let me revise this. I'll use `GoogleLogin` component if I want idToken easily, OR I can use `useGoogleLogin` and fetch user info on frontend and pass it, OR better yet, just use `googleAuth(tokenResponse.credential)` if I use the bare `GoogleLogin` component, OR I can just use `google-auth-library` verifyIdToken if I can get the id_token.
-    // Let's use `useGoogleLogin` with `flow: 'implicit'` but wait! We can just fetch user info on the frontend and send it to our backend, or even better, if we need idToken, we can use `window.google.accounts.oauth2` or just use the `<GoogleLogin />` component. Since we have custom buttons, `useGoogleLogin` is required.
-    // Wait! `useGoogleLogin` DOES NOT return an `id_token`. It only returns an `access_token`. The backend `verifyIdToken` requires an `id_token`.
-    // Instead of `verifyIdToken` in backend, I can fetch `https://www.googleapis.com/oauth2/v3/userinfo` with the `access_token`!
-    // That's much easier for custom buttons. Let's change backend to accept `accessToken` instead.
   };
 
   const loginWithGoogle = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       setLocalError('');
-      // Send access_token to backend
-      const res = await googleLogin(tokenResponse.access_token);
-      if (res.success) navigate(res.role === 'admin' ? '/admin' : redirect);
-      else setLocalError(res.error);
+      try {
+        const res = await googleLogin(tokenResponse.access_token);
+        if (res.success) {
+          navigate(res.role === 'admin' ? '/admin' : redirect, { replace: true });
+        } else {
+          setLocalError(res.error || 'Google Login failed');
+        }
+      } catch (err) {
+        setLocalError(err?.message || 'Google Login failed');
+      }
     },
-    onError: () => {
-      setLocalError('Google Login Failed');
+    onError: (err) => {
+      console.error('Google Login Error:', err);
+      setLocalError('Google login was cancelled or failed.');
     },
   });
 

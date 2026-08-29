@@ -117,7 +117,13 @@ function OtpInput({ length = 6, value, onChange, className, inputClassName }) {
 
 export function SignupPage() {
   const navigate = useNavigate();
-  const { signup, verifyPhoneOtp, verifyOtp, googleLogin, loading, error, clearError } = useAuthStore();
+  const { signup, verifyPhoneOtp, verifyOtp, googleLogin, loading, error, clearError, token, user } = useAuthStore();
+
+  useEffect(() => {
+    if (token && step !== 'done') {
+      navigate(user?.role === 'admin' ? '/admin' : '/', { replace: true });
+    }
+  }, [token, user, navigate, step]);
 
   const [step, setStep] = useState('form'); // 'form' | 'phone_otp' | 'email_otp' | 'done' | 'google_extra'
   const [pendingGoogleToken, setPendingGoogleToken] = useState(null);
