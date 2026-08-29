@@ -18,8 +18,9 @@ export function CategoryListingPage() {
   const [showOnlyOffers, setShowOnlyOffers] = useState(false);
   const { products, categories, offers, loading } = useStoreData();
   
-  const categoryQuery = searchParams.get('category') || searchParams.get('model');
-  const searchQuery = searchParams.get('search');
+  const modelQuery = searchParams.get('model') || '';
+  const categoryQuery = searchParams.get('category') || searchParams.get('model') || '';
+  const searchQuery = searchParams.get('search') || '';
   
   // Prevent body scroll when mobile filter is open
   useEffect(() => {
@@ -34,15 +35,16 @@ export function CategoryListingPage() {
   // Resolve category by ID or by Name (e.g. /category/Bangles or /category/5 or /category/all)
   let activeCategoryObj = null;
   if (categoryId && categoryId !== 'all') {
+    const decodedId = decodeURIComponent(categoryId || '');
     activeCategoryObj = categories.find(c => 
-      c.id.toString() === categoryId || 
-      c.name.toLowerCase() === decodeURIComponent(categoryId).toLowerCase()
+      c.id?.toString() === categoryId || 
+      c.name?.toLowerCase() === decodedId.toLowerCase()
     );
     if (activeCategoryObj) {
       categoryName = activeCategoryObj.name;
       if (activeCategoryObj.image_url) bannerImg = activeCategoryObj.image_url;
     } else {
-      categoryName = decodeURIComponent(categoryId);
+      categoryName = decodedId;
     }
   } else if (categoryQuery) {
     categoryName = decodeURIComponent(categoryQuery);
