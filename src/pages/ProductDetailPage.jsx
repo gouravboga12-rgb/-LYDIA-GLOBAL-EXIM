@@ -3,15 +3,7 @@ import { useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { Share2, Heart, ShoppingCart, Star, ShieldCheck, Droplet, Feather, Check, ChevronLeft, ChevronRight, User, Truck, RotateCcw, Layers, PlayCircle } from 'lucide-react';
 import { Header } from '../components/Header';
 
-function InstagramIcon({ className }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="0.01" fill="currentColor" stroke="currentColor" strokeWidth="3" />
-    </svg>
-  );
-}
+
 import { ProductCard } from '../components/ProductCard';
 import { ImageZoom } from '../components/ImageZoom';
 import { useAuthStore } from '../store/useAuthStore';
@@ -488,17 +480,6 @@ export function ProductDetailPage() {
                 <Share2 className="w-5 h-5 text-brand-dark-blue group-hover:text-brand-gold transition-colors" />
                 <span className="md:hidden ml-2 font-bold text-sm text-brand-dark-blue">Share</span>
               </button>
-
-              {(product.instagram_reel_url || selectedVariant?.instagram_link) && (
-                <button 
-                  onClick={() => window.open(product.instagram_reel_url || selectedVariant?.instagram_link, '_blank', 'noopener,noreferrer')}
-                  title="Watch Instagram Reel"
-                  className="flex-1 md:flex-none md:w-14 h-14 rounded-xl bg-white flex items-center justify-center shadow-sm border border-gray-100 hover:scale-105 transition-transform flex-shrink-0 group"
-                >
-                  <InstagramIcon className="w-5 h-5 text-[#E1306C] group-hover:scale-110 transition-transform" />
-                  <span className="md:hidden ml-2 font-bold text-sm text-[#E1306C]">Reel</span>
-                </button>
-              )}
             </div>
 
             {/* Trust Badges */}
