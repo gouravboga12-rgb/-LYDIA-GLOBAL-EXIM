@@ -204,7 +204,7 @@ export function LoginPage() {
       try {
         const res = await googleLogin(tokenResponse.access_token);
         if (res.success) {
-          navigate(res.role === 'admin' ? '/admin' : redirect, { replace: true });
+          window.location.href = res.role === 'admin' ? '/admin' : redirect;
         } else {
           setLocalError(res.error || 'Google Login failed');
         }

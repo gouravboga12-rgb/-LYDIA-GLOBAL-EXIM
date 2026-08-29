@@ -20,6 +20,14 @@ const JWT_SECRET = process.env.JWT_SECRET || 'lydia_global_exim_771892348_purity
 app.use(cors());
 app.use(express.json());
 
+// Normalize URLs to handle both /api/* and /* uniformly across Vercel and local
+app.use((req, res, next) => {
+  if (!req.url.startsWith('/api') && req.url !== '/' && !req.url.startsWith('/assets') && !req.url.startsWith('/static')) {
+    req.url = '/api' + req.url;
+  }
+  next();
+});
+
 // Persistent Local User & Address Store (JSON File DB with Vercel /tmp support)
 const SEED_FILE = path.join(__dirname, 'server_data', 'users.json');
 const DB_DIR = process.env.VERCEL ? '/tmp' : path.join(__dirname, 'server_data');
