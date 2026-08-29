@@ -267,7 +267,7 @@ export function LoginPage() {
           </motion.div>
         </div>
 
-        {/* Right Panel — Login Form */}
+        {/* Right Panel — Login Form (Desktop) */}
         <div className="w-1/2 bg-[#FAEDE4] flex items-center justify-center px-6 py-12" style={{ backgroundColor: '#FAEDE4' }}>
           <motion.div
             initial={{ opacity: 0, x: 30 }}
@@ -277,84 +277,111 @@ export function LoginPage() {
           >
             {/* Heading */}
             <div className="mb-8">
-              <h4 className="text-brand-gold font-bold tracking-widest uppercase text-xs mb-2">Welcome Back</h4>
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark-blue mb-2">Sign In</h2>
-              <div className="w-14 h-1 bg-brand-gold rounded-full"></div>
-              <p className="text-brand-dark-blue/60 text-sm mt-4">Enter your credentials to access your account.</p>
+              <span className="text-xs font-bold uppercase tracking-widest text-brand-gold">Welcome Back</span>
+              <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark-blue mt-1 mb-2">
+                Sign In to Your Account
+              </h2>
+              <div className="w-12 h-1 bg-brand-gold rounded-full mb-3"></div>
+              <p className="text-brand-dark-blue/60 text-sm">
+                Enter your credentials to access your saved addresses, wishlist, and orders.
+              </p>
             </div>
 
             {showForgot ? (
               <ForgotPassword onBack={() => setShowForgot(false)} dark={false} />
             ) : (
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Email */}
-                <div>
-                  <label className="text-sm font-semibold text-brand-dark-blue block mb-1.5">Email Address</label>
-                  <div className="relative">
-                    <Mail className="w-4 h-4 text-brand-dark-blue/40 absolute left-4 top-1/2 -translate-y-1/2" />
-                    <input
-                      name="email" type="email" value={form.email} onChange={handleChange} required
-                      placeholder="you@example.com"
-                      className="w-full bg-white border border-brand-gold/20 rounded-xl px-4 py-3.5 pl-11 text-sm text-brand-dark-blue placeholder:text-brand-dark-blue/30 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 transition-shadow"
-                    />
+              <>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  <div>
+                    <label className="text-sm font-semibold text-brand-dark-blue block mb-1.5">
+                      Email Address
+                    </label>
+                    <div className="relative">
+                      <Mail className="w-4 h-4 text-brand-dark-blue/40 absolute left-4 top-1/2 -translate-y-1/2" />
+                      <input
+                        name="email"
+                        type="email"
+                        value={form.email}
+                        onChange={handleChange}
+                        required
+                        placeholder="you@example.com"
+                        className="w-full bg-white border border-brand-gold/20 rounded-xl px-4 py-3.5 pl-11 text-sm text-brand-dark-blue placeholder:text-brand-dark-blue/30 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 transition-shadow"
+                      />
+                    </div>
                   </div>
+
+                  <div>
+                    <div className="flex justify-between items-center mb-1.5">
+                      <label className="text-sm font-semibold text-brand-dark-blue">
+                        Password
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setShowForgot(true)}
+                        className="text-xs font-semibold text-brand-gold hover:underline"
+                      >
+                        Forgot Password?
+                      </button>
+                    </div>
+                    <div className="relative">
+                      <Lock className="w-4 h-4 text-brand-dark-blue/40 absolute left-4 top-1/2 -translate-y-1/2" />
+                      <input
+                        name="password"
+                        type={showPass ? 'text' : 'password'}
+                        value={form.password}
+                        onChange={handleChange}
+                        required
+                        placeholder="••••••••"
+                        className="w-full bg-white border border-brand-gold/20 rounded-xl px-4 py-3.5 pl-11 pr-12 text-sm text-brand-dark-blue placeholder:text-brand-dark-blue/30 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 transition-shadow"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPass(!showPass)}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 text-brand-dark-blue/40 hover:text-brand-dark-blue transition-colors"
+                      >
+                        {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </div>
+
+                  {displayError && (
+                    <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-600 text-center">
+                      {displayError}
+                    </div>
+                  )}
+
+                  <motion.button
+                    whileHover={{ scale: 1.01 }}
+                    whileTap={{ scale: 0.98 }}
+                    type="submit"
+                    disabled={loading}
+                    className="w-full bg-brand-dark-blue text-brand-gold font-bold py-4 rounded-xl text-sm hover:bg-brand-dark-blue/90 transition-all disabled:opacity-60 mt-2 shadow-lg"
+                  >
+                    {loading ? 'Signing in...' : 'Sign In →'}
+                  </motion.button>
+                </form>
+
+                <div className="flex items-center gap-3 w-full my-6">
+                  <div className="h-px bg-brand-dark-blue/10 flex-1"></div>
+                  <span className="text-brand-dark-blue/40 text-[10px] tracking-wider uppercase">OR</span>
+                  <div className="h-px bg-brand-dark-blue/10 flex-1"></div>
                 </div>
 
-                {/* Password */}
-                <div>
-                  <label className="text-sm font-semibold text-brand-dark-blue block mb-1.5">Password</label>
-                  <div className="relative">
-                    <Lock className="w-4 h-4 text-brand-dark-blue/40 absolute left-4 top-1/2 -translate-y-1/2" />
-                    <input
-                      name="password" type={showPass ? 'text' : 'password'} value={form.password}
-                      onChange={handleChange} required
-                      placeholder="Your password"
-                      className="w-full bg-white border border-brand-gold/20 rounded-xl px-4 py-3.5 pl-11 pr-12 text-sm text-brand-dark-blue placeholder:text-brand-dark-blue/30 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 transition-shadow"
-                    />
-                    <button type="button" onClick={() => setShowPass(!showPass)}
-                      className="absolute right-4 top-1/2 -translate-y-1/2 text-brand-dark-blue/40 hover:text-brand-dark-blue transition-colors">
-                      {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-                    </button>
-                  </div>
-                </div>
-
-                {displayError && (
-                  <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-600 text-center">
-                    {displayError}
-                  </div>
-                )}
-
-                <motion.button
-                  whileHover={{ scale: 1.01 }}
-                  whileTap={{ scale: 0.98 }}
-                  type="submit" disabled={loading}
-                  className="w-full bg-brand-dark-blue text-brand-gold font-bold py-4 rounded-xl text-sm hover:bg-brand-dark-blue/90 transition-all disabled:opacity-60 mt-2 shadow-lg"
+                <button
+                  type="button"
+                  onClick={() => loginWithGoogle()}
+                  className="w-full bg-white border border-brand-dark-blue/10 text-brand-dark-blue font-semibold py-3.5 rounded-xl flex items-center justify-center gap-3 text-sm hover:bg-brand-dark-blue/5 transition-colors"
                 >
-                  {loading ? 'Signing in...' : 'Sign In →'}
-                </motion.button>
-                <button type="button" onClick={() => setShowForgot(true)}
-                  className="w-full text-center text-xs text-brand-dark-blue/50 hover:text-brand-dark-blue transition-colors mt-1">
-                  Forgot Password?
+                  <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)"><path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/><path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/><path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/><path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/></g></svg>
+                  Continue with Google
                 </button>
-              </form>
+              </>
             )}
-
-            {/* OR Google */}
-            <div className="flex items-center gap-3 w-full my-6">
-              <div className="h-px bg-brand-dark-blue/10 flex-1"></div>
-              <span className="text-brand-dark-blue/40 text-[10px] tracking-wider uppercase">OR</span>
-              <div className="h-px bg-brand-dark-blue/10 flex-1"></div>
-            </div>
-
-            <button type="button" onClick={() => loginWithGoogle()} className="w-full bg-white border border-brand-dark-blue/10 text-brand-dark-blue font-semibold py-3.5 rounded-xl flex items-center justify-center gap-3 text-sm hover:bg-brand-dark-blue/5 transition-colors">
-              <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)"><path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z" /><path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z" /><path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z" /><path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z" /></g></svg>
-              Continue with Google
-            </button>
 
             <p className="text-center text-sm text-brand-dark-blue/60 mt-8">
               Don't have an account?{' '}
               <Link to="/signup" className="font-bold text-brand-dark-blue hover:text-brand-gold transition-colors">
-                Create Account
+                Sign Up
               </Link>
             </p>
           </motion.div>
