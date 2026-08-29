@@ -186,7 +186,7 @@ const CARD_ELEMENT_OPTIONS = {
   style: {
     base: {
       fontSize: '15px',
-      color: '#08183A',
+      color: '#2A0845',
       fontFamily: 'inherit',
       '::placeholder': { color: '#9ca3af' },
     },
@@ -297,7 +297,7 @@ function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, se
           <input type="checkbox" checked={termsAccepted} onChange={e => setTermsAccepted(e.target.checked)}
             className="mt-0.5 w-4 h-4 accent-brand-dark-blue shrink-0" />
           <span className="text-[11px] text-gray-500 leading-relaxed">
-            I agree to the Houra Jewels <Link to="/terms-of-service" target="_blank" className="text-brand-dark-blue font-bold underline">Terms & Conditions</Link> and <Link to="/privacy-policy" target="_blank" className="text-brand-dark-blue font-bold underline">Privacy Policy</Link>, understand that all sales are final—no returns or exchanges—as stated in the <Link to="/shipping-policy" target="_blank" className="text-brand-dark-blue font-bold underline">Shipping Policy</Link> and <Link to="/returns-policy" target="_blank" className="text-brand-dark-blue font-bold underline">Exchange & Return Policy</Link>, and agree to contact Houra Jewels first regarding any billing issue before initiating a payment dispute or chargeback, except where permitted or required by applicable law or payment-network rules.
+            I agree to the LYDIA GLOBAL EXIM <Link to="/terms-of-service" target="_blank" className="text-brand-dark-blue font-bold underline">Terms & Conditions</Link> and <Link to="/privacy-policy" target="_blank" className="text-brand-dark-blue font-bold underline">Privacy Policy</Link>, understand that all sales are final—no returns or exchanges—as stated in the <Link to="/shipping-policy" target="_blank" className="text-brand-dark-blue font-bold underline">Shipping Policy</Link> and <Link to="/returns-policy" target="_blank" className="text-brand-dark-blue font-bold underline">Exchange & Return Policy</Link>, and agree to contact LYDIA GLOBAL EXIM first regarding any billing issue before initiating a payment dispute or chargeback, except where permitted or required by applicable law or payment-network rules.
           </span>
         </label>
         <button
@@ -934,7 +934,7 @@ export function CheckoutPage() {
               <span className="text-xs bg-brand-gold/10 text-brand-gold font-bold px-2 py-0.5 rounded-full">{items.length} item{items.length !== 1 ? 's' : ''}</span>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-sm font-bold text-brand-gold">${finalTotal.toFixed(2)}</span>
+              <span className="text-sm font-bold text-brand-gold">₹{finalTotal.toFixed(2)}</span>
               <svg className={`w-4 h-4 text-brand-dark-blue/50 transition-transform ${summaryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
             </div>
           </button>
@@ -953,14 +953,14 @@ export function CheckoutPage() {
                       {(item.variant?.size_code || item.variant?.code || item.product.product_code) && (
                         <p className="text-[10px] font-bold text-[#D4AF37] bg-[#D4AF37]/10 px-1.5 py-0.5 rounded border border-[#D4AF37]/20 w-fit mt-1">#{(item.variant?.size_code || item.variant?.code || item.product.product_code)}</p>
                       )}
-                      <p className="text-sm font-bold text-brand-gold">${((item.variant?.price || item.product.price) * item.qty).toFixed(2)}</p>
+                      <p className="text-sm font-bold text-brand-gold">₹{((item.variant?.price || item.product.price) * item.qty).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
               </div>
               <div className="border-t border-dashed border-brand-gold/20 pt-3 space-y-1.5">
                 <div className="flex justify-between text-sm text-brand-dark-blue/70">
-                  <span>Item Total</span><span className="font-medium">${subtotal.toFixed(2)}</span>
+                  <span>Item Total</span><span className="font-medium">₹{subtotal.toFixed(2)}</span>
                 </div>
                 {appliedCoupon && (
                   <div className="flex justify-between text-sm text-brand-gold">
@@ -970,26 +970,26 @@ export function CheckoutPage() {
 {orderType !== 'pickup' && (
                 <div className="flex justify-between text-sm text-brand-dark-blue/70">
                   <span>Shipping</span>
-                  <span className="font-medium">{shippingFee === 0 && (parseFloat(shippingConfig?.settings?.free_shipping_threshold) || 0) > 0 ? <span className="text-green-600 font-bold">FREE</span> : `$${shippingFee.toFixed(2)}`}</span>
+                  <span className="font-medium">{shippingFee === 0 && (parseFloat(shippingConfig?.settings?.free_shipping_threshold) || 0) > 0 ? <span className="text-green-600 font-bold">FREE</span> : `₹${shippingFee.toFixed(2)}`}</span>
                 </div>
                 )}
                 {(taxAmount > 0 || shippingConfig?.settings?.tax_mode === 'pincode') && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/70">
-                    <span>{taxLabel || 'Tax'}</span><span className="font-medium">${taxAmount.toFixed(2)}</span>
+                    <span>{taxLabel || 'Tax'}</span><span className="font-medium">₹{taxAmount.toFixed(2)}</span>
                   </div>
                 )}
                 {signatureFee > 0 && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/70">
-                    <span>Signature Confirmation</span><span className="font-medium">${signatureFee.toFixed(2)}</span>
+                    <span>Signature Confirmation</span><span className="font-medium">₹{signatureFee.toFixed(2)}</span>
                   </div>
                 )}
                 {insuranceFee > 0 && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/70">
-                    <span>Shipping Insurance</span><span className="font-medium">${insuranceFee.toFixed(2)}</span>
+                    <span>Shipping Insurance</span><span className="font-medium">₹{insuranceFee.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-brand-dark-blue text-base pt-2 border-t border-brand-gold/20">
-                  <span>Grand Total</span><span className="text-brand-gold">${finalTotal.toFixed(2)}</span>
+                  <span>Grand Total</span><span className="text-brand-gold">₹{finalTotal.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -1438,7 +1438,7 @@ export function CheckoutPage() {
 
             {/* Shipping Extra Options — shown BEFORE proceed buttons so user can configure before advancing */}
             <div className="bg-white p-4 sm:p-5 rounded-2xl shadow-sm border border-brand-gold/20 space-y-4">
-              <h3 className="text-sm font-bold text-[#08183A]">Extra Shipping Options</h3>
+              <h3 className="text-sm font-bold text-[#2A0845]">Extra Shipping Options</h3>
               
               {(() => {
                 const country = address.country || dialCountryCode || 'United States';
@@ -1478,7 +1478,7 @@ export function CheckoutPage() {
                       <span className="text-[10px] text-gray-500 font-medium italic">*Choose insurance coverage for your order</span>
                     </label>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium">$</span>
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-medium">₹</span>
                       <input type="number" min="0" step="1" value={insuranceDeclaredValue} onChange={e => setInsuranceDeclaredValue(e.target.value)} placeholder="0.00" className="w-full bg-white border border-gray-200 rounded-lg pl-7 pr-3 py-2 text-sm focus:outline-none focus:border-brand-gold focus:ring-1 focus:ring-brand-gold/30 transition-all" />
                     </div>
                     <p className="text-[10px] text-gray-500 mt-2 font-medium">
@@ -1525,7 +1525,7 @@ export function CheckoutPage() {
                 <Store className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
                 <div>
                   <p className="font-bold text-blue-800">Store Pickup Selected</p>
-                  <p className="text-sm text-blue-700 mt-1">Once your order is ready, our team will message you via <strong>WhatsApp/Text</strong> from <strong>+1 940-465-6563</strong></p>
+                  <p className="text-sm text-blue-700 mt-1">Once your order is ready, our team will message you via <strong>WhatsApp/Text</strong> from <strong>+91 9014863411</strong></p>
                 </div>
               </div>
               <div className="flex items-start gap-3 border-t border-blue-200 pt-3">
@@ -1710,7 +1710,7 @@ export function CheckoutPage() {
                       {(item.variant?.size_code || item.variant?.code || item.product.product_code) && (
                         <span className="text-[10px] font-bold text-[#D4AF37] bg-[#D4AF37]/10 px-1.5 py-0.5 rounded border border-[#D4AF37]/20">#{(item.variant?.size_code || item.variant?.code || item.product.product_code)}</span>
                       )}
-                      <p className="text-sm font-bold text-brand-gold mt-1">${((item.variant?.price || item.product.price) * item.qty).toFixed(2)}</p>
+                      <p className="text-sm font-bold text-brand-gold mt-1">₹{((item.variant?.price || item.product.price) * item.qty).toFixed(2)}</p>
                     </div>
                   </div>
                 ))}
@@ -1719,7 +1719,7 @@ export function CheckoutPage() {
               <div className="border-t border-dashed border-brand-gold/20 pt-4 mb-6">
                 <div className="flex justify-between text-sm text-brand-dark-blue/80 mb-2">
                   <span>Item Total</span>
-                  <span className="font-medium text-brand-dark-blue">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium text-brand-dark-blue">₹{subtotal.toFixed(2)}</span>
                 </div>
                 {appliedCoupon && (
                   <div className="flex justify-between text-sm text-brand-gold mb-2">
@@ -1730,30 +1730,30 @@ export function CheckoutPage() {
 {orderType !== 'pickup' && (
                 <div className="flex justify-between text-sm text-brand-dark-blue/80 mb-2">
                   <span>Shipping Fee</span>
-                  <span className="font-medium text-brand-dark-blue">{shippingFee === 0 && (parseFloat(shippingConfig?.settings?.free_shipping_threshold) || 0) > 0 ? <span className="text-green-600 font-bold">FREE</span> : `$${shippingFee.toFixed(2)}`}</span>
+                  <span className="font-medium text-brand-dark-blue">{shippingFee === 0 && (parseFloat(shippingConfig?.settings?.free_shipping_threshold) || 0) > 0 ? <span className="text-green-600 font-bold">FREE</span> : `₹${shippingFee.toFixed(2)}`}</span>
                 </div>
                 )}
                 {(taxAmount > 0 || shippingConfig?.settings?.tax_mode === 'pincode') && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/80 mb-2">
                     <span>{taxLabel || 'Tax'}</span>
-                    <span className="font-medium text-brand-dark-blue">${taxAmount.toFixed(2)}</span>
+                    <span className="font-medium text-brand-dark-blue">₹{taxAmount.toFixed(2)}</span>
                   </div>
                 )}
                 {signatureFee > 0 && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/80 mb-2">
                     <span>Signature Confirmation</span>
-                    <span className="font-medium text-brand-dark-blue">${signatureFee.toFixed(2)}</span>
+                    <span className="font-medium text-brand-dark-blue">₹{signatureFee.toFixed(2)}</span>
                   </div>
                 )}
                 {insuranceFee > 0 && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/80 mb-2">
                     <span>Shipping Insurance</span>
-                    <span className="font-medium text-brand-dark-blue">${insuranceFee.toFixed(2)}</span>
+                    <span className="font-medium text-brand-dark-blue">₹{insuranceFee.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-brand-dark-blue text-xl pt-2 border-t border-brand-gold/20">
                   <span>Grand Total</span>
-                  <span className="text-brand-gold">${finalTotal.toFixed(2)}</span>
+                  <span className="text-brand-gold">₹{finalTotal.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -1784,7 +1784,7 @@ export function CheckoutPage() {
                 <p className="text-xs font-bold text-brand-dark-blue/60 uppercase tracking-wider mb-1">Payable Amount</p>
                 <div className="flex flex-col">
                   {appliedCoupon && <span className="text-[10px] text-brand-gold font-bold -mb-1">Code applied: {appliedCoupon.code}</span>}
-                  <p className="text-2xl font-bold text-brand-dark-blue leading-none">${finalTotal.toFixed(2)}</p>
+                  <p className="text-2xl font-bold text-brand-dark-blue leading-none">₹{finalTotal.toFixed(2)}</p>
                 </div>
               </>
             </div>
@@ -1819,12 +1819,12 @@ export function CheckoutPage() {
       {orderSuccess && (
         <div ref={overlayRef} className="fixed inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center w-full h-full">
           <div className="flex flex-col items-center gap-4 px-6 text-center">
-            <div ref={iconRef} className="w-24 h-24 bg-[#08183A] rounded-full flex items-center justify-center shadow-lg">
+            <div ref={iconRef} className="w-24 h-24 bg-[#2A0845] rounded-full flex items-center justify-center shadow-lg">
               <CheckCircle className="w-12 h-12 text-white" strokeWidth={2.5} />
             </div>
-            <h2 ref={textRef} className="text-2xl font-serif font-bold text-[#08183A]">Order Confirmed!</h2>
+            <h2 ref={textRef} className="text-2xl font-serif font-bold text-[#2A0845]">Order Confirmed!</h2>
             <p className="text-sm text-gray-600 max-w-sm leading-relaxed">
-              Thank you for placing your order with Houra Jewels. We're delighted to begin preparing your selection and will keep you updated throughout its journey to you.
+              Thank you for placing your order with LYDIA GLOBAL EXIM. We're delighted to begin preparing your selection and will keep you updated throughout its journey to you.
             </p>
             {transactionId && (
               <p className="text-xs text-gray-400 font-mono bg-gray-100 px-4 py-2 rounded-lg">

@@ -22,7 +22,7 @@ function StripeCardForm({ onReady }) {
     <div className="p-3 border border-brand-gold/30 rounded-xl bg-white">
       <CardElement options={{
         style: {
-          base: { fontSize: '16px', color: '#08183A', '::placeholder': { color: '#9ca3af' } },
+          base: { fontSize: '16px', color: '#2A0845', '::placeholder': { color: '#9ca3af' } },
           invalid: { color: '#ef4444' }
         }
       }} />
@@ -242,7 +242,7 @@ export function PickupPage() {
                   <span className="text-xs bg-brand-gold/10 text-brand-gold font-bold px-2 py-0.5 rounded-full">{items.length} item{items.length !== 1 ? 's' : ''}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-bold text-brand-gold">${finalTotal.toFixed(2)}</span>
+                  <span className="text-sm font-bold text-brand-gold">₹{finalTotal.toFixed(2)}</span>
                   <svg className={`w-4 h-4 text-brand-dark-blue/50 transition-transform ${summaryOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" /></svg>
                 </div>
               </button>
@@ -257,14 +257,14 @@ export function PickupPage() {
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-bold text-brand-dark-blue line-clamp-1">{item.product.name}</p>
                           <p className="text-xs text-brand-dark-blue/60">Qty: {item.qty} | {item.variant?.size || 'Standard'}</p>
-                          <p className="text-sm font-bold text-brand-gold">${((item.variant?.price || item.product.price) * item.qty).toFixed(2)}</p>
+                          <p className="text-sm font-bold text-brand-gold">₹{((item.variant?.price || item.product.price) * item.qty).toFixed(2)}</p>
                         </div>
                       </div>
                     ))}
                   </div>
                   <div className="border-t border-dashed border-brand-gold/20 pt-3 space-y-1.5">
                     <div className="flex justify-between text-sm text-brand-dark-blue/70">
-                      <span>Item Total</span><span className="font-medium">${subtotal.toFixed(2)}</span>
+                      <span>Item Total</span><span className="font-medium">₹{subtotal.toFixed(2)}</span>
                     </div>
                     {appliedCoupon && (
                       <div className="flex justify-between text-sm text-brand-gold">
@@ -274,11 +274,11 @@ export function PickupPage() {
                     {taxAmount > 0 && (
                       <div className="flex justify-between text-sm text-brand-dark-blue/70">
                         <span>Tax ({taxConfig?.settings?.tax_percentage ?? 0}%)</span>
-                        <span className="font-medium">${taxAmount.toFixed(2)}</span>
+                        <span className="font-medium">₹{taxAmount.toFixed(2)}</span>
                       </div>
                     )}
                     <div className="flex justify-between font-bold text-brand-dark-blue text-base pt-2 border-t border-brand-gold/20">
-                      <span>Grand Total</span><span className="text-brand-gold">${finalTotal.toFixed(2)}</span>
+                      <span>Grand Total</span><span className="text-brand-gold">₹{finalTotal.toFixed(2)}</span>
                     </div>
                   </div>
                 </div>
@@ -345,7 +345,7 @@ export function PickupPage() {
                     </div>
                     <div className="mt-4 p-4 bg-brand-dark-blue/5 border border-brand-dark-blue/10 rounded-xl">
                       <p className="text-sm text-brand-dark-blue font-bold flex items-center gap-2"><Store className="w-4 h-4 text-brand-gold"/> Pickup Location</p>
-                      <p className="text-xs text-brand-dark-blue/80 mt-1">Houra Jewels Store, Main Market, City Center</p>
+                      <p className="text-xs text-brand-dark-blue/80 mt-1">LYDIA GLOBAL EXIM Store, Main Market, City Center</p>
                     </div>
                   </div>
                 </div>
@@ -385,7 +385,7 @@ export function PickupPage() {
                     <div>
                       <h4 className="text-sm font-bold text-brand-dark-blue line-clamp-1">{item.product.name}</h4>
                       <p className="text-xs text-brand-dark-blue/60 mt-1">Qty: {item.qty} | {item.variant?.size || 'Std'}</p>
-                      <p className="text-sm font-bold text-brand-gold mt-1">${(item.variant?.price || item.product.price) * item.qty}</p>
+                      <p className="text-sm font-bold text-brand-gold mt-1">₹{(item.variant?.price || item.product.price) * item.qty}</p>
                     </div>
                   </div>
                 ))}
@@ -394,7 +394,7 @@ export function PickupPage() {
               <div className="border-t border-dashed border-brand-gold/20 pt-4 mb-6">
                 <div className="flex justify-between text-sm text-brand-dark-blue/80 mb-2">
                   <span>Item Total</span>
-                  <span className="font-medium text-brand-dark-blue">${subtotal.toFixed(2)}</span>
+                  <span className="font-medium text-brand-dark-blue">₹{subtotal.toFixed(2)}</span>
                 </div>
                 {appliedCoupon && (
                   <div className="flex justify-between text-sm text-brand-gold mb-2">
@@ -405,12 +405,12 @@ export function PickupPage() {
                 {taxAmount > 0 && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/80 mb-2">
                     <span>Tax ({taxConfig?.settings?.tax_percentage ?? 0}%)</span>
-                    <span className="font-medium text-brand-dark-blue">${taxAmount.toFixed(2)}</span>
+                    <span className="font-medium text-brand-dark-blue">₹{taxAmount.toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between font-bold text-brand-dark-blue text-xl pt-2 border-t border-brand-gold/20">
                   <span>Grand Total</span>
-                  <span className="text-brand-gold">${finalTotal.toFixed(2)}</span>
+                  <span className="text-brand-gold">₹{finalTotal.toFixed(2)}</span>
                 </div>
               </div>
 
@@ -462,7 +462,7 @@ export function PickupPage() {
               <p className="text-xs font-bold text-brand-dark-blue/60 uppercase tracking-wider mb-1">Payable Amount</p>
               <div className="flex flex-col">
                 {appliedCoupon && <span className="text-[10px] text-brand-gold font-bold -mb-1">Code applied: {appliedCoupon.code}</span>}
-                <p className="text-2xl font-bold text-brand-dark-blue leading-none">${finalTotal.toFixed(2)}</p>
+                <p className="text-2xl font-bold text-brand-dark-blue leading-none">₹{finalTotal.toFixed(2)}</p>
               </div>
             </div>
           </div>
@@ -511,10 +511,10 @@ export function PickupPage() {
       {isPlacingOrder && (
         <div ref={overlayRef} className="fixed inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center w-full h-full">
           <div className="flex flex-col items-center gap-4">
-            <div ref={iconRef} className="w-24 h-24 bg-[#08183A] rounded-full flex items-center justify-center shadow-lg">
+            <div ref={iconRef} className="w-24 h-24 bg-[#2A0845] rounded-full flex items-center justify-center shadow-lg">
               <CheckCircle className="w-12 h-12 text-white" strokeWidth={2.5} />
             </div>
-            <h2 ref={textRef} className="text-2xl font-serif font-bold text-[#08183A]">Order Confirmed!</h2>
+            <h2 ref={textRef} className="text-2xl font-serif font-bold text-[#2A0845]">Order Confirmed!</h2>
             <p className="text-sm text-gray-500">Redirecting to tracking...</p>
           </div>
         </div>

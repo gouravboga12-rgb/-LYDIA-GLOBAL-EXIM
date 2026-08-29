@@ -28,7 +28,7 @@ const sections = [
       'Remote or rural areas may require an additional 1-3 business days beyond the standard timeline.',
       'We do not currently offer express shipping, but we are actively working to bring faster options.',
       'Delivery timelines may vary during peak seasons or festival periods.',
-      'Once an order has been handed over to the shipping carrier, carrier-related delays may be outside Houra Jewels\' control.',
+      'Once an order has been handed over to the shipping carrier, carrier-related delays may be outside LYDIA GLOBAL EXIM\'s control.',
     ],
   },
   {
@@ -41,7 +41,7 @@ const sections = [
       'We ship to all zip codes across USA through our trusted logistics partners.',
       'International shipping is available to select countries — please contact us before placing your international order.',
       'For international orders, additional customs duties or import taxes may apply depending on your country.',
-      'Contact us at support@hourajewels.com or WhatsApp +1 940-465-6563 for international shipping rates.',
+      'Contact us at lydiaglobalexim@gmail.com or WhatsApp +91 9014863411 for international shipping rates.',
     ],
   },
   {
@@ -51,7 +51,7 @@ const sections = [
     badge: 'Gift-Ready',
     badgeColor: 'bg-amber-100 text-amber-700',
     content: [
-      'Every Houra Jewels order is packed in premium, branded packaging designed to protect your jewelry during transit.',
+      'Every LYDIA GLOBAL EXIM order is packed in premium, branded packaging designed to protect your items during transit.',
       'Our packaging is eco-friendly and gift-ready — perfect for gifting a loved one right out of the box.',
       'We use extra cushioning for delicate pieces to ensure they arrive in perfect condition.',
       'A beautiful thank-you card is included with every order.',
@@ -79,7 +79,7 @@ const sections = [
     content: [
       'Customers may choose Signature Confirmation at checkout for an additional fee, where available. This service requires a signature upon delivery and may provide additional security for the shipment.',
       'If Signature Confirmation is not selected, the order will be shipped using the standard delivery service without a signature requirement. The carrier may leave the package at the delivery address or in another location according to its delivery procedures.',
-      'Once a package is marked as successfully delivered by the carrier, Houra Jewels is not responsible for packages that are lost, stolen, or misplaced after delivery. We recommend selecting Signature Confirmation for higher-value orders or locations where packages may be left unattended.',
+      'Once a package is marked as successfully delivered by the carrier, LYDIA GLOBAL EXIM is not responsible for packages that are lost, stolen, or misplaced after delivery. We recommend selecting Signature Confirmation for higher-value orders or locations where packages may be left unattended.',
       'Signature requirements and delivery procedures are subject to the selected carrier’s terms and conditions.',
     ],
   },
@@ -91,9 +91,9 @@ const sections = [
     badgeColor: 'bg-teal-100 text-teal-700',
     content: [
       'Additional shipping insurance may be available at checkout for an additional fee. If additional insurance is not selected, default carrier liability will apply, subject to the carrier’s terms and conditions.',
-      '1. Default Carrier Liability: Most eligible shipping services include limited carrier liability coverage, generally up to $100. For a package confirmed lost or damaged, the customer is responsible for filing the claim with the carrier. Houra Jewels will assist by providing relevant order information.',
+      '1. Default Carrier Liability: Most eligible shipping services include limited carrier liability coverage, generally up to $100. For a package confirmed lost or damaged, the customer is responsible for filing the claim with the carrier. LYDIA GLOBAL EXIM will assist by providing relevant order information.',
       '2. Additional Shipping Insurance: May provide broader protection for eligible shipments, including loss, damage, or theft. Protection beyond standard carrier liability is subject to the provider’s terms and exclusions.',
-      'Important: All insurance claims are subject to the applicable carrier or insurance provider’s terms. Houra Jewels is not responsible for losses or damages beyond the applicable carrier liability or insurance coverage.',
+      'Important: All insurance claims are subject to the applicable carrier or insurance provider’s terms. LYDIA GLOBAL EXIM is not responsible for losses or damages beyond the applicable carrier liability or insurance coverage.',
     ],
   },
 ];
@@ -159,7 +159,7 @@ export function ShippingPolicyPage() {
             </h1>
             <div className="w-20 h-1.5 rounded-full mb-6" style={{ background: '#C6A184' }}></div>
             <p className="text-white/60 text-base md:text-lg leading-relaxed">
-              We want your Houra Jewels experience to be seamless from purchase to delivery. Everything you need to know about how we ship.
+              We want your LYDIA GLOBAL EXIM experience to be seamless from purchase to delivery. Everything you need to know about how we ship.
             </p>
             <p className="text-white/30 text-xs mt-4">Last updated: August 23, 2026</p>
           </motion.div>
@@ -229,7 +229,7 @@ export function ShippingPolicyPage() {
               </div>
               <h3 className="font-bold text-white text-lg mb-2">Got a Question?</h3>
               <p className="text-white/50 text-sm mb-5 leading-relaxed">We're here to help with any shipping concerns.</p>
-              <a href="https://wa.me/19404656563" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/919014863411" target="_blank" rel="noopener noreferrer"
                 className="block w-full bg-brand-gold text-brand-dark-blue font-bold py-3 rounded-xl text-sm hover:bg-brand-gold/80 transition-all">
                 Chat on WhatsApp
               </a>
@@ -247,11 +247,11 @@ export function ShippingPolicyPage() {
               <div className="space-y-3">
                 <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Email</p>
-                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">support@hourajewels.com</p>
+                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">lydiaglobalexim@gmail.com</p>
                 </div>
                 <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">WhatsApp</p>
-                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">+1 940-465-6563</p>
+                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">+91 9014863411</p>
                 </div>
                 <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Hours</p>

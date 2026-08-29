@@ -189,12 +189,12 @@ export function AdminShippingPage() {
         <p className="text-sm text-gray-500 mb-5">Fixed $ amount added to every delivery order at checkout.</p>
         <div className="flex flex-wrap items-end gap-4">
           <div className="flex-1 min-w-[160px] max-w-xs">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Shipping Fee ($)</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Shipping Fee (₹)</label>
             <input type="number" min="0" value={flatShippingRate} onChange={e => setFlatShippingRate(e.target.value)}
               className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-dark-blue outline-none bg-gray-50" />
           </div>
           <div className="flex-1 min-w-[160px] max-w-xs">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">Free Shipping Above ($)</label>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">Free Shipping Above (₹)</label>
             <input type="number" min="0" value={freeShippingThreshold} onChange={e => setFreeShippingThreshold(e.target.value)}
               placeholder="e.g. 50 (leave blank to disable)"
               className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-dark-blue outline-none bg-gray-50" />
@@ -236,14 +236,14 @@ export function AdminShippingPage() {
                     <div className="font-bold text-sm text-brand-dark-blue">{country}</div>
                     <div className="flex gap-3">
                       <div className="flex-1">
-                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Shipping Fee ($)</label>
+                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Shipping Fee (₹)</label>
                         <input type="number" min="0" placeholder="e.g. 20" 
                           value={countryFees[country]?.fee ?? ''} 
                           onChange={e => setCountryFees({ ...countryFees, [country]: { ...countryFees[country], fee: e.target.value }})}
                           className="w-full px-3 py-1.5 text-sm border border-gray-200 rounded-lg focus:ring-1 focus:ring-brand-dark-blue outline-none bg-white" />
                       </div>
                       <div className="flex-1">
-                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Free Above ($)</label>
+                        <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Free Above (₹)</label>
                         <input type="number" min="0" placeholder="e.g. 150"
                           value={countryFees[country]?.threshold ?? ''}
                           onChange={e => setCountryFees({ ...countryFees, [country]: { ...countryFees[country], threshold: e.target.value }})}

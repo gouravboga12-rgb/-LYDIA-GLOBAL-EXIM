@@ -2,24 +2,27 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-orange: #4A2E1B;
-  --color-brand-maroon: #2D1A10;
-  --color-brand-dark-blue: #08183A;
+  --color-brand-orange: #6B21A8;
+  --color-brand-maroon: #2D0C4E;
+  --color-brand-dark-blue: #2A0845;
+  --color-brand-purple: #2A0845;
+  --color-brand-purple-dark: #1B0629;
+  --color-brand-purple-light: #7E22CE;
   --color-brand-gold: #D4AF37;
-  --color-brand-beige: #FDF8F0;
-  --color-brand-beige-darker: #F4EBE0;
-  --color-brand-cream: #FDFBF7;
-  --color-brand-cream-light: #FFFFFF;
+  --color-brand-beige: #FAF6F0;
+  --color-brand-beige-darker: #F3ECE2;
+  --color-brand-cream: #FAF6F0;
+  --color-brand-cream-light: #FFFDF9;
   --color-brand-green: #3B5F4A;
 
-  /* Admin / Snakzee theme */
-  --color-terracotta: #C8401A;
-  --color-terracotta-dark: #a83414;
-  --color-brown: #3B1F0E;
-  --color-brown-light: #7A5C4A;
-  --color-cream: #FDF6F0;
-  --color-cream-dark: #F5EBE0;
-  --color-gold: #D4A017;
+  /* Admin / theme */
+  --color-terracotta: #6B21A8;
+  --color-terracotta-dark: #581C87;
+  --color-brown: #2A0845;
+  --color-brown-light: #7E22CE;
+  --color-cream: #FAF6F0;
+  --color-cream-dark: #F3ECE2;
+  --color-gold: #D4AF37;
 }
 
 @layer utilities {
@@ -51,6 +54,6 @@
 
 body {
   font-family: 'Poppins', sans-serif;
-  background-color: #F8F9FA;
-  color: #333333;
+  background-color: #FAF6F0;
+  color: #2A0845;
 }

@@ -12,7 +12,7 @@ const claimSteps = [
   {
     num: '02',
     title: 'Report Within 7 Days',
-    desc: 'Contact us within 7 days of delivery via WhatsApp (+1 940-465-6563), Instagram DM, or email (support@hourajewels.com). Include your order number, a description of the issue, and attach the unboxing video as proof.',
+    desc: 'Contact us within 7 days of delivery via WhatsApp (+91 9014863411) or email (lydiaglobalexim@gmail.com). Include your order number, a description of the issue, and attach the unboxing video as proof.',
   },
   {
     num: '03',
@@ -111,7 +111,7 @@ export function ReturnsPolicyPage() {
                 <h3 className="font-bold text-amber-700 text-lg mb-2">Customer Responsibility After Delivery</h3>
                 <div className="text-amber-700/90 text-sm leading-relaxed space-y-3">
                   <p>
-                    Once an order has been successfully delivered, Houra Jewels is not responsible for any damage, loss, or deterioration resulting from the customer’s use or handling of the product. As our products are fashion jewelry, customers are responsible for proper care, handling, and storage after delivery.
+                    Once an order has been successfully delivered, LYDIA GLOBAL EXIM is not responsible for any damage, loss, or deterioration resulting from the customer’s use or handling of the product. As our products are fashion jewelry, customers are responsible for proper care, handling, and storage after delivery.
                   </p>
                   <p>
                     We recommend following our <a href="/jewelry-care" className="font-bold underline hover:text-amber-900">Jewelry Care Tips</a> to help maintain the product’s appearance and longevity.
@@ -161,7 +161,7 @@ export function ReturnsPolicyPage() {
               <div>
                 <h3 className="font-bold text-red-700 text-lg mb-2">No Returns or Exchanges</h3>
                 <p className="text-red-600 text-sm leading-relaxed">
-                  All sales at Houra Jewels are <strong>final</strong>. We do not accept returns or exchanges for any reason, including change of mind, sizing issues, or personal preference. Please review your order carefully before completing your purchase.
+                  All sales at LYDIA GLOBAL EXIM are <strong>final</strong>. We do not accept returns or exchanges for any reason, including change of mind, sizing issues, or personal preference. Please review your order carefully before completing your purchase.
                 </p>
               </div>
             </motion.div>
@@ -344,11 +344,11 @@ export function ReturnsPolicyPage() {
               </div>
               <h3 className="font-bold text-white text-lg mb-2">File a Claim</h3>
               <p className="text-white/50 text-sm mb-5 leading-relaxed">Have a shipping damage or missing item issue? Contact us with your unboxing video.</p>
-              <a href="https://wa.me/19404656563" target="_blank" rel="noopener noreferrer"
+              <a href="https://wa.me/919014863411" target="_blank" rel="noopener noreferrer"
                 className="block w-full bg-brand-gold text-brand-dark-blue font-bold py-3 rounded-xl text-sm hover:bg-brand-gold/80 transition-all">
                 Chat on WhatsApp
               </a>
-              <a href="mailto:support@hourajewels.com"
+              <a href="mailto:lydiaglobalexim@gmail.com"
                 className="block w-full mt-3 border border-white/20 text-white/70 font-semibold py-3 rounded-xl text-sm hover:bg-white/10 transition-all">
                 Email Us
               </a>
@@ -365,11 +365,11 @@ export function ReturnsPolicyPage() {
               <div className="space-y-3">
                 <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Email</p>
-                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">support@hourajewels.com</p>
+                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">lydiaglobalexim@gmail.com</p>
                 </div>
                 <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">WhatsApp</p>
-                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">+1 940-465-6563</p>
+                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">+91 9014863411</p>
                 </div>
                 <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Hours</p>

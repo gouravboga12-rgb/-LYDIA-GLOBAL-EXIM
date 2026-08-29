@@ -251,12 +251,12 @@ export function SignupPage() {
             className="relative z-10 text-center"
           >
             <Link to="/">
-              <img src={logoImg} alt="Houra Jewels" className="h-28 w-auto object-contain mx-auto mb-10 drop-shadow-xl" />
+              <img src={logoImg} alt="LYDIA GLOBAL EXIM" className="h-28 w-auto object-contain mx-auto mb-10 drop-shadow-xl" />
             </Link>
 
             <h1 className="text-4xl font-serif font-bold text-white mb-4 leading-tight">
               Join the<br />
-              <span style={{ color: '#C6A184' }}>Houra Jewels</span><br />
+              <span style={{ color: '#C6A184' }}>LYDIA GLOBAL EXIM</span><br />
               <span className="text-white">Family</span>
             </h1>
             <div className="w-16 h-1 mx-auto mb-5 rounded-full" style={{ background: '#C6A184' }}></div>
@@ -306,7 +306,7 @@ export function SignupPage() {
                   <h4 className="text-brand-gold font-bold tracking-widest uppercase text-xs mb-2">Get Started</h4>
                   <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark-blue mb-2">Create Account</h2>
                   <div className="w-14 h-1 bg-brand-gold rounded-full"></div>
-                  <p className="text-brand-dark-blue/60 text-sm mt-4">Fill in your details to create your Houra Jewels account.</p>
+                  <p className="text-brand-dark-blue/60 text-sm mt-4">Fill in your details to create your LYDIA GLOBAL EXIM account.</p>
                 </div>
 
                 <form onSubmit={handleSignup} className="space-y-4">
@@ -382,9 +382,9 @@ export function SignupPage() {
                     <input type="checkbox" checked={consentAccepted} onChange={e => setConsentAccepted(e.target.checked)}
                       className="mt-0.5 w-4 h-4 accent-brand-dark-blue rounded shrink-0" />
                     <span className="text-xs text-brand-dark-blue/70 leading-relaxed">
-                      I confirm that I am at least 13 years old, agree to the Houra Jewels{' '}
+                      I confirm that I am at least 13 years old, agree to the LYDIA GLOBAL EXIM{' '}
                       <Link to="/terms-of-service" target="_blank" className="font-bold text-brand-dark-blue underline">Terms & Conditions</Link>,
-                      and acknowledge the Houra Jewels{' '}
+                      and acknowledge the LYDIA GLOBAL EXIM{' '}
                       <Link to="/privacy-policy" target="_blank" className="font-bold text-brand-dark-blue underline">Privacy Policy</Link>.
                     </span>
                   </label>
@@ -486,9 +486,9 @@ export function SignupPage() {
                     <input type="checkbox" checked={consentAccepted} onChange={e => setConsentAccepted(e.target.checked)}
                       className="mt-0.5 w-4 h-4 accent-brand-dark-blue rounded shrink-0" />
                     <span className="text-xs text-brand-dark-blue/70 leading-relaxed">
-                      I confirm that I am at least 13 years old, agree to the Houra Jewels{' '}
+                      I confirm that I am at least 13 years old, agree to the LYDIA GLOBAL EXIM{' '}
                       <Link to="/terms-of-service" target="_blank" className="font-bold text-brand-dark-blue underline">Terms & Conditions</Link>,
-                      and acknowledge the Houra Jewels{' '}
+                      and acknowledge the LYDIA GLOBAL EXIM{' '}
                       <Link to="/privacy-policy" target="_blank" className="font-bold text-brand-dark-blue underline">Privacy Policy</Link>.
                     </span>
                   </label>
@@ -535,10 +535,10 @@ export function SignupPage() {
         {/* Header / Logo */}
         <div className="flex flex-col items-center mt-4">
           <Link to="/">
-            <img src={brandLogo} alt="Houra Jewels Logo" className="w-24 h-24 object-contain" />
+            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-24 h-24 object-contain" />
           </Link>
           <span className="font-serif font-bold text-lg tracking-[0.15em] text-[#D4AF37] mt-2 text-center">
-            HOURA JEWELS
+            LYDIA GLOBAL EXIM
           </span>
           <span className="text-[#D4AF37] text-[10px] font-bold tracking-widest uppercase mt-6">
             {step === 'form' ? 'Get Started' : step === 'phone_otp' ? 'Step 1 of 2' : step === 'email_otp' ? 'Step 2 of 2' : step === 'google_extra' ? 'Almost Done' : 'Welcome!'}
@@ -648,9 +648,9 @@ export function SignupPage() {
                 <input type="checkbox" checked={consentAccepted} onChange={e => setConsentAccepted(e.target.checked)}
                   className="mt-0.5 w-4 h-4 accent-[#D4AF37] rounded shrink-0" />
                 <span className="text-[11px] text-white/60 leading-relaxed">
-                  I confirm that I am at least 13 years old, agree to the Houra Jewels{' '}
+                  I confirm that I am at least 13 years old, agree to the LYDIA GLOBAL EXIM{' '}
                   <Link to="/terms-of-service" target="_blank" className="text-[#D4AF37] font-bold underline">Terms & Conditions</Link>,
-                  and acknowledge the Houra Jewels{' '}
+                  and acknowledge the LYDIA GLOBAL EXIM{' '}
                   <Link to="/privacy-policy" target="_blank" className="text-[#D4AF37] font-bold underline">Privacy Policy</Link>.
                 </span>
               </label>
@@ -747,9 +747,9 @@ export function SignupPage() {
                 <input type="checkbox" checked={consentAccepted} onChange={e => setConsentAccepted(e.target.checked)}
                   className="mt-0.5 w-4 h-4 accent-[#D4AF37] rounded shrink-0" />
                 <span className="text-[11px] text-white/60 leading-relaxed">
-                  I confirm that I am at least 13 years old, agree to the Houra Jewels{' '}
+                  I confirm that I am at least 13 years old, agree to the LYDIA GLOBAL EXIM{' '}
                   <Link to="/terms-of-service" target="_blank" className="text-[#D4AF37] font-bold underline">Terms & Conditions</Link>,
-                  and acknowledge the Houra Jewels{' '}
+                  and acknowledge the LYDIA GLOBAL EXIM{' '}
                   <Link to="/privacy-policy" target="_blank" className="text-[#D4AF37] font-bold underline">Privacy Policy</Link>.
                 </span>
               </label>

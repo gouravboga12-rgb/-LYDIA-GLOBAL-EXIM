@@ -278,13 +278,13 @@ export function AdminCreateOrderPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-10 h-10 animate-spin text-[#08183A]" />
+        <Loader2 className="w-10 h-10 animate-spin text-[#2A0845]" />
       </div>
     );
   }
 
   const sendPaymentLinkWhatsApp = (link, balance) => {
-    const msg = encodeURIComponent(`Hi, your order has been created. A balance of $${balance.toFixed(2)} is due. Please pay here: ${link}`);
+    const msg = encodeURIComponent(`Hi, your order has been created. A balance of ₹${balance.toFixed(2)} is due. Please pay here: ${link}`);
     window.open(`https://wa.me/?text=${msg}`, '_blank');
   };
 
@@ -308,11 +308,11 @@ export function AdminCreateOrderPage() {
 
   if (success) {
     return (
-      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto mt-12 bg-white rounded-3xl shadow-xl p-8 sm:p-12 text-center border border-[#08183A]/10">
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="max-w-2xl mx-auto mt-12 bg-white rounded-3xl shadow-xl p-8 sm:p-12 text-center border border-[#2A0845]/10">
         <div className="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
           <CheckCircle2 className="w-10 h-10" />
         </div>
-        <h2 className="text-3xl font-serif font-bold text-[#08183A] mb-4">Order Created Successfully!</h2>
+        <h2 className="text-3xl font-serif font-bold text-[#2A0845] mb-4">Order Created Successfully!</h2>
         <p className="text-gray-500 mb-8">The manual order has been successfully placed in the system.</p>
         
         {successData?.payment_link_url && successData?.balance_due > 0 && (
@@ -329,7 +329,7 @@ export function AdminCreateOrderPage() {
               <button onClick={() => sendPaymentLinkWhatsApp(successData.payment_link_url, successData.balance_due)} className="flex items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white py-2 rounded-xl text-xs font-bold transition-colors">
                 WhatsApp
               </button>
-              <button onClick={() => navigator.clipboard.writeText(successData.payment_link_url)} className="flex items-center justify-center gap-2 bg-[#08183A] hover:bg-[#122A5C] text-white py-2 rounded-xl text-xs font-bold transition-colors">
+              <button onClick={() => navigator.clipboard.writeText(successData.payment_link_url)} className="flex items-center justify-center gap-2 bg-[#2A0845] hover:bg-[#122A5C] text-white py-2 rounded-xl text-xs font-bold transition-colors">
                 Copy Link
               </button>
               <button onClick={() => handleMarkAsPaid(successData.order_id)} className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white py-2 rounded-xl text-xs font-bold transition-colors">
@@ -340,8 +340,8 @@ export function AdminCreateOrderPage() {
         )}
 
         <div className="flex flex-col sm:flex-row justify-center gap-4">
-          <button onClick={() => window.location.href = '/admin/orders'} className="px-6 py-3 bg-[#08183A] text-white rounded-xl font-semibold hover:bg-[#122A5C] transition-all">View All Orders</button>
-          <button onClick={() => { setSuccess(false); setCart([]); setSelectedCustomer(null); setSuccessData(null); }} className="px-6 py-3 bg-gray-100 text-[#08183A] rounded-xl font-semibold hover:bg-gray-200 transition-all">Create Another</button>
+          <button onClick={() => window.location.href = '/admin/orders'} className="px-6 py-3 bg-[#2A0845] text-white rounded-xl font-semibold hover:bg-[#122A5C] transition-all">View All Orders</button>
+          <button onClick={() => { setSuccess(false); setCart([]); setSelectedCustomer(null); setSuccessData(null); }} className="px-6 py-3 bg-gray-100 text-[#2A0845] rounded-xl font-semibold hover:bg-gray-200 transition-all">Create Another</button>
         </div>
       </motion.div>
     );
@@ -350,8 +350,8 @@ export function AdminCreateOrderPage() {
   return (
     <div className="max-w-7xl mx-auto pb-24">
       <div className="mb-8">
-        <h1 className="text-3xl font-serif font-bold text-[#08183A]">Create New Order</h1>
-        <p className="text-[#08183A]/60">Manually draft an order on behalf of a customer.</p>
+        <h1 className="text-3xl font-serif font-bold text-[#2A0845]">Create New Order</h1>
+        <p className="text-[#2A0845]/60">Manually draft an order on behalf of a customer.</p>
       </div>
 
       {error && (
@@ -367,20 +367,20 @@ export function AdminCreateOrderPage() {
           
           {/* Customer Selection */}
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-            <h2 className="text-xl font-serif font-bold text-[#08183A] mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-serif font-bold text-[#2A0845] mb-4 flex items-center gap-2">
               <User className="w-5 h-5 text-emerald-500" /> Customer Details
             </h2>
             
             <div className="flex bg-gray-100 p-1 rounded-xl mb-6 w-full sm:w-fit">
               <button 
                 onClick={() => setCustomerMode('search')}
-                className={`flex-1 sm:flex-none px-6 py-2 text-sm font-medium rounded-lg transition-all ${customerMode === 'search' ? 'bg-white text-[#08183A] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`flex-1 sm:flex-none px-6 py-2 text-sm font-medium rounded-lg transition-all ${customerMode === 'search' ? 'bg-white text-[#2A0845] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 Existing Customer
               </button>
               <button 
                 onClick={() => setCustomerMode('manual')}
-                className={`flex-1 sm:flex-none px-6 py-2 text-sm font-medium rounded-lg transition-all ${customerMode === 'manual' ? 'bg-white text-[#08183A] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                className={`flex-1 sm:flex-none px-6 py-2 text-sm font-medium rounded-lg transition-all ${customerMode === 'manual' ? 'bg-white text-[#2A0845] shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
               >
                 Guest / Manual
               </button>
@@ -400,14 +400,14 @@ export function AdminCreateOrderPage() {
 
                     {orderType === 'shipping' && (
                       <div className="bg-gray-50 border border-gray-200 p-4 rounded-xl space-y-4 mt-4">
-                        <p className="text-sm font-bold text-[#08183A]">Shipping Address</p>
+                        <p className="text-sm font-bold text-[#2A0845]">Shipping Address</p>
                         <div className="flex gap-4">
                           <label className="flex items-center gap-2 text-sm cursor-pointer">
-                            <input type="radio" checked={useDefaultAddress} onChange={() => setUseDefaultAddress(true)} className="accent-[#08183A]" />
+                            <input type="radio" checked={useDefaultAddress} onChange={() => setUseDefaultAddress(true)} className="accent-[#2A0845]" />
                             Use Customer's Default Address
                           </label>
                           <label className="flex items-center gap-2 text-sm cursor-pointer">
-                            <input type="radio" checked={!useDefaultAddress} onChange={() => setUseDefaultAddress(false)} className="accent-[#08183A]" />
+                            <input type="radio" checked={!useDefaultAddress} onChange={() => setUseDefaultAddress(false)} className="accent-[#2A0845]" />
                             Provide New Address
                           </label>
                         </div>
@@ -424,10 +424,10 @@ export function AdminCreateOrderPage() {
                                   }}
                                 />
                               </div>
-                              <input type="text" value={manualCustomer.city} onChange={e => setManualCustomer({...manualCustomer, city: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="City" />
-                              <input type="text" value={manualCustomer.state} onChange={e => setManualCustomer({...manualCustomer, state: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="State" />
-                              <input type="text" value={manualCustomer.pincode} onChange={e => setManualCustomer({...manualCustomer, pincode: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="Zip / Postal Code" />
-                              <input type="text" value={manualCustomer.country} onChange={e => setManualCustomer({...manualCustomer, country: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="Country" />
+                              <input type="text" value={manualCustomer.city} onChange={e => setManualCustomer({...manualCustomer, city: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="City" />
+                              <input type="text" value={manualCustomer.state} onChange={e => setManualCustomer({...manualCustomer, state: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="State" />
+                              <input type="text" value={manualCustomer.pincode} onChange={e => setManualCustomer({...manualCustomer, pincode: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="Zip / Postal Code" />
+                              <input type="text" value={manualCustomer.country} onChange={e => setManualCustomer({...manualCustomer, country: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="Country" />
                             </div>
                           </div>
                         )}
@@ -442,14 +442,14 @@ export function AdminCreateOrderPage() {
                       placeholder="Search by name, email, or phone..." 
                       value={searchCustomerQuery}
                       onChange={(e) => setSearchCustomerQuery(e.target.value)}
-                      className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#08183A]"
+                      className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#2A0845]"
                     />
                     {searchCustomerQuery && (
                       <ul className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-lg max-h-60 overflow-y-auto">
                         {filteredCustomers.length > 0 ? filteredCustomers.map(c => (
                           <li key={c.id}>
                             <button onClick={() => { setSelectedCustomer(c); setSearchCustomerQuery(""); }} className="w-full text-left px-4 py-3 hover:bg-gray-50 border-b border-gray-100 last:border-0">
-                              <p className="font-bold text-sm text-[#08183A]">{c.name}</p>
+                              <p className="font-bold text-sm text-[#2A0845]">{c.name}</p>
                               <p className="text-xs text-gray-500">{c.email} {c.phone ? `• ${c.phone}` : ''}</p>
                             </button>
                           </li>
@@ -465,18 +465,18 @@ export function AdminCreateOrderPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Full Name *</label>
-                  <input type="text" value={manualCustomer.name} onChange={e => setManualCustomer({...manualCustomer, name: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="John Doe" />
+                  <input type="text" value={manualCustomer.name} onChange={e => setManualCustomer({...manualCustomer, name: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="John Doe" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Email Address *</label>
-                  <input type="email" value={manualCustomer.email} onChange={e => setManualCustomer({...manualCustomer, email: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="john@example.com" />
+                  <input type="email" value={manualCustomer.email} onChange={e => setManualCustomer({...manualCustomer, email: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="john@example.com" />
                 </div>
                 <div>
                   <label className="text-xs font-bold text-gray-500 mb-1.5 block">Phone Number *</label>
-                  <input type="tel" value={manualCustomer.mobile} onChange={e => setManualCustomer({...manualCustomer, mobile: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="+1 234 567 8900" />
+                  <input type="tel" value={manualCustomer.mobile} onChange={e => setManualCustomer({...manualCustomer, mobile: e.target.value})} className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="+1 234 567 8900" />
                 </div>
                 <div className="sm:col-span-2 mt-2">
-                  <p className="text-sm font-bold text-[#08183A] mb-3">Shipping Address {orderType === 'pickup' && '(Optional for Pickup)'}</p>
+                  <p className="text-sm font-bold text-[#2A0845] mb-3">Shipping Address {orderType === 'pickup' && '(Optional for Pickup)'}</p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
                     <div className="sm:col-span-2">
@@ -489,16 +489,16 @@ export function AdminCreateOrderPage() {
                       />
                     </div>
                     <div>
-                      <input type="text" value={manualCustomer.city} onChange={e => setManualCustomer({...manualCustomer, city: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="City" />
+                      <input type="text" value={manualCustomer.city} onChange={e => setManualCustomer({...manualCustomer, city: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="City" />
                     </div>
                     <div>
-                      <input type="text" value={manualCustomer.state} onChange={e => setManualCustomer({...manualCustomer, state: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="State" />
+                      <input type="text" value={manualCustomer.state} onChange={e => setManualCustomer({...manualCustomer, state: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="State" />
                     </div>
                     <div>
-                      <input type="text" value={manualCustomer.pincode} onChange={e => setManualCustomer({...manualCustomer, pincode: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="Zip / Postal Code" />
+                      <input type="text" value={manualCustomer.pincode} onChange={e => setManualCustomer({...manualCustomer, pincode: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="Zip / Postal Code" />
                     </div>
                     <div>
-                      <input type="text" value={manualCustomer.country} onChange={e => setManualCustomer({...manualCustomer, country: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#08183A]" placeholder="Country" />
+                      <input type="text" value={manualCustomer.country} onChange={e => setManualCustomer({...manualCustomer, country: e.target.value})} className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-1 focus:ring-[#2A0845]" placeholder="Country" />
                     </div>
                   </div>
                 </div>
@@ -508,7 +508,7 @@ export function AdminCreateOrderPage() {
 
           {/* Product Selection */}
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-            <h2 className="text-xl font-serif font-bold text-[#08183A] mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-serif font-bold text-[#2A0845] mb-4 flex items-center gap-2">
               <Package className="w-5 h-5 text-blue-500" /> Add Products
             </h2>
             
@@ -520,7 +520,7 @@ export function AdminCreateOrderPage() {
                 value={searchProductQuery}
                 onFocus={() => setShowProductDropdown(true)}
                 onChange={(e) => { setSearchProductQuery(e.target.value); setShowProductDropdown(true); }}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#08183A]"
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl pl-10 pr-4 py-3 focus:outline-none focus:ring-1 focus:ring-[#2A0845]"
               />
               {showProductDropdown && searchProductQuery && (
                 <div className="absolute z-20 w-full mt-1 bg-white border border-gray-200 rounded-xl shadow-xl max-h-80 overflow-y-auto">
@@ -538,15 +538,15 @@ export function AdminCreateOrderPage() {
                               {(v.images && v.images.length > 0) ? <img src={v.images[0]} alt={p.name} className="w-full h-full object-cover" /> : (p.images && parseArray(p.images)[0]) ? <img src={parseArray(p.images)[0]} alt={p.name} className="w-full h-full object-cover" /> : <Package className="w-5 h-5 text-gray-400" />}
                             </div>
                             <div>
-                              <p className="font-bold text-sm text-[#08183A]">{p.name}</p>
+                              <p className="font-bold text-sm text-[#2A0845]">{p.name}</p>
                               <p className="text-xs text-gray-500">{v.color} • {s.size} {s.code ? `• Code: ${s.code}` : ''}</p>
                             </div>
                           </div>
                           <div className="flex items-center gap-4">
-                            <span className="font-bold text-[#08183A]">${s.our_price || s.mrp || s.price || p.price || 0}</span>
+                            <span className="font-bold text-[#2A0845]">₹{s.our_price || s.mrp || s.price || p.price || 0}</span>
                             <button 
                               onClick={() => addToCart(p, v, s)}
-                              className="px-3 py-1.5 bg-[#08183A] text-white text-xs font-bold rounded-lg hover:bg-[#122A5C] transition-colors"
+                              className="px-3 py-1.5 bg-[#2A0845] text-white text-xs font-bold rounded-lg hover:bg-[#122A5C] transition-colors"
                             >
                               Add
                             </button>
@@ -571,16 +571,16 @@ export function AdminCreateOrderPage() {
                         {(item.variant.images && item.variant.images.length > 0) ? <img src={item.variant.images[0]} className="w-full h-full object-contain" alt="" /> : (item.product.images && parseArray(item.product.images)[0]) ? <img src={parseArray(item.product.images)[0]} className="w-full h-full object-contain" alt="" /> : <Package className="w-full h-full text-gray-300" />}
                       </div>
                       <div>
-                        <p className="font-bold text-sm text-[#08183A]">{item.product.name}</p>
+                        <p className="font-bold text-sm text-[#2A0845]">{item.product.name}</p>
                         <p className="text-xs text-gray-500">{item.variant.color} • {item.size.size} {item.size.code ? `• ${item.size.code}` : ''}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-6">
-                      <span className="font-bold text-[#08183A]">${item.size.our_price || item.size.mrp || item.size.price || item.product.price || 0}</span>
+                      <span className="font-bold text-[#2A0845]">₹{item.size.our_price || item.size.mrp || item.size.price || item.product.price || 0}</span>
                       <div className="flex items-center bg-white border border-gray-200 rounded-lg h-8">
-                        <button onClick={() => updateCartQty(idx, -1)} className="px-2.5 text-gray-500 hover:text-[#08183A]">-</button>
+                        <button onClick={() => updateCartQty(idx, -1)} className="px-2.5 text-gray-500 hover:text-[#2A0845]">-</button>
                         <span className="text-sm font-bold w-6 text-center">{item.qty}</span>
-                        <button onClick={() => updateCartQty(idx, 1)} className="px-2.5 text-gray-500 hover:text-[#08183A]">+</button>
+                        <button onClick={() => updateCartQty(idx, 1)} className="px-2.5 text-gray-500 hover:text-[#2A0845]">+</button>
                       </div>
                       <button onClick={() => removeCartItem(idx)} className="text-red-400 hover:text-red-600">
                         <X className="w-4 h-4" />
@@ -594,20 +594,20 @@ export function AdminCreateOrderPage() {
 
           {/* Settings */}
           <div className="bg-white rounded-3xl p-6 shadow-sm border border-gray-100">
-            <h2 className="text-xl font-serif font-bold text-[#08183A] mb-6 flex items-center gap-2">
+            <h2 className="text-xl font-serif font-bold text-[#2A0845] mb-6 flex items-center gap-2">
               <Store className="w-5 h-5 text-amber-500" /> Order Settings
             </h2>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               {/* Order Type */}
               <div>
-                <label className="text-sm font-bold text-[#08183A] mb-3 block">Fulfillment Method</label>
+                <label className="text-sm font-bold text-[#2A0845] mb-3 block">Fulfillment Method</label>
                 <div className="flex gap-2">
-                  <button onClick={() => setOrderType('shipping')} className={`flex-1 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-1 border transition-all ${orderType === 'shipping' ? 'border-[#08183A] bg-[#08183A]/5 text-[#08183A]' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
+                  <button onClick={() => setOrderType('shipping')} className={`flex-1 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-1 border transition-all ${orderType === 'shipping' ? 'border-[#2A0845] bg-[#2A0845]/5 text-[#2A0845]' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
                     <Truck className="w-5 h-5" />
                     <span className="text-xs font-bold">Shipping</span>
                   </button>
-                  <button onClick={() => setOrderType('pickup')} className={`flex-1 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-1 border transition-all ${orderType === 'pickup' ? 'border-[#08183A] bg-[#08183A]/5 text-[#08183A]' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
+                  <button onClick={() => setOrderType('pickup')} className={`flex-1 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-1 border transition-all ${orderType === 'pickup' ? 'border-[#2A0845] bg-[#2A0845]/5 text-[#2A0845]' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
                     <Store className="w-5 h-5" />
                     <span className="text-xs font-bold">Pickup</span>
                   </button>
@@ -616,19 +616,19 @@ export function AdminCreateOrderPage() {
 
               {/* Payment Method */}
               <div>
-                <label className="text-sm font-bold text-[#08183A] mb-3 block">Payment Method</label>
+                <label className="text-sm font-bold text-[#2A0845] mb-3 block">Payment Method</label>
                 <div className="flex flex-col gap-2">
                   <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
-                    <input type="radio" name="paymentMethod" value="offline" checked={paymentMethod === 'offline'} onChange={() => setPaymentMethod('offline')} className="w-4 h-4 accent-[#08183A]" />
+                    <input type="radio" name="paymentMethod" value="offline" checked={paymentMethod === 'offline'} onChange={() => setPaymentMethod('offline')} className="w-4 h-4 accent-[#2A0845]" />
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-[#08183A]">Offline / Cash</span>
+                      <span className="text-sm font-bold text-[#2A0845]">Offline / Cash</span>
                       <span className="text-[10px] text-gray-500">Mark as paid immediately</span>
                     </div>
                   </label>
                   <label className="flex items-center gap-3 p-3 border border-gray-200 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
-                    <input type="radio" name="paymentMethod" value="payment_link" checked={paymentMethod === 'payment_link'} onChange={() => setPaymentMethod('payment_link')} className="w-4 h-4 accent-[#08183A]" />
+                    <input type="radio" name="paymentMethod" value="payment_link" checked={paymentMethod === 'payment_link'} onChange={() => setPaymentMethod('payment_link')} className="w-4 h-4 accent-[#2A0845]" />
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-[#08183A]">Send Payment Link</span>
+                      <span className="text-sm font-bold text-[#2A0845]">Send Payment Link</span>
                       <span className="text-[10px] text-gray-500">Customer pays via email link</span>
                     </div>
                   </label>
@@ -641,28 +641,28 @@ export function AdminCreateOrderPage() {
 
         {/* Right Column: Summary */}
         <div className="lg:col-span-1">
-          <div className="bg-[#FDF8F0] rounded-3xl p-6 border border-[#08183A]/5 sticky top-24">
-            <h3 className="font-serif text-xl font-bold text-[#08183A] mb-6 flex items-center gap-2">
+          <div className="bg-[#FAF6F0] rounded-3xl p-6 border border-[#2A0845]/5 sticky top-24">
+            <h3 className="font-serif text-xl font-bold text-[#2A0845] mb-6 flex items-center gap-2">
               <ShoppingBag className="w-5 h-5" /> Order Summary
             </h3>
             
             <div className="space-y-4 mb-6">
-              <div className="flex justify-between text-sm text-[#08183A]/70">
+              <div className="flex justify-between text-sm text-[#2A0845]/70">
                 <span>Items ({cart.reduce((a,c)=>a+c.qty,0)})</span>
-                <span className="font-bold text-[#08183A]">${subtotal.toFixed(2)}</span>
+                <span className="font-bold text-[#2A0845]">₹{subtotal.toFixed(2)}</span>
               </div>
               
               {/* Discount Override */}
               <div className="border-t border-gray-200/50 pt-4">
-                <label className="text-xs font-bold text-[#08183A] mb-2 block">Discount Amount</label>
+                <label className="text-xs font-bold text-[#2A0845] mb-2 block">Discount Amount</label>
                 <div className="flex gap-2">
-                  <select value={discountType} onChange={e => setDiscountType(e.target.value)} className="bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:border-[#08183A] font-bold text-[#08183A]">
-                    <option value="amount">$</option>
+                  <select value={discountType} onChange={e => setDiscountType(e.target.value)} className="bg-white border border-gray-200 rounded-lg px-2 py-1.5 text-sm focus:outline-none focus:border-[#2A0845] font-bold text-[#2A0845]">
+                    <option value="amount">₹</option>
                     <option value="percentage">%</option>
                   </select>
-                  <input type="number" min="0" value={discountValue} onChange={e => setDiscountValue(e.target.value)} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#08183A]" />
+                  <input type="number" min="0" value={discountValue} onChange={e => setDiscountValue(e.target.value)} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#2A0845]" />
                 </div>
-                <input type="text" placeholder="Coupon Code (Optional)" value={couponCode} onChange={e => setCouponCode(e.target.value)} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#08183A] mt-2" />
+                <input type="text" placeholder="Coupon Code (Optional)" value={couponCode} onChange={e => setCouponCode(e.target.value)} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#2A0845] mt-2" />
               </div>
 
               {/* Shipping Options & Override */}
@@ -670,24 +670,24 @@ export function AdminCreateOrderPage() {
                 <div className="border-t border-gray-200/50 pt-4 space-y-3">
                   <div className="flex flex-col gap-2">
                     <label className="flex items-center gap-2 text-xs font-bold text-gray-700 cursor-pointer">
-                      <input type="checkbox" checked={signatureRequired} onChange={e => setSignatureRequired(e.target.checked)} className="accent-[#08183A]" />
+                      <input type="checkbox" checked={signatureRequired} onChange={e => setSignatureRequired(e.target.checked)} className="accent-[#2A0845]" />
                       Signature Confirmation (+$6.00)
                     </label>
                     <label className="flex items-center gap-2 text-xs font-bold text-gray-700 cursor-pointer">
-                      <input type="checkbox" checked={shippingInsurance} onChange={e => setShippingInsurance(e.target.checked)} className="accent-[#08183A]" />
+                      <input type="checkbox" checked={shippingInsurance} onChange={e => setShippingInsurance(e.target.checked)} className="accent-[#2A0845]" />
                       Shipping Insurance (+1.5%)
                     </label>
                   </div>
                   
                   <div className="border-t border-gray-100 pt-2 flex items-center justify-between mb-2">
-                    <label className="text-xs font-bold text-[#08183A] flex items-center gap-1.5">
-                      <input type="checkbox" checked={manualShipping} onChange={e => setManualShipping(e.target.checked)} className="accent-[#08183A]" />
+                    <label className="text-xs font-bold text-[#2A0845] flex items-center gap-1.5">
+                      <input type="checkbox" checked={manualShipping} onChange={e => setManualShipping(e.target.checked)} className="accent-[#2A0845]" />
                       Override Shipping Fee
                     </label>
-                    {!manualShipping && <span className="text-xs font-bold text-gray-500">${calculatedShipping.toFixed(2)} (Auto)</span>}
+                    {!manualShipping && <span className="text-xs font-bold text-gray-500">₹{calculatedShipping.toFixed(2)} (Auto)</span>}
                   </div>
                   {manualShipping && (
-                    <input type="number" min="0" value={shippingFee} onChange={e => setShippingFee(e.target.value)} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#08183A]" placeholder="0.00" />
+                    <input type="number" min="0" value={shippingFee} onChange={e => setShippingFee(e.target.value)} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#2A0845]" placeholder="0.00" />
                   )}
                 </div>
               )}
@@ -695,18 +695,18 @@ export function AdminCreateOrderPage() {
               {/* Tax Override */}
               <div className="border-t border-gray-200/50 pt-4">
                 <div className="flex items-center justify-between mb-2">
-                  <label className="text-xs font-bold text-[#08183A] flex items-center gap-1.5">
-                    <input type="checkbox" checked={manualTax} onChange={e => setManualTax(e.target.checked)} className="accent-[#08183A]" />
+                  <label className="text-xs font-bold text-[#2A0845] flex items-center gap-1.5">
+                    <input type="checkbox" checked={manualTax} onChange={e => setManualTax(e.target.checked)} className="accent-[#2A0845]" />
                     Override Tax Amount (Flat $)
                   </label>
-                  {!manualTax && <span className="text-xs font-bold text-gray-500">${calculatedTax.toFixed(2)} (Auto {taxAmount}%)</span>}
+                  {!manualTax && <span className="text-xs font-bold text-gray-500">₹{calculatedTax.toFixed(2)} (Auto {taxAmount}%)</span>}
                 </div>
                 {manualTax ? (
-                  <input type="number" min="0" value={taxAmount} onChange={e => setTaxAmount(e.target.value)} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#08183A]" placeholder="0.00" />
+                  <input type="number" min="0" value={taxAmount} onChange={e => setTaxAmount(e.target.value)} className="w-full bg-white border border-gray-200 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-[#2A0845]" placeholder="0.00" />
                 ) : (
                   <div className="flex items-center gap-2">
                     <span className="text-xs text-gray-500">Auto Tax Rate:</span>
-                    <div className="flex items-center bg-white border border-gray-200 rounded-lg px-2 text-sm focus-within:border-[#08183A]">
+                    <div className="flex items-center bg-white border border-gray-200 rounded-lg px-2 text-sm focus-within:border-[#2A0845]">
                       <input type="number" min="0" value={taxAmount} onChange={e => setTaxAmount(e.target.value)} className="w-16 py-1.5 focus:outline-none text-right" />
                       <span className="text-gray-500 ml-1">%</span>
                     </div>
@@ -714,11 +714,11 @@ export function AdminCreateOrderPage() {
                 )}
               </div>
 
-              <div className="border-t border-[#08183A]/20 pt-4 flex justify-between items-end">
-                <span className="font-bold text-[#08183A]">Total</span>
+              <div className="border-t border-[#2A0845]/20 pt-4 flex justify-between items-end">
+                <span className="font-bold text-[#2A0845]">Total</span>
                 <div className="text-right">
                   <span className="text-xs text-gray-500 block mb-0.5">USD</span>
-                  <span className="font-serif text-3xl font-bold text-[#08183A]">${total.toFixed(2)}</span>
+                  <span className="font-serif text-3xl font-bold text-[#2A0845]">₹{total.toFixed(2)}</span>
                 </div>
               </div>
             </div>
@@ -726,7 +726,7 @@ export function AdminCreateOrderPage() {
             <button 
               onClick={handleSubmit}
               disabled={submitting || cart.length === 0}
-              className="w-full bg-[#08183A] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#122A5C] transition-colors disabled:opacity-50 active:scale-[0.98]"
+              className="w-full bg-[#2A0845] text-white py-4 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#122A5C] transition-colors disabled:opacity-50 active:scale-[0.98]"
             >
               {submitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle2 className="w-5 h-5" />}
               {submitting ? 'Creating Order...' : 'Place Manual Order'}

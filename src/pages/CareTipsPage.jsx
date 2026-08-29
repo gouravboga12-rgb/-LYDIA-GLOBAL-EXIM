@@ -3,10 +3,10 @@ import { Header } from '../components/Header';
 
 export function CareTipsPage() {
   return (
-    <div className="bg-[#FDF8F0] min-h-screen flex flex-col">
+    <div className="bg-[#FAF6F0] min-h-screen flex flex-col">
       <Header />
       <div className="flex-grow max-w-4xl mx-auto w-full px-6 py-12 md:py-20 flex flex-col items-center">
-        <h1 className="font-serif text-3xl md:text-5xl text-[#08183A] font-bold mb-6 text-center">
+        <h1 className="font-serif text-3xl md:text-5xl text-[#2A0845] font-bold mb-6 text-center">
           Jewelry Care Tips
         </h1>
         <p className="text-gray-600 text-center max-w-2xl mx-auto mb-12">

@@ -83,7 +83,7 @@ export function ShippoConfigModal({ order, onClose, onSubmit }) {
         >
           <div className="flex justify-between items-center p-5 border-b border-gray-100 bg-gray-50 shrink-0">
             <div>
-              <h2 className="text-xl font-bold text-[#08183A]">Configure Shippo Label</h2>
+              <h2 className="text-xl font-bold text-[#2A0845]">Configure Shippo Label</h2>
               <p className="text-xs text-gray-500 mt-1">Order #{order.order_number} • {address.name}</p>
             </div>
             <button type="button" onClick={onClose} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
@@ -96,7 +96,7 @@ export function ShippoConfigModal({ order, onClose, onSubmit }) {
             <div className="space-y-4">
               <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
                 <Box className="w-4 h-4 text-[#D4AF37]" />
-                <h3 className="font-bold text-[#08183A] text-sm">Package Dimensions & Weight</h3>
+                <h3 className="font-bold text-[#2A0845] text-sm">Package Dimensions & Weight</h3>
               </div>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -136,11 +136,11 @@ export function ShippoConfigModal({ order, onClose, onSubmit }) {
             <div className="space-y-4">
               <div className="flex items-center gap-2 border-b border-gray-100 pb-2">
                 <ShieldCheck className="w-4 h-4 text-[#D4AF37]" />
-                <h3 className="font-bold text-[#08183A] text-sm">Extra Services</h3>
+                <h3 className="font-bold text-[#2A0845] text-sm">Extra Services</h3>
               </div>
               
               <label className="flex items-start gap-3 cursor-pointer">
-                <input type="checkbox" checked={signatureRequired} onChange={e => setSignatureRequired(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#08183A] rounded" />
+                <input type="checkbox" checked={signatureRequired} onChange={e => setSignatureRequired(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#2A0845] rounded" />
                 <div>
                   <span className="text-sm font-bold text-gray-800">Signature Confirmation</span>
                   <p className="text-[10px] text-gray-500">Require a signature upon delivery.</p>
@@ -149,7 +149,7 @@ export function ShippoConfigModal({ order, onClose, onSubmit }) {
 
               <div className="pt-2">
                 <label className="flex items-start gap-3 cursor-pointer">
-                  <input type="checkbox" checked={insuranceRequested} onChange={e => setInsuranceRequested(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#08183A] rounded" />
+                  <input type="checkbox" checked={insuranceRequested} onChange={e => setInsuranceRequested(e.target.checked)} className="mt-0.5 w-4 h-4 accent-[#2A0845] rounded" />
                   <div>
                     <span className="text-sm font-bold text-gray-800">Shipping Insurance</span>
                   </div>
@@ -169,7 +169,7 @@ export function ShippoConfigModal({ order, onClose, onSubmit }) {
               <div className="space-y-4 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
                 <div className="flex items-center gap-2 border-b border-blue-200 pb-2">
                   <Globe className="w-4 h-4 text-blue-600" />
-                  <h3 className="font-bold text-[#08183A] text-sm">Customs Declaration (International)</h3>
+                  <h3 className="font-bold text-[#2A0845] text-sm">Customs Declaration (International)</h3>
                 </div>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -205,7 +205,7 @@ export function ShippoConfigModal({ order, onClose, onSubmit }) {
               <button type="button" onClick={onClose} className="px-4 py-2 text-sm font-bold text-gray-600 hover:bg-gray-100 rounded-lg transition-colors">
                 Cancel
               </button>
-              <button type="submit" className="px-6 py-2 bg-[#08183A] text-[#D4AF37] font-bold text-sm rounded-lg hover:bg-[#06122a] transition-all shadow-md">
+              <button type="submit" className="px-6 py-2 bg-[#2A0845] text-[#D4AF37] font-bold text-sm rounded-lg hover:bg-[#06122a] transition-all shadow-md">
                 Fetch Rates
               </button>
             </div>

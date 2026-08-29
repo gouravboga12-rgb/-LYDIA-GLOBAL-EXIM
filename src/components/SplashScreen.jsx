@@ -91,20 +91,17 @@ export function SplashScreen({ onComplete }) {
         <div className="w-24 h-24 md:w-32 md:h-32 bg-black rounded-full flex items-center justify-center border border-[#D4AF37]/30 shadow-[0_0_40px_rgba(212,175,55,0.2)] mb-4 p-2">
           <img
             src={logoImg}
-            alt="Houra Jewels Logo"
+            alt="LYDIA GLOBAL EXIM Logo"
             className="w-full h-full object-contain"
           />
         </div>
         <div className="flex flex-col items-center">
           <span className="font-serif font-bold text-2xl md:text-4xl tracking-[0.15em] text-[#D4AF37] whitespace-nowrap">
-            HOURA JEWELS
-          </span>
-          <span className="text-white text-xs md:text-sm tracking-[0.3em] mt-2 uppercase font-medium">
-            By S & M
+            LYDIA GLOBAL EXIM
           </span>
           <span className="text-white text-sm md:text-base tracking-[0.15em] mt-3 font-bold" style={{ fontFamily: 'serif', letterSpacing: '0.08em' }}>
-            Wear it once,{' '}
-            <span className="text-[#D4AF37]">love it forever</span>
+            Excellence &{' '}
+            <span className="text-[#D4AF37]">Premium Quality</span>
           </span>
         </div>
       </div>

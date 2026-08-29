@@ -344,12 +344,10 @@ export function ProductDetailPage() {
 
             <div className="animate-info">
               <div className="flex items-baseline gap-3">
-                <span className="text-4xl md:text-5xl font-bold text-brand-dark-blue">
-                  ${displayPrice.toLocaleString()}
+                <span className="text-4xl md:text-5xl font-bold text-brand-dark-blue">₹{displayPrice.toLocaleString()}
                 </span>
                 {(activeOffer || currentMrp > currentOurPrice) && (
-                  <span className="text-xl md:text-2xl font-bold text-gray-400 line-through">
-                    ${currentMrp.toLocaleString()}
+                  <span className="text-xl md:text-2xl font-bold text-gray-400 line-through">₹{currentMrp.toLocaleString()}
                   </span>
                 )}
               </div>
@@ -366,30 +364,6 @@ export function ProductDetailPage() {
                 </p>
               )}
             </div>
-
-            {(product.instagram_reel_url || selectedVariant?.instagram_link) && (
-              <div 
-                onClick={() => window.open(product.instagram_reel_url || selectedVariant?.instagram_link, '_blank', 'noopener,noreferrer')}
-                className="animate-info mt-6 cursor-pointer group relative overflow-hidden rounded-2xl border border-pink-100 bg-gradient-to-r from-pink-50/50 to-white shadow-sm hover:shadow-md transition-all duration-300"
-              >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-[#E1306C]/10 to-[#833AB4]/5 rounded-full blur-2xl -mr-10 -mt-10 group-hover:scale-150 transition-transform duration-700"></div>
-                <div className="p-4 md:p-5 flex items-center justify-between relative z-10">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-sm border border-pink-100 group-hover:scale-110 transition-transform duration-300">
-                      <InstagramIcon className="w-6 h-6 text-[#E1306C]" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-brand-dark-blue text-sm md:text-base group-hover:text-[#E1306C] transition-colors">See how it looks in real life</h3>
-                      <p className="text-gray-500 text-xs md:text-sm mt-0.5">Watch our Instagram Reel</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-1.5 text-[#E1306C] font-bold text-xs md:text-sm bg-white px-4 py-2 rounded-full shadow-sm group-hover:bg-gradient-to-r group-hover:from-[#E1306C] group-hover:to-[#C13584] group-hover:text-white transition-all duration-300">
-                    <PlayCircle className="w-4 h-4" />
-                    <span>Watch</span>
-                  </div>
-                </div>
-              </div>
-            )}
 
 
             {/* <div className="animate-info">
@@ -447,9 +421,9 @@ export function ProductDetailPage() {
                           } ${isSzOutOfStock ? 'opacity-60' : ''}`}
                         >
                           <span className={`font-bold text-base ${isSelected ? 'text-brand-dark-blue' : 'text-brand-dark-blue/80'}`}>{sizeObj.size}</span>
-                          <span className={`font-bold mt-1 ${isSelected ? 'text-brand-gold' : 'text-brand-dark-blue/50'}`}>${displaySzPrice}</span>
+                          <span className={`font-bold mt-1 ${isSelected ? 'text-brand-gold' : 'text-brand-dark-blue/50'}`}>₹{displaySzPrice}</span>
                           {(szMrp > szOur || activeOffer) && (
-                            <span className="text-[10px] line-through text-gray-400">${szMrp}</span>
+                            <span className="text-[10px] line-through text-gray-400">₹{szMrp}</span>
                           )}
                           {isSzOutOfStock ? (
                             <span className="absolute top-1 right-1 text-[8px] bg-red-100 text-red-600 font-bold px-1.5 py-0.5 rounded">Sold Out</span>
@@ -604,8 +578,41 @@ export function ProductDetailPage() {
                 })()}
 
                 {activeTab === 'care' && (
-                  <div className="flex justify-center p-2">
-                    <img src="/images/inst.png" alt="Jewelry Care Tips" className="max-w-full h-auto rounded-lg shadow-sm" />
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs md:text-sm">
+                      <div className="p-3 bg-[#FAF6F0] rounded-xl border border-brand-gold/20 flex items-start gap-2.5">
+                        <span className="text-base">🧴</span>
+                        <div>
+                          <strong className="text-brand-dark-blue block font-bold">Avoid Sprays & Perfumes</strong>
+                          <span className="text-gray-600">Always wear your jewelry after applying makeup, lotions, and perfumes.</span>
+                        </div>
+                      </div>
+                      <div className="p-3 bg-[#FAF6F0] rounded-xl border border-brand-gold/20 flex items-start gap-2.5">
+                        <span className="text-base">💧</span>
+                        <div>
+                          <strong className="text-brand-dark-blue block font-bold">Keep Away from Moisture</strong>
+                          <span className="text-gray-600">Remove jewelry before bathing, showering, swimming, or workouts.</span>
+                        </div>
+                      </div>
+                      <div className="p-3 bg-[#FAF6F0] rounded-xl border border-brand-gold/20 flex items-start gap-2.5">
+                        <span className="text-base">✨</span>
+                        <div>
+                          <strong className="text-brand-dark-blue block font-bold">Wipe After Wear</strong>
+                          <span className="text-gray-600">Gently clean with a soft, dry micro-fiber cloth to preserve the polish.</span>
+                        </div>
+                      </div>
+                      <div className="p-3 bg-[#FAF6F0] rounded-xl border border-brand-gold/20 flex items-start gap-2.5">
+                        <span className="text-base">📦</span>
+                        <div>
+                          <strong className="text-brand-dark-blue block font-bold">Airtight Storage</strong>
+                          <span className="text-gray-600">Store individually in dry zip-lock pouches or velvet jewelry boxes.</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex justify-center p-2 pt-2 border-t border-gray-100">
+                      <img src="/images/inst.png" alt="Jewelry Care Tips" className="max-w-full h-auto rounded-lg shadow-sm" />
+                    </div>
                   </div>
                 )}
               </div>

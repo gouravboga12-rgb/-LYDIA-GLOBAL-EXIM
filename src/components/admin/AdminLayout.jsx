@@ -35,7 +35,7 @@ export function AdminLayout({ children }) {
     const token = localStorage.getItem("token");
     if (!token) {
       // Mocking admin login for demo purposes based on requirements
-      setAdmin({ name: "Admin User", email: "admin@hourajewels.com" });
+      setAdmin({ name: "Admin User", email: "admin@lydiaglobalexim.com" });
       return;
     }
 
@@ -54,22 +54,22 @@ export function AdminLayout({ children }) {
   };
 
   if (!admin) return (
-    <div className="min-h-screen bg-[#FDF8F0] flex items-center justify-center">
-      <div className="w-10 h-10 border-4 border-[#08183A]/20 border-t-[#08183A] rounded-full animate-spin" />
+    <div className="min-h-screen bg-[#FAF6F0] flex items-center justify-center">
+      <div className="w-10 h-10 border-4 border-[#2A0845]/20 border-t-[#2A0845] rounded-full animate-spin" />
     </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#FDF8F0] flex">
+    <div className="min-h-screen bg-[#FAF6F0] flex">
       {/* Mobile Header */}
-      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-[#08183A]/10 px-4 py-3 flex items-center justify-between z-50">
+      <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-[#2A0845]/10 px-4 py-3 flex items-center justify-between z-50">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 relative">
             <img src={image} alt="Admin" className="w-full h-full object-contain" />
           </div>
-          <span className="font-serif font-bold text-[#08183A]">Admin</span>
+          <span className="font-serif font-bold text-[#2A0845]">Admin</span>
         </div>
-        <button onClick={() => setMobileOpen(!mobileOpen)} className="text-[#08183A]">
+        <button onClick={() => setMobileOpen(!mobileOpen)} className="text-[#2A0845]">
           {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
         </button>
       </div>
@@ -80,41 +80,41 @@ export function AdminLayout({ children }) {
       )}
 
       {/* Sidebar */}
-      <aside className={`w-64 bg-white border-r border-[#08183A]/10 flex flex-col fixed h-full z-50 transition-transform ${
+      <aside className={`w-64 bg-white border-r border-[#2A0845]/10 flex flex-col fixed h-full z-50 transition-transform ${
         mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
       }`}>
-        <div className="p-5 border-b border-[#08183A]/10">
+        <div className="p-5 border-b border-[#2A0845]/10">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 relative flex-shrink-0">
               <img src={image} alt="Admin" className="w-full h-full object-contain" />
             </div>
             <div>
-              <p className="font-serif font-bold text-[#08183A] text-sm">Admin Panel</p>
+              <p className="font-serif font-bold text-[#2A0845] text-sm">Admin Panel</p>
               <div className="flex items-center gap-1">
-                <Shield className="w-3 h-3 text-[#08183A]" />
-                <p className="text-[#08183A] text-[10px] font-sans font-semibold">Administrator</p>
+                <Shield className="w-3 h-3 text-[#2A0845]" />
+                <p className="text-[#2A0845] text-[10px] font-sans font-semibold">Administrator</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="p-4 border-b border-[#08183A]/10">
-          <p className="font-sans font-semibold text-[#08183A] text-sm truncate">{admin.name}</p>
-          <p className="text-[#08183A]/40 text-[10px] font-sans truncate">{admin.email}</p>
+        <div className="p-4 border-b border-[#2A0845]/10">
+          <p className="font-sans font-semibold text-[#2A0845] text-sm truncate">{admin.name}</p>
+          <p className="text-[#2A0845]/40 text-[10px] font-sans truncate">{admin.email}</p>
         </div>
 
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
           {NAV.map((item) => (
             <Link key={item.href} to={item.href} onClick={() => setMobileOpen(false)}
               className={`flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sans font-medium transition-colors ${
-                pathname === item.href ? "bg-[#08183A]/10 text-[#08183A]" : "text-[#08183A]/60 hover:text-[#08183A] hover:bg-[#FDF8F0]"
+                pathname === item.href ? "bg-[#2A0845]/10 text-[#2A0845]" : "text-[#2A0845]/60 hover:text-[#2A0845] hover:bg-[#FAF6F0]"
               }`}>
               {item.icon} {item.label}
             </Link>
           ))}
         </nav>
 
-        <div className="p-4 border-t border-[#08183A]/10">
+        <div className="p-4 border-t border-[#2A0845]/10">
           <button onClick={handleLogout}
             className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-sans font-medium text-red-400 hover:text-red-600 hover:bg-red-50 transition-colors w-full">
             <LogOut className="w-4 h-4" /> Logout

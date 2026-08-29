@@ -4,9 +4,9 @@ import { Header } from '../components/Header';
 
 export function AboutPage() {
   const slideshowImages = [
-    "https://images.unsplash.com/photo-1611591437281-460bfbe1220a?auto=format&fit=crop&w=1200&q=80",
-    "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=80",
-    "https://img.magnific.com/free-photo/top-view-gold-chain-jewellery_52683-90080.jpg?semt=ais_hybrid&w=740&q=80"
+    "/images/about_hero.jpg",
+    "/images/about_craft.jpg",
+    "/images/about_model.jpg"
   ];
   const [currentImgIdx, setCurrentImgIdx] = useState(0);
 
@@ -69,30 +69,30 @@ export function AboutPage() {
             className="flex flex-col justify-center space-y-8"
           >
             <div>
-              <h4 className="text-brand-gold font-bold tracking-widest uppercase text-xs md:text-sm mb-3">About Houra Jewels</h4>
+              <h4 className="text-brand-gold font-bold tracking-widest uppercase text-xs md:text-sm mb-3">About LYDIA GLOBAL EXIM</h4>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-brand-dark-blue leading-tight mb-6">
-                Redefining Everyday Luxury
+                Exquisite Imitation & Fashion Jewelry
               </h1>
               <div className="w-20 h-1.5 bg-brand-gold mb-8 rounded-full"></div>
             </div>
             
             <div className="space-y-6 text-brand-dark-blue/80 text-base md:text-lg leading-relaxed">
               <p className="first-letter:text-6xl first-letter:font-serif first-letter:text-brand-gold first-letter:mr-2 first-letter:float-left">
-                Welcome to <strong className="text-brand-dark-blue font-semibold">Houra Jewels</strong>, your premium destination for exquisite fashion jewelry. Operating as an exclusive home-based retail store, we are passionate about bringing you high-quality accessories that blend seamlessly into your daily life.
+                Welcome to <strong className="text-brand-dark-blue font-semibold">LYDIA GLOBAL EXIM</strong>, your premier destination for exquisite <strong className="text-brand-dark-blue font-semibold">Imitation & Fashion Jewelry</strong>. We are dedicated to delivering handcrafted, export-grade pieces that capture the majestic brilliance of luxury jewelry with modern versatility.
               </p>
               
               <p>
-                We specialize in premium <strong className="text-brand-dark-blue font-semibold">Stainless Steel 18K PVD Gold Plated</strong> jewelry. Our carefully curated collections are purposefully designed to be <strong className="text-brand-dark-blue font-semibold">Waterproof, Tarnish-Free, and perfectly suited for Daily Wear</strong>. You no longer have to compromise between elegance and durability.
+                We specialize in premium <strong className="text-brand-dark-blue font-semibold">Imitation Jewelry</strong>, including regal Kundan sets, brilliant AAA+ Cubic Zirconia, handcrafted temple ornaments, and 18K/22K micro-gold plated collections. Each piece is meticulously sealed with <strong className="text-brand-dark-blue font-semibold">Anti-Tarnish and Hypoallergenic</strong> protective finishes, giving you unmatched shine, skin-safe comfort, and long-lasting durability.
               </p>
               
               <p>
-                While our collections predominantly cater to women who seek timeless elegance, we also offer an exclusive selection of men's jewelry. Every piece we offer is a testament to our commitment to quality, ensuring that your favorite accessories remain as vibrant and radiant as the day you first wore them.
+                Whether you are curating a grand bridal ensemble, preparing for festive gatherings, or adding everyday glamour to your wardrobe, our imitation jewelry collections are designed to elevate your personal style with effortless luxury.
               </p>
             </div>
             
             <div className="pt-8 border-t border-brand-gold/20">
               <p className="font-serif italic text-2xl md:text-3xl text-brand-dark-blue">
-                "Waterproof. Tarnish Free. Made for your Everyday."
+                "Grandeur in Every Detail. Handcrafted Imitation Jewelry for the World."
               </p>
             </div>
           </motion.div>
@@ -104,8 +104,8 @@ export function AboutPage() {
       <div className="bg-white py-16 md:py-24">
         <div className="px-4 md:px-24">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark-blue mb-4">The Houra Promise</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">We are committed to providing you with premium, skin-safe, and durable jewelry that you can trust every single day.</p>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark-blue mb-4">The LYDIA GLOBAL EXIM Promise</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">Committed to premium artisan craftsmanship, skin-safe metallurgy, and certified export-grade imitation jewelry.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -121,7 +121,7 @@ export function AboutPage() {
                 </svg>
               </div>
               <h3 className="font-bold text-brand-dark-blue text-xl mb-3">100% Hypoallergenic</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Our stainless steel core is completely skin-safe, lead-free, and nickel-free. Perfect for sensitive skin.</p>
+              <p className="text-gray-600 text-sm leading-relaxed">Our jeweler-grade brass and copper alloys are 100% nickel-free and lead-free, ensuring comfort for sensitive skin.</p>
             </motion.div>
 
             <motion.div 
@@ -136,8 +136,8 @@ export function AboutPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
                 </svg>
               </div>
-              <h3 className="font-bold text-brand-dark-blue text-xl mb-3">Premium Stainless Steel Plating</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Advanced PVD (Physical Vapor Deposition) technology ensures our 18K gold finish lasts 10x longer than standard plating.</p>
+              <h3 className="font-bold text-brand-dark-blue text-xl mb-3">Anti-Tarnish Micro-Plating</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">Advanced multi-layer electroplating and protective lacquer shield our pieces against moisture, sweat, and tarnishing.</p>
             </motion.div>
 
             <motion.div 
@@ -152,8 +152,8 @@ export function AboutPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                 </svg>
               </div>
-              <h3 className="font-bold text-brand-dark-blue text-xl mb-3">Certified Quality</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">Shop with absolute confidence. Every piece is rigorously inspected to meet our strict quality and durability standards.</p>
+              <h3 className="font-bold text-brand-dark-blue text-xl mb-3">Export-Grade Quality</h3>
+              <p className="text-gray-600 text-sm leading-relaxed">Every item is rigorously inspected by master artisans to deliver international standard finish, stone setting, and durability.</p>
             </motion.div>
           </div>
         </div>
@@ -168,16 +168,16 @@ export function AboutPage() {
             viewport={{ once: true }}
             className="order-2 lg:order-1"
           >
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark-blue mb-6">Crafted for Real Life</h2>
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-dark-blue mb-6">Artistry Meets Modern Glamour</h2>
             <div className="w-16 h-1 bg-brand-gold mb-8 rounded-full"></div>
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
-              We started Houra Jewels because we were tired of buying beautiful jewelry that turned green after a few washes, or tarnished within a month. 
+              At LYDIA GLOBAL EXIM, we celebrate the timeless beauty of Indian imitation jewelry while embracing modern international fashion aesthetics.
             </p>
             <p className="text-gray-600 text-lg leading-relaxed mb-6">
-              By utilizing medical-grade stainless steel paired with a PVD gold-plating method, we created a lineup of ethical, skin-safe accessories that you can wear in the shower, at the gym, and to sleep without a second thought.
+              By combining jeweler-grade alloy casting, authentic Kundan craftsmanship, and advanced anti-tarnish micro-coating, we make opulent royal styling accessible, lightweight, and skin-friendly for our global customers.
             </p>
             <ul className="space-y-3 mt-8">
-              {['Water, Sweat & Heat Resistant', 'Zero Green Skin Guarantee', 'Sustainable & Ethical Production', 'Secure, Fast Shipping'].map((item, i) => (
+              {['Premium Handcrafted Imitation Jewelry', 'Anti-Tarnish & Sweat Resistant Polish', '100% Skin-Safe & Hypoallergenic', 'Secure Global Export Packaging'].map((item, i) => (
                 <li key={i} className="flex items-center gap-3 text-brand-dark-blue font-semibold">
                   <svg className="w-5 h-5 text-brand-gold" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
@@ -196,10 +196,10 @@ export function AboutPage() {
           >
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-4 pt-12">
-                <img src="https://images.pexels.com/photos/177332/pexels-photo-177332.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Gold Rings" className="w-full rounded-2xl shadow-lg border border-brand-gold/20" />
+                <img src="/images/about_craft.jpg" alt="Artisan Imitation Jewelry" className="w-full aspect-[3/4] object-cover rounded-2xl shadow-lg border border-brand-gold/20" />
               </div>
               <div className="space-y-4">
-                <img src="https://images.pexels.com/photos/2735970/pexels-photo-2735970.jpeg?auto=compress&cs=tinysrgb&w=800" alt="Wearing Jewelry" className="w-full rounded-2xl shadow-lg border border-brand-gold/20" />
+                <img src="/images/about_model.jpg" alt="Elegance in Imitation Jewelry" className="w-full aspect-[3/4] object-cover rounded-2xl shadow-lg border border-brand-gold/20" />
               </div>
             </div>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-2xl border-4 border-brand-beige">

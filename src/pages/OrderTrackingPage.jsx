@@ -23,7 +23,7 @@ export function OrderTrackingPage() {
 
     // Fire confetti
     const end = Date.now() + 1.5 * 1000;
-    const colors = ['#08183A', '#7D2A2A', '#ffffff'];
+    const colors = ['#2A0845', '#7D2A2A', '#ffffff'];
 
     (function frame() {
       confetti({
@@ -70,7 +70,7 @@ export function OrderTrackingPage() {
           className="text-center space-y-3 mb-10"
         >
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900">Order Placed Successfully!</h1>
-          <p className="text-gray-500 text-sm md:text-base">Thank you for placing your order with Houra Jewels. We're delighted to begin preparing your selection and will keep you updated throughout its journey to you.</p>
+          <p className="text-gray-500 text-sm md:text-base">Thank you for placing your order with LYDIA GLOBAL EXIM. We're delighted to begin preparing your selection and will keep you updated throughout its journey to you.</p>
         </motion.div>
 
         <motion.div 
@@ -85,7 +85,7 @@ export function OrderTrackingPage() {
             <div className="flex items-center justify-between border-b border-gray-100 pb-5">
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Order Number</p>
-                <p className="text-lg font-bold text-[#08183A]">#{orderId}</p>
+                <p className="text-lg font-bold text-[#2A0845]">#{orderId}</p>
               </div>
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold ${
                 order?.order_type === 'pickup' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'
@@ -110,8 +110,7 @@ export function OrderTrackingPage() {
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">
                   {order?.payment_method === 'cod' && !order?.stripe_payment_intent_id ? 'Amount Pending' : 'Total Amount Received'}
                 </p>
-                <p className="text-sm font-bold text-brand-gold">
-                  ${parseFloat(order?.payment_method === 'cod' && !order?.stripe_payment_intent_id ? (order.total - (order.advance_paid || 0)) : (order?.total || 0)).toFixed(2)}
+                <p className="text-sm font-bold text-brand-gold">₹{parseFloat(order?.payment_method === 'cod' && !order?.stripe_payment_intent_id ? (order.total - (order.advance_paid || 0)) : (order?.total || 0)).toFixed(2)}
                 </p>
               </div>
             </div>
@@ -165,7 +164,7 @@ export function OrderTrackingPage() {
                         )}
                       </div>
                     </div>
-                    <p className="text-sm font-bold text-gray-800 shrink-0">${Number(item.variant?.price || item.product?.price || item.price || 0).toFixed(2)}</p>
+                    <p className="text-sm font-bold text-gray-800 shrink-0">₹{Number(item.variant?.price || item.product?.price || item.price || 0).toFixed(2)}</p>
                   </div>
                 ))}
               </div>
@@ -179,7 +178,7 @@ export function OrderTrackingPage() {
                   <div>
                     <p className="text-sm font-bold text-blue-800">Pickup Notification</p>
                     <p className="text-xs text-blue-700 mt-1 leading-relaxed">
-                      Once your order is ready, our team will message you for pickup via <strong>WhatsApp/Text message</strong> from <strong>+1 940-465-6563</strong>
+                      Once your order is ready, our team will message you for pickup via <strong>WhatsApp/Text message</strong> from <strong>+91 9014863411</strong>
                     </p>
                   </div>
                 </div>

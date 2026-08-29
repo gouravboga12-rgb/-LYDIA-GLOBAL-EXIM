@@ -327,7 +327,7 @@ export function PhoneInput({ value = '', onChange, className = '', inputClassNam
             {filtered.map(c => (
               <li key={c.iso}>
                 <button type="button" onClick={() => handleSelect(c)}
-                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors text-left ${isoCode === c.iso ? 'bg-brand-gold/10 font-bold text-[#08183A]' : 'text-gray-700'}`}>
+                  className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm hover:bg-gray-50 transition-colors text-left ${isoCode === c.iso ? 'bg-brand-gold/10 font-bold text-[#2A0845]' : 'text-gray-700'}`}>
                   <span className="text-base shrink-0">{String.fromCodePoint(...[...c.iso].map(ch => 0x1F1E6 - 65 + ch.charCodeAt(0)))}</span>
                   <span className="flex-1 truncate">{c.name}</span>
                   <span className="text-gray-400 shrink-0">+{c.code}</span>

@@ -1,0 +1,16 @@
+[
+  {
+    "id": 1,
+    "title": "Royal Kundan & Imitation Jewelry",
+    "subtitle": "Handcrafted for weddings, celebrations & festive elegance.",
+    "image_url": "/images/about_hero.jpg",
+    "link_url": "/category/all"
+  },
+  {
+    "id": 2,
+    "title": "Anti-Tarnish Daily Luxury",
+    "subtitle": "18K Micro Gold & Rhodium Plated Sets with AAA+ Zircon Crystals.",
+    "image_url": "/images/about_craft.jpg",
+    "link_url": "/category/all"
+  }
+]

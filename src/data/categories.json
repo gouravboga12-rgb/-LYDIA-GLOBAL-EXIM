@@ -1,0 +1,67 @@
+[
+  {
+    "id": 1,
+    "name": "Necklaces",
+    "models": [
+      "Back Beads"
+    ],
+    "image_url": "/images/necklace.png",
+    "created_at": "2026-07-22T19:43:23.068Z"
+  },
+  {
+    "id": 2,
+    "name": "Earrings",
+    "models": [],
+    "image_url": "/images/earrings.png",
+    "created_at": "2026-07-22T19:43:24.219Z"
+  },
+  {
+    "id": 3,
+    "name": "Rings",
+    "models": [],
+    "image_url": "/images/rings.png",
+    "created_at": "2026-07-22T19:43:25.343Z"
+  },
+  {
+    "id": 4,
+    "name": "Bracelets",
+    "models": [],
+    "image_url": "/images/bracelets.png",
+    "created_at": "2026-07-22T19:43:26.347Z"
+  },
+  {
+    "id": 5,
+    "name": "Bangles",
+    "models": [],
+    "image_url": "/images/bangles.png",
+    "created_at": "2026-07-22T19:43:28.113Z"
+  },
+  {
+    "id": 6,
+    "name": "Pendants",
+    "models": [],
+    "image_url": "/images/pendants.png",
+    "created_at": "2026-07-22T19:43:30.568Z"
+  },
+  {
+    "id": 7,
+    "name": "Mangalsutras",
+    "models": [],
+    "image_url": "/images/mangalsutras.png",
+    "created_at": "2026-07-22T19:43:32.472Z"
+  },
+  {
+    "id": 8,
+    "name": "Chains",
+    "models": [],
+    "image_url": "/images/chains.png",
+    "created_at": "2026-07-22T19:43:34.063Z"
+  },
+  {
+    "id": 9,
+    "name": "Jewelry Sets",
+    "models": [],
+    "image_url": "/images/jewelry_sets.png",
+    "created_at": "2026-07-22T19:43:34.348Z"
+  }
+]

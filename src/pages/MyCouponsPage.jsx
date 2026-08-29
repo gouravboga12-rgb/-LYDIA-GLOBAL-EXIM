@@ -83,7 +83,7 @@ export function MyCouponsPage() {
                   </div>
                   
                   <h3 className="font-serif text-3xl font-bold text-brand-dark-blue mb-2">
-                    {coupon.discount_type === 'percentage' ? `${coupon.discount_value}% OFF` : `$${coupon.discount_value} OFF`}
+                    {coupon.discount_type === 'percentage' ? `${coupon.discount_value}% OFF` : `₹${coupon.discount_value} OFF`}
                   </h3>
                   
                   <div className="space-y-1.5 text-sm text-brand-dark-blue/60 mb-6">
@@ -92,7 +92,7 @@ export function MyCouponsPage() {
                       <span className="font-semibold text-brand-dark-blue">
                         {coupon.min_type === 'qty'
                           ? `${coupon.min_qty || 0} item(s)`
-                          : `$${coupon.min_order_value}`}
+                          : `₹${coupon.min_order_value}`}
                       </span>
                     </p>
                     <p>

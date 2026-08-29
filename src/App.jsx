@@ -122,7 +122,7 @@ function App() {
 
       {/* Global WhatsApp floating button */}
       <a
-        href="https://wa.me/19404656563"
+        href="https://wa.me/919014863411"
         target="_blank"
         rel="noopener noreferrer"
         aria-label="Chat on WhatsApp"

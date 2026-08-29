@@ -163,7 +163,7 @@ function DesktopFullHeader({ cartCount, wishlistCount, token, user, handleLogout
   return (
     <>
       {announcement && announcement.is_active && announcement.items?.some(i => i.text) && (
-        <div className="hidden md:block bg-[#D4AF37] text-[#08183A] text-xs font-bold py-2 w-full fixed top-0 z-[60] overflow-hidden">
+        <div className="hidden md:block bg-[#D4AF37] text-[#2A0845] text-xs font-bold py-2 w-full fixed top-0 z-[60] overflow-hidden">
           <div className="animate-marquee">
             {[0, 1].map(copy => (
               <div key={copy} className="flex items-center" style={{minWidth:'50%'}}>
@@ -188,11 +188,10 @@ function DesktopFullHeader({ cartCount, wishlistCount, token, user, handleLogout
 
           <Link to="/" className="flex items-center gap-3 hover:opacity-95 transition-opacity">
             <div className="h-[52px] flex items-center justify-center shrink-0">
-              <img src={logo} alt="Icon" className="h-full w-auto object-contain" />
+              <img src={logo} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
             </div>
-            <div className="flex flex-col text-left mt-1">
-              <span className="font-serif font-bold text-lg leading-none tracking-[0.12em] text-brand-gold whitespace-nowrap">HOURA JEWELS</span>
-              <span className="text-white text-[10px] tracking-[0.2em] mt-1.5 uppercase font-medium">By S & M</span>
+            <div className="flex flex-col text-left">
+              <span className="font-serif font-bold text-lg leading-none tracking-[0.12em] text-brand-gold whitespace-nowrap">LYDIA GLOBAL EXIM</span>
             </div>
           </Link>
 
@@ -369,11 +368,10 @@ export function Header({ variant = 'default', title, showShare = false }) {
             >
               <div className="flex items-center gap-3">
                 <div className="h-14 flex items-center justify-center shrink-0">
-                  <img src={logo} alt="Houra Jewels" className="h-full w-auto object-contain" />
+                  <img src={logo} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-serif font-bold text-base leading-none" style={{ color: '#C6A184' }}>HOURA JEWELS</span>
-                  <span className="text-white text-[9px] tracking-widest mt-0.5">By S & M</span>
+                  <span className="font-serif font-bold text-base leading-none" style={{ color: '#C6A184' }}>LYDIA GLOBAL EXIM</span>
                 </div>
               </div>
               <button
@@ -524,7 +522,7 @@ export function Header({ variant = 'default', title, showShare = false }) {
         {mobileSidebarContent}
         
         {announcement && announcement.is_active && announcement.items?.some(i => i.text) && (
-          <div className="block bg-[#D4AF37] text-[#08183A] text-[10px] font-bold py-1.5 w-full fixed top-0 left-0 z-[60] overflow-hidden">
+          <div className="block bg-[#D4AF37] text-[#2A0845] text-[10px] font-bold py-1.5 w-full fixed top-0 left-0 z-[60] overflow-hidden">
             <div className="animate-marquee">
               {[0, 1].map(copy => (
                 <div key={copy} className="flex items-center" style={{minWidth:'50%'}}>
@@ -555,11 +553,10 @@ export function Header({ variant = 'default', title, showShare = false }) {
 
               <Link to="/" className="flex items-center gap-1.5 sm:gap-2.5 z-20 min-w-0 shrink">
                 <div className="h-8 sm:h-10 flex items-center justify-center shrink-0">
-                  <img src={logo} alt="Icon" className="h-full w-auto object-contain" />
+                  <img src={logo} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
                 </div>
-                <div className="flex flex-col text-left mt-0.5 min-w-0 shrink overflow-hidden">
-                  <span className="font-serif font-bold text-[13px] sm:text-[15px] leading-none tracking-[0.1em] sm:tracking-[0.12em] text-brand-gold truncate">HOURA JEWELS</span>
-                  <span className="text-white text-[7px] sm:text-[8px] tracking-[0.15em] sm:tracking-[0.2em] mt-1 uppercase font-medium truncate">By S & M</span>
+                <div className="flex flex-col text-left min-w-0 shrink overflow-hidden">
+                  <span className="font-serif font-bold text-[13px] sm:text-[15px] leading-none tracking-[0.08em] text-brand-gold truncate">LYDIA GLOBAL EXIM</span>
                 </div>
               </Link>
             </div>

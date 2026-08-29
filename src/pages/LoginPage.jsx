@@ -240,12 +240,12 @@ export function LoginPage() {
             className="relative z-10 text-center"
           >
             <Link to="/">
-              <img src={logoImg} alt="Houra Jewels" className="h-28 w-auto object-contain mx-auto mb-10 drop-shadow-xl" />
+              <img src={logoImg} alt="LYDIA GLOBAL EXIM" className="h-28 w-auto object-contain mx-auto mb-10 drop-shadow-xl" />
             </Link>
 
             <h1 className="text-4xl font-serif font-bold text-white mb-4 leading-tight">
               Welcome to<br />
-              <span style={{ color: '#C6A184' }}>Houra Jewels</span>
+              <span style={{ color: '#C6A184' }}>LYDIA GLOBAL EXIM</span>
             </h1>
             <div className="w-16 h-1" style={{ background: '#C6A184', borderRadius: 99, margin: '0 auto 20px' }}></div>
             <p className="text-white/60 text-base leading-relaxed max-w-xs mx-auto">
@@ -369,10 +369,10 @@ export function LoginPage() {
         {/* Header / Logo */}
         <div className="flex flex-col items-center mt-4">
           <Link to="/">
-            <img src={brandLogo} alt="Houra Jewels Logo" className="w-24 h-24 object-contain" />
+            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-24 h-24 object-contain" />
           </Link>
           <span className="font-serif font-bold text-lg tracking-[0.15em] text-[#D4AF37] mt-2 text-center">
-            HOURA JEWELS
+            LYDIA GLOBAL EXIM
           </span>
           <span className="text-[#D4AF37] text-[10px] font-bold tracking-widest uppercase mt-6">
             Welcome Back

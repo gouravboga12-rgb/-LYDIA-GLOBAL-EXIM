@@ -7,7 +7,7 @@ import AddressAutocomplete from '../../components/AddressAutocomplete';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
 const FROM_ADDRESS = {
-  name: "Houra Jewels",
+  name: "LYDIA GLOBAL EXIM",
   line1: "1-1-738, Vinayaka temple road",
   city: "Koratla",
   state: "Telangana",
@@ -98,7 +98,7 @@ function BalanceDuePanel({ order, onUpdate }) {
           <a href={order.payment_link_url} target="_blank" rel="noopener noreferrer"
             className="text-[10px] text-blue-600 underline truncate flex-1">{order.payment_link_url}</a>
           <button onClick={() => navigator.clipboard.writeText(order.payment_link_url)}
-            className="text-[10px] font-bold text-[#08183A] bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition-colors shrink-0">Copy</button>
+            className="text-[10px] font-bold text-[#2A0845] bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition-colors shrink-0">Copy</button>
         </div>
       ) : (
         <p className="text-[10px] text-amber-600">No payment link yet — click “New Link” to generate one.</p>
@@ -117,7 +117,7 @@ function BalanceDuePanel({ order, onUpdate }) {
           <Link2 className="w-3.5 h-3.5" /> {order.payment_link_url ? 'New Link' : 'Generate Link'}
         </button>
         <button onClick={() => setShowMarkPaid(p => !p)}
-          className="flex items-center gap-1.5 bg-[#08183A] hover:bg-[#08183A]/80 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors">
+          className="flex items-center gap-1.5 bg-[#2A0845] hover:bg-[#2A0845]/80 text-white text-xs font-bold px-3 py-2 rounded-lg transition-colors">
           ✓ Mark as Paid
         </button>
       </div>
@@ -125,18 +125,18 @@ function BalanceDuePanel({ order, onUpdate }) {
       {/* Mark paid inline form */}
       {showMarkPaid && (
         <div className="bg-white border border-amber-200 rounded-lg p-3 space-y-2">
-          <p className="text-xs font-bold text-[#08183A]">How was the balance paid?</p>
+          <p className="text-xs font-bold text-[#2A0845]">How was the balance paid?</p>
           <div className="flex flex-wrap gap-2">
             {['cash', 'upi', 'bank_transfer', 'stripe', 'other'].map(m => (
               <button key={m} onClick={() => setMarkMethod(m)}
                 className={`text-xs font-bold px-3 py-1.5 rounded-lg border transition-colors capitalize ${
-                  markMethod === m ? 'bg-[#08183A] text-white border-[#08183A]' : 'bg-white text-[#08183A]/60 border-[#08183A]/20 hover:border-[#08183A]/40'
+                  markMethod === m ? 'bg-[#2A0845] text-white border-[#2A0845]' : 'bg-white text-[#2A0845]/60 border-[#2A0845]/20 hover:border-[#2A0845]/40'
                 }`}>{m.replace('_', ' ')}</button>
             ))}
           </div>
           <button onClick={handleMarkPaid} disabled={busy}
             className="w-full bg-green-600 hover:bg-green-700 text-white text-xs font-bold py-2 rounded-lg transition-colors disabled:opacity-50">
-            {busy ? 'Saving...' : `Confirm — $${balance.toFixed(2)} paid via ${markMethod.replace('_', ' ')}`}
+            {busy ? 'Saving...' : `Confirm — ₹${balance.toFixed(2)} paid via ${markMethod.replace('_', ' ')}`}
           </button>
         </div>
       )}
@@ -294,7 +294,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
   const sendPaymentLinkWhatsApp = (link) => {
     const addr = parseO(order.address);
     const phone = (customerPhone || addr.mobile || '').replace(/\D/g, '');
-    const msg = encodeURIComponent(`Hi ${addr.name || order.user_name || 'Customer'}, your order #${order.order_number || order.id} has been updated. A balance of $${diff.toFixed(2)} is due. Please pay here: ${link}`);
+    const msg = encodeURIComponent(`Hi ${addr.name || order.user_name || 'Customer'}, your order #${order.order_number || order.id} has been updated. A balance of ₹${diff.toFixed(2)} is due. Please pay here: ${link}`);
     window.open(`https://wa.me/${phone}?text=${msg}`, '_blank');
   };
 
@@ -308,7 +308,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
             <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
               <Pencil className="w-4 h-4 text-blue-600" />
             </div>
-            <h2 className="font-serif text-lg font-bold text-[#08183A]">Edit Order #{order.order_number || order.id}</h2>
+            <h2 className="font-serif text-lg font-bold text-[#2A0845]">Edit Order #{order.order_number || order.id}</h2>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-5 h-5" /></button>
         </div>
@@ -327,7 +327,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
                   <div className="w-14 h-14 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <RefreshCcw className="w-7 h-7 text-green-600" />
                   </div>
-                  <h3 className="font-bold text-lg text-[#08183A]">Order Updated!</h3>
+                  <h3 className="font-bold text-lg text-[#2A0845]">Order Updated!</h3>
                   <p className="text-sm text-gray-500 mt-1">New total: <strong>${result.new_total?.toFixed(2)}</strong></p>
                 </div>
                 {result.balance_due > 0 && (
@@ -344,7 +344,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
                           <MessageCircle className="w-4 h-4" /> Send Payment Link via WhatsApp
                         </button>
                         <button onClick={() => { navigator.clipboard.writeText(result.payment_link_url); }}
-                          className="w-full flex items-center justify-center gap-2 bg-[#08183A] text-white py-2.5 rounded-xl text-xs font-bold transition-colors">
+                          className="w-full flex items-center justify-center gap-2 bg-[#2A0845] text-white py-2.5 rounded-xl text-xs font-bold transition-colors">
                           <Link2 className="w-4 h-4" /> Copy Payment Link
                         </button>
                       </>
@@ -358,7 +358,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
                   </div>
                 )}
                 {diff === 0 && <p className="text-center text-sm text-gray-500">No price change — order updated.</p>}
-                <button onClick={onClose} className="w-full bg-[#08183A] text-white font-bold py-2.5 rounded-xl hover:bg-[#08183A]/80 transition-colors">Done</button>
+                <button onClick={onClose} className="w-full bg-[#2A0845] text-white font-bold py-2.5 rounded-xl hover:bg-[#2A0845]/80 transition-colors">Done</button>
               </>
             )}
           </div>
@@ -367,7 +367,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
 
             {/* Items */}
             <div>
-              <p className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider mb-3">Items</p>
+              <p className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider mb-3">Items</p>
               <div className="space-y-2">
                 {items.map((item, idx) => {
                   const price = (item.variant?.price || item.product?.price || 0);
@@ -378,21 +378,21 @@ function EditOrderModal({ order, onClose, onSaved }) {
                     ? variants.flatMap(v => (v.sizes || []).map(s => ({ size: s.size, price: Number(s.our_price) || Number(s.price) || 0, color: v.color })))
                     : legacySizes.map(s => ({ size: s.size, price: Number(s.our_price) || Number(s.price) || 0 }));
                   return (
-                    <div key={idx} className="flex gap-3 items-start p-3 bg-[#FDF8F0] rounded-xl border border-[#08183A]/10">
+                    <div key={idx} className="flex gap-3 items-start p-3 bg-[#FAF6F0] rounded-xl border border-[#2A0845]/10">
                       {img && <img src={img} alt="" className="w-10 h-10 object-contain rounded-lg border border-gray-100 shrink-0" />}
                       <div className="flex-1 min-w-0 space-y-1.5">
-                        <p className="text-sm font-bold text-[#08183A] truncate">{item.product?.name}{item.variant?.color ? ` — ${item.variant.color}` : ''}</p>
+                        <p className="text-sm font-bold text-[#2A0845] truncate">{item.product?.name}{item.variant?.color ? ` — ${item.variant.color}` : ''}</p>
                         <div className="flex flex-wrap gap-2">
                           {allSizes.length > 0 && (
                             <select value={item.variant?.size || ''} onChange={e => updateVariantSize(idx, e.target.value)}
-                              className="text-xs border border-[#08183A]/20 rounded-lg px-2 py-1 bg-white text-[#08183A] focus:outline-none">
+                              className="text-xs border border-[#2A0845]/20 rounded-lg px-2 py-1 bg-white text-[#2A0845] focus:outline-none">
                               {allSizes.map(s => <option key={s.size} value={s.size}>{s.size} — ${s.price}</option>)}
                             </select>
                           )}
                           <div className="flex items-center gap-1">
                             <span className="text-xs text-gray-500">Qty:</span>
                             <input type="number" min={1} value={item.qty} onChange={e => updateQty(idx, e.target.value)}
-                              className="w-14 text-xs border border-[#08183A]/20 rounded-lg px-2 py-1 bg-white text-[#08183A] focus:outline-none" />
+                              className="w-14 text-xs border border-[#2A0845]/20 rounded-lg px-2 py-1 bg-white text-[#2A0845] focus:outline-none" />
                           </div>
                           <span className="text-xs font-bold text-[#D4AF37] self-center">${(price * item.qty).toFixed(2)}</span>
                         </div>
@@ -411,7 +411,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
                   );
                 })}
                 <button onClick={() => { setReplacingIdx('new'); setProductSearch(''); }}
-                  className="w-full flex items-center justify-center gap-2 border border-dashed border-[#08183A]/30 text-[#08183A]/60 hover:text-[#08183A] hover:bg-[#FDF8F0] hover:border-[#08183A]/50 py-2.5 rounded-xl text-sm font-semibold transition-colors mt-2">
+                  className="w-full flex items-center justify-center gap-2 border border-dashed border-[#2A0845]/30 text-[#2A0845]/60 hover:text-[#2A0845] hover:bg-[#FAF6F0] hover:border-[#2A0845]/50 py-2.5 rounded-xl text-sm font-semibold transition-colors mt-2">
                   <Plus className="w-4 h-4" /> Add Product
                 </button>
               </div>
@@ -423,7 +423,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
                     <Search className="w-4 h-4 text-blue-400 shrink-0" />
                     <input autoFocus value={productSearch} onChange={e => setProductSearch(e.target.value)}
                       placeholder={replacingIdx === 'new' ? "Search products to add..." : `Replace item ${replacingIdx + 1} — search products...`}
-                      className="flex-1 bg-transparent text-sm text-[#08183A] placeholder:text-gray-400 focus:outline-none" />
+                      className="flex-1 bg-transparent text-sm text-[#2A0845] placeholder:text-gray-400 focus:outline-none" />
                     <button onClick={() => setReplacingIdx(null)} className="text-gray-400 hover:text-gray-600"><X className="w-4 h-4" /></button>
                   </div>
                   {filteredProducts.length > 0 && (
@@ -438,7 +438,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
                             className="w-full flex items-center gap-3 px-3 py-2.5 hover:bg-blue-50 transition-colors text-left">
                             {img && <img src={img} alt="" className="w-8 h-8 object-contain rounded border border-gray-100 shrink-0" />}
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-semibold text-[#08183A] truncate">{displayName}</p>
+                              <p className="text-sm font-semibold text-[#2A0845] truncate">{displayName}</p>
                               <p className="text-xs text-gray-500">${resolvePrice(itemData).toFixed(2)}</p>
                             </div>
                           </button>
@@ -455,25 +455,25 @@ function EditOrderModal({ order, onClose, onSaved }) {
 
             {/* Customer Name */}
             <div>
-              <p className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider mb-2">Customer Name</p>
+              <p className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider mb-2">Customer Name</p>
               <input value={address['name'] || ''} onChange={e => setAddress(a => ({ ...a, name: e.target.value }))}
                 placeholder="Full Name"
-                className="w-full text-sm border border-[#08183A]/15 rounded-xl px-3 py-2 bg-[#FDF8F0] text-[#08183A] focus:outline-none focus:border-[#08183A]/30" />
+                className="w-full text-sm border border-[#2A0845]/15 rounded-xl px-3 py-2 bg-[#FAF6F0] text-[#2A0845] focus:outline-none focus:border-[#2A0845]/30" />
             </div>
 
             {/* Customer Phone */}
             <div>
-              <p className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider mb-2">Customer Phone</p>
+              <p className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider mb-2">Customer Phone</p>
               <input value={customerPhone} onChange={e => setCustomerPhone(e.target.value)}
                 placeholder="+1 555 000 0000"
-                className="w-full text-sm border border-[#08183A]/15 rounded-xl px-3 py-2 bg-[#FDF8F0] text-[#08183A] focus:outline-none focus:border-[#08183A]/30" />
+                className="w-full text-sm border border-[#2A0845]/15 rounded-xl px-3 py-2 bg-[#FAF6F0] text-[#2A0845] focus:outline-none focus:border-[#2A0845]/30" />
             </div>
 
             {/* Note */}
             <div>
-              <p className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider mb-2">Edit Note (internal)</p>
+              <p className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider mb-2">Edit Note (internal)</p>
               <input value={note} onChange={e => setNote(e.target.value)} placeholder="Reason for edit..."
-                className="w-full text-sm border border-[#08183A]/15 rounded-xl px-3 py-2 bg-[#FDF8F0] text-[#08183A] focus:outline-none focus:border-[#08183A]/30" />
+                className="w-full text-sm border border-[#2A0845]/15 rounded-xl px-3 py-2 bg-[#FAF6F0] text-[#2A0845] focus:outline-none focus:border-[#2A0845]/30" />
             </div>
 
             {/* Price diff summary */}
@@ -481,20 +481,20 @@ function EditOrderModal({ order, onClose, onSaved }) {
               diff > 0 ? 'bg-amber-50 border-amber-200' : diff < 0 ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-200'
             }`}>
               <div>
-                <p className="text-xs font-bold text-[#08183A]">New Total: ${newTotal.toFixed(2)}</p>
+                <p className="text-xs font-bold text-[#2A0845]">New Total: ${newTotal.toFixed(2)}</p>
                 <p className="text-[10px] text-gray-500 mt-0.5">Was: ${oldTotal.toFixed(2)}</p>
               </div>
               {diff !== 0 && (
                 <span className={`text-sm font-bold ${ diff > 0 ? 'text-amber-700' : 'text-green-700' }`}>
-                  {diff > 0 ? `+$${diff.toFixed(2)} balance due` : `-$${Math.abs(diff).toFixed(2)} refund`}
+                  {diff > 0 ? `+₹${diff.toFixed(2)} balance due` : `-₹${Math.abs(diff).toFixed(2)} refund`}
                 </span>
               )}
             </div>
 
             <div className="flex gap-3">
-              <button onClick={onClose} className="flex-1 px-4 py-2.5 bg-gray-100 text-[#08183A] rounded-xl font-semibold hover:bg-gray-200 transition-colors">Cancel</button>
+              <button onClick={onClose} className="flex-1 px-4 py-2.5 bg-gray-100 text-[#2A0845] rounded-xl font-semibold hover:bg-gray-200 transition-colors">Cancel</button>
               <button onClick={handleSave} disabled={saving || items.length === 0}
-                className="flex-1 px-4 py-2.5 bg-[#08183A] text-white rounded-xl font-bold hover:bg-[#08183A]/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
+                className="flex-1 px-4 py-2.5 bg-[#2A0845] text-white rounded-xl font-bold hover:bg-[#2A0845]/80 transition-colors disabled:opacity-50 flex items-center justify-center gap-2">
                 {saving ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />Saving...</> : 'Save Changes'}
               </button>
             </div>
@@ -591,7 +591,7 @@ function RefundModal({ order, refunding, refundResult, onConfirm, onClose }) {
             <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center">
               <AlertTriangle className="w-4 h-4 text-red-600" />
             </div>
-            <h2 className="font-serif text-lg font-bold text-[#08183A]">Cancel Order</h2>
+            <h2 className="font-serif text-lg font-bold text-[#2A0845]">Cancel Order</h2>
           </div>
           <button onClick={onClose} className="text-gray-400 hover:text-gray-700"><X className="w-5 h-5" /></button>
         </div>
@@ -603,7 +603,7 @@ function RefundModal({ order, refunding, refundResult, onConfirm, onClose }) {
                 <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <RefreshCcw className="w-8 h-8 text-green-600" />
                 </div>
-                <h3 className="font-bold text-lg text-[#08183A] mb-1">
+                <h3 className="font-bold text-lg text-[#2A0845] mb-1">
                   {refundResult.partial ? 'Partially Cancelled!' : 'Order Cancelled!'}
                 </h3>
                 {cancelType === 'refund' ? (
@@ -617,16 +617,16 @@ function RefundModal({ order, refunding, refundResult, onConfirm, onClose }) {
                   <span className="block mt-1 text-blue-600 font-medium">{refundResult.remainingItems} item(s) remain active in the order.</span>
                 )}
                 {refundResult.refundId && <p className="text-xs text-gray-400 font-mono">ID: {refundResult.refundId}</p>}
-                <button onClick={onClose} className="mt-5 w-full bg-[#08183A] text-white font-bold py-2.5 rounded-xl hover:bg-[#08183A]/80 transition-colors">Done</button>
+                <button onClick={onClose} className="mt-5 w-full bg-[#2A0845] text-white font-bold py-2.5 rounded-xl hover:bg-[#2A0845]/80 transition-colors">Done</button>
               </>
             ) : (
               <>
                 <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                   <AlertTriangle className="w-8 h-8 text-red-500" />
                 </div>
-                <h3 className="font-bold text-lg text-[#08183A] mb-1">Cancellation Failed</h3>
+                <h3 className="font-bold text-lg text-[#2A0845] mb-1">Cancellation Failed</h3>
                 <p className="text-sm text-red-500 mb-4">{refundResult.error}</p>
-                <button onClick={onClose} className="w-full bg-gray-100 text-[#08183A] font-bold py-2.5 rounded-xl">Close</button>
+                <button onClick={onClose} className="w-full bg-gray-100 text-[#2A0845] font-bold py-2.5 rounded-xl">Close</button>
               </>
             )}
           </div>
@@ -636,9 +636,9 @@ function RefundModal({ order, refunding, refundResult, onConfirm, onClose }) {
 
             {/* Cancel Type */}
             <div>
-              <p className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider mb-2">Cancellation Type</p>
+              <p className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider mb-2">Cancellation Type</p>
               <select value={cancelType} onChange={e => setCancelType(e.target.value)}
-                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-[#08183A] bg-gray-50 focus:outline-none">
+                className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm text-[#2A0845] bg-gray-50 focus:outline-none">
                 <option value="refund">Cancel & Refund Payment</option>
                 <option value="no_refund">Cancel Without Refund</option>
                 <option value="coupon_cancel">Cancel Without Refund (Discount Coupon)</option>
@@ -647,7 +647,7 @@ function RefundModal({ order, refunding, refundResult, onConfirm, onClose }) {
 
             {/* Items */}
             <div className="space-y-2">
-              <p className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider">Select Items to Cancel</p>
+              <p className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider">Select Items to Cancel</p>
               {items.map((item, idx) => {
                 const price = (item.variant?.price || item.product?.price || 0) * (selectedQty[idx] || 0);
                 const variantColor = (item.variant?.color || '').toLowerCase().trim();
@@ -661,11 +661,11 @@ function RefundModal({ order, refunding, refundResult, onConfirm, onClose }) {
                   }`}>
                     {img && <img src={img} alt="" className="w-10 h-10 object-contain rounded-lg border border-gray-100 shrink-0" />}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-bold text-[#08183A] truncate">{item.product?.name || 'Product'}{item.variant?.color ? ` — ${item.variant.color}` : ''}</p>
+                      <p className="text-sm font-bold text-[#2A0845] truncate">{item.product?.name || 'Product'}{item.variant?.color ? ` — ${item.variant.color}` : ''}</p>
                       <p className="text-xs text-gray-500">{item.variant?.size || 'Standard'} {itemCode ? ` • #${itemCode}` : ''}</p>
                     </div>
                     <div className="flex flex-col items-end gap-1">
-                      <span className="font-bold text-[#08183A] text-sm">${price.toFixed(2)}</span>
+                      <span className="font-bold text-[#2A0845] text-sm">${price.toFixed(2)}</span>
                       <div className="flex items-center gap-1 bg-white border border-gray-200 rounded px-1">
                         <span className="text-[10px] text-gray-400">Cancel Qty:</span>
                         <input type="number" min="0" max={item.qty} value={selectedQty[idx]} 
@@ -684,28 +684,28 @@ function RefundModal({ order, refunding, refundResult, onConfirm, onClose }) {
               <div className="space-y-4">
                 <div className="space-y-2">
                   {shippingDisplay > 0 && (
-                    <label className="flex items-center justify-between p-3 bg-[#FDF8F0] rounded-xl border border-[#08183A]/10 cursor-pointer">
+                    <label className="flex items-center justify-between p-3 bg-[#FAF6F0] rounded-xl border border-[#2A0845]/10 cursor-pointer">
                       <div className="flex items-center gap-3">
-                        <input type="checkbox" checked={refundShipping} onChange={e => setRefundShipping(e.target.checked)} className="w-4 h-4 accent-[#08183A]" />
-                        <span className="text-sm font-bold text-[#08183A]">Refund Shipping Fee</span>
+                        <input type="checkbox" checked={refundShipping} onChange={e => setRefundShipping(e.target.checked)} className="w-4 h-4 accent-[#2A0845]" />
+                        <span className="text-sm font-bold text-[#2A0845]">Refund Shipping Fee</span>
                       </div>
-                      <span className="font-bold text-[#08183A]">${shippingDisplay.toFixed(2)}</span>
+                      <span className="font-bold text-[#2A0845]">${shippingDisplay.toFixed(2)}</span>
                     </label>
                   )}
                   {taxDisplay > 0 && (
-                    <label className="flex items-center justify-between p-3 bg-[#FDF8F0] rounded-xl border border-[#08183A]/10 cursor-pointer">
+                    <label className="flex items-center justify-between p-3 bg-[#FAF6F0] rounded-xl border border-[#2A0845]/10 cursor-pointer">
                       <div className="flex items-center gap-3">
-                        <input type="checkbox" checked={refundTax} onChange={e => setRefundTax(e.target.checked)} className="w-4 h-4 accent-[#08183A]" />
-                        <span className="text-sm font-bold text-[#08183A]">Refund Tax {isFullCancel ? '' : '(Prorated)'}</span>
+                        <input type="checkbox" checked={refundTax} onChange={e => setRefundTax(e.target.checked)} className="w-4 h-4 accent-[#2A0845]" />
+                        <span className="text-sm font-bold text-[#2A0845]">Refund Tax {isFullCancel ? '' : '(Prorated)'}</span>
                       </div>
-                      <span className="font-bold text-[#08183A]">${(isFullCancel ? taxDisplay : proratedTax).toFixed(2)}</span>
+                      <span className="font-bold text-[#2A0845]">${(isFullCancel ? taxDisplay : proratedTax).toFixed(2)}</span>
                     </label>
                   )}
                   {discountAmount > 0 && (
-                    <label className="flex items-center justify-between p-3 bg-[#FDF8F0] rounded-xl border border-[#08183A]/10 cursor-pointer opacity-80">
+                    <label className="flex items-center justify-between p-3 bg-[#FAF6F0] rounded-xl border border-[#2A0845]/10 cursor-pointer opacity-80">
                       <div className="flex items-center gap-3">
-                        <input type="checkbox" checked={refundDiscount} onChange={e => setRefundDiscount(e.target.checked)} className="w-4 h-4 accent-[#08183A]" />
-                        <span className="text-sm font-bold text-[#08183A]">Deduct Applied Discount {isFullCancel ? '' : '(Prorated)'}</span>
+                        <input type="checkbox" checked={refundDiscount} onChange={e => setRefundDiscount(e.target.checked)} className="w-4 h-4 accent-[#2A0845]" />
+                        <span className="text-sm font-bold text-[#2A0845]">Deduct Applied Discount {isFullCancel ? '' : '(Prorated)'}</span>
                       </div>
                       <span className="font-bold text-red-600">-${(isFullCancel ? discountAmount : proratedDiscount).toFixed(2)}</span>
                     </label>
@@ -714,16 +714,16 @@ function RefundModal({ order, refunding, refundResult, onConfirm, onClose }) {
 
                 {/* Transaction/Cancellation Charge */}
                 <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl space-y-2">
-                  <p className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider">Deduct Cancellation Charge</p>
+                  <p className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider">Deduct Cancellation Charge</p>
                   <div className="flex gap-2">
                     <select value={chargeType} onChange={e => setChargeType(e.target.value)}
-                      className="border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#08183A] bg-white focus:outline-none w-24">
-                      <option value="flat">Flat ($)</option>
+                      className="border border-gray-200 rounded-lg px-2 py-1.5 text-xs text-[#2A0845] bg-white focus:outline-none w-24">
+                      <option value="flat">Flat (₹)</option>
                       <option value="percent">Percent (%)</option>
                     </select>
                     <input type="number" min="0" step="0.01" value={chargeValue} onChange={e => setChargeValue(e.target.value)}
                       placeholder="0.00"
-                      className="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-[#08183A] bg-white focus:outline-none" />
+                      className="flex-1 border border-gray-200 rounded-lg px-3 py-1.5 text-sm text-[#2A0845] bg-white focus:outline-none" />
                   </div>
                   {transactionCharge > 0 && (
                     <p className="text-xs text-amber-600 font-semibold text-right">Deducting: ${transactionCharge.toFixed(2)}</p>
@@ -742,13 +742,12 @@ function RefundModal({ order, refunding, refundResult, onConfirm, onClose }) {
                   <p className={`text-[10px] mt-0.5 ${cancelType === 'refund' ? 'text-red-500' : 'text-gray-500'}`}>Remaining items stay active</p>
                 )}
               </div>
-              <span className={`font-bold text-lg ${cancelType === 'refund' ? 'text-red-700' : 'text-gray-700'}`}>
-                ${(cancelType === 'refund' ? refundTotal : selectedItemsTotal).toFixed(2)}
+              <span className={`font-bold text-lg ${cancelType === 'refund' ? 'text-red-700' : 'text-gray-700'}`}>${(cancelType === 'refund' ? refundTotal : selectedItemsTotal).toFixed(2)}
               </span>
             </div>
 
             <div className="flex gap-3">
-              <button onClick={onClose} className="flex-1 px-4 py-2.5 bg-gray-100 text-[#08183A] rounded-xl font-semibold hover:bg-gray-200 transition-colors">Abort</button>
+              <button onClick={onClose} className="flex-1 px-4 py-2.5 bg-gray-100 text-[#2A0845] rounded-xl font-semibold hover:bg-gray-200 transition-colors">Abort</button>
               <button onClick={handleConfirm} disabled={refunding || !anySelected || (cancelType === 'refund' && refundTotal <= 0 && selectedItemsTotal > 0)}
                 className={`flex-1 px-4 py-2.5 text-white rounded-xl font-bold transition-colors disabled:opacity-50 flex items-center justify-center gap-2 ${
                   cancelType === 'refund' ? 'bg-red-600 hover:bg-red-700' : 'bg-amber-600 hover:bg-amber-700'
@@ -918,7 +917,7 @@ export function AdminPickupOrdersPage() {
       `Hi ${order.user_name || address.name || 'Customer'}! Your order #${order.order_number || order.id} status is now: *${order.status}*.\n\n` +
       (order.status === 'ready for pickup'
         ? `Your order is ready for pickup at *2965 FM1385, Aubrey, TX 76227*. Please come pick it up at your convenience! 🏪`
-        : `Thank you for shopping with Houra Jewels! 🙏`)
+        : `Thank you for shopping with LYDIA GLOBAL EXIM! 🙏`)
     );
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
   };
@@ -967,23 +966,20 @@ export function AdminPickupOrdersPage() {
       const code = item.variant?.size_code || item.variant?.sku || item.variant?.code || matchedVariant?.code || item.product?.product_code || item.product_code || item.sku || '';
       return `
       <tr style="background:${idx % 2 === 0 ? '#ffffff' : '#FFFAF9'}; ${isCancelled ? 'opacity: 0.6; filter: grayscale(1);' : ''}">
-        <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:center;font-size:9pt;color:#888;">
-          ${idx + 1}
+        <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:center;font-size:9pt;color:#888;">${idx + 1}
         </td>
         <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;">
-          <div style="display:flex;align-items:center;gap:10px;">
-            ${absImg ? `<img src="${absImg}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid #f0e0c0;flex-shrink:0;" />` : `<div style="width:44px;height:44px;background:#FDF8F0;border-radius:6px;border:1px solid #f0e0c0;flex-shrink:0;"></div>`}
+          <div style="display:flex;align-items:center;gap:10px;">${absImg ? `<img src="${absImg}" style="width:44px;height:44px;object-fit:cover;border-radius:6px;border:1px solid #f0e0c0;flex-shrink:0;" />` : `<div style="width:44px;height:44px;background:#FAF6F0;border-radius:6px;border:1px solid #f0e0c0;flex-shrink:0;"></div>`}
             <div>
-              <div style="font-weight:700;color:#222;font-size:9.5pt; ${isCancelled ? 'text-decoration: line-through;' : ''}">${escapeHtml(item.product?.name || item.name || '')}</div>
-              ${code ? `<div style="font-size:8pt;color:#b8860b;font-weight:600;margin-top:2px;">#${escapeHtml(code)}</div>` : ''}
+              <div style="font-weight:700;color:#222;font-size:9.5pt; ${isCancelled ? 'text-decoration: line-through;' : ''}">${escapeHtml(item.product?.name || item.name || '')}</div>${code ? `<div style="font-size:8pt;color:#b8860b;font-weight:600;margin-top:2px;">#${escapeHtml(code)}</div>` : ''}
               ${isCancelled ? `<div style="font-size:8pt;color:#dc2626;font-weight:600;margin-top:2px;">CANCELLED</div>` : ''}
             </div>
           </div>
         </td>
         <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:center;font-size:9pt;">${escapeHtml(item.variant?.size || item.size || '—')}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:center;font-size:9pt;">${item.qty}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:right;font-size:9pt;font-weight:600; ${isCancelled ? 'text-decoration: line-through;' : ''}">$${(item.variant?.price || item.product?.price || item.price || 0).toFixed(2)}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:right;font-size:9pt;font-weight:700;color:#08183A; ${isCancelled ? 'text-decoration: line-through;' : ''}">$${((item.variant?.price || item.product?.price || item.price || 0) * item.qty).toFixed(2)}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:right;font-size:9pt;font-weight:600; ${isCancelled ? 'text-decoration: line-through;' : ''}">₹${Number(item.variant?.price || item.product?.price || item.price || 0).toLocaleString('en-IN')}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:right;font-size:9pt;font-weight:700;color:#2A0845; ${isCancelled ? 'text-decoration: line-through;' : ''}">₹${(Number(item.variant?.price || item.product?.price || item.price || 0) * item.qty).toLocaleString('en-IN')}</td>
       </tr>`;
     };
 
@@ -1002,31 +998,30 @@ export function AdminPickupOrdersPage() {
     body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; margin: 0; padding: 20px; font-size: 10pt; line-height: 1.4; background: #fff; }
     .print-btn { text-align: center; margin: 20px 0; }
     .print-btn button { padding: 8px 24px; margin: 0 6px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
-    .btn-print { background: #08183A; color: #D4AF37; }
-    .btn-dl { background: #D4AF37; color: #08183A; }
+    .btn-print { background: #2A0845; color: #D4AF37; }
+    .btn-dl { background: #D4AF37; color: #2A0845; }
     @media print { .print-btn { display: none !important; } * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }
   </style>
 </head>
 <body>
 
-<table style="width:100%;border-collapse:collapse;border-bottom:3px solid #08183A;padding-bottom:16px;margin-bottom:20px;">
+<table style="width:100%;border-collapse:collapse;border-bottom:3px solid #2A0845;padding-bottom:16px;margin-bottom:20px;">
   <tr>
     <td style="vertical-align:middle;width:50%;">
       <div style="display:flex;align-items:center;gap:10px;">
-        <img src="${new URL(logoUrl, window.location.href).href}" style="height:48px;width:auto;object-fit:contain;" alt="Houra Jewels Logo" />
+        <img src="${new URL(logoUrl, window.location.href).href}" style="height:48px;width:auto;object-fit:contain;" alt="LYDIA GLOBAL EXIM Logo" />
         <div style="display:flex;flex-direction:column;">
-          <span style="font-family:serif;font-weight:900;font-size:22px;color:#D4AF37;line-height:1;letter-spacing:0.12em;text-transform:uppercase;">HOURA JEWELS</span>
-          <span style="font-size:10px;font-weight:600;color:#08183A;letter-spacing:0.2em;text-transform:uppercase;margin-top:2px;">By S & M</span>
+          <span style="font-family:serif;font-weight:900;font-size:22px;color:#D4AF37;line-height:1;letter-spacing:0.12em;text-transform:uppercase;">LYDIA GLOBAL EXIM</span>
         </div>
       </div>
     </td>
     <td style="vertical-align:top;text-align:right;">
-      <div style="font-size:20pt;font-weight:900;color:#08183A;letter-spacing:-0.5px;">INVOICE</div>
+      <div style="font-size:20pt;font-weight:900;color:#2A0845;letter-spacing:-0.5px;">INVOICE</div>
       <div style="font-size:9pt;color:#555;margin-top:6px;line-height:1.7;">
         <strong>Invoice No:</strong> #${escapeHtml(order.order_number || String(order.id))}<br>
-        <strong>Date:</strong> ${orderDate}<br>
+        <strong>Date:</strong>${orderDate}<br>
         <strong>Order Type:</strong> <span style="font-weight:700;color:${isPickup ? '#1d4ed8' : '#059669'};">${isPickup ? '🏪 Store Pickup' : '🚚 Shipping'}</span><br>
-        <strong>Status:</strong> ${escapeHtml(order.status)}
+        <strong>Status:</strong>${escapeHtml(order.status)}
         ${order.stripe_payment_intent_id ? `<br><strong>Transaction ID:</strong> <span style="font-family:monospace;font-size:8pt;color:#555;">${escapeHtml(order.stripe_payment_intent_id)}</span>` : ''}
       </div>
     </td>
@@ -1036,47 +1031,38 @@ export function AdminPickupOrdersPage() {
 <table style="width:100%;border-collapse:collapse;margin-bottom:22px;">
   <tr>
     <td style="width:${isPickup ? '100%' : '50%'};vertical-align:top;padding:12px;border:1px solid #e8d5b0;background:#FFFDFD;border-radius:4px;">
-      <div style="font-size:9pt;font-weight:700;color:#08183A;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">From</div>
+      <div style="font-size:9pt;font-weight:700;color:#2A0845;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">From</div>
       <div style="font-size:9.5pt;color:#555;line-height:1.6;">
-        <strong style="color:#08183A;">Houra Jewels</strong><br>
-        Texas, 76227<br>
-        Phone: +1 940-465-6563<br>
-        Email: support@hourajewels.com
+        <strong style="color:#2A0845;">LYDIA GLOBAL EXIM</strong><br>
+        Phone: +91 9014863411<br>
+        Email: lydiaglobalexim@gmail.com
       </div>
-    </td>
-    ${!isPickup ? `
+    </td>${!isPickup ? `
     <td style="width:4px;"></td>
     <td style="width:50%;vertical-align:top;padding:12px;border:1px solid #e8d5b0;background:#FFFAF9;border-radius:4px;">
-      <div style="font-size:9pt;font-weight:700;color:#08183A;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Ship To</div>
+      <div style="font-size:9pt;font-weight:700;color:#2A0845;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Ship To</div>
       <div style="font-size:9.5pt;color:#555;line-height:1.6;">
-        <strong style="color:#08183A;">${escapeHtml(address.name || '')}</strong><br>
-        ${escapeHtml(address.line1 || '')}${address.line2 ? ', ' + escapeHtml(address.line2) : ''}<br>
-        ${escapeHtml(address.city || '')}, ${escapeHtml(address.state || '')} ${escapeHtml(address.pincode || '')}<br>
-        ${address.mobile ? `<strong>Phone:</strong> ${escapeHtml(address.mobile)}` : ''}
+        <strong style="color:#2A0845;">${escapeHtml(address.name || '')}</strong><br>${escapeHtml(address.line1 || '')}${address.line2 ? ', ' + escapeHtml(address.line2) : ''}<br>${escapeHtml(address.city || '')}, ${escapeHtml(address.state || '')} ${escapeHtml(address.pincode || '')}<br>${address.mobile ? `<strong>Phone:</strong>${escapeHtml(address.mobile)}` : ''}
       </div>
     </td>` : `
     <td style="width:4px;"></td>
     <td style="width:50%;vertical-align:top;padding:12px;border:1px solid #e8d5b0;background:#f8fafc;border-radius:4px;">
-      <div style="font-size:9pt;font-weight:700;color:#08183A;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Payment Details</div>
+      <div style="font-size:9pt;font-weight:700;color:#2A0845;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Payment Details</div>
       <div style="font-size:9.5pt;color:#555;line-height:1.6;">
-        <strong>Type:</strong> <span style="text-transform:capitalize;">${escapeHtml(order.payment_method || 'Card')}</span><br>
-        ${order.stripe_payment_intent_id ? `<strong>Transaction ID:</strong> <span style="font-family:monospace;">${escapeHtml(order.stripe_payment_intent_id)}</span><br>` : ''}
-        <strong>Amount Received:</strong> $${parseFloat(order.total || 0).toFixed(2)}
+        <strong>Type:</strong> <span style="text-transform:capitalize;">${escapeHtml(order.payment_method || 'Card')}</span><br>${order.stripe_payment_intent_id ? `<strong>Transaction ID:</strong> <span style="font-family:monospace;">${escapeHtml(order.stripe_payment_intent_id)}</span><br>` : ''}
+        <strong>Amount Received:</strong> ₹${parseFloat(order.total || 0).toFixed(2)}
       </div>
     </td>
     `}
   </tr>
-</table>
-
-${!isPickup ? `
+</table>${!isPickup ? `
 <table style="width:100%;border-collapse:collapse;margin-bottom:22px;">
   <tr>
     <td style="width:100%;vertical-align:top;padding:12px;border:1px solid #e8d5b0;background:#f8fafc;border-radius:4px;">
-      <div style="font-size:9pt;font-weight:700;color:#08183A;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Payment Details</div>
+      <div style="font-size:9pt;font-weight:700;color:#2A0845;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Payment Details</div>
       <div style="font-size:9.5pt;color:#555;line-height:1.6;display:flex;justify-content:space-between;">
-        <div><strong>Type:</strong> <span style="text-transform:capitalize;">${escapeHtml(order.payment_method || 'Card')}</span></div>
-        ${order.stripe_payment_intent_id ? `<div><strong>Transaction ID:</strong> <span style="font-family:monospace;">${escapeHtml(order.stripe_payment_intent_id)}</span></div>` : ''}
-        <div><strong>Amount Received:</strong> $${parseFloat(order.total || 0).toFixed(2)}</div>
+        <div><strong>Type:</strong> <span style="text-transform:capitalize;">${escapeHtml(order.payment_method || 'Card')}</span></div>${order.stripe_payment_intent_id ? `<div><strong>Transaction ID:</strong> <span style="font-family:monospace;">${escapeHtml(order.stripe_payment_intent_id)}</span></div>` : ''}
+        <div><strong>Amount Received:</strong> ₹${parseFloat(order.total || 0).toFixed(2)}</div>
       </div>
     </td>
   </tr>
@@ -1085,7 +1071,7 @@ ${!isPickup ? `
 
 <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
   <thead>
-    <tr style="background:#08183A;">
+    <tr style="background:#2A0845;">
       <th style="padding:10px 12px;color:#D4AF37;font-size:9pt;text-align:center;width:5%;">#</th>
       <th style="padding:10px 12px;color:#D4AF37;font-size:9pt;text-align:left;width:45%;">Item</th>
       <th style="padding:10px 12px;color:#D4AF37;font-size:9pt;text-align:center;width:15%;">Size</th>
@@ -1102,19 +1088,17 @@ ${!isPickup ? `
     <td style="width:55%;"></td>
     <td style="width:45%;">
       <table style="width:100%;border-collapse:collapse;">
-        <tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Subtotal</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;width:110px;">$${subtotal.toFixed(2)}</td></tr>
-        ${discountAmt > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#059669;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Discount${order.coupon_code ? ' (' + order.coupon_code + ')' : ''}</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;color:#059669;">-$${discountAmt.toFixed(2)}</td></tr>` : ''}
-        ${shippingCost > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Shipping</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">$${shippingCost.toFixed(2)}</td></tr>` : ''}
-        ${taxAmt > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Tax</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">$${taxAmt.toFixed(2)}</td></tr>` : ''}
-        <tr style="background:#FDF8F0;"><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#08183A;border-top:2px solid #08183A;">TOTAL</td><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#D4AF37;border-top:2px solid #08183A;">$${Number(order.total).toFixed(2)}</td></tr>
-        ${refundAmt > 0 ? `<tr style="background:#fef2f2;"><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:10pt;color:#dc2626;border-top:1px solid #fecaca;">REFUNDED</td><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:10pt;color:#dc2626;border-top:1px solid #fecaca;">-$${refundAmt.toFixed(2)}</td></tr>` : ''}
+        <tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Subtotal</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;width:110px;">₹${subtotal.toFixed(2)}</td></tr>${discountAmt > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#059669;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Discount${order.coupon_code ? ' (' + order.coupon_code + ')' : ''}</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;color:#059669;">-₹${discountAmt.toFixed(2)}</td></tr>` : ''}
+        ${shippingCost > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Shipping</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">₹${shippingCost.toFixed(2)}</td></tr>` : ''}
+        ${taxAmt > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Tax</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">₹${taxAmt.toFixed(2)}</td></tr>` : ''}
+        <tr style="background:#FAF6F0;"><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#2A0845;border-top:2px solid #2A0845;">TOTAL</td><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#D4AF37;border-top:2px solid #2A0845;">₹${Number(order.total).toFixed(2)}</td></tr>${refundAmt > 0 ? `<tr style="background:#fef2f2;"><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:10pt;color:#dc2626;border-top:1px solid #fecaca;">REFUNDED</td><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:10pt;color:#dc2626;border-top:1px solid #fecaca;">-₹${refundAmt.toFixed(2)}</td></tr>` : ''}
       </table>
     </td>
   </tr>
 </table>
 
 <div style="margin-top:30px;padding-top:12px;border-top:1px solid #e8d5b0;text-align:center;font-size:8.5pt;color:#999;">
-  Thank you for shopping with Houra Jewels! &nbsp;|&nbsp; support@hourajewels.com &nbsp;|&nbsp; +1 940-465-6563
+  Thank you for shopping with LYDIA GLOBAL EXIM! &nbsp;|&nbsp; lydiaglobalexim@gmail.com &nbsp;|&nbsp; +91 9014863411
 </div>
 
 <div class="print-btn">
@@ -1144,12 +1128,12 @@ ${!isPickup ? `
     let phone = (order.user_phone || address.mobile || "0000000000").replace(/\D/g, "");
     if (phone.length === 10) phone = '1' + phone;
 
-    const itemsText = items.map((i) => `• ${i.product?.name} ×${i.qty} — $${(i.variant?.price || i.product?.price || 0) * i.qty}`).join("\n");
+    const itemsText = items.map((i) => `• ${i.product?.name} ×${i.qty} — ₹${(i.variant?.price || i.product?.price || 0) * i.qty}`).join("\n");
     const msg = encodeURIComponent(
       `Hi ${order.user_name || address.name || 'Customer'}! 🙏 Please find your *Invoice* for Order *#${order.order_number || order.id}* below:\n\n` +
       `*Items:*\n${itemsText}\n\n` +
-      `*Total: $${order.total}*\n\n` +
-      `Thank you for shopping with Houra Jewels!`
+      `*Total: ₹${order.total}*\n\n` +
+      `Thank you for shopping with LYDIA GLOBAL EXIM!`
     );
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
   };
@@ -1216,24 +1200,21 @@ ${!isPickup ? `
 <body>
 <div class="box">
   <div class="hdr">
-    <div class="brand">Houra Jewels</div>
+    <div class="brand">LYDIA GLOBAL EXIM</div>
     <div class="oid">#${order.order_number || order.id}</div>
   </div>
   <div class="sec">
     <div class="lbl">Ship To</div>
     <div class="val">${escapeHtml(address.name || '')}</div>
     <div class="sm">${escapeHtml(address.line1 || '')}${address.line2 ? ', ' + escapeHtml(address.line2) : ''}</div>
-    <div class="sm">${escapeHtml(address.city || '')}, ${escapeHtml(address.state || '')} - ${escapeHtml(address.pincode || '')}, USA</div>
-    ${address.mobile ? '<div class="sm" style="font-weight:700;margin-top:1mm;">Ph: ' + escapeHtml(address.mobile) + '</div>' : ''}
+    <div class="sm">${escapeHtml(address.city || '')}, ${escapeHtml(address.state || '')} - ${escapeHtml(address.pincode || '')}, USA</div>${address.mobile ? '<div class="sm" style="font-weight:700;margin-top:1mm;">Ph: ' + escapeHtml(address.mobile) + '</div>' : ''}
   </div>
  
   <div class="items">
-    <div class="lbl" style="margin-bottom:2mm;">Order Items (${items.length})</div>
-    ${itemRows}
+    <div class="lbl" style="margin-bottom:2mm;">Order Items (${items.length})</div>${itemRows}
   </div>
   <div class="ftr">
-    <div class="dt">
-      ${new Date(order.created_at).toLocaleDateString('en-IN')}
+    <div class="dt">${new Date(order.created_at).toLocaleDateString('en-IN')}
       ${order.tracking_id ? '<br>AWB: ' + escapeHtml(order.tracking_id) : ''}
     </div>
   </div>
@@ -1252,7 +1233,7 @@ ${!isPickup ? `
 
   if (loading) return (
     <div className="flex items-center justify-center py-20">
-      <div className="w-8 h-8 border-4 border-[#08183A]/20 border-t-[#08183A] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-[#2A0845]/20 border-t-[#2A0845] rounded-full animate-spin" />
     </div>
   );
 
@@ -1284,16 +1265,16 @@ ${!isPickup ? `
       {/* Page Header */}
       <div className="flex flex-col xs:flex-row xs:items-center justify-between gap-3 mb-4">
         <div>
-          <h1 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-[#08183A]">Orders</h1>
-          <p className="text-[#08183A]/40 text-xs font-sans mt-0.5">{orders.filter(o => o.order_type !== 'pickup').length} total</p>
+          <h1 className="font-serif text-xl sm:text-2xl lg:text-3xl font-bold text-[#2A0845]">Orders</h1>
+          <p className="text-[#2A0845]/40 text-xs font-sans mt-0.5">{orders.filter(o => o.order_type !== 'pickup').length} total</p>
         </div>
         <div className="relative w-full xs:w-64">
-          <Search className="w-4 h-4 text-[#08183A]/40 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="w-4 h-4 text-[#2A0845]/40 absolute left-3 top-1/2 -translate-y-1/2" />
           <input 
             value={search} 
             onChange={(e) => setSearch(e.target.value)} 
             placeholder="Search by Order # or Email"
-            className="w-full pl-9 pr-4 py-2 bg-white rounded-xl border border-[#08183A]/10 text-sm focus:outline-none focus:border-[#D4AF37]/50 focus:ring-1 focus:ring-[#D4AF37]/50 transition-all"
+            className="w-full pl-9 pr-4 py-2 bg-white rounded-xl border border-[#2A0845]/10 text-sm focus:outline-none focus:border-[#D4AF37]/50 focus:ring-1 focus:ring-[#D4AF37]/50 transition-all"
           />
         </div>
       </div>
@@ -1306,8 +1287,8 @@ ${!isPickup ? `
           <button key={s} onClick={() => setStatusFilter(s)}
             className={`flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold font-sans capitalize transition-colors ${
               statusFilter === s
-                ? "bg-[#08183A] text-white shadow-sm"
-                : "bg-white border border-[#08183A]/20 text-[#08183A]/60 hover:border-[#08183A]/40"
+                ? "bg-[#2A0845] text-white shadow-sm"
+                : "bg-white border border-[#2A0845]/20 text-[#2A0845]/60 hover:border-[#2A0845]/40"
             }`}>
             {s === "all" ? `All (${shippingOrders.length})` : `${s} (${shippingOrders.filter(o => o.status === s).length})`}
           </button>
@@ -1315,8 +1296,8 @@ ${!isPickup ? `
       </div>
 
       {filtered.length === 0 ? (
-        <div className="bg-white rounded-2xl border border-[#08183A]/10 p-10 sm:p-12 text-center">
-          <p className="text-[#08183A]/50 font-sans text-sm">
+        <div className="bg-white rounded-2xl border border-[#2A0845]/10 p-10 sm:p-12 text-center">
+          <p className="text-[#2A0845]/50 font-sans text-sm">
             {orders.length === 0 ? "No orders yet." : `No ${statusFilter} orders.`}
           </p>
         </div>
@@ -1324,17 +1305,17 @@ ${!isPickup ? `
         <div className="space-y-3 sm:space-y-4">
           {paginatedOrders.map((order, i) => (
             <motion.div key={order.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
-              className="bg-white rounded-2xl border border-[#08183A]/10 overflow-hidden">
+              className="bg-white rounded-2xl border border-[#2A0845]/10 overflow-hidden">
 
-              <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 lg:p-5 cursor-pointer hover:bg-[#FDF8F0]/30 transition-colors"
+              <div className="flex items-center gap-2 sm:gap-3 p-3 sm:p-4 lg:p-5 cursor-pointer hover:bg-[#FAF6F0]/30 transition-colors"
                 onClick={() => setExpanded(expanded === order.id ? null : order.id)}>
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                    <span className="font-serif font-bold text-[#08183A] text-sm sm:text-base">#{order.order_number || order.id}</span>
-                    <span className="text-[#08183A]/50 text-[10px] sm:text-xs font-sans">
+                    <span className="font-serif font-bold text-[#2A0845] text-sm sm:text-base">#{order.order_number || order.id}</span>
+                    <span className="text-[#2A0845]/50 text-[10px] sm:text-xs font-sans">
                       {new Date(order.created_at).toLocaleDateString("en-IN")}
                     </span>
-                    <span className={`text-[9px] sm:text-[10px] font-bold font-sans px-2 py-0.5 rounded-full ${STATUS_COLORS[order.status] || "bg-[#FDF8F0] text-gray-500"}`}>
+                    <span className={`text-[9px] sm:text-[10px] font-bold font-sans px-2 py-0.5 rounded-full ${STATUS_COLORS[order.status] || "bg-[#FAF6F0] text-gray-500"}`}>
                       {order.status}
                     </span>
                     {order.payment_method === 'cod' && !order.stripe_payment_intent_id && (
@@ -1348,21 +1329,21 @@ ${!isPickup ? `
                       </span>
                     )}
                   </div>
-                  <p className="text-[#08183A]/60 text-[10px] sm:text-xs font-sans mt-0.5 truncate">
+                  <p className="text-[#2A0845]/60 text-[10px] sm:text-xs font-sans mt-0.5 truncate">
                     {order.user_name || "Guest"}
                   </p>
                 </div>
                 <span className="font-serif font-bold text-[#D4AF37] text-sm sm:text-base lg:text-lg flex-shrink-0">${order.total}</span>
-                <ChevronDown className={`w-4 h-4 text-[#08183A]/40 transition-transform flex-shrink-0 ${expanded === order.id ? "rotate-180" : ""}`} />
+                <ChevronDown className={`w-4 h-4 text-[#2A0845]/40 transition-transform flex-shrink-0 ${expanded === order.id ? "rotate-180" : ""}`} />
               </div>
 
               {expanded === order.id && (
-                <div className="border-t border-[#08183A]/5 p-3 sm:p-4 lg:p-5 space-y-4">
+                <div className="border-t border-[#2A0845]/5 p-3 sm:p-4 lg:p-5 space-y-4">
                   <div className="grid grid-cols-1 gap-3">
                     <div>
-                      <p className="text-[10px] font-sans text-[#08183A]/40 uppercase tracking-wider mb-2">Update Status</p>
+                      <p className="text-[10px] font-sans text-[#2A0845]/40 uppercase tracking-wider mb-2">Update Status</p>
                       <select value={order.status} onChange={(e) => updateStatus(order.id, e.target.value)}
-                        className="w-full px-3 py-2 rounded-xl bg-[#FDF8F0] border border-[#08183A]/10 text-[#08183A] font-sans text-sm focus:outline-none">
+                        className="w-full px-3 py-2 rounded-xl bg-[#FAF6F0] border border-[#2A0845]/10 text-[#2A0845] font-sans text-sm focus:outline-none">
                         {(order.order_type === 'pickup' ? PICKUP_STATUSES : SHIPPING_STATUSES).map((s) => <option key={s} value={s}>{s}</option>)}
                       </select>
                     </div>
@@ -1379,20 +1360,20 @@ ${!isPickup ? `
                     try { hist = typeof order.edit_history === 'string' ? JSON.parse(order.edit_history) : (order.edit_history || []); } catch {}
                     if (!hist.length) return null;
                     return (
-                      <div className="pt-4 border-t border-[#08183A]/5">
-                        <p className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                      <div className="pt-4 border-t border-[#2A0845]/5">
+                        <p className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider mb-2 flex items-center gap-1.5">
                           <History className="w-3 h-3" /> Edit History
                         </p>
                         <div className="space-y-2">
                           {hist.map((h, i) => (
-                            <div key={i} className="bg-[#FDF8F0] rounded-xl px-3 py-2 text-xs text-[#08183A]/70">
+                            <div key={i} className="bg-[#FAF6F0] rounded-xl px-3 py-2 text-xs text-[#2A0845]/70">
                               <div className="flex justify-between">
                                 <span className="font-semibold">{new Date(h.timestamp).toLocaleString('en-IN')}</span>
                                 <span className={h.diff > 0 ? 'text-amber-600 font-bold' : h.diff < 0 ? 'text-green-600 font-bold' : 'text-gray-400'}>
                                   {h.diff > 0 ? `+${h.diff.toFixed(2)}` : h.diff < 0 ? `-${Math.abs(h.diff).toFixed(2)}` : 'No change'}
                                 </span>
                               </div>
-                              {h.note && <p className="text-[#08183A]/50 mt-0.5">{h.note}</p>}
+                              {h.note && <p className="text-[#2A0845]/50 mt-0.5">{h.note}</p>}
                             </div>
                           ))}
                         </div>
@@ -1401,8 +1382,8 @@ ${!isPickup ? `
                   })()}
 
                   {/* Customer Details */}
-                  <div className="pt-4 border-t border-[#08183A]/5">
-                    <p className="text-[10px] font-sans text-[#08183A]/40 uppercase tracking-wider mb-3">Customer Details</p>
+                  <div className="pt-4 border-t border-[#2A0845]/5">
+                    <p className="text-[10px] font-sans text-[#2A0845]/40 uppercase tracking-wider mb-3">Customer Details</p>
                     {(() => {
                       let address = {};
                       try { address = typeof order.address === 'string' ? JSON.parse(order.address) : (order.address || {}); } catch(e) {}
@@ -1411,39 +1392,39 @@ ${!isPickup ? `
                       const phone = order.user_phone || address.mobile || '—';
                       const addr = [address.line1, address.city, address.state, address.pincode].filter(Boolean).join(', ');
                       return (
-                        <div className="bg-[#FDF8F0] rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div className="bg-[#FAF6F0] rounded-xl p-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
                           <div className="flex items-start gap-2">
-                            <span className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Name</span>
-                            <span className="text-sm font-semibold text-[#08183A]">{name}</span>
+                            <span className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Name</span>
+                            <span className="text-sm font-semibold text-[#2A0845]">{name}</span>
                           </div>
                           <div className="flex items-start gap-2">
-                            <span className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Phone</span>
-                            <span className="text-sm font-semibold text-[#08183A]">{address.mobile || order.user_phone || '—'}</span>
+                            <span className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Phone</span>
+                            <span className="text-sm font-semibold text-[#2A0845]">{address.mobile || order.user_phone || '—'}</span>
                           </div>
                           <div className="flex items-start gap-2">
-                            <span className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Email</span>
-                            <span className="text-sm font-semibold text-[#08183A] break-all">{email}</span>
+                            <span className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Email</span>
+                            <span className="text-sm font-semibold text-[#2A0845] break-all">{email}</span>
                           </div>
                           {addr && (
                             <div className="flex items-start gap-2 sm:col-span-2">
-                              <span className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Address</span>
-                              <span className="text-sm font-semibold text-[#08183A]">{addr}</span>
+                              <span className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Address</span>
+                              <span className="text-sm font-semibold text-[#2A0845]">{addr}</span>
                             </div>
                           )}
                           <div className="flex items-start gap-2">
-                            <span className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Type</span>
+                            <span className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Type</span>
                             <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${ order.order_type === 'pickup' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700' }`}>
                               {order.order_type === 'pickup' ? '🏪 Pickup' : '🚚 Shipping'}
                             </span>
                           </div>
                           <div className="flex items-start gap-2">
-                            <span className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Payment</span>
-                            <span className="text-sm font-semibold text-[#08183A] capitalize">{order.payment_method === 'stripe' ? 'Online (Stripe)' : order.payment_method || '—'}</span>
+                            <span className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Payment</span>
+                            <span className="text-sm font-semibold text-[#2A0845] capitalize">{order.payment_method === 'stripe' ? 'Online (Stripe)' : order.payment_method || '—'}</span>
                           </div>
                           {order.stripe_payment_intent_id && (
                             <div className="flex items-start gap-2 sm:col-span-2">
-                              <span className="text-[10px] font-bold text-[#08183A]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Txn ID</span>
-                              <span className="text-xs font-mono font-semibold text-[#08183A] break-all select-all">{order.stripe_payment_intent_id}</span>
+                              <span className="text-[10px] font-bold text-[#2A0845]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Txn ID</span>
+                              <span className="text-xs font-mono font-semibold text-[#2A0845] break-all select-all">{order.stripe_payment_intent_id}</span>
                             </div>
                           )}
                         </div>
@@ -1452,8 +1433,8 @@ ${!isPickup ? `
                   </div>
 
                   {/* Order Items List */}
-                  <div className="pt-4 border-t border-[#08183A]/5">
-                    <p className="text-[10px] font-sans text-[#08183A]/40 uppercase tracking-wider mb-3">Order Items</p>
+                  <div className="pt-4 border-t border-[#2A0845]/5">
+                    <p className="text-[10px] font-sans text-[#2A0845]/40 uppercase tracking-wider mb-3">Order Items</p>
                     <div className="space-y-3">
                       {/* Cancelled Items */}
                       {(() => {
@@ -1490,8 +1471,7 @@ ${!isPickup ? `
                                         </p>
                                       </div>
                                     </div>
-                                    <div className="text-sm font-bold text-gray-400 line-through">
-                                      ${((item.variant?.price || item.product?.price || item.price || 0) * item.qty).toFixed(2)}
+                                    <div className="text-sm font-bold text-gray-400 line-through">${((item.variant?.price || item.product?.price || item.price || 0) * item.qty).toFixed(2)}
                                     </div>
                                   </div>
                                 );
@@ -1526,12 +1506,12 @@ ${!isPickup ? `
                                   <div className="flex-1 min-w-0">
                                     {item.product?.id ? (
                                       <Link to={`/product/${item.product.id}${itemCode ? `?variantCode=${itemCode}` : ''}`} target="_blank"
-                                        className="text-sm font-semibold text-[#08183A] truncate hover:text-[#D4AF37] hover:underline transition-colors flex items-center gap-1">
+                                        className="text-sm font-semibold text-[#2A0845] truncate hover:text-[#D4AF37] hover:underline transition-colors flex items-center gap-1">
                                         {item.product?.name || 'Unknown Product'}{item.variant?.color ? ` — ${item.variant.color}` : ''}
                                         <ExternalLink className="w-3 h-3 shrink-0 opacity-50" />
                                       </Link>
                                     ) : (
-                                      <p className="text-sm font-semibold text-[#08183A] truncate">{item.product?.name || 'Unknown Product'}{item.variant?.color ? ` — ${item.variant.color}` : ''}</p>
+                                      <p className="text-sm font-semibold text-[#2A0845] truncate">{item.product?.name || 'Unknown Product'}{item.variant?.color ? ` — ${item.variant.color}` : ''}</p>
                                     )}
                                     <div className="flex items-center gap-2 flex-wrap mt-0.5">
                                       <p className="text-xs text-gray-500">
@@ -1542,8 +1522,7 @@ ${!isPickup ? `
                                       )}
                                     </div>
                                   </div>
-                                  <div className="text-sm font-bold text-[#D4AF37]">
-                                    ${((item.variant?.price || item.product?.price || 0) * item.qty).toFixed(2)}
+                                  <div className="text-sm font-bold text-[#D4AF37]">${((item.variant?.price || item.product?.price || 0) * item.qty).toFixed(2)}
                                   </div>
                                 </div>
                                 );
@@ -1568,10 +1547,10 @@ ${!isPickup ? `
                         try { addr = typeof order.address === 'string' ? JSON.parse(order.address) : (order.address || {}); } catch(e) {}
                         
                         return (
-                          <div className="mt-4 pt-4 border-t border-dashed border-[#08183A]/10">
-                            <p className="text-[10px] font-sans text-[#08183A]/40 uppercase tracking-wider mb-2">Price Summary</p>
+                          <div className="mt-4 pt-4 border-t border-dashed border-[#2A0845]/10">
+                            <p className="text-[10px] font-sans text-[#2A0845]/40 uppercase tracking-wider mb-2">Price Summary</p>
                             <div className="space-y-1.5">
-                              <div className="flex justify-between text-xs text-[#08183A]/70">
+                              <div className="flex justify-between text-xs text-[#2A0845]/70">
                                 <span>Item Total</span>
                                 <span className="font-semibold">${subtotal.toFixed(2)}</span>
                               </div>
@@ -1582,30 +1561,30 @@ ${!isPickup ? `
                                 </div>
                               )}
                               {shipping > 0 && (
-                                <div className="flex justify-between text-xs text-[#08183A]/70">
+                                <div className="flex justify-between text-xs text-[#2A0845]/70">
                                   <span>Shipping Fee</span>
                                   <span className="font-semibold">${shipping.toFixed(2)}</span>
                                 </div>
                               )}
                               {addr.signature_fee > 0 && (
-                                <div className="flex justify-between text-xs text-[#08183A]/70">
+                                <div className="flex justify-between text-xs text-[#2A0845]/70">
                                   <span>Signature Confirmation</span>
                                   <span className="font-semibold">${parseFloat(addr.signature_fee).toFixed(2)}</span>
                                 </div>
                               )}
                               {addr.insurance_fee > 0 && (
-                                <div className="flex justify-between text-xs text-[#08183A]/70">
+                                <div className="flex justify-between text-xs text-[#2A0845]/70">
                                   <span>Shipping Insurance</span>
                                   <span className="font-semibold">${parseFloat(addr.insurance_fee).toFixed(2)}</span>
                                 </div>
                               )}
                               {tax > 0 && (
-                                <div className="flex justify-between text-xs text-[#08183A]/70">
+                                <div className="flex justify-between text-xs text-[#2A0845]/70">
                                   <span>Tax{taxRate ? ` (${taxRate}%)` : ''}</span>
                                   <span className="font-semibold">${tax.toFixed(2)}</span>
                                 </div>
                               )}
-                              <div className="flex justify-between text-sm font-bold text-[#08183A] border-t border-[#08183A]/10 pt-2 mt-2">
+                              <div className="flex justify-between text-sm font-bold text-[#2A0845] border-t border-[#2A0845]/10 pt-2 mt-2">
                                 <span>Grand Total</span>
                                 <span className="text-[#D4AF37]">${Number(order.total).toFixed(2)}</span>
                               </div>
@@ -1617,14 +1596,14 @@ ${!isPickup ? `
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-4 border-t border-[#08183A]/5">
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 pt-4 border-t border-[#2A0845]/5">
                     <button onClick={() => setEditModal(order)}
                       className="flex items-center justify-center gap-1.5 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2.5 rounded-xl text-xs font-semibold font-sans transition-colors">
                       <Pencil className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="truncate">Edit Order</span>
                     </button>
                     <button onClick={() => sendEmailInvoice(order)} disabled={sendingInvoice[order.id]}
-                      className="flex items-center justify-center gap-1.5 bg-[#08183A] text-white px-3 py-2.5 rounded-xl text-xs font-semibold font-sans hover:bg-[#08183A]/80 transition-colors disabled:opacity-50">
+                      className="flex items-center justify-center gap-1.5 bg-[#2A0845] text-white px-3 py-2.5 rounded-xl text-xs font-semibold font-sans hover:bg-[#2A0845]/80 transition-colors disabled:opacity-50">
                       <FileText className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="truncate">{sendingInvoice[order.id] ? "Sending..." : "Email Invoice"}</span>
                     </button>
@@ -1634,7 +1613,7 @@ ${!isPickup ? `
                       <span className="truncate">Notify WA</span>
                     </button>
                     <button onClick={() => openInvoice(order)}
-                      className="flex items-center justify-center gap-1.5 bg-[#D4AF37] hover:bg-amber-500 text-[#08183A] px-3 py-2.5 rounded-xl text-xs font-semibold font-sans transition-colors">
+                      className="flex items-center justify-center gap-1.5 bg-[#D4AF37] hover:bg-amber-500 text-[#2A0845] px-3 py-2.5 rounded-xl text-xs font-semibold font-sans transition-colors">
                       <Printer className="w-3.5 h-3.5 flex-shrink-0" />
                       <span className="truncate">Print Invoice</span>
                     </button>
@@ -1651,19 +1630,19 @@ ${!isPickup ? `
           
           {totalPages > 1 && (
             <div className="flex items-center justify-between pt-2">
-              <span className="text-sm text-[#08183A]/60">Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filtered.length)} of {filtered.length} orders</span>
+              <span className="text-sm text-[#2A0845]/60">Showing {(currentPage - 1) * itemsPerPage + 1} to {Math.min(currentPage * itemsPerPage, filtered.length)} of {filtered.length} orders</span>
               <div className="flex gap-2">
                 <button 
                   disabled={currentPage === 1} 
                   onClick={() => setCurrentPage(p => p - 1)}
-                  className="px-3 py-1.5 border border-[#08183A]/20 rounded-lg text-sm font-semibold text-[#08183A] bg-white hover:bg-[#FDF8F0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 border border-[#2A0845]/20 rounded-lg text-sm font-semibold text-[#2A0845] bg-white hover:bg-[#FAF6F0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Previous
                 </button>
                 <button 
                   disabled={currentPage === totalPages} 
                   onClick={() => setCurrentPage(p => p + 1)}
-                  className="px-3 py-1.5 border border-[#08183A]/20 rounded-lg text-sm font-semibold text-[#08183A] bg-white hover:bg-[#FDF8F0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-3 py-1.5 border border-[#2A0845]/20 rounded-lg text-sm font-semibold text-[#2A0845] bg-white hover:bg-[#FAF6F0] disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   Next
                 </button>
@@ -1704,7 +1683,7 @@ ${!isPickup ? `
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
               className="bg-white rounded-2xl w-full max-w-lg shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
               <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between sticky top-0 bg-white z-10">
-                <h2 className="font-serif text-lg font-bold text-[#08183A]">Select Shipping Rate</h2>
+                <h2 className="font-serif text-lg font-bold text-[#2A0845]">Select Shipping Rate</h2>
                 <button onClick={() => setRatesModal(null)} className="text-gray-400 hover:text-gray-700"><X className="w-5 h-5" /></button>
               </div>
               <div className="p-6 overflow-y-auto space-y-3">
@@ -1716,7 +1695,7 @@ ${!isPickup ? `
                       <div className="flex items-center gap-3">
                         {rate.providerImage75 && <img src={rate.providerImage75} alt={rate.provider} className="h-8 w-8 object-contain" />}
                         <div>
-                          <p className="font-bold text-[#08183A] text-sm">{rate.provider} - {rate.servicelevel?.name}</p>
+                          <p className="font-bold text-[#2A0845] text-sm">{rate.provider} - {rate.servicelevel?.name}</p>
                           <p className="text-xs text-gray-500">Est. {rate.estimatedDays || '?'} days</p>
                         </div>
                       </div>
@@ -1724,7 +1703,7 @@ ${!isPickup ? `
                         <p className="font-bold text-[#D4AF37]">${rate.amount}</p>
                         <button onClick={() => purchaseShippoLabel(ratesModal.orderId, rate.objectId)}
                           disabled={shipping[`shippo_buy_${ratesModal.orderId}`]}
-                          className="mt-1 text-xs bg-[#08183A] text-white px-3 py-1.5 rounded-lg hover:bg-blue-900 disabled:opacity-50">
+                          className="mt-1 text-xs bg-[#2A0845] text-white px-3 py-1.5 rounded-lg hover:bg-blue-900 disabled:opacity-50">
                           {shipping[`shippo_buy_${ratesModal.orderId}`] ? 'Buying...' : 'Buy Label'}
                         </button>
                       </div>

@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "tax_mode": "pincode",
+    "flat_rate": 10,
+    "country_fees": {
+      "Algeria": {
+        "fee": "1"
+      },
+      "United States": {
+        "fee": "6",
+        "threshold": "1000000000000"
+      }
+    },
+    "pickup_enabled": true,
+    "tax_percentage": 8.25,
+    "allowed_countries": [
+      "Algeria",
+      "Austria",
+      "United States",
+      "Canada"
+    ],
+    "free_shipping_threshold": 99999999
+  },
+  "zipCodes": [
+    {
+      "pincode": "523113",
+      "percentage": "20.00"
+    },
+    {
+      "pincode": "560068",
+      "percentage": "25.00"
+    }
+  ],
+  "pincodes": [
+    {
+      "pincode": "523113",
+      "percentage": "20.00"
+    },
+    {
+      "pincode": "560068",
+      "percentage": "25.00"
+    }
+  ],
+  "shipping_rate": 10,
+  "tax_percentage": 8.25,
+  "pickup_enabled": true
+}

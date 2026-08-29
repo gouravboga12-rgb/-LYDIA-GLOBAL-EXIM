@@ -95,7 +95,7 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
             type="text"
             value={inputVal}
             onChange={handleInput}
-            className="w-full text-sm border border-[#08183A]/15 rounded-xl px-3 py-2 bg-[#FDF8F0] text-[#08183A] focus:outline-none focus:border-[#08183A]/30 transition-colors"
+            className="w-full text-sm border border-[#2A0845]/15 rounded-xl px-3 py-2 bg-[#FAF6F0] text-[#2A0845] focus:outline-none focus:border-[#2A0845]/30 transition-colors"
             placeholder="Address Line 1"
           />
         </div>
@@ -107,7 +107,7 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
               value={inputVal}
               onChange={handleInput}
               autoComplete="off"
-              className="w-full text-sm border border-[#08183A]/15 rounded-xl px-3 py-2 bg-[#FDF8F0] text-[#08183A] focus:outline-none focus:border-[#08183A]/30 transition-colors"
+              className="w-full text-sm border border-[#2A0845]/15 rounded-xl px-3 py-2 bg-[#FAF6F0] text-[#2A0845] focus:outline-none focus:border-[#2A0845]/30 transition-colors"
               placeholder="Start typing your address..."
             />
             {suggestions.length > 0 && (
@@ -116,7 +116,7 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
                   <button
                     key={suggestion.place_id}
                     onClick={(e) => { e.preventDefault(); handleSelect(suggestion); }}
-                    className="w-full text-left px-4 py-2.5 hover:bg-[#FDF8F0] focus:bg-[#FDF8F0] focus:outline-none transition-colors border-b border-gray-50 last:border-0 flex items-start gap-3"
+                    className="w-full text-left px-4 py-2.5 hover:bg-[#FAF6F0] focus:bg-[#FAF6F0] focus:outline-none transition-colors border-b border-gray-50 last:border-0 flex items-start gap-3"
                   >
                     <svg className="w-4 h-4 text-gray-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.243-4.243a8 8 0 1111.314 0z" />

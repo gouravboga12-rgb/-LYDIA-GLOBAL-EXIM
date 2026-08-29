@@ -151,7 +151,7 @@ export function CategoryListingPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-[#FDF8F0]">
+      <div className="flex items-center justify-center min-h-screen bg-[#FAF6F0]">
         <div className="w-8 h-8 border-4 border-[#D4AF37]/20 border-t-[#D4AF37] rounded-full animate-spin" />
       </div>
     );
@@ -164,12 +164,12 @@ export function CategoryListingPage() {
     <div className="flex flex-col gap-6">
       {/* Categories */}
       <div>
-        <h3 className="text-sm font-bold text-[#08183A] mb-3 uppercase tracking-wider">Categories</h3>
+        <h3 className="text-sm font-bold text-[#2A0845] mb-3 uppercase tracking-wider">Categories</h3>
         <ul className="space-y-1">
           <li>
             <button 
               onClick={() => handleCategoryChange('all')}
-              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${categoryId === 'all' ? 'bg-[#08183A]/10 text-[#D4AF37] font-bold' : 'text-[#08183A]/70 hover:bg-gray-100'}`}
+              className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${categoryId === 'all' ? 'bg-[#2A0845]/10 text-[#D4AF37] font-bold' : 'text-[#2A0845]/70 hover:bg-gray-100'}`}
             >
               All Products
             </button>
@@ -178,7 +178,7 @@ export function CategoryListingPage() {
             <li key={cat.id}>
               <button 
                 onClick={() => handleCategoryChange(cat.id.toString())}
-                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${categoryId === cat.id.toString() ? 'bg-[#08183A]/10 text-[#D4AF37] font-bold' : 'text-[#08183A]/70 hover:bg-gray-100'}`}
+                className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${categoryId === cat.id.toString() ? 'bg-[#2A0845]/10 text-[#D4AF37] font-bold' : 'text-[#2A0845]/70 hover:bg-gray-100'}`}
               >
                 {cat.name}
               </button>
@@ -191,7 +191,7 @@ export function CategoryListingPage() {
       {currentModels.length > 0 && (
         <div className="border-t border-[#D4AF37]/20 pt-6">
           <div className="flex items-center justify-between mb-3">
-            <h3 className="text-sm font-bold text-[#08183A] uppercase tracking-wider">Subcategories</h3>
+            <h3 className="text-sm font-bold text-[#2A0845] uppercase tracking-wider">Subcategories</h3>
             {modelQuery && (
               <button onClick={() => handleModelChange('')} className="text-[10px] text-[#D4AF37] hover:underline font-bold">Clear</button>
             )}
@@ -199,10 +199,10 @@ export function CategoryListingPage() {
           <div className="space-y-2 max-h-48 overflow-y-auto pr-2 custom-scrollbar">
             {currentModels.map(model => (
               <label key={model} className="flex items-center gap-2 cursor-pointer group">
-                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${modelQuery === model ? 'border-[#D4AF37] bg-[#08183A]' : 'border-gray-300 group-hover:border-[#D4AF37]'}`}>
+                <div className={`w-4 h-4 rounded border flex items-center justify-center transition-colors ${modelQuery === model ? 'border-[#D4AF37] bg-[#2A0845]' : 'border-gray-300 group-hover:border-[#D4AF37]'}`}>
                   {modelQuery === model && <Check className="w-3 h-3 text-white" />}
                 </div>
-                <span className={`text-sm ${modelQuery === model ? 'text-[#D4AF37] font-bold' : 'text-[#08183A]/70'}`}>{model}</span>
+                <span className={`text-sm ${modelQuery === model ? 'text-[#D4AF37] font-bold' : 'text-[#2A0845]/70'}`}>{model}</span>
                 <input type="radio" name="model_radio" className="hidden" checked={modelQuery === model} onChange={() => handleModelChange(model)} />
               </label>
             ))}
@@ -212,12 +212,12 @@ export function CategoryListingPage() {
 
       {/* Reduced Price Filter */}
       <div className="border-t border-[#D4AF37]/20 pt-6">
-        <h3 className="text-sm font-bold text-[#08183A] mb-3 uppercase tracking-wider">Offers</h3>
+        <h3 className="text-sm font-bold text-[#2A0845] mb-3 uppercase tracking-wider">Offers</h3>
         <label className="flex items-center gap-3 cursor-pointer group select-none">
           <div
             onClick={() => setShowOnlyOffers(v => !v)}
             className={`w-10 h-5 rounded-full relative transition-colors duration-200 flex-shrink-0 ${
-              showOnlyOffers ? 'bg-[#08183A]' : 'bg-gray-200'
+              showOnlyOffers ? 'bg-[#2A0845]' : 'bg-gray-200'
             }`}
           >
             <div className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white shadow transition-transform duration-200 ${
@@ -226,16 +226,16 @@ export function CategoryListingPage() {
           </div>
           <div className="flex flex-col">
             <span className={`text-sm font-semibold ${
-              showOnlyOffers ? 'text-[#D4AF37]' : 'text-[#08183A]/70'
+              showOnlyOffers ? 'text-[#D4AF37]' : 'text-[#2A0845]/70'
             }`}>Reduced Price</span>
-            <span className="text-[10px] text-[#08183A]/40">Show only discounted items</span>
+            <span className="text-[10px] text-[#2A0845]/40">Show only discounted items</span>
           </div>
         </label>
       </div>
 
       {/* Sort By */}
       <div className="border-t border-[#D4AF37]/20 pt-6">
-        <h3 className="text-sm font-bold text-[#08183A] mb-3 uppercase tracking-wider">Sort By</h3>
+        <h3 className="text-sm font-bold text-[#2A0845] mb-3 uppercase tracking-wider">Sort By</h3>
         <div className="space-y-2">
           {[
             { id: 'featured', label: 'Featured' },
@@ -243,10 +243,10 @@ export function CategoryListingPage() {
             { id: 'price_desc', label: 'Price: High to Low' },
           ].map(opt => (
             <label key={opt.id} className="flex items-center gap-2 cursor-pointer group">
-              <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${sortBy === opt.id ? 'border-[#D4AF37] bg-[#08183A]' : 'border-gray-300 group-hover:border-[#D4AF37]'}`}>
+              <div className={`w-4 h-4 rounded-full border flex items-center justify-center transition-colors ${sortBy === opt.id ? 'border-[#D4AF37] bg-[#2A0845]' : 'border-gray-300 group-hover:border-[#D4AF37]'}`}>
                 {sortBy === opt.id && <Check className="w-3 h-3 text-white" />}
               </div>
-              <span className={`text-sm ${sortBy === opt.id ? 'text-[#D4AF37] font-bold' : 'text-[#08183A]/70'}`}>{opt.label}</span>
+              <span className={`text-sm ${sortBy === opt.id ? 'text-[#D4AF37] font-bold' : 'text-[#2A0845]/70'}`}>{opt.label}</span>
               <input type="radio" name="sort_radio" className="hidden" checked={sortBy === opt.id} onChange={() => handleSortChange(opt.id)} />
             </label>
           ))}
@@ -256,11 +256,11 @@ export function CategoryListingPage() {
   );
 
   return (
-    <div className="bg-[#FDF8F0] min-h-screen pb-20">
+    <div className="bg-[#FAF6F0] min-h-screen pb-20">
       <Header title={categoryName} showShare={true} />
       
       {/* Category Banner */}
-      <div className="w-full bg-[#08183A]">
+      <div className="w-full bg-[#2A0845]">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between p-6 md:px-12 md:py-8 gap-6">
           <div className="text-center md:text-left text-white max-w-xl">
             <h1 className="text-3xl md:text-5xl font-serif font-bold mb-3 tracking-wide">{categoryName}</h1>
@@ -279,7 +279,7 @@ export function CategoryListingPage() {
         {/* Filter and Sort Bar for Mobile / Top Bar for Desktop */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 bg-white p-3 md:p-4 rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#D4AF37]/20 gap-3">
           <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-            <span className="text-sm font-bold text-[#08183A] bg-[#D4AF37]/10 px-3 py-1.5 rounded-lg">{flattenedProducts.length} Items</span>
+            <span className="text-sm font-bold text-[#2A0845] bg-[#D4AF37]/10 px-3 py-1.5 rounded-lg">{flattenedProducts.length} Items</span>
             {showOnlyOffers && (
               <span className="flex items-center gap-1 text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block" />
@@ -290,7 +290,7 @@ export function CategoryListingPage() {
             {/* Mobile Filter Trigger */}
             <button 
               onClick={() => setShowMobileFilters(true)}
-              className="lg:hidden flex items-center gap-1.5 text-sm font-bold text-[#D4AF37] bg-[#08183A]/10 px-4 py-1.5 rounded-lg"
+              className="lg:hidden flex items-center gap-1.5 text-sm font-bold text-[#D4AF37] bg-[#2A0845]/10 px-4 py-1.5 rounded-lg"
             >
               <Filter className="w-4 h-4" />
               Filters
@@ -298,7 +298,7 @@ export function CategoryListingPage() {
           </div>
 
           <div className="hidden lg:flex items-center gap-3">
-            <span className="text-sm font-semibold text-[#08183A]/60">View:</span>
+            <span className="text-sm font-semibold text-[#2A0845]/60">View:</span>
             <div className="flex bg-gray-100 rounded-lg p-1">
               <button onClick={() => setLayout('grid')} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${layout === 'grid' ? 'bg-white shadow-sm text-[#D4AF37]' : 'text-gray-500 hover:text-gray-900'}`}>Grid</button>
               <button onClick={() => setLayout('list')} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${layout === 'list' ? 'bg-white shadow-sm text-[#D4AF37]' : 'text-gray-500 hover:text-gray-900'}`}>List</button>
@@ -324,9 +324,9 @@ export function CategoryListingPage() {
                   <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-4 text-gray-400">
                     <Search className="w-6 h-6 text-[#D4AF37]/50" />
                   </div>
-                  <h3 className="font-serif text-xl font-bold text-[#08183A] mb-1">No products found</h3>
-                  <p className="text-sm text-[#08183A]/60 max-w-md">Try adjusting your filters or search terms to find what you're looking for.</p>
-                  <button onClick={() => { handleCategoryChange('all'); setSortBy('featured'); }} className="mt-6 text-[#D4AF37] font-bold text-sm bg-[#08183A]/10 px-6 py-2 rounded-full hover:bg-[#08183A]/20 transition-colors">
+                  <h3 className="font-serif text-xl font-bold text-[#2A0845] mb-1">No products found</h3>
+                  <p className="text-sm text-[#2A0845]/60 max-w-md">Try adjusting your filters or search terms to find what you're looking for.</p>
+                  <button onClick={() => { handleCategoryChange('all'); setSortBy('featured'); }} className="mt-6 text-[#D4AF37] font-bold text-sm bg-[#2A0845]/10 px-6 py-2 rounded-full hover:bg-[#2A0845]/20 transition-colors">
                     Clear Filters
                   </button>
                 </div>
@@ -342,7 +342,7 @@ export function CategoryListingPage() {
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" onClick={() => setShowMobileFilters(false)} />
           <div className="relative ml-auto w-[85%] max-w-sm bg-white h-full flex flex-col shadow-2xl transition-transform transform translate-x-0">
             <div className="flex items-center justify-between p-5 border-b border-[#D4AF37]/20">
-              <h2 className="font-serif text-xl font-bold text-[#08183A] flex items-center gap-2">
+              <h2 className="font-serif text-xl font-bold text-[#2A0845] flex items-center gap-2">
                 <Filter className="w-5 h-5 text-[#D4AF37]" /> Filters
               </h2>
               <button onClick={() => setShowMobileFilters(false)} className="p-2 text-gray-400 hover:text-gray-900 bg-gray-50 rounded-full">
@@ -357,13 +357,13 @@ export function CategoryListingPage() {
             <div className="p-5 border-t border-[#D4AF37]/20 bg-gray-50 flex gap-3">
               <button 
                 onClick={() => { handleCategoryChange('all'); setSortBy('featured'); setShowOnlyOffers(false); setShowMobileFilters(false); }}
-                className="flex-1 px-4 py-3 border border-[#D4AF37]/20 text-[#08183A] font-bold rounded-xl bg-white shadow-sm"
+                className="flex-1 px-4 py-3 border border-[#D4AF37]/20 text-[#2A0845] font-bold rounded-xl bg-white shadow-sm"
               >
                 Reset
               </button>
               <button 
                 onClick={() => setShowMobileFilters(false)}
-                className="flex-[2] px-4 py-3 bg-[#08183A] text-white font-bold rounded-xl shadow-md"
+                className="flex-[2] px-4 py-3 bg-[#2A0845] text-white font-bold rounded-xl shadow-md"
               >
                 Apply Filters
               </button>

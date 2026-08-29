@@ -90,15 +90,6 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
     }
   };
 
-  const handleInstagram = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    const reelUrl = product.instagram_reel_url || firstVariant?.instagram_link;
-    if (reelUrl) {
-      window.open(reelUrl, '_blank', 'noopener,noreferrer');
-    }
-  };
-
   const handleAddToCart = async (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -123,7 +114,7 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
   if (layout === 'list') {
     return (
       <Link to={`/product/${product.id}${firstVariant.code ? `?variantCode=${encodeURIComponent(firstVariant.code)}` : ''}`} className="flex gap-4 p-4 bg-white rounded-xl shadow-sm mb-4 relative hover:shadow-md transition-shadow">
-        <div className="w-24 h-24 bg-white rounded-lg flex-shrink-0 p-2 relative border border-[#08183A]/10">
+        <div className="w-24 h-24 bg-white rounded-lg flex-shrink-0 p-2 relative border border-[#2A0845]/10">
           <img src={firstImg} alt={product.name} className="w-full h-full object-contain" />
         </div>
         <div className="flex flex-col justify-center flex-grow">
@@ -151,12 +142,12 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
 
           <div className="flex items-center justify-between mt-auto">
             <div className="flex items-baseline gap-1.5">
-              <span className="text-base font-bold text-gray-900">${displayPrice}</span>
+              <span className="text-base font-bold text-gray-900">₹{displayPrice}</span>
               {(activeOffer || originalPrice > displayPrice) && (
-                <span className="text-[10px] text-gray-400 line-through">${originalPrice}</span>
+                <span className="text-[10px] text-gray-400 line-through">₹{originalPrice}</span>
               )}
               <div className="flex items-center gap-1">
-                <span className="text-[9px] text-[#08183A] font-bold bg-[#08183A]/10 px-1 py-0.5 rounded">{defaultSize.size}</span>
+                <span className="text-[9px] text-[#2A0845] font-bold bg-[#2A0845]/10 px-1 py-0.5 rounded">{defaultSize.size}</span>
                 {firstVariant.sizes?.length > 1 && (
                   <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">+{firstVariant.sizes.length - 1} more sizes</span>
                 )}
@@ -165,7 +156,7 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
             {isOutOfStock ? (
               <span className="text-[10px] font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded-md">Out of Stock</span>
             ) : (
-              <button onClick={handleAddToCart} className="bg-[#08183A] text-white text-xs font-semibold px-4 py-1.5 rounded-md hover:bg-[#D4AF37] transition-colors flex items-center gap-1">
+              <button onClick={handleAddToCart} className="bg-[#2A0845] text-white text-xs font-semibold px-4 py-1.5 rounded-md hover:bg-[#D4AF37] transition-colors flex items-center gap-1">
                 <ShoppingCart className="w-3.5 h-3.5" />
                 Add
               </button>
@@ -177,7 +168,7 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
             onClick={handleWishlist}
             className="p-1.5 bg-white/80 rounded-full shadow-sm text-gray-300 hover:scale-110 transition-transform"
           >
-            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#08183A] text-[#08183A]' : 'text-gray-400'}`} />
+            <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#2A0845] text-[#2A0845]' : 'text-gray-400'}`} />
           </button>
           <button 
             onClick={handleShare}
@@ -185,15 +176,6 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
           >
             <Share2 className="w-4 h-4" />
           </button>
-          {(product.instagram_reel_url || firstVariant?.instagram_link) && (
-            <button 
-              onClick={handleInstagram}
-              title="Watch Instagram Reel"
-              className="p-1.5 bg-white/90 rounded-full shadow-sm text-[#E1306C] hover:scale-110 transition-transform"
-            >
-              <InstagramIcon className="w-4 h-4 text-[#E1306C]" />
-            </button>
-          )}
         </div>
       </Link>
     );
@@ -202,24 +184,15 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
   return (
     <div 
       onClick={handleCardClick}
-      className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#08183A]/10 cursor-pointer transition-all duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:-translate-y-1 h-full p-3 relative"
+      className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#2A0845]/10 cursor-pointer transition-all duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:-translate-y-1 h-full p-3 relative"
     >
       <div className="absolute top-3 right-3 z-20 flex flex-col gap-2">
         <button onClick={handleWishlist} className="p-1.5 hover:scale-110 transition-transform bg-white/90 rounded-full shadow-sm">
-          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#08183A] text-[#08183A]' : 'text-gray-400'}`} />
+          <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#2A0845] text-[#2A0845]' : 'text-gray-400'}`} />
         </button>
         <button onClick={handleShare} className="p-1.5 hover:scale-110 transition-transform bg-white/90 rounded-full shadow-sm">
           <Share2 className="w-4 h-4 text-gray-400" />
         </button>
-        {(product.instagram_reel_url || firstVariant?.instagram_link) && (
-          <button 
-            onClick={handleInstagram} 
-            title="Watch Instagram Reel"
-            className="p-1.5 hover:scale-110 transition-transform bg-white/90 rounded-full shadow-sm text-[#E1306C]"
-          >
-            <InstagramIcon className="w-4 h-4 text-[#E1306C]" />
-          </button>
-        )}
       </div>
 
       <div className="relative aspect-square bg-gray-50 overflow-hidden rounded-xl mb-3">
@@ -262,13 +235,13 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
             <div className="mt-auto mb-1 flex items-center justify-between">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[9px] text-[#08183A] font-bold bg-[#08183A]/10 px-1.5 py-0.5 rounded w-fit">{defaultSize.size}</span>
+                  <span className="text-[9px] text-[#2A0845] font-bold bg-[#2A0845]/10 px-1.5 py-0.5 rounded w-fit">{defaultSize.size}</span>
                   {firstVariant.sizes?.length > 1 && (
                     <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">+{firstVariant.sizes.length - 1} more sizes</span>
                   )}
                 </div>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-base font-bold text-gray-400 leading-none line-through">${displayPrice}</span>
+                  <span className="text-base font-bold text-gray-400 leading-none line-through">₹{displayPrice}</span>
                 </div>
               </div>
               <span className="text-[10px] font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded-full">Out of Stock</span>
@@ -277,19 +250,19 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
             <div className="flex items-end justify-between mt-auto mb-1">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[9px] text-[#08183A] font-bold bg-[#08183A]/10 px-1.5 py-0.5 rounded w-fit">{defaultSize.size}</span>
+                  <span className="text-[9px] text-[#2A0845] font-bold bg-[#2A0845]/10 px-1.5 py-0.5 rounded w-fit">{defaultSize.size}</span>
                   {firstVariant.sizes?.length > 1 && (
                     <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">+{firstVariant.sizes.length - 1} more sizes</span>
                   )}
                 </div>
                 <div className="flex items-baseline gap-1.5">
-                  <span className="text-base font-bold text-gray-900 leading-none">${displayPrice}</span>
+                  <span className="text-base font-bold text-gray-900 leading-none">₹{displayPrice}</span>
                   {(activeOffer || originalPrice > displayPrice) && (
-                    <span className="text-[10px] text-gray-400 line-through leading-none">${originalPrice}</span>
+                    <span className="text-[10px] text-gray-400 line-through leading-none">₹{originalPrice}</span>
                   )}
                 </div>
               </div>
-              <button onClick={handleAddToCart} className="bg-[#08183A] text-white p-2.5 rounded-full hover:bg-[#D4AF37] transition-all hover:shadow-md hover:scale-105 shrink-0 flex items-center justify-center group/btn">
+              <button onClick={handleAddToCart} className="bg-[#2A0845] text-white p-2.5 rounded-full hover:bg-[#D4AF37] transition-all hover:shadow-md hover:scale-105 shrink-0 flex items-center justify-center group/btn">
                 <ShoppingCart className="w-4 h-4 hidden group-hover/btn:block" />
                 <span className="text-sm font-bold leading-none w-4 h-4 flex items-center justify-center group-hover/btn:hidden">+</span>
               </button>
