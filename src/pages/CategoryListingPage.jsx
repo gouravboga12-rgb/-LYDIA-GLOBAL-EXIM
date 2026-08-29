@@ -331,7 +331,7 @@ export function CategoryListingPage() {
 
           {/* Product Grid */}
           <div className="flex-1">
-            <div className={layout === 'grid' ? 'grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6' : 'flex flex-col gap-4'}>
+            <div className={layout === 'grid' ? 'grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3.5 sm:gap-6 lg:gap-8' : 'flex flex-col gap-6'}>
               {flattenedProducts.map((product, pIdx) => (
                 <div key={product.uniqueListId} className={`reveal-on-scroll reveal-delay-${(pIdx % 6) + 1} h-full`}>
                   <ProductCard product={product} layout={layout} />

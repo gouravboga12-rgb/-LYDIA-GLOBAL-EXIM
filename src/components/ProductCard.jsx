@@ -112,8 +112,8 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
   if (layout === 'list') {
     return (
       <Link to={`/product/${product.id}${firstVariant.code ? `?variantCode=${encodeURIComponent(firstVariant.code)}` : ''}`} className="flex gap-4 p-4 bg-white rounded-xl shadow-sm mb-4 relative hover:shadow-md transition-shadow">
-        <div className="w-28 h-28 sm:w-32 sm:h-32 bg-gray-50/80 rounded-xl flex-shrink-0 p-1 relative border border-[#2A0845]/10 flex items-center justify-center">
-          <img src={firstImg} alt={product.name} className="w-full h-full object-contain mix-blend-multiply" />
+        <div className="w-28 h-28 sm:w-36 sm:h-36 bg-[#2A0845] rounded-xl flex-shrink-0 p-1 relative border border-[#D4AF37]/20 flex items-center justify-center overflow-hidden shadow-inner">
+          <img src={firstImg} alt={product.name} className="w-full h-full object-contain" />
         </div>
         <div className="flex flex-col justify-center flex-grow">
           <div className="flex justify-between items-start pr-24">
@@ -197,7 +197,7 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
         </button>
       </div>
 
-      <div className="relative aspect-square w-full bg-gray-50/70 overflow-hidden rounded-xl mb-2.5 flex items-center justify-center">
+      <div className="relative aspect-square w-full bg-[#2A0845] overflow-hidden rounded-xl mb-3 flex items-center justify-center p-0 border border-[#D4AF37]/20 shadow-inner">
         {activeOffer && (
           <div className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider shadow-sm">
             {parseFloat(activeOffer.discount_percentage)}% OFF
@@ -207,10 +207,10 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
           <img
             src={firstImg}
             alt={product.name}
-            className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-108"
+            className="w-full h-full object-contain transition-transform duration-500 group-hover:scale-108"
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center text-gray-400">No Image</div>
+          <div className="w-full h-full flex items-center justify-center text-white/50">No Image</div>
         )}
       </div>
 
