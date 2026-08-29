@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import logoImg from '../assets/logo.png';
+import logoImg from '../assets/logo_transparent.png';
 
 export function SplashScreen({ onComplete }) {
   const container = useRef(null);
@@ -81,7 +81,7 @@ export function SplashScreen({ onComplete }) {
   return (
     <div
       ref={container}
-      className="fixed inset-0 z-[100] bg-[#FAF6F0] flex flex-col items-center justify-center w-full h-full overflow-hidden"
+      className="fixed inset-0 z-[100] bg-[#FAF6F0] flex flex-col items-center justify-center w-full h-full overflow-hidden select-none"
       style={{ backgroundColor: '#FAF6F0' }}
     >
       {/* Fireworks container */}
@@ -93,7 +93,7 @@ export function SplashScreen({ onComplete }) {
           <img
             src={logoImg}
             alt="LYDIA GLOBAL EXIM Logo"
-            className="w-48 md:w-64 max-w-[80vw] h-auto object-contain drop-shadow-md"
+            className="w-48 md:w-64 max-w-[80vw] h-auto object-contain"
           />
         </div>
         <div className="flex flex-col items-center text-center mt-2">
