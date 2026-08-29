@@ -4,7 +4,7 @@ import { Ticket, Calendar, Copy, CheckCircle2 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { motion } from 'framer-motion';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function MyCouponsPage() {
   const { token } = useAuthStore();

@@ -7,7 +7,7 @@ import { ShippoConfigModal } from '../../components/admin/ShippoConfigModal';
 import AddressAutocomplete from '../../components/AddressAutocomplete';
 import { useLoadScript } from '@react-google-maps/api';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const FROM_ADDRESS = {
   name: "LYDIA GLOBAL EXIM",
   line1: "1-1-738, Vinayaka temple road",

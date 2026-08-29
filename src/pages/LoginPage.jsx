@@ -7,7 +7,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import logoImg from '../assets/image.png';
 import brandLogo from '../assets/logo.png';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
 
 function ForgotPassword({ onBack, dark = false }) {
   const [step, setStep] = useState('email'); // email | otp | password

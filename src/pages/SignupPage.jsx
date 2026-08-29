@@ -8,7 +8,7 @@ import logoImg from '../assets/image.png';
 import brandLogo from '../assets/logo.png'; // Updated logo for mobile
 import { PhoneInput, formatPhone, COUNTRIES, parsePhone } from '../components/PhoneInput';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 
 function CountryPicker({ dark, allowedCountries, value, onChange }) {

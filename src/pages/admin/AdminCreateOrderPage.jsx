@@ -6,7 +6,7 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import AddressAutocomplete from "../../components/AddressAutocomplete";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function AdminCreateOrderPage() {
   const [loading, setLoading] = useState(true);

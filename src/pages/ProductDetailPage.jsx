@@ -21,7 +21,7 @@ import { useStoreData } from '../store/useStoreData';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function ProductDetailPage() {
   const { id } = useParams();
@@ -59,7 +59,7 @@ export function ProductDetailPage() {
   const [reviewForm, setReviewForm] = useState({ name: '', rating: 5, comment: '' });
   const [reviewSubmitting, setReviewSubmitting] = useState(false);
   const [reviewSuccess, setReviewSuccess] = useState(false);
-  const API_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
+  const API_URL = import.meta.env.VITE_BACKEND_URL || '/api';
 
   // Determine Related Products
   const relatedProducts = product ? products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4) : [];

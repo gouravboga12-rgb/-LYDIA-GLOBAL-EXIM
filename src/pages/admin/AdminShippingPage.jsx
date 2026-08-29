@@ -8,7 +8,7 @@ export function AdminShippingPage() {
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const { token } = useAuthStore();
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
   const getToken = () => useAuthStore.getState().token || localStorage.getItem('token');
 
   // Shipping

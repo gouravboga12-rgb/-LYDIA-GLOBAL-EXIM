@@ -59,7 +59,7 @@ export function CartPage() {
   const [showVacationModal, setShowVacationModal] = useState(false);
 
   useEffect(() => {
-    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
     fetch(`${BACKEND_URL}/general/shipping`)
       .then(r => r.json())
       .then(d => setPickupEnabled(d.settings?.pickup_enabled ?? false))
@@ -78,7 +78,7 @@ export function CartPage() {
 
     // Validate stock of all cart items before proceeding
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
       const stockRes = await fetch(`${BACKEND_URL}/general/check-stock`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -100,7 +100,7 @@ export function CartPage() {
     if (appliedCoupon) {
       const cartQty = items.reduce((s, i) => s + i.qty, 0);
       try {
-        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+        const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
         const valRes = await fetch(`${BACKEND_URL}/general/validate-coupon`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -152,7 +152,7 @@ export function CartPage() {
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
     try {
-      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+      const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
       const res = await fetch(`${BACKEND_URL}/general/validate-coupon`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

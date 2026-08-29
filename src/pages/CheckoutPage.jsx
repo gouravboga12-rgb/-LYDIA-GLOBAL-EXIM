@@ -13,7 +13,7 @@ import { useLoadScript } from '@react-google-maps/api';
 
 
 const GOOGLE_MAPS_LIBRARIES = ['places'];
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 import { COUNTRIES } from '../data/countries';

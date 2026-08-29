@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ShoppingBag, Users, TrendingUp, MessageCircle, Package, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const WA_NUMBER = "919505550051";
 
 export function AdminDashboardPage() {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Package, Plus, Trash2, Edit2, X, Save, Upload, Search } from "lucide-react";
 import { motion } from "framer-motion";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function AdminProductsPage() {
   const [products, setProducts] = useState([]);

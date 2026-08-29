@@ -12,7 +12,7 @@ import { useWishlistStore } from '../store/useWishlistStore';
 import { useStoreData } from '../store/useStoreData';
 import logo from '../assets/logo.png';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 function AvatarDropdown({ user, onLogout }) {
   const [open, setOpen] = useState(false);

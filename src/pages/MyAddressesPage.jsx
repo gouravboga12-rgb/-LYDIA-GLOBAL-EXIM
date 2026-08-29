@@ -9,7 +9,7 @@ import usePlacesAutocomplete, { getDetails } from 'use-places-autocomplete';
 import { COUNTRIES } from '../data/countries';
 import { getStatesForCountry } from '../data/states';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const GOOGLE_MAPS_LIBRARIES = ['places'];
 
 function AddressAutocomplete({ value, onChange, onSelect, mapsLoaded }) {

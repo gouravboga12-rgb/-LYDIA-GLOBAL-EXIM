@@ -3,7 +3,7 @@ import { Save, AlertCircle, Type, Link as LinkIcon, Plus, Trash2 } from 'lucide-
 import { useAuthStore } from '../../store/useAuthStore';
 import { useToastStore } from '../../store/useToastStore';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function AdminSettingsPage() {
   const { token } = useAuthStore();

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Users, Mail, Phone, Calendar, Search, Trash2, CheckCircle, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 function VerifiedBadge({ verified, label }) {
   return verified ? (

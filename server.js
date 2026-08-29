@@ -593,6 +593,10 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', brand: 'Lydia Global Exim', timestamp: new Date().toISOString() });
 });
 
-app.listen(PORT, () => {
-  console.log(`🚀 Lydia Global Exim Backend API running on http://localhost:${PORT}`);
-});
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log(`🚀 Lydia Global Exim Backend API running on http://localhost:${PORT}`);
+  });
+}
+
+export default app;

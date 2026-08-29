@@ -5,7 +5,7 @@ import { motion } from 'framer-motion';
 import { Header } from '../components/Header';
 import confetti from 'canvas-confetti';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000/api';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
 
 export function OrderTrackingPage() {
   const { orderId } = useParams();

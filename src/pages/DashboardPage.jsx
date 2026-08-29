@@ -10,7 +10,7 @@ import { Header } from '../components/Header';
 import { COUNTRIES } from '../data/countries';
 import { getStatesForCountry } from '../data/states';
 
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000/api";
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 function AddressModal({ onClose, onSave, shippingConfig }) {
   const [form, setForm] = useState({ name: '', line1: '', line2: '', city: '', state: '', pincode: '', country: '', mobile: '', is_default: false });
