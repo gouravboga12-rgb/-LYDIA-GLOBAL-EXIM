@@ -453,38 +453,25 @@ export function HomePage() {
             <h3 className="font-serif text-xl md:text-2xl text-gray-900">Shop by Category</h3>
             <Link to="/category/all" className="text-sm font-semibold text-brand-accent flex items-center gap-1">View All <span className="text-lg leading-none">&rsaquo;</span></Link>
           </div>
-          <div className="grid grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-y-6 gap-x-3">
+          <div className="grid grid-cols-3 xs:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-2.5 sm:gap-3.5 md:gap-4">
             {categories.map((cat, idx) => {
-              const IconMap = {
-                Flame,
-                Sparkles,
-                Circle,
-                Gift,
-                Wind,
-                Bell,
-                Droplet,
-                Flower2,
-                Cloud,
-                Grid
-              };
-              const Icon = IconMap[cat.icon] || Star;
-
               return (
                 <Link
                   key={cat.id}
                   to={`/category/${cat.id}`}
-                  className={`reveal-on-scroll reveal-delay-${(idx % 8) + 1} group flex flex-col h-full rounded-[14px] overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 bg-brand-beige-darker border border-brand-gold/30`}
+                  className={`reveal-on-scroll reveal-delay-${(idx % 8) + 1} group flex flex-col h-full rounded-2xl overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-500 bg-white border border-brand-gold/25`}
                 >
-                  <div className="h-24 md:h-32 w-full flex items-center justify-center relative overflow-hidden bg-white/50">
+                  <div className="aspect-square w-full flex items-center justify-center relative overflow-hidden bg-white p-2">
                     {cat.image_url ? (
-                      <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out" />
+                      <img src={cat.image_url} alt={cat.name} className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-500 ease-out" />
                     ) : (
                       <Star className="w-8 h-8 text-brand-gold" strokeWidth={1.5} />
                     )}
                   </div>
-                  <div className="bg-brand-dark-blue flex items-center justify-center gap-1.5 py-2.5 md:py-3 px-2 mt-auto border-t border-brand-gold/20">
-                    <Sparkles className="w-3 h-3 text-brand-gold shrink-0" />
-                    <span className="text-[10px] md:text-xs font-semibold text-white text-center leading-tight truncate">{cat.name}</span>
+                  <div className="bg-brand-dark-blue flex items-center justify-center py-2 px-1.5 mt-auto border-t border-brand-gold/20 min-h-[32px] sm:min-h-[36px]">
+                    <span className="text-[11px] sm:text-xs font-bold text-white text-center leading-tight">
+                      {cat.name}
+                    </span>
                   </div>
                 </Link>
               );
