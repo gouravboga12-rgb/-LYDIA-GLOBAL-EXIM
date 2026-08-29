@@ -81,27 +81,24 @@ export function SplashScreen({ onComplete }) {
   return (
     <div
       ref={container}
-      className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center w-full h-full overflow-hidden"
+      className="fixed inset-0 z-[100] bg-gradient-to-b from-[#140224] via-[#2A0845] to-[#140224] flex flex-col items-center justify-center w-full h-full overflow-hidden"
     >
       {/* Fireworks container */}
       <div ref={fireworks} className="absolute inset-0 pointer-events-none" />
 
       {/* Logo container */}
       <div ref={logoGroup} className="relative z-10 flex flex-col items-center justify-center px-4">
-        <div className="flex items-center justify-center mb-5 p-2.5 rounded-2xl bg-white/5 backdrop-blur-md border border-[#D4AF37]/30 shadow-[0_0_50px_rgba(212,175,55,0.25)]">
+        <div className="flex items-center justify-center mb-4">
           <img
             src={logoImg}
             alt="LYDIA GLOBAL EXIM Logo"
-            className="h-24 md:h-32 w-auto object-contain rounded-xl"
+            className="w-48 md:w-64 max-w-[80vw] h-auto object-contain drop-shadow-[0_10px_35px_rgba(212,175,55,0.3)]"
           />
         </div>
-        <div className="flex flex-col items-center text-center">
-          <span className="font-serif font-bold text-2xl md:text-4xl tracking-[0.15em] text-[#D4AF37] whitespace-nowrap drop-shadow-md">
-            LYDIA GLOBAL EXIM
-          </span>
-          <span className="text-white text-sm md:text-base tracking-[0.15em] mt-3 font-bold" style={{ fontFamily: 'serif', letterSpacing: '0.08em' }}>
+        <div className="flex flex-col items-center text-center mt-2">
+          <span className="text-white text-sm md:text-base tracking-[0.15em] font-medium" style={{ fontFamily: 'serif', letterSpacing: '0.12em' }}>
             Excellence &{' '}
-            <span className="text-[#D4AF37]">Premium Quality</span>
+            <span className="text-[#D4AF37] font-bold">Premium Quality</span>
           </span>
         </div>
       </div>

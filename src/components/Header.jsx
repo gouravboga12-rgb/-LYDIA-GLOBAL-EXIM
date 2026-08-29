@@ -184,12 +184,9 @@ function DesktopFullHeader({ cartCount, wishlistCount, token, user, handleLogout
       <header className={`fixed ${announcement && announcement.is_active && announcement.items?.some(i => i.text) ? 'top-[32px]' : 'top-0'} left-0 z-50 w-full bg-brand-dark-blue px-4 md:px-12 lg:px-20 py-3 shadow-md border-b border-white/10 hidden md:block transition-all`}>
         <div className="w-full mx-auto flex items-center justify-between">
 
-          <Link to="/" className="flex items-center gap-3 hover:opacity-95 transition-opacity">
-            <div className="h-[52px] flex items-center justify-center shrink-0">
+          <Link to="/" className="flex items-center hover:opacity-95 transition-opacity">
+            <div className="h-[62px] flex items-center justify-center shrink-0">
               <img src={logo} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
-            </div>
-            <div className="flex flex-col text-left">
-              <span className="font-serif font-bold text-lg leading-none tracking-[0.12em] text-brand-gold whitespace-nowrap">LYDIA GLOBAL EXIM</span>
             </div>
           </Link>
 
@@ -362,14 +359,11 @@ export function Header({ variant = 'default', title, showShare = false }) {
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1, duration: 0.3 }}
-              className="px-5 py-5 flex items-center justify-between border-b border-brand-gold/15 bg-brand-dark-blue"
+              className="px-5 py-4 flex items-center justify-between border-b border-brand-gold/15 bg-brand-dark-blue"
             >
-              <div className="flex items-center gap-3">
-                <div className="h-14 flex items-center justify-center shrink-0">
+              <div className="flex items-center">
+                <div className="h-12 flex items-center justify-center shrink-0">
                   <img src={logo} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
-                </div>
-                <div className="flex flex-col">
-                  <span className="font-serif font-bold text-base leading-none" style={{ color: '#C6A184' }}>LYDIA GLOBAL EXIM</span>
                 </div>
               </div>
               <button
@@ -540,50 +534,53 @@ export function Header({ variant = 'default', title, showShare = false }) {
           </div>
         )}
 
-        <div className={`h-[76px] ${announcement && announcement.is_active && announcement.items?.some(i => i.text) ? 'mt-[27px]' : ''}`} />
-        <header className={`fixed ${announcement && announcement.is_active && announcement.items?.some(i => i.text) ? 'top-[27px]' : 'top-0'} left-0 z-50 w-full bg-brand-dark-blue/95 backdrop-blur-md px-4 py-2 shadow-lg border-b border-white/5 h-[76px] transition-all`}>
-          <div className="w-full h-full flex items-center justify-between relative">
+        <div className={`h-[114px] ${announcement && announcement.is_active && announcement.items?.some(i => i.text) ? 'mt-[27px]' : ''}`} />
+        <header className={`fixed ${announcement && announcement.is_active && announcement.items?.some(i => i.text) ? 'top-[27px]' : 'top-0'} left-0 z-50 w-full bg-brand-dark-blue/95 backdrop-blur-md px-4 pt-2 pb-2.5 shadow-lg border-b border-white/10 transition-all flex flex-col gap-2`}>
+          <div className="w-full flex items-center justify-between relative">
             {/* Left: Menu & Logo */}
-            <div className="flex items-center gap-1 sm:gap-3 shrink min-w-0">
+            <div className="flex items-center gap-2 shrink min-w-0">
               <button onClick={() => setMobileMenuOpen(true)} className="p-2 -ml-2 rounded-full hover:bg-white/10 transition-colors z-10 shrink-0">
                 <Menu className="w-6 h-6 text-brand-gold" strokeWidth={1.5} />
               </button>
 
-              <Link to="/" className="flex items-center gap-1.5 sm:gap-2.5 z-20 min-w-0 shrink">
-                <div className="h-8 sm:h-10 flex items-center justify-center shrink-0">
+              <Link to="/" className="flex items-center z-20 min-w-0 shrink">
+                <div className="h-10 sm:h-11 flex items-center justify-center shrink-0">
                   <img src={logo} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
-                </div>
-                <div className="flex flex-col text-left min-w-0 shrink overflow-hidden">
-                  <span className="font-serif font-bold text-[13px] sm:text-[15px] leading-none tracking-[0.08em] text-brand-gold truncate">LYDIA GLOBAL EXIM</span>
                 </div>
               </Link>
             </div>
 
             {/* Right: Icons */}
-            <div className="flex items-center gap-0.5 sm:gap-1 z-10 shrink-0">
-              <button onClick={openMobileSearch} className="p-2 rounded-full hover:bg-white/10 transition-colors">
-                <Search className="w-5 h-5 text-brand-gold" strokeWidth={1.5} />
-              </button>
+            <div className="flex items-center gap-1.5 z-10 shrink-0">
               {token ? (
-                <Link to="/profile" className="p-2 rounded-full hover:bg-white/10 transition-colors">
+                <Link to="/profile" className="p-1.5 rounded-full hover:bg-white/10 transition-colors">
                   <div className="w-7 h-7 rounded-full bg-brand-orange text-white text-[10px] font-bold flex items-center justify-center ring-2 ring-orange-300">
                     {user?.name?.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'U'}
                   </div>
                 </Link>
               ) : (
-                <Link to="/login" className="p-2 rounded-full hover:bg-white/10 transition-colors">
+                <Link to="/login" className="p-1.5 rounded-full hover:bg-white/10 transition-colors">
                   <LogIn className="w-5 h-5 text-brand-gold" strokeWidth={1.5} />
                 </Link>
               )}
-              <Link to="/cart" className="relative p-2 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
+              <Link to="/cart" className="relative p-1.5 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
                 <ShoppingCart className="w-5 h-5 text-brand-gold" strokeWidth={1.5} />
                 {cartCount > 0 && (
-                  <span className="absolute top-1 right-1 bg-brand-gold text-brand-dark-blue text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-brand-dark-blue">
+                  <span className="absolute top-0 right-0 bg-brand-gold text-brand-dark-blue text-[9px] font-bold w-4 h-4 flex items-center justify-center rounded-full border border-brand-dark-blue">
                     {cartCount}
                   </span>
                 )}
               </Link>
             </div>
+          </div>
+
+          {/* Mobile Search Bar Below Header */}
+          <div
+            onClick={openMobileSearch}
+            className="w-full flex items-center gap-2.5 bg-white/10 hover:bg-white/15 active:bg-white/20 border border-white/15 rounded-full px-3.5 py-1.5 cursor-pointer transition-colors shadow-inner"
+          >
+            <Search className="w-3.5 h-3.5 text-brand-gold/80 shrink-0" />
+            <span className="text-xs text-white/60 select-none truncate">Search for jewelry, collections, rings...</span>
           </div>
         </header>
       </div>

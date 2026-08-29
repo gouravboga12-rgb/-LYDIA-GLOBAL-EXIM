@@ -363,7 +363,7 @@ export function LoginPage() {
       </div>
 
       {/* MOBILE VIEW */}
-      <div className="lg:hidden min-h-screen bg-[#060B19] font-sans flex flex-col items-center justify-start px-6 py-10 overflow-y-auto">
+      <div className="lg:hidden min-h-screen bg-gradient-to-b from-[#140224] via-[#2A0845] to-[#140224] font-sans flex flex-col items-center justify-start px-6 py-10 overflow-y-auto">
         {/* Header / Logo */}
         <div className="flex flex-col items-center mt-4">
           <Link to="/">

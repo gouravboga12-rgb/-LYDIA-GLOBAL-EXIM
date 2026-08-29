@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind, Bell, Droplet, Flower2, Cloud, Grid, Package, MapPin, Globe, Users, Store, ShieldCheck, Gem, Quote, CheckCircle2, Award } from 'lucide-react';
+import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind, Bell, Droplet, Flower2, Cloud, Grid, Package, MapPin, Globe, Users, Store, ShieldCheck, Gem, Quote, CheckCircle2, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
 import { useStoreData } from '../store/useStoreData';
@@ -259,13 +259,60 @@ export function HomePage() {
     };
   }, [reviews]);
 
+  const defaultHeroSlides = [
+    {
+      id: 'slide_1',
+      tag: 'Lydia Global Exim Collection',
+      title: 'Handcrafted Elegance, Royal Imitation Luxury',
+      subtitle: 'Explore exquisite Kundan bridal sets, anti-tarnish micro-gold plated jewelry, and timeless designs crafted for celebrations and everyday elegance.',
+      image: '/images/about_hero.jpg',
+      link: '/category/all'
+    },
+    {
+      id: 'slide_2',
+      tag: 'Everyday Luxury & Durability',
+      title: '18K Anti-Tarnish Gold Plated Jewelry',
+      subtitle: 'Waterproof, sweatproof, and hypoallergenic designs crafted with premium PVD coating for endless daily brilliance.',
+      image: imgHeroBanner,
+      link: '/category/all'
+    },
+    {
+      id: 'slide_3',
+      tag: 'Heritage South Indian Collection',
+      title: 'Royal Temple & Traditional Classics',
+      subtitle: 'Intricate nakshi motifs, authentic matte finishes, and heirloom artistry honoring timeless Indian tradition.',
+      image: bannerJewelry,
+      link: '/category/all'
+    },
+    {
+      id: 'slide_4',
+      tag: 'Sparkling Glamour',
+      title: 'American Diamond & CZ Solitaire Sets',
+      subtitle: 'Stunning brilliance and radiant precision cut crystals to make every festive evening shine with perfection.',
+      image: imgMeditation,
+      link: '/category/all'
+    }
+  ];
+
+  const activeSlides = banners.length >= 2 ? banners.map(b => ({
+    id: b.id,
+    tag: 'Exclusive Collection',
+    title: b.title,
+    subtitle: 'Discover hand-selected artisan jewelry tailored to perfection for every celebration.',
+    image: b.image_url,
+    link: b.link_url || '/category/all'
+  })) : defaultHeroSlides;
+
+  const nextSlide = () => setCurrentSlide(prev => (prev + 1) % activeSlides.length);
+  const prevSlide = () => setCurrentSlide(prev => (prev - 1 + activeSlides.length) % activeSlides.length);
+
   React.useEffect(() => {
-    if (banners.length <= 1) return;
+    if (activeSlides.length <= 1) return;
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % banners.length);
-    }, 4000);
+      setCurrentSlide(prev => (prev + 1) % activeSlides.length);
+    }, 5000);
     return () => clearInterval(interval);
-  }, [banners.length]);
+  }, [activeSlides.length]);
   useGSAP(() => {
     if (!loading) {
       gsap.from('.animate-section', {
@@ -285,67 +332,74 @@ export function HomePage() {
     <div ref={container} className="bg-brand-beige flex-grow w-full flex flex-col pb-8">
       <Header variant="home" />
 
-      {/* Hero Banner Section */}
-      <div className="animate-section py-3 md:py-8">
-        {banners.length > 0 ? (
-          <div className="relative w-full md:w-[75%] h-56 sm:h-64 md:h-[400px] rounded-2xl overflow-hidden shadow-lg border border-gray-100 mx-auto px-4 md:px-0">
-            <div
-              className="flex h-full transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-            >
-              {banners.map((banner) => (
-                <div key={banner.id} className="relative w-full h-full shrink-0">
-                  <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent flex flex-col justify-center px-6 md:px-16">
-                    <h2 className="text-white text-xl sm:text-2xl md:text-5xl font-bold mb-3 md:mb-4 leading-tight font-serif tracking-wide drop-shadow-lg max-w-lg">
-                      {banner.title}
-                    </h2>
-                    {(banner.link_url || banner.link_url === '') && (
-                      <Link to={banner.link_url || "/category/all"} className="bg-brand-dark-blue text-brand-gold text-xs md:text-base font-bold px-6 py-2.5 md:px-8 md:py-4 rounded-xl w-fit shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all">
-                        SHOP NOW
-                      </Link>
-                    )}
-                  </div>
+      {/* Hero Banner Section with Horizontal Scroll & Left/Right Arrows */}
+      <div className="animate-section py-3 md:py-6 px-4 md:px-16 lg:px-24">
+        <div className="relative w-full min-h-[350px] sm:h-80 md:h-[420px] rounded-[24px] overflow-hidden shadow-2xl border border-brand-gold/20 bg-brand-beige group">
+          {/* Slides Track */}
+          <div
+            className="flex h-full w-full transition-transform duration-700 ease-in-out"
+            style={{ transform: `translateX(-${currentSlide * 100}%)` }}
+          >
+            {activeSlides.map((slide) => (
+              <div key={slide.id} className="relative w-full h-full shrink-0 flex items-center">
+                <div className="absolute inset-0 z-0">
+                  <img
+                    src={slide.image}
+                    alt={slide.title}
+                    className="w-full h-full object-cover object-right md:object-[center_35%] transition-transform duration-1000 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0] via-[#FAF6F0]/95 sm:via-[#FAF6F0]/90 md:via-[#FAF6F0]/80 to-[#FAF6F0]/0 z-10 pointer-events-none w-full md:w-[75%]"></div>
                 </div>
-              ))}
-            </div>
 
-            {/* Slider Dots */}
-            <div className="absolute bottom-3 md:bottom-6 left-0 right-0 flex justify-center gap-2">
-              {banners.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setCurrentSlide(i)}
-                  className={`h-1.5 md:h-2 rounded-full transition-all ${i === currentSlide ? 'bg-white w-6 md:w-8' : 'bg-white/50 w-1.5 md:w-2 hover:bg-white/80'}`}
-                />
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div className="flex justify-center px-4 md:px-24 pt-1 md:pt-6 pb-2">
-            <div className="relative w-full min-h-[340px] sm:min-h-[320px] md:h-[380px] rounded-[24px] overflow-hidden shadow-2xl border border-brand-gold/20 bg-brand-beige group flex items-center">
-              <div className="absolute inset-0 z-0">
-                <img src="/images/about_hero.jpg" alt="Handcrafted Imitation Jewelry Collection" className="w-full h-full object-cover object-right md:object-[center_35%] transition-transform duration-1000 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0] via-[#FAF6F0]/95 sm:via-[#FAF6F0]/90 md:via-[#FAF6F0]/80 to-[#FAF6F0]/0 z-10 pointer-events-none w-full md:w-[75%]"></div>
+                {/* Slide Content */}
+                <div className="relative flex flex-col justify-center px-6 sm:px-10 md:px-16 py-8 z-10 w-[88%] sm:w-[75%] md:w-[60%]">
+                  <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#D4AF37] mb-1.5 drop-shadow-sm">
+                    {slide.tag}
+                  </span>
+                  <h2 className="text-[#2A0845] text-xl sm:text-2xl md:text-4xl lg:text-[40px] font-bold mb-2 md:mb-3 leading-[1.2] font-serif tracking-wide drop-shadow-sm">
+                    {slide.title}
+                  </h2>
+                  <p className="text-gray-700 text-xs md:text-sm lg:text-[15px] mb-4 md:mb-6 max-w-[280px] sm:max-w-sm md:max-w-md leading-relaxed font-medium">
+                    {slide.subtitle}
+                  </p>
+                  <Link
+                    to={slide.link}
+                    className="bg-[#2A0845] text-white text-[11px] md:text-xs font-bold px-6 py-2.5 md:px-8 md:py-3.5 rounded-xl w-fit shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all hover:bg-[#D4AF37] tracking-wider uppercase"
+                  >
+                    SHOP NOW
+                  </Link>
+                </div>
               </div>
+            ))}
+          </div>
 
-              {/* Content */}
-              <div className="relative flex flex-col justify-center px-6 sm:px-8 md:px-14 py-6 md:py-8 z-10 w-[85%] sm:w-[75%] md:w-[60%]">
-                <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#D4AF37] mb-1.5 drop-shadow-sm">Lydia Global Exim Collection</span>
-                <h2 className="text-[#2A0845] text-xl sm:text-2xl md:text-4xl lg:text-[40px] font-bold mb-2 md:mb-3 leading-[1.2] font-serif tracking-wide drop-shadow-sm">
-                  Handcrafted Elegance,<br />
-                  <span className="text-[#2A0845]/80 font-light">Royal Imitation Luxury</span>
-                </h2>
-                <p className="text-gray-700 text-xs md:text-sm lg:text-[15px] mb-4 md:mb-6 max-w-[270px] sm:max-w-xs md:max-w-md leading-relaxed font-medium">
-                  Explore exquisite Kundan bridal sets, anti-tarnish micro-gold plated jewelry, and timeless designs crafted for celebrations and everyday elegance.
-                </p>
-                <Link to="/category/all" className="bg-[#2A0845] text-white text-[11px] md:text-xs font-bold px-6 py-2.5 md:px-8 md:py-3.5 rounded-xl w-fit shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all hover:bg-[#D4AF37] tracking-wider uppercase">
-                  SHOP NOW
-                </Link>
-              </div>
-            </div>
+          {/* Left / Right Arrow Buttons */}
+          <button
+            onClick={prevSlide}
+            aria-label="Previous Slide"
+            className="absolute left-2.5 md:left-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-white/70 md:bg-white/80 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+          >
+            <ChevronLeft className="w-4 h-4 md:w-6 md:h-6" />
+          </button>
+          <button
+            onClick={nextSlide}
+            aria-label="Next Slide"
+            className="absolute right-2.5 md:right-5 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-white/70 md:bg-white/80 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-lg transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+          >
+            <ChevronRight className="w-4 h-4 md:w-6 md:h-6" />
+          </button>
+
+          {/* Slider Dots */}
+          <div className="absolute bottom-3 md:bottom-5 left-0 right-0 z-20 flex justify-center gap-2">
+            {activeSlides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentSlide(i)}
+                className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-[#2A0845] w-6 md:w-8' : 'bg-[#2A0845]/30 w-1.5 md:w-2 hover:bg-[#2A0845]/60'}`}
+              />
+            ))}
           </div>
-        )}
+        </div>
       </div>
 
       <FeaturesBanner />

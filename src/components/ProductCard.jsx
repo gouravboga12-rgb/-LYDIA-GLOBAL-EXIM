@@ -5,16 +5,6 @@ import { useWishlistStore } from '../store/useWishlistStore';
 import { useCartStore } from '../store/useCartStore';
 import { useStoreData } from '../store/useStoreData';
 
-function InstagramIcon({ className }) {
-  return (
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-      <circle cx="12" cy="12" r="4" />
-      <circle cx="17.5" cy="6.5" r="0.01" fill="currentColor" stroke="currentColor" strokeWidth="3" />
-    </svg>
-  );
-}
-
 export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
   const navigate = useNavigate();
   const { toggleWishlist, items: wishlistItems } = useWishlistStore();
@@ -97,6 +87,14 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
     await addToCart(product, { ...defaultSize, price: displayPrice, stock: defaultSize.stock, image: firstImg }, 1, firstVariant.color);
   };
 
+  const handleBuyNow = async (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isOutOfStock) return;
+    await addToCart(product, { ...defaultSize, price: displayPrice, stock: defaultSize.stock, image: firstImg }, 1, firstVariant.color);
+    navigate('/checkout');
+  };
+
   const handleCardClick = () => {
     const queryParam = firstVariant.code ? `?variantCode=${encodeURIComponent(firstVariant.code)}` : '';
     navigate(`/product/${product.id}${queryParam}`);
@@ -140,33 +138,37 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
             )}
           </div>
 
-          <div className="flex items-center justify-between mt-auto">
+          <div className="flex items-center justify-between mt-auto pt-2">
             <div className="flex items-baseline gap-1.5">
               <span className="text-base font-bold text-gray-900">₹{displayPrice}</span>
               {(activeOffer || originalPrice > displayPrice) && (
                 <span className="text-[10px] text-gray-400 line-through">₹{originalPrice}</span>
               )}
-              <div className="flex items-center gap-1">
-                <span className="text-[9px] text-[#2A0845] font-bold bg-[#2A0845]/10 px-1 py-0.5 rounded">{defaultSize.size}</span>
+              <div className="flex items-center gap-1 ml-2">
+                <span className="text-[9px] text-[#2A0845] font-bold bg-[#2A0845]/10 px-1.5 py-0.5 rounded">{defaultSize.size}</span>
                 {firstVariant.sizes?.length > 1 && (
-                  <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">+{firstVariant.sizes.length - 1} more sizes</span>
+                  <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">+{firstVariant.sizes.length - 1} sizes</span>
                 )}
               </div>
             </div>
             {isOutOfStock ? (
               <span className="text-[10px] font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded-md">Out of Stock</span>
             ) : (
-              <button onClick={handleAddToCart} className="bg-[#2A0845] text-white text-xs font-semibold px-4 py-1.5 rounded-md hover:bg-[#D4AF37] transition-colors flex items-center gap-1">
-                <ShoppingCart className="w-3.5 h-3.5" />
-                Add
-              </button>
+              <div className="flex items-center gap-2">
+                <button onClick={handleAddToCart} className="py-1.5 px-3 text-[11px] font-bold rounded-lg border border-[#2A0845] text-[#2A0845] hover:bg-[#2A0845] hover:text-white transition-colors">
+                  Add to Cart
+                </button>
+                <button onClick={handleBuyNow} className="py-1.5 px-3 text-[11px] font-bold rounded-lg bg-[#2A0845] text-white hover:bg-[#D4AF37] transition-colors">
+                  Buy Now
+                </button>
+              </div>
             )}
           </div>
         </div>
         <div className="absolute top-3 right-3 flex flex-row gap-2 z-10">
           <button 
             onClick={handleWishlist}
-            className="p-1.5 bg-white/80 rounded-full shadow-sm text-gray-300 hover:scale-110 transition-transform"
+            className="p-1.5 bg-white/80 rounded-full shadow-sm text-gray-400 hover:scale-110 transition-transform"
           >
             <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-[#2A0845] text-[#2A0845]' : 'text-gray-400'}`} />
           </button>
@@ -210,7 +212,7 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
 
       <div className="flex flex-col flex-grow">
         <div className="flex justify-between items-start mb-1.5">
-          <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug">{product.name}</h3>
+          <h3 className="text-xs md:text-sm font-semibold text-gray-800 line-clamp-2 leading-snug">{product.name}</h3>
         </div>
         
         <div className="flex items-center gap-1 mb-2">
@@ -231,43 +233,51 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
           )}
         </div>
 
-          {isOutOfStock ? (
-            <div className="mt-auto mb-1 flex items-center justify-between">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[9px] text-[#2A0845] font-bold bg-[#2A0845]/10 px-1.5 py-0.5 rounded w-fit">{defaultSize.size}</span>
-                  {firstVariant.sizes?.length > 1 && (
-                    <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">+{firstVariant.sizes.length - 1} more sizes</span>
-                  )}
-                </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-base font-bold text-gray-400 leading-none line-through">₹{displayPrice}</span>
-                </div>
-              </div>
-              <span className="text-[10px] font-bold text-red-600 bg-red-50 border border-red-200 px-2 py-1 rounded-full">Out of Stock</span>
+        {isOutOfStock ? (
+          <div className="mt-auto pt-1 flex flex-col gap-1.5">
+            <div className="flex items-center justify-between">
+              <span className="text-[9px] text-[#2A0845] font-bold bg-[#2A0845]/10 px-1.5 py-0.5 rounded w-fit">{defaultSize.size}</span>
+              <span className="text-sm font-bold text-gray-400 line-through">₹{displayPrice}</span>
             </div>
-          ) : (
-            <div className="flex items-end justify-between mt-auto mb-1">
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="text-[9px] text-[#2A0845] font-bold bg-[#2A0845]/10 px-1.5 py-0.5 rounded w-fit">{defaultSize.size}</span>
-                  {firstVariant.sizes?.length > 1 && (
-                    <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">+{firstVariant.sizes.length - 1} more sizes</span>
-                  )}
-                </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-base font-bold text-gray-900 leading-none">₹{displayPrice}</span>
-                  {(activeOffer || originalPrice > displayPrice) && (
-                    <span className="text-[10px] text-gray-400 line-through leading-none">₹{originalPrice}</span>
-                  )}
-                </div>
+            <button disabled className="w-full py-2 bg-gray-100 text-gray-400 font-bold text-xs rounded-xl cursor-not-allowed">
+              Out of Stock
+            </button>
+          </div>
+        ) : (
+          <div className="mt-auto pt-1 flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[9px] text-[#2A0845] font-bold bg-[#2A0845]/10 px-1.5 py-0.5 rounded w-fit">{defaultSize.size}</span>
+                {firstVariant.sizes?.length > 1 && (
+                  <span className="text-[9px] text-gray-500 font-medium whitespace-nowrap">+{firstVariant.sizes.length - 1} sizes</span>
+                )}
               </div>
-              <button onClick={handleAddToCart} className="bg-[#2A0845] text-white p-2.5 rounded-full hover:bg-[#D4AF37] transition-all hover:shadow-md hover:scale-105 shrink-0 flex items-center justify-center group/btn">
-                <ShoppingCart className="w-4 h-4 hidden group-hover/btn:block" />
-                <span className="text-sm font-bold leading-none w-4 h-4 flex items-center justify-center group-hover/btn:hidden">+</span>
+              <div className="flex items-baseline gap-1.5">
+                <span className="text-sm md:text-base font-bold text-gray-900 leading-none">₹{displayPrice}</span>
+                {(activeOffer || originalPrice > displayPrice) && (
+                  <span className="text-[10px] text-gray-400 line-through leading-none">₹{originalPrice}</span>
+                )}
+              </div>
+            </div>
+
+            {/* Dual Action Buttons: Add to Cart & Buy Now */}
+            <div className="grid grid-cols-2 gap-1.5 mt-0.5">
+              <button
+                onClick={handleAddToCart}
+                className="w-full py-2 px-1 text-[10px] md:text-[11px] font-bold rounded-xl border border-[#2A0845]/30 text-[#2A0845] hover:bg-[#2A0845] hover:text-white transition-all flex items-center justify-center gap-1 shadow-sm active:scale-95 bg-white"
+              >
+                <ShoppingCart className="w-3 h-3 shrink-0" />
+                <span className="truncate">Add to Cart</span>
+              </button>
+              <button
+                onClick={handleBuyNow}
+                className="w-full py-2 px-1 text-[10px] md:text-[11px] font-bold rounded-xl bg-gradient-to-r from-[#2A0845] to-[#4C1D95] hover:from-[#D4AF37] hover:to-[#B38827] text-white transition-all flex items-center justify-center gap-1 shadow-sm active:scale-95"
+              >
+                <span className="truncate">Buy Now</span>
               </button>
             </div>
-          )}
+          </div>
+        )}
       </div>
     </div>
   );
