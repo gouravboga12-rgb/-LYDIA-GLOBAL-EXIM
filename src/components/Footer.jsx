@@ -11,14 +11,14 @@ export function Footer() {
           
           {/* Brand Info */}
           <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-3">
-              <div className="h-14 w-14 flex items-center justify-center shrink-0 bg-black rounded-full p-1 shadow-lg">
-                <img src={logoUrl} alt="LYDIA GLOBAL EXIM" className="h-full w-auto object-contain" />
+            <Link to="/" className="flex items-center gap-3 hover:opacity-95 transition-opacity">
+              <div className="h-14 flex items-center justify-center shrink-0">
+                <img src={logoUrl} alt="LYDIA GLOBAL EXIM" className="h-14 w-auto rounded-xl object-contain shadow-md" />
               </div>
               <div className="flex flex-col">
-                <span className="font-serif font-bold text-xl leading-none" style={{ color: '#C6A184' }}>LYDIA GLOBAL EXIM</span>
+                <span className="font-serif font-bold text-xl leading-tight tracking-[0.08em]" style={{ color: '#C6A184' }}>LYDIA GLOBAL EXIM</span>
               </div>
-            </div>
+            </Link>
             <p className="text-sm text-gray-100/80 leading-relaxed">
               Your one-stop destination for authentic and premium quality products. Experience excellence with our carefully curated collection.
             </p>

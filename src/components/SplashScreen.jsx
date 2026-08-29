@@ -87,16 +87,16 @@ export function SplashScreen({ onComplete }) {
       <div ref={fireworks} className="absolute inset-0 pointer-events-none" />
 
       {/* Logo container */}
-      <div ref={logoGroup} className="relative z-10 flex flex-col items-center justify-center">
-        <div className="w-24 h-24 md:w-32 md:h-32 bg-black rounded-full flex items-center justify-center border border-[#D4AF37]/30 shadow-[0_0_40px_rgba(212,175,55,0.2)] mb-4 p-2">
+      <div ref={logoGroup} className="relative z-10 flex flex-col items-center justify-center px-4">
+        <div className="flex items-center justify-center mb-5 p-2.5 rounded-2xl bg-white/5 backdrop-blur-md border border-[#D4AF37]/30 shadow-[0_0_50px_rgba(212,175,55,0.25)]">
           <img
             src={logoImg}
             alt="LYDIA GLOBAL EXIM Logo"
-            className="w-full h-full object-contain"
+            className="h-24 md:h-32 w-auto object-contain rounded-xl"
           />
         </div>
-        <div className="flex flex-col items-center">
-          <span className="font-serif font-bold text-2xl md:text-4xl tracking-[0.15em] text-[#D4AF37] whitespace-nowrap">
+        <div className="flex flex-col items-center text-center">
+          <span className="font-serif font-bold text-2xl md:text-4xl tracking-[0.15em] text-[#D4AF37] whitespace-nowrap drop-shadow-md">
             LYDIA GLOBAL EXIM
           </span>
           <span className="text-white text-sm md:text-base tracking-[0.15em] mt-3 font-bold" style={{ fontFamily: 'serif', letterSpacing: '0.08em' }}>
