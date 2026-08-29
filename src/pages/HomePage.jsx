@@ -286,9 +286,9 @@ export function HomePage() {
       <Header variant="home" />
 
       {/* Hero Banner Section */}
-      <div className="animate-section py-4 md:py-8">
+      <div className="animate-section py-3 md:py-8">
         {banners.length > 0 ? (
-          <div className="relative w-full md:w-[75%] h-48 md:h-[400px] rounded-2xl overflow-hidden shadow-lg border border-gray-100 mx-auto px-4 md:px-0">
+          <div className="relative w-full md:w-[75%] h-56 sm:h-64 md:h-[400px] rounded-2xl overflow-hidden shadow-lg border border-gray-100 mx-auto px-4 md:px-0">
             <div
               className="flex h-full transition-transform duration-700 ease-in-out"
               style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -296,12 +296,12 @@ export function HomePage() {
               {banners.map((banner) => (
                 <div key={banner.id} className="relative w-full h-full shrink-0">
                   <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/30 to-transparent flex flex-col justify-center px-6 md:px-16">
-                    <h2 className="text-white text-2xl md:text-5xl font-bold mb-4 leading-tight font-serif tracking-wide drop-shadow-lg">
+                  <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/40 to-transparent flex flex-col justify-center px-6 md:px-16">
+                    <h2 className="text-white text-xl sm:text-2xl md:text-5xl font-bold mb-3 md:mb-4 leading-tight font-serif tracking-wide drop-shadow-lg max-w-lg">
                       {banner.title}
                     </h2>
                     {(banner.link_url || banner.link_url === '') && (
-                      <Link to={banner.link_url || "/category/all"} className="bg-brand-dark-blue text-brand-gold text-xs md:text-base font-bold px-8 py-3 md:py-4 rounded-xl w-fit shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all">
+                      <Link to={banner.link_url || "/category/all"} className="bg-brand-dark-blue text-brand-gold text-xs md:text-base font-bold px-6 py-2.5 md:px-8 md:py-4 rounded-xl w-fit shadow-xl hover:shadow-2xl hover:-translate-y-0.5 transition-all">
                         SHOP NOW
                       </Link>
                     )}
@@ -311,7 +311,7 @@ export function HomePage() {
             </div>
 
             {/* Slider Dots */}
-            <div className="absolute bottom-4 md:bottom-6 left-0 right-0 flex justify-center gap-2">
+            <div className="absolute bottom-3 md:bottom-6 left-0 right-0 flex justify-center gap-2">
               {banners.map((_, i) => (
                 <button
                   key={i}
@@ -322,24 +322,24 @@ export function HomePage() {
             </div>
           </div>
         ) : (
-          <div className="flex justify-center px-4 md:px-24 pt-2 md:pt-6 pb-2">
-            <div className="relative w-full h-72 md:h-[360px] rounded-[24px] overflow-hidden shadow-2xl border border-brand-gold/20 bg-brand-beige group">
+          <div className="flex justify-center px-4 md:px-24 pt-1 md:pt-6 pb-2">
+            <div className="relative w-full min-h-[340px] sm:min-h-[320px] md:h-[380px] rounded-[24px] overflow-hidden shadow-2xl border border-brand-gold/20 bg-brand-beige group flex items-center">
               <div className="absolute inset-0 z-0">
                 <img src="/images/about_hero.jpg" alt="Handcrafted Imitation Jewelry Collection" className="w-full h-full object-cover object-right md:object-[center_35%] transition-transform duration-1000 group-hover:scale-105" />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0] via-[#FAF6F0]/90 md:via-[#FAF6F0]/80 to-[#FAF6F0]/0 z-10 pointer-events-none w-full md:w-[75%]"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0] via-[#FAF6F0]/95 sm:via-[#FAF6F0]/90 md:via-[#FAF6F0]/80 to-[#FAF6F0]/0 z-10 pointer-events-none w-full md:w-[75%]"></div>
               </div>
 
               {/* Content */}
-              <div className="absolute inset-0 flex flex-col justify-center px-8 md:px-14 z-10 w-[75%] md:w-[60%]">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#D4AF37] mb-1 drop-shadow-sm">Lydia Global Exim Collection</span>
-                <h2 className="text-[#2A0845] text-2xl md:text-4xl lg:text-[40px] font-bold mb-3 md:mb-4 leading-[1.2] font-serif tracking-wide drop-shadow-sm">
+              <div className="relative flex flex-col justify-center px-6 sm:px-8 md:px-14 py-6 md:py-8 z-10 w-[85%] sm:w-[75%] md:w-[60%]">
+                <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-[#D4AF37] mb-1.5 drop-shadow-sm">Lydia Global Exim Collection</span>
+                <h2 className="text-[#2A0845] text-xl sm:text-2xl md:text-4xl lg:text-[40px] font-bold mb-2 md:mb-3 leading-[1.2] font-serif tracking-wide drop-shadow-sm">
                   Handcrafted Elegance,<br />
                   <span className="text-[#2A0845]/80 font-light">Royal Imitation Luxury</span>
                 </h2>
-                <p className="text-gray-700 text-xs md:text-sm lg:text-[15px] mb-6 md:mb-8 max-w-[290px] md:max-w-md leading-relaxed font-medium">
+                <p className="text-gray-700 text-xs md:text-sm lg:text-[15px] mb-4 md:mb-6 max-w-[270px] sm:max-w-xs md:max-w-md leading-relaxed font-medium">
                   Explore exquisite Kundan bridal sets, anti-tarnish micro-gold plated jewelry, and timeless designs crafted for celebrations and everyday elegance.
                 </p>
-                <Link to="/category/all" className="bg-[#2A0845] text-white text-[11px] md:text-xs font-bold px-6 py-3 md:px-8 md:py-3.5 rounded-xl w-fit shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all hover:bg-[#D4AF37] tracking-wider uppercase">
+                <Link to="/category/all" className="bg-[#2A0845] text-white text-[11px] md:text-xs font-bold px-6 py-2.5 md:px-8 md:py-3.5 rounded-xl w-fit shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all hover:bg-[#D4AF37] tracking-wider uppercase">
                   SHOP NOW
                 </Link>
               </div>
