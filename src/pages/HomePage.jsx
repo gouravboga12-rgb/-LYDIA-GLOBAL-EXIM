@@ -8,10 +8,10 @@ import { useStoreData } from '../store/useStoreData';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
-import bannerBridal from '../assets/banner_bridal.jpg';
-import bannerAntiTarnish from '../assets/banner_antitarnish.jpg';
-import bannerTemple from '../assets/banner_temple.jpg';
-import imgHeroBanner from '../assets/hero_banner.png';
+import banner1Velvet from '../assets/banner_1_velvet_necklace.jpg';
+import banner2Bridal from '../assets/banner_2_bridal_kundan.jpg';
+import banner3AntiTarnish from '../assets/banner_3_antitarnish_gold.jpg';
+import banner4Designer from '../assets/banner_4_designer_jewelry.jpg';
 import defaultReviews from '../data/reviews.json';
 
 // Inline Instagram icon (not available in this version of lucide-react)
@@ -146,58 +146,7 @@ function StatsBanner() {
   );
 }
 
-// ── Features Banner ──────────────────────────────────────────────────────────
-function FeaturesBanner() {
-  return (
-    <div className="animate-section px-4 md:px-8 mb-12">
-      <div className="w-full bg-[#F3ECE2] border border-[#2A0845]/10 rounded-2xl py-6 md:py-8 px-6 md:px-12 flex flex-col items-center text-center relative overflow-hidden shadow-sm">
-        {/* Decorative subtle border */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-32 h-[1.5px] bg-gradient-to-r from-transparent via-[#D4AF37] to-transparent"></div>
-        <Star className="text-[#D4AF37] w-4 h-4 absolute top-[-8px] left-1/2 -translate-x-1/2 fill-[#D4AF37]" />
 
-        <div className="flex justify-center items-start max-w-4xl mx-auto w-full">
-          {/* Feature 1 */}
-          <div className="flex flex-col items-center w-1/4 border-r border-[#2A0845]/15 px-1 md:px-4">
-            <div className="flex items-center justify-center mb-2 md:mb-3 text-[#2A0845]">
-              <svg className="w-6 h-6 md:w-8 md:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <path d="M12 8s-2 2.5-2 5a2 2 0 004 0c0-2.5-2-5-2-5z"/>
-              </svg>
-            </div>
-            <span className="text-[7px] md:text-[11px] font-semibold tracking-wider text-[#2A0845] uppercase text-center break-words w-full">Waterproof</span>
-          </div>
-          
-          {/* Feature 2 */}
-          <div className="flex flex-col items-center w-1/4 border-r border-[#2A0845]/15 px-1 md:px-4">
-            <div className="flex items-center justify-center mb-2 md:mb-3 text-[#2A0845]">
-              <ShieldCheck className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
-            </div>
-            <span className="text-[7px] md:text-[11px] font-semibold tracking-wider text-[#2A0845] uppercase text-center break-words w-full">Anti-Tarnish</span>
-          </div>
-
-          {/* Feature 3 */}
-          <div className="flex flex-col items-center w-1/4 border-r border-[#2A0845]/15 px-1 md:px-4">
-            <div className="flex items-center justify-center mb-2 md:mb-3 text-[#2A0845]">
-              <svg className="w-6 h-6 md:w-8 md:h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                <circle cx="12" cy="12" r="10" />
-                <path d="M12 8s-2 2.5-2 5a2 2 0 004 0c0-2.5-2-5-2-5z"/>
-              </svg>
-            </div>
-            <span className="text-[7px] md:text-[11px] font-semibold tracking-wider text-[#2A0845] uppercase text-center break-words w-full">Hypoallergenic</span>
-          </div>
-
-          {/* Feature 4 */}
-          <div className="flex flex-col items-center w-1/4 px-1 md:px-4">
-            <div className="flex items-center justify-center mb-2 md:mb-3 text-[#2A0845]">
-              <Gem className="w-6 h-6 md:w-8 md:h-8" strokeWidth={1.5} />
-            </div>
-            <span className="text-[7px] md:text-[11px] font-semibold tracking-wider text-[#2A0845] uppercase text-center break-words w-full">Premium Quality</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
 
 export function HomePage() {
   const navigate = useNavigate();
@@ -264,34 +213,38 @@ export function HomePage() {
   const defaultHeroSlides = [
     {
       id: 'slide_1',
-      tag: 'Heritage Bridal Collection',
-      title: 'Handcrafted Kundan & Pearl Elegance',
-      subtitle: 'Exquisite bridal necklaces, royal choker sets, and timeless heirloom jewelry.',
-      image: bannerBridal,
+      tag: 'Exclusive Collection',
+      titleLine1: 'TIMELESS BEAUTY,',
+      titleLine2: 'UNIQUELY YOURS',
+      subtitle: 'Explore our exclusive collection of imitation jewellery crafted with elegance and perfection.',
+      image: banner1Velvet,
       link: '/category/all'
     },
     {
       id: 'slide_2',
-      tag: 'Everyday Luxury & Durability',
-      title: '18K Anti-Tarnish Gold Plated Jewelry',
-      subtitle: 'Waterproof, sweatproof, and hypoallergenic designs crafted for daily brilliance.',
-      image: bannerAntiTarnish,
+      tag: 'Bridal & Wedding Couture',
+      titleLine1: 'HERITAGE BRIDAL,',
+      titleLine2: 'ROYAL KUNDAN ELEGANCE',
+      subtitle: 'Exquisite bridal necklaces, royal choker sets, and timeless luxury heirloom jewelry.',
+      image: banner2Bridal,
       link: '/category/all'
     },
     {
       id: 'slide_3',
-      tag: 'South Indian Classics',
-      title: 'Royal Temple & Antique Lakshmi Sets',
-      subtitle: 'Intricate nakshi motifs, authentic matte gold finish, and divine South Indian artistry.',
-      image: bannerTemple,
+      tag: 'Everyday Luxury',
+      titleLine1: '18K ANTI-TARNISH,',
+      titleLine2: 'WATERPROOF GOLD BRILLIANCE',
+      subtitle: 'Waterproof, sweatproof, and hypoallergenic designs crafted for daily brilliance.',
+      image: banner3AntiTarnish,
       link: '/category/all'
     },
     {
       id: 'slide_4',
-      tag: 'Festive Glamour',
-      title: 'Celebration & Traditional Festive Collection',
-      subtitle: 'Radiant handcrafted jewelry to make every festival, wedding, and special occasion shine.',
-      image: imgHeroBanner,
+      tag: 'Statement Glamour',
+      titleLine1: 'CELEBRATION GLAMOUR,',
+      titleLine2: 'DESIGNER CHOKERS & BANGLES',
+      subtitle: 'Radiant handcrafted partywear jewelry to make every celebration and special occasion shine.',
+      image: banner4Designer,
       link: '/category/all'
     }
   ];
@@ -299,7 +252,8 @@ export function HomePage() {
   const activeSlides = banners.length >= 2 ? banners.map(b => ({
     id: b.id,
     tag: 'Exclusive Collection',
-    title: b.title,
+    titleLine1: b.title,
+    titleLine2: '',
     subtitle: 'Discover hand-selected artisan jewelry tailored to perfection for every celebration.',
     image: b.image_url,
     link: b.link_url || '/category/all'
@@ -344,7 +298,7 @@ export function HomePage() {
     if (activeSlides.length <= 1) return;
     const interval = setInterval(() => {
       setCurrentSlide(prev => (prev + 1) % activeSlides.length);
-    }, 5000);
+    }, 5500);
     return () => clearInterval(interval);
   }, [activeSlides.length]);
 
@@ -354,26 +308,13 @@ export function HomePage() {
     <div ref={container} className="bg-brand-beige flex-grow w-full flex flex-col pb-8">
       <Header variant="home" />
 
-      {/* Mobile Search Bar — Placed below header and above banners on Home page */}
-      <div className="md:hidden px-3 pt-3 pb-1">
-        <div
-          onClick={() => navigate('/search')}
-          className="w-full flex items-center gap-3 bg-white border border-brand-gold/30 rounded-2xl px-4 py-2.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] cursor-pointer active:scale-[0.99] transition-all"
-        >
-          <Search className="w-4 h-4 text-[#B38827] shrink-0" />
-          <span className="text-xs text-gray-500 font-medium truncate select-none">
-            Search for jewelry, collections, rings...
-          </span>
-        </div>
-      </div>
-
-      {/* Hero Banner Section with Horizontal Scroll & Left/Right Arrows */}
-      <div className="animate-section py-2 md:py-6 px-3 sm:px-8 md:px-16 lg:px-24">
+      {/* Hero Banner Section matching WhatsApp Reference */}
+      <div className="animate-section w-full py-0 md:py-2 px-0 md:px-8 lg:px-12">
         <div
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="relative w-full h-[250px] xs:h-[280px] sm:h-[340px] md:h-[420px] rounded-2xl md:rounded-[24px] overflow-hidden shadow-xl border border-brand-gold/20 bg-[#FAF6F0] group select-none touch-pan-y"
+          className="relative w-full h-[320px] xs:h-[360px] sm:h-[420px] md:h-[500px] lg:h-[560px] overflow-hidden md:rounded-2xl shadow-2xl bg-[#2A0845] group select-none touch-pan-y"
         >
           {/* Slides Track */}
           <div
@@ -381,32 +322,48 @@ export function HomePage() {
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {activeSlides.map((slide) => (
-              <div key={slide.id} className="relative w-full min-w-full flex-[0_0_100%] h-full shrink-0 flex items-center overflow-hidden select-none">
-                {/* Background Image & Gradient Overlay */}
+              <div key={slide.id} className="relative w-full min-w-full flex-[0_0_100%] h-full shrink-0 flex items-center overflow-hidden select-none bg-[#2A0845]">
+                {/* Background Image & Non-blocking Luxury Overlay */}
                 <div className="absolute inset-0 z-0 select-none pointer-events-none">
                   <img
                     src={slide.image}
-                    alt={slide.title}
+                    alt={slide.titleLine1 || slide.title}
                     draggable={false}
-                    className="w-full h-full object-cover object-center md:object-right transition-transform duration-1000 group-hover:scale-105 select-none pointer-events-none"
+                    className="w-full h-full object-cover object-right md:object-center lg:object-right transition-transform duration-1000 group-hover:scale-105 select-none pointer-events-none"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0]/95 via-[#FAF6F0]/75 sm:via-[#FAF6F0]/60 md:via-[#FAF6F0]/50 to-transparent z-10 pointer-events-none w-full md:w-[65%]"></div>
+                  {/* Desktop subtle text gradient overlay (does NOT block jewelry on the right) */}
+                  <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-[#2A0845]/90 via-[#2A0845]/50 to-transparent z-10 pointer-events-none w-[58%]"></div>
+                  {/* Mobile gradient overlay (soft bottom/left gradient so jewelry is 100% visible) */}
+                  <div className="md:hidden absolute inset-0 bg-gradient-to-t from-[#2A0845]/90 via-[#2A0845]/40 to-transparent z-10 pointer-events-none"></div>
                 </div>
 
-                {/* Slide Content with safe left padding on mobile to never collide with the left arrow */}
-                <div className="relative flex flex-col justify-center pl-11 xs:pl-12 sm:pl-14 md:pl-16 pr-3 xs:pr-6 sm:px-10 md:px-16 py-3 z-10 w-[82%] xs:w-[78%] sm:w-[70%] md:w-[55%] select-none">
-                  <span className="text-[9px] md:text-xs font-bold uppercase tracking-wider text-[#B38827] mb-1 drop-shadow-sm">
-                    {slide.tag}
-                  </span>
-                  <h2 className="text-[#2A0845] text-sm xs:text-base sm:text-2xl md:text-4xl font-bold mb-1 md:mb-2 leading-tight font-serif tracking-wide drop-shadow-sm line-clamp-2">
-                    {slide.title}
+                {/* Slide Content with WhatsApp Reference Format */}
+                <div className="relative flex flex-col justify-end md:justify-center pl-6 xs:pl-8 sm:pl-12 md:pl-20 pr-4 sm:pr-8 pb-8 md:pb-0 z-20 w-[95%] sm:w-[80%] md:w-[60%] lg:w-[50%] select-none text-white">
+                  
+                  {/* Main Headline */}
+                  <h2 className="text-lg xs:text-xl sm:text-2xl md:text-5xl font-serif font-bold uppercase tracking-[0.06em] leading-tight mb-1.5 md:mb-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
+                    <span className="block text-white">{slide.titleLine1}</span>
+                    {slide.titleLine2 && (
+                      <span className="block text-[#D4AF37] font-serif drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">{slide.titleLine2}</span>
+                    )}
                   </h2>
-                  <p className="text-gray-700 text-[10px] xs:text-[11px] sm:text-xs md:text-sm mb-2.5 md:mb-4 max-w-[210px] xs:max-w-[250px] sm:max-w-sm md:max-w-md leading-snug font-medium line-clamp-2">
+
+                  {/* Gold Filigree Ornament Divider */}
+                  <div className="flex items-center gap-2 my-1.5 md:my-3">
+                    <div className="w-8 md:w-16 h-[1px] bg-gradient-to-r from-transparent to-[#D4AF37]"></div>
+                    <span className="text-[#D4AF37] text-xs md:text-sm">❖</span>
+                    <div className="w-8 md:w-16 h-[1px] bg-gradient-to-l from-transparent to-[#D4AF37]"></div>
+                  </div>
+
+                  {/* Subtitle */}
+                  <p className="text-white/90 text-[11px] xs:text-xs sm:text-sm md:text-base mb-3.5 md:mb-7 max-w-xs sm:max-w-md leading-relaxed font-light drop-shadow-[0_2px_6px_rgba(0,0,0,0.8)]">
                     {slide.subtitle}
                   </p>
+
+                  {/* Gold Bordered SHOP NOW Button */}
                   <Link
                     to={slide.link}
-                    className="bg-[#2A0845] text-white text-[10px] md:text-xs font-bold px-3.5 py-1.5 xs:px-4 xs:py-2 md:px-7 md:py-3 rounded-lg md:rounded-xl w-fit shadow-md hover:shadow-xl hover:-translate-y-0.5 transition-all hover:bg-[#D4AF37] tracking-wider uppercase active:scale-95"
+                    className="w-fit border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#2A0845] px-5 py-2 md:px-8 md:py-3 text-[11px] md:text-sm font-semibold tracking-[0.2em] uppercase transition-all duration-300 shadow-xl active:scale-95 cursor-pointer backdrop-blur-md bg-[#2A0845]/50 hover:shadow-[0_0_20px_rgba(212,175,55,0.6)]"
                   >
                     SHOP NOW
                   </Link>
@@ -415,38 +372,41 @@ export function HomePage() {
             ))}
           </div>
 
-          {/* Left / Right Arrow Buttons */}
+          {/* Left / Right Arrow Buttons (Reference Translucent Circles) */}
           <button
             onClick={prevSlide}
             aria-label="Previous Slide"
-            className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 md:w-10 md:h-10 rounded-full bg-white/90 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-md transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#2A0845] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
-            <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
+            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <button
             onClick={nextSlide}
             aria-label="Next Slide"
-            className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 md:w-10 md:h-10 rounded-full bg-white/90 hover:bg-[#2A0845] text-[#2A0845] hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-brand-gold/30 shadow-md transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#2A0845] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
-            <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
+            <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
 
-          {/* Slider Dots */}
-          <div className="absolute bottom-2 md:bottom-3 left-0 right-0 z-20 flex justify-center gap-1.5 md:gap-2">
+          {/* Slider Dots matching WhatsApp reference */}
+          <div className="absolute bottom-3 md:bottom-5 left-0 right-0 z-20 flex justify-center items-center gap-2">
             {activeSlides.map((_, i) => (
               <button
                 key={i}
                 onClick={() => setCurrentSlide(i)}
-                className={`h-1.5 md:h-2 rounded-full transition-all duration-300 ${i === currentSlide ? 'bg-[#2A0845] w-5 md:w-8' : 'bg-[#2A0845]/30 w-1.5 md:w-2 hover:bg-[#2A0845]/60'}`}
+                aria-label={`Go to slide ${i + 1}`}
+                className={`transition-all duration-300 rounded-full cursor-pointer ${
+                  i === currentSlide
+                    ? 'bg-[#D4AF37] w-3 h-3 shadow-[0_0_8px_rgba(212,175,55,0.8)]'
+                    : 'bg-white/60 hover:bg-white w-2 h-2'
+                }`}
               />
             ))}
           </div>
         </div>
       </div>
 
-      <FeaturesBanner />
-
-      <div className="md:max-w-full mx-auto w-full pb-20">
+      <div className="md:max-w-full mx-auto w-full pb-20 pt-4 md:pt-6">
         {/* Categories Grid */}
         <div className="animate-section px-4 md:px-24 mb-10">
           <div className="flex justify-between items-center mb-6">

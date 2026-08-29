@@ -20,7 +20,7 @@ export function AppLayout({ children }) {
   return (
     <ScrollRevealProvider>
       <div className="min-h-screen bg-gray-100 flex justify-center w-full">
-        <div className="w-full md:max-w-full max-w-5xl mx-auto bg-white relative shadow-sm min-h-screen flex flex-col overflow-x-hidden">
+        <div className="w-full md:max-w-full max-w-5xl mx-auto bg-white relative shadow-sm min-h-screen flex flex-col overflow-x-clip">
           <Toast />
           
           {/* Main Content Area */}

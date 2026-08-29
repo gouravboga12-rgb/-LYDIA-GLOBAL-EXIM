@@ -33,10 +33,10 @@ export function SplashScreen({ onComplete }) {
 
     // Logo appears
     tl.from(logoGroup.current, {
-      scale: 0.5,
+      scale: 0.75,
       opacity: 0,
       duration: 1,
-      ease: 'back.out(1.7)'
+      ease: 'back.out(1.3)'
     });
 
     // Fireworks explode
@@ -89,15 +89,15 @@ export function SplashScreen({ onComplete }) {
 
       {/* Logo container */}
       <div ref={logoGroup} className="relative z-10 flex flex-col items-center justify-center px-4">
-        <div className="flex items-center justify-center mb-4">
+        <div className="flex items-center justify-center">
           <img
             src={logoImg}
             alt="LYDIA GLOBAL EXIM Logo"
-            className="w-48 md:w-64 max-w-[80vw] h-auto object-contain"
+            className="w-[340px] sm:w-[480px] md:w-[620px] lg:w-[760px] max-w-[94vw] max-h-[70vh] h-auto object-contain mix-blend-multiply"
           />
         </div>
-        <div className="flex flex-col items-center text-center mt-2">
-          <span className="text-[#2A0845] text-sm md:text-base tracking-[0.15em] font-semibold" style={{ fontFamily: 'serif', letterSpacing: '0.12em' }}>
+        <div className="flex flex-col items-center text-center mt-3">
+          <span className="text-[#2A0845] text-sm md:text-lg tracking-[0.18em] font-semibold uppercase" style={{ fontFamily: 'serif' }}>
             Excellence &{' '}
             <span className="text-[#B38827] font-bold">Premium Quality</span>
           </span>

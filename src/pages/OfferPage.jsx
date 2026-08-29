@@ -6,8 +6,7 @@ import { BottomNav } from '../components/BottomNav';
 import { ProductCard } from '../components/ProductCard';
 import { useStoreData } from '../store/useStoreData';
 
-// Reusing an existing image as a fallback banner, similar to CategoryListingPage
-import imgAarti from '../assets/story_aarti.png';
+
 
 export function OfferPage() {
   const { id } = useParams();

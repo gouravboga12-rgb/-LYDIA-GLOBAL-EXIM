@@ -5,8 +5,7 @@ import { Header } from '../components/Header';
 import { BottomNav } from '../components/BottomNav';
 import { ProductCard } from '../components/ProductCard';
 import { useStoreData } from '../store/useStoreData';
-import imgAarti from '../assets/story_aarti.png';
-import imgMeditation from '../assets/story_meditation.png';
+import banner1Velvet from '../assets/banner_1_velvet_necklace.jpg';
 
 export function CategoryListingPage() {
   const { categoryId } = useParams();
@@ -19,7 +18,7 @@ export function CategoryListingPage() {
   const [showOnlyOffers, setShowOnlyOffers] = useState(false);
   const { products, categories, offers, loading } = useStoreData();
   
-  const modelQuery = searchParams.get('model');
+  const categoryQuery = searchParams.get('category') || searchParams.get('model');
   const searchQuery = searchParams.get('search');
   
   // Prevent body scroll when mobile filter is open
@@ -29,29 +28,47 @@ export function CategoryListingPage() {
     return () => { document.body.style.overflow = 'unset'; };
   }, [showMobileFilters]);
   
-  let categoryName = modelQuery ? `${modelQuery} Products` : 'All Products';
-  let bannerImg = imgAarti;
+  let categoryName = 'All Products';
+  let bannerImg = banner1Velvet;
   
-  if (categoryId !== 'all') {
-    const cat = categories.find(c => c.id.toString() === categoryId);
-    if (cat) {
-      categoryName = cat.name;
-      if (cat.image_url) bannerImg = cat.image_url;
+  // Resolve category by ID or by Name (e.g. /category/Bangles or /category/5 or /category/all)
+  let activeCategoryObj = null;
+  if (categoryId && categoryId !== 'all') {
+    activeCategoryObj = categories.find(c => 
+      c.id.toString() === categoryId || 
+      c.name.toLowerCase() === decodeURIComponent(categoryId).toLowerCase()
+    );
+    if (activeCategoryObj) {
+      categoryName = activeCategoryObj.name;
+      if (activeCategoryObj.image_url) bannerImg = activeCategoryObj.image_url;
+    } else {
+      categoryName = decodeURIComponent(categoryId);
     }
+  } else if (categoryQuery) {
+    categoryName = decodeURIComponent(categoryQuery);
   }
+  
   if (searchQuery) categoryName = `Search: "${searchQuery}"`;
 
   // Filter products
   let filteredProducts = products.filter(p => {
     let matchCat = true;
-    if (categoryId !== 'all' && !searchQuery) {
-      const cat = categories.find(c => c.id.toString() === categoryId);
-      matchCat = cat ? p.category === cat.name : false;
+    if (categoryId && categoryId !== 'all' && !searchQuery) {
+      const targetName = (activeCategoryObj ? activeCategoryObj.name : decodeURIComponent(categoryId)).toLowerCase();
+      matchCat = p.category ? p.category.toLowerCase().includes(targetName) || targetName.includes(p.category.toLowerCase()) : false;
+      // If no direct category match, check product name / description as fallback
+      if (!matchCat && p.name) {
+        matchCat = p.name.toLowerCase().includes(targetName) || (p.description && p.description.toLowerCase().includes(targetName));
+      }
     }
     
     let matchModel = true;
-    if (modelQuery) {
-      matchModel = p.model === modelQuery;
+    if (categoryQuery) {
+      const q = decodeURIComponent(categoryQuery).toLowerCase();
+      const pCat = (p.category || '').toLowerCase();
+      const pModel = (p.model || '').toLowerCase();
+      const pName = (p.name || '').toLowerCase();
+      matchModel = pCat.includes(q) || pModel.includes(q) || pName.includes(q);
     }
 
     let matchSearch = true;
