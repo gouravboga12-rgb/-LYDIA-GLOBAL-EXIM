@@ -4,9 +4,9 @@
     "name": "Kundan Necklace Set",
     "category": "Necklaces",
     "description": "Exquisite handcrafted Kundan Necklace Set plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/necklace.png",
+    "image_url": "/images/feat_necklace.png",
     "images": [
-      "/images/necklace.png"
+      "/images/feat_necklace.png"
     ],
     "is_trending": true,
     "is_festive": true,
@@ -36,9 +36,9 @@
     "name": "Pearl Jhumka Earrings",
     "category": "Earrings",
     "description": "Exquisite handcrafted Pearl Jhumka Earrings plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/earrings.png",
+    "image_url": "/images/feat_earrings.png",
     "images": [
-      "/images/earrings.png"
+      "/images/feat_earrings.png"
     ],
     "is_trending": true,
     "is_festive": true,
@@ -68,9 +68,9 @@
     "name": "American Diamond Bangles",
     "category": "Bangles",
     "description": "Exquisite handcrafted American Diamond Bangles plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/bangles.png",
+    "image_url": "/images/feat_bangles.png",
     "images": [
-      "/images/bangles.png"
+      "/images/feat_bangles.png"
     ],
     "is_trending": true,
     "is_festive": true,
@@ -100,9 +100,9 @@
     "name": "AD Stone Finger Ring",
     "category": "Rings",
     "description": "Exquisite handcrafted AD Stone Finger Ring plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/rings.png",
+    "image_url": "/images/feat_rings.png",
     "images": [
-      "/images/rings.png"
+      "/images/feat_rings.png"
     ],
     "is_trending": true,
     "is_festive": true,
@@ -132,9 +132,9 @@
     "name": "Charm Bracelet",
     "category": "Bracelets",
     "description": "Exquisite handcrafted Charm Bracelet plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/bracelets.png",
+    "image_url": "/images/feat_bracelets.png",
     "images": [
-      "/images/bracelets.png"
+      "/images/feat_bracelets.png"
     ],
     "is_trending": true,
     "is_festive": true,
