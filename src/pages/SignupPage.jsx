@@ -119,18 +119,18 @@ export function SignupPage() {
   const navigate = useNavigate();
   const { signup, verifyPhoneOtp, verifyOtp, googleLogin, loading, error, clearError, token, user } = useAuthStore();
 
-  useEffect(() => {
-    if (token && step !== 'done') {
-      navigate(user?.role === 'admin' ? '/admin' : '/', { replace: true });
-    }
-  }, [token, user, navigate, step]);
-
   const [step, setStep] = useState('form'); // 'form' | 'phone_otp' | 'email_otp' | 'done' | 'google_extra'
   const [pendingGoogleToken, setPendingGoogleToken] = useState(null);
   const [showPass, setShowPass] = useState(false);
   const [form, setForm] = useState({ name: '', email: '', phone: '', password: '', country: '' });
   const [consentAccepted, setConsentAccepted] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
+
+  useEffect(() => {
+    if (token && step !== 'done') {
+      navigate(user?.role === 'admin' ? '/admin' : '/', { replace: true });
+    }
+  }, [token, user, navigate, step]);
 
   const pwRules = [
     { label: 'At least 8 characters', ok: form.password.length >= 8 },
@@ -537,19 +537,19 @@ export function SignupPage() {
       </div>
 
       {/* MOBILE VIEW */}
-      <div className="lg:hidden min-h-screen bg-[#060B19] font-sans flex flex-col items-center justify-start px-6 py-10 overflow-y-auto">
+      <div className="lg:hidden min-h-screen bg-[#FAF6F0] font-sans flex flex-col items-center justify-start px-6 py-10 overflow-y-auto">
         {/* Header / Logo */}
         <div className="flex flex-col items-center mt-4">
-          <Link to="/">
-            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-24 h-24 object-contain" />
+          <Link to="/" className="hover:opacity-95 transition-opacity">
+            <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-28 h-auto object-contain drop-shadow-sm" />
           </Link>
-          <span className="font-serif font-bold text-lg tracking-[0.15em] text-[#D4AF37] mt-2 text-center">
+          <span className="font-serif font-bold text-xl tracking-[0.12em] text-[#2A0845] mt-2 text-center">
             LYDIA GLOBAL EXIM
           </span>
-          <span className="text-[#D4AF37] text-[10px] font-bold tracking-widest uppercase mt-6">
+          <span className="text-[#B38827] text-[10px] font-bold tracking-widest uppercase mt-4">
             {step === 'form' ? 'Get Started' : step === 'phone_otp' ? 'Step 1 of 2' : step === 'email_otp' ? 'Step 2 of 2' : step === 'google_extra' ? 'Almost Done' : 'Welcome!'}
           </span>
-          <p className="text-white/70 text-xs text-center leading-relaxed max-w-[260px] mt-4">
+          <p className="text-gray-600 text-xs text-center leading-relaxed max-w-[270px] mt-2">
             {step === 'form'
               ? 'Premium Stainless Steel PVD Gold Plated Jewelry — Waterproof, Tarnish-Free, and made for Everyday Luxury.'
               : step === 'phone_otp' ? `OTP sent to ${form.phone}`
@@ -560,88 +560,87 @@ export function SignupPage() {
         </div>
 
         {/* Divider */}
-        <div className="flex items-center justify-center gap-2 w-full max-w-xs mt-6 mb-6">
-          <div className="h-px bg-[#D4AF37]/30 flex-1"></div>
+        <div className="flex items-center justify-center gap-2 w-full max-w-xs mt-5 mb-5">
+          <div className="h-px bg-[#D4AF37]/40 flex-1"></div>
           <div className="w-1.5 h-1.5 rotate-45 bg-[#D4AF37]"></div>
-          <div className="h-px bg-[#D4AF37]/30 flex-1"></div>
+          <div className="h-px bg-[#D4AF37]/40 flex-1"></div>
         </div>
 
         {step === 'form' ? (
           <>
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-serif font-bold text-white mb-2">
-                Create <span className="text-[#D4AF37]">Account</span>
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-serif font-bold text-[#2A0845] mb-1.5">
+                Create <span className="text-[#B38827]">Account</span>
               </h2>
-              <div className="w-8 h-1 bg-[#D4AF37] mx-auto rounded-full mb-3"></div>
-              <p className="text-white/50 text-xs">Fill in your details to join.</p>
+              <div className="w-8 h-1 bg-[#D4AF37] mx-auto rounded-full mb-2"></div>
+              <p className="text-gray-500 text-xs">Fill in your details to join.</p>
             </div>
 
             <form onSubmit={handleSignup} className="w-full max-w-sm space-y-4">
               <div>
-                <label className="text-xs font-medium text-white block mb-1.5 pl-1">Full Name</label>
+                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Full Name</label>
                 <div className="relative">
-                  <User className="w-4 h-4 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2" />
+                  <User className="w-4 h-4 text-[#B38827] absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
                     name="name" value={form.name} onChange={handleChange} required
                     placeholder="Your full name"
-                    className="w-full bg-transparent border border-white/10 rounded-xl px-4 py-3.5 pl-11 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#D4AF37]/50 focus:ring-1 focus:ring-[#D4AF37]/50 transition-all"
+                    className="w-full bg-white border border-brand-gold/30 rounded-xl px-4 py-3.5 pl-11 text-sm text-[#2A0845] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-medium text-white block mb-1.5 pl-1">Email Address</label>
+                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Email Address</label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-[#B38827] absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
                     name="email" type="email" value={form.email} onChange={handleChange} required
                     placeholder="you@example.com"
-                    className="w-full bg-transparent border border-white/10 rounded-xl px-4 py-3.5 pl-11 text-sm text-white placeholder:text-white/30 focus:outline-none focus:border-[#D4AF37]/50 focus:ring-1 focus:ring-[#D4AF37]/50 transition-all"
+                    className="w-full bg-white border border-brand-gold/30 rounded-xl px-4 py-3.5 pl-11 text-sm text-[#2A0845] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
                   />
                 </div>
               </div>
 
               {/* Country - Mobile */}
               <div className="mb-4">
-                <label className="text-xs font-medium text-white block mb-1.5 pl-1">Country <span className="text-red-400">*</span></label>
-                <CountryPicker dark={true} allowedCountries={[]} value={form.country} onChange={(val) => setForm(f => ({ ...f, country: val }))} />
+                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Country <span className="text-red-500">*</span></label>
+                <CountryPicker dark={false} allowedCountries={[]} value={form.country} onChange={(val) => setForm(f => ({ ...f, country: val }))} />
               </div>
 
               {/* Phone - Mobile */}
               <div>
-                <label className="text-xs font-medium text-white block mb-1.5 pl-1">Phone Number</label>
+                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Phone Number</label>
                 <PhoneInput 
                   allowedCountries={[]} 
                   value={form.phone} 
                   onChange={v => setForm(f => ({ ...f, phone: v }))} 
                   placeholder="Phone number" 
-                  dark 
                   pattern="[0-9]{10,}" 
                   title="Please enter a valid phone number with at least 10 digits"
                 />
               </div>
 
               <div>
-                <label className="text-xs font-medium text-white block mb-1.5 pl-1">Password</label>
+                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Password</label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-[#D4AF37] absolute left-4 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-[#B38827] absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
                     name="password" type={showPass ? 'text' : 'password'} value={form.password}
                     onChange={handleChange} onBlur={() => setPasswordTouched(true)} required
                     placeholder="Min 8 chars, 1 number, 1 special"
-                    className={`w-full bg-transparent border rounded-xl px-4 py-3.5 pl-11 pr-12 text-sm text-white placeholder:text-white/30 focus:outline-none focus:ring-1 transition-all ${
-                      passwordTouched && !passwordValid ? 'border-red-500/60 focus:border-red-500 focus:ring-red-500/30' : 'border-white/10 focus:border-[#D4AF37]/50 focus:ring-[#D4AF37]/50'
+                    className={`w-full bg-white border rounded-xl px-4 py-3.5 pl-11 pr-12 text-sm text-[#2A0845] placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-all shadow-sm ${
+                      passwordTouched && !passwordValid ? 'border-red-400 focus:ring-red-200' : 'border-brand-gold/30 focus:ring-brand-gold/40'
                     }`}
                   />
                   <button type="button" onClick={() => setShowPass(!showPass)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#D4AF37] hover:text-[#D4AF37]/80 transition-colors">
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#B38827] hover:text-[#2A0845] transition-colors">
                     {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
                 {passwordTouched && (
                   <div className="mt-2 space-y-1">
                     {pwRules.map((r, i) => (
-                      <p key={i} className={`text-xs flex items-center gap-1.5 ${r.ok ? 'text-green-400' : 'text-red-400'}`}>
+                      <p key={i} className={`text-xs flex items-center gap-1.5 ${r.ok ? 'text-green-600' : 'text-red-500'}`}>
                         <span>{r.ok ? '✓' : '✗'}</span> {r.label}
                       </p>
                     ))}
@@ -652,24 +651,24 @@ export function SignupPage() {
               {/* Consent - Mobile */}
               <label className="flex items-start gap-2.5 cursor-pointer">
                 <input type="checkbox" checked={consentAccepted} onChange={e => setConsentAccepted(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 accent-[#D4AF37] rounded shrink-0" />
-                <span className="text-[11px] text-white/60 leading-relaxed">
+                  className="mt-0.5 w-4 h-4 accent-[#2A0845] rounded shrink-0" />
+                <span className="text-[11px] text-gray-600 leading-relaxed">
                   I confirm that I am at least 13 years old, agree to the LYDIA GLOBAL EXIM{' '}
-                  <Link to="/terms-of-service" target="_blank" className="text-[#D4AF37] font-bold underline">Terms & Conditions</Link>,
+                  <Link to="/terms-of-service" target="_blank" className="text-[#2A0845] font-bold underline">Terms & Conditions</Link>,
                   and acknowledge the LYDIA GLOBAL EXIM{' '}
-                  <Link to="/privacy-policy" target="_blank" className="text-[#D4AF37] font-bold underline">Privacy Policy</Link>.
+                  <Link to="/privacy-policy" target="_blank" className="text-[#2A0845] font-bold underline">Privacy Policy</Link>.
                 </span>
               </label>
 
               {displayError && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-xs text-red-400 text-center">
+                <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-600 text-center">
                   {displayError}
                 </div>
               )}
 
               <button
                 type="submit" disabled={loading || !isFormValid}
-                className="w-full bg-gradient-to-r from-[#e3c162] to-[#b38827] text-black font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                className="w-full bg-[#2A0845] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-md hover:bg-[#2A0845]/90"
               >
                 {loading ? 'Sending OTP...' : 'Send OTP & Continue →'}
               </button>
@@ -677,72 +676,71 @@ export function SignupPage() {
 
             {/* OR Google */}
             <div className="flex items-center gap-3 w-full max-w-sm my-6">
-              <div className="h-px bg-white/10 flex-1"></div>
-              <span className="text-white/40 text-[10px] tracking-wider uppercase">OR</span>
-              <div className="h-px bg-white/10 flex-1"></div>
+              <div className="h-px bg-gray-300 flex-1"></div>
+              <span className="text-gray-400 text-[10px] tracking-wider uppercase">OR</span>
+              <div className="h-px bg-gray-300 flex-1"></div>
             </div>
 
-            <button type="button" onClick={() => loginWithGoogle()} className="w-full max-w-sm bg-white text-black font-semibold py-3.5 rounded-xl flex items-center justify-center gap-3 text-sm hover:bg-gray-100 transition-colors">
+            <button type="button" onClick={() => loginWithGoogle()} className="w-full max-w-sm bg-white border border-gray-200 text-gray-800 font-semibold py-3.5 rounded-xl flex items-center justify-center gap-3 text-sm shadow-sm hover:bg-gray-50 transition-colors">
               <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg"><g transform="matrix(1, 0, 0, 1, 27.009001, -39.238998)"><path fill="#4285F4" d="M -3.264 51.509 C -3.264 50.719 -3.334 49.969 -3.454 49.239 L -14.754 49.239 L -14.754 53.749 L -8.284 53.749 C -8.574 55.229 -9.424 56.479 -10.684 57.329 L -10.684 60.329 L -6.824 60.329 C -4.564 58.239 -3.264 55.159 -3.264 51.509 Z"/><path fill="#34A853" d="M -14.754 63.239 C -11.514 63.239 -8.804 62.159 -6.824 60.329 L -10.684 57.329 C -11.764 58.049 -13.134 58.489 -14.754 58.489 C -17.884 58.489 -20.534 56.379 -21.484 53.529 L -25.464 53.529 L -25.464 56.619 C -23.494 60.539 -19.444 63.239 -14.754 63.239 Z"/><path fill="#FBBC05" d="M -21.484 53.529 C -21.734 52.809 -21.864 52.039 -21.864 51.239 C -21.864 50.439 -21.724 49.669 -21.484 48.949 L -21.484 45.859 L -25.464 45.859 C -26.284 47.479 -26.754 49.299 -26.754 51.239 C -26.754 53.179 -26.284 54.999 -25.464 56.619 L -21.484 53.529 Z"/><path fill="#EA4335" d="M -14.754 43.989 C -12.984 43.989 -11.404 44.599 -10.154 45.789 L -6.734 42.369 C -8.804 40.429 -11.514 39.239 -14.754 39.239 C -19.444 39.239 -23.494 41.939 -25.464 45.859 L -21.484 48.949 C -20.534 46.099 -17.884 43.989 -14.754 43.989 Z"/></g></svg>
               Continue with Google
             </button>
           </>
         ) : step === 'phone_otp' ? (
           <>
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-serif font-bold text-white mb-2">Verify <span className="text-[#D4AF37]">Mobile</span></h2>
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-serif font-bold text-[#2A0845] mb-1.5">Verify <span className="text-[#B38827]">Mobile</span></h2>
               <div className="w-8 h-1 bg-[#D4AF37] mx-auto rounded-full mb-3"></div>
             </div>
             <form onSubmit={handleVerifyPhone} className="w-full max-w-sm space-y-6">
-              <OtpInput value={phoneOtp} onChange={setPhoneOtp} className="flex justify-center gap-2" inputClassName="w-10 h-12 text-center text-xl font-bold bg-transparent border border-white/20 rounded-xl text-white focus:outline-none focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37] transition-all" />
-              {(localError || error) && <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-xs text-red-400 text-center">{localError || error}</div>}
+              <OtpInput value={phoneOtp} onChange={setPhoneOtp} className="flex justify-center gap-2" inputClassName="w-10 h-12 text-center text-xl font-bold bg-white border border-brand-gold/30 rounded-xl text-[#2A0845] focus:outline-none focus:border-[#2A0845] focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all" />
+              {(localError || error) && <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-600 text-center">{localError || error}</div>}
               <button type="submit" disabled={loading}
-                className="w-full bg-gradient-to-r from-[#e3c162] to-[#b38827] text-black font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                className="w-full bg-[#2A0845] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 shadow-md hover:bg-[#2A0845]/90">
                 {loading ? 'Verifying...' : 'Verify Mobile →'}
               </button>
-              <button type="button" onClick={() => setStep('form')} className="w-full text-sm text-white/50 hover:text-white transition-colors">← Change details</button>
+              <button type="button" onClick={() => setStep('form')} className="w-full text-sm text-gray-500 hover:text-[#2A0845] transition-colors">← Change details</button>
             </form>
           </>
         ) : step === 'email_otp' ? (
           <>
-            <div className="text-center mb-8">
-              <h2 className="text-4xl font-serif font-bold text-white mb-2">Verify <span className="text-[#D4AF37]">Email</span></h2>
+            <div className="text-center mb-6">
+              <h2 className="text-3xl font-serif font-bold text-[#2A0845] mb-1.5">Verify <span className="text-[#B38827]">Email</span></h2>
               <div className="w-8 h-1 bg-[#D4AF37] mx-auto rounded-full mb-3"></div>
             </div>
             <form onSubmit={handleVerifyEmail} className="w-full max-w-sm space-y-4">
-              <OtpInput value={emailOtp} onChange={setEmailOtp} className="flex justify-center gap-2" inputClassName="w-11 h-12 text-center text-xl font-bold bg-transparent border-2 border-white/20 rounded-xl text-white focus:outline-none focus:border-[#D4AF37] transition-colors" />
-              {(localError || error) && <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-xs text-red-400 text-center">{localError || error}</div>}
+              <OtpInput value={emailOtp} onChange={setEmailOtp} className="flex justify-center gap-2" inputClassName="w-11 h-12 text-center text-xl font-bold bg-white border-2 border-brand-gold/30 rounded-xl text-[#2A0845] focus:outline-none focus:border-[#2A0845] shadow-sm transition-colors" />
+              {(localError || error) && <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-600 text-center">{localError || error}</div>}
               <button type="submit" disabled={loading}
-                className="w-full bg-gradient-to-r from-[#e3c162] to-[#b38827] text-black font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
+                className="w-full bg-[#2A0845] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-md hover:bg-[#2A0845]/90">
                 {loading ? 'Verifying...' : 'Complete Sign Up →'}
               </button>
-              <button type="button" onClick={() => setStep('phone_otp')} className="w-full text-sm text-white/50 mt-4">← Back to mobile verification</button>
+              <button type="button" onClick={() => setStep('phone_otp')} className="w-full text-sm text-gray-500 mt-4">← Back to mobile verification</button>
             </form>
           </>
         ) : step === 'google_extra' ? (
           <>
-            <h2 className="text-2xl font-serif font-bold text-white mb-2">Almost Done!</h2>
-            <div className="w-12 h-1 bg-[#C6A184] rounded-full mb-6"></div>
-            <p className="text-white/70 text-sm mb-6">
+            <h2 className="text-2xl font-serif font-bold text-[#2A0845] mb-1.5">Almost Done!</h2>
+            <div className="w-12 h-1 bg-[#D4AF37] rounded-full mb-4"></div>
+            <p className="text-gray-600 text-sm mb-6">
               Please provide your phone number and country.
             </p>
 
             <form onSubmit={handleGoogleSubmit} className="space-y-4">
               {/* Country - Mobile */}
               <div className="mb-4">
-                <label className="text-xs font-medium text-white block mb-1.5 pl-1">Country <span className="text-red-400">*</span></label>
-                <CountryPicker dark={true} allowedCountries={[]} value={form.country} onChange={(val) => setForm(f => ({ ...f, country: val }))} />
+                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Country <span className="text-red-500">*</span></label>
+                <CountryPicker dark={false} allowedCountries={[]} value={form.country} onChange={(val) => setForm(f => ({ ...f, country: val }))} />
               </div>
 
               {/* Phone - Mobile */}
               <div className="mb-4">
-                <label className="text-xs font-medium text-white block mb-1.5 pl-1">Phone Number</label>
+                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Phone Number</label>
                 <PhoneInput 
                   allowedCountries={[]} 
                   value={form.phone} 
                   onChange={v => setForm(f => ({ ...f, phone: v }))} 
                   placeholder="Phone number" 
-                  dark 
                   pattern="[0-9]{10,}" 
                   title="Please enter a valid phone number with at least 10 digits"
                 />
@@ -751,68 +749,68 @@ export function SignupPage() {
               {/* Consent - Mobile */}
               <label className="flex items-start gap-2.5 cursor-pointer pt-2">
                 <input type="checkbox" checked={consentAccepted} onChange={e => setConsentAccepted(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 accent-[#D4AF37] rounded shrink-0" />
-                <span className="text-[11px] text-white/60 leading-relaxed">
+                  className="mt-0.5 w-4 h-4 accent-[#2A0845] rounded shrink-0" />
+                <span className="text-[11px] text-gray-600 leading-relaxed">
                   I confirm that I am at least 13 years old, agree to the LYDIA GLOBAL EXIM{' '}
-                  <Link to="/terms-of-service" target="_blank" className="text-[#D4AF37] font-bold underline">Terms & Conditions</Link>,
+                  <Link to="/terms-of-service" target="_blank" className="text-[#2A0845] font-bold underline">Terms & Conditions</Link>,
                   and acknowledge the LYDIA GLOBAL EXIM{' '}
-                  <Link to="/privacy-policy" target="_blank" className="text-[#D4AF37] font-bold underline">Privacy Policy</Link>.
+                  <Link to="/privacy-policy" target="_blank" className="text-[#2A0845] font-bold underline">Privacy Policy</Link>.
                 </span>
               </label>
 
               {displayError && (
-                <div className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-xs text-red-400 text-center">
+                <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-600 text-center">
                   {displayError}
                 </div>
               )}
 
               <button
                 type="submit" disabled={loading}
-                className="w-full bg-gradient-to-r from-[#e3c162] to-[#b38827] text-black font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-[0_0_15px_rgba(212,175,55,0.2)]"
+                className="w-full bg-[#2A0845] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-md hover:bg-[#2A0845]/90"
               >
                 {loading ? 'Completing...' : 'Complete Sign Up →'}
               </button>
-              <button type="button" onClick={() => setStep('form')} className="w-full text-sm text-white/50 mt-4">← Back</button>
+              <button type="button" onClick={() => setStep('form')} className="w-full text-sm text-gray-500 mt-4">← Back</button>
             </form>
           </>
         ) : (
           <div className="flex flex-col items-center justify-center py-16 gap-4">
-            <div className="w-20 h-20 rounded-full bg-green-500/20 flex items-center justify-center">
-              <ShieldCheck className="w-10 h-10 text-green-400" />
+            <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
+              <ShieldCheck className="w-10 h-10 text-green-600" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-white">Account Created!</h2>
-            <p className="text-white/50 text-sm">Redirecting you to the store...</p>
+            <h2 className="text-2xl font-serif font-bold text-[#2A0845]">Account Created!</h2>
+            <p className="text-gray-500 text-sm">Redirecting you to the store...</p>
           </div>
         )}
 
-        <p className="text-center text-xs text-white/50 mt-8">
+        <p className="text-center text-xs text-gray-600 mt-8">
           Already have an account?{' '}
-          <Link to="/login" className="text-[#D4AF37] hover:text-white transition-colors">
+          <Link to="/login" className="text-[#2A0845] font-bold hover:underline">
             Sign In
           </Link>
         </p>
 
         {/* Bottom Badges */}
-        <div className="flex justify-between w-full max-w-sm mt-12 mb-4 px-2">
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center">
-              <ShieldCheck className="w-5 h-5 text-[#D4AF37]" strokeWidth={1.5} />
+        <div className="flex justify-between w-full max-w-sm mt-10 mb-4 px-2">
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-11 h-11 rounded-full border border-brand-gold/30 bg-white shadow-sm flex items-center justify-center">
+              <ShieldCheck className="w-5 h-5 text-[#B38827]" strokeWidth={1.5} />
             </div>
-            <span className="text-white text-[10px]"> Tarnish Free</span>
+            <span className="text-gray-700 text-[10px] font-medium">Tarnish Free</span>
           </div>
           
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center">
-              <Droplet className="w-5 h-5 text-[#D4AF37]" strokeWidth={1.5} />
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-11 h-11 rounded-full border border-brand-gold/30 bg-white shadow-sm flex items-center justify-center">
+              <Droplet className="w-5 h-5 text-[#B38827]" strokeWidth={1.5} />
             </div>
-            <span className="text-white text-[10px]">Waterproof</span>
+            <span className="text-gray-700 text-[10px] font-medium">Waterproof</span>
           </div>
 
-          <div className="flex flex-col items-center gap-3">
-            <div className="w-12 h-12 rounded-full border border-[#D4AF37]/30 flex items-center justify-center">
-              <Feather className="w-5 h-5 text-[#D4AF37]" strokeWidth={1.5} />
+          <div className="flex flex-col items-center gap-2">
+            <div className="w-11 h-11 rounded-full border border-brand-gold/30 bg-white shadow-sm flex items-center justify-center">
+              <Feather className="w-5 h-5 text-[#B38827]" strokeWidth={1.5} />
             </div>
-            <span className="text-white text-[10px]">Hypoallergenic</span>
+            <span className="text-gray-700 text-[10px] font-medium">Hypoallergenic</span>
           </div>
         </div>
       </div>
