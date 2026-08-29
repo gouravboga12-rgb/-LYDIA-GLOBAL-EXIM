@@ -216,7 +216,6 @@ export function DashboardPage() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               {[
                 { icon: Package, label: 'My Orders', action: () => navigate('/my-orders') },
-                { icon: Ticket, label: 'My Coupons', action: () => navigate('/my-coupons') },
                 { icon: Heart, label: 'Wishlist', action: () => navigate('/wishlist') },
                 { icon: MapPin, label: 'Saved Addresses', action: () => navigate('/my-addresses') },
                 { icon: Settings, label: 'Account Settings', action: () => navigate('/account-settings') },

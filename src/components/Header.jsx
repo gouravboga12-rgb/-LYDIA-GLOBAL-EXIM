@@ -30,11 +30,9 @@ function AvatarDropdown({ user, onLogout }) {
   const items = [
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
     { icon: Package, label: 'My Orders', path: '/my-orders' },
-    { icon: Ticket, label: 'My Coupons', path: '/my-coupons' },
     { icon: MapPin, label: 'My Addresses', path: '/my-addresses' },
     { icon: Heart, label: 'Wishlist', path: '/wishlist' },
     { icon: Settings, label: 'Account Settings', path: '/account-settings' },
-    ...(user?.role === 'admin' ? [{ icon: Shield, label: 'Admin Panel', path: '/admin' }] : []),
   ];
 
   return (
