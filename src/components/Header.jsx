@@ -534,8 +534,8 @@ export function Header({ variant = 'default', title, showShare = false }) {
           </div>
         )}
 
-        <div className={`h-[114px] ${announcement && announcement.is_active && announcement.items?.some(i => i.text) ? 'mt-[27px]' : ''}`} />
-        <header className={`fixed ${announcement && announcement.is_active && announcement.items?.some(i => i.text) ? 'top-[27px]' : 'top-0'} left-0 z-50 w-full bg-brand-dark-blue/95 backdrop-blur-md px-4 pt-2 pb-2.5 shadow-lg border-b border-white/10 transition-all flex flex-col gap-2`}>
+        <div className={`h-[64px] ${announcement && announcement.is_active && announcement.items?.some(i => i.text) ? 'mt-[27px]' : ''}`} />
+        <header className={`fixed ${announcement && announcement.is_active && announcement.items?.some(i => i.text) ? 'top-[27px]' : 'top-0'} left-0 z-50 w-full bg-brand-dark-blue/95 backdrop-blur-md px-4 py-2.5 shadow-lg border-b border-white/10 transition-all flex items-center justify-between`}>
           <div className="w-full flex items-center justify-between relative">
             {/* Left: Menu & Logo */}
             <div className="flex items-center gap-2 shrink min-w-0">
@@ -572,15 +572,6 @@ export function Header({ variant = 'default', title, showShare = false }) {
                 )}
               </Link>
             </div>
-          </div>
-
-          {/* Mobile Search Bar Below Header */}
-          <div
-            onClick={openMobileSearch}
-            className="w-full flex items-center gap-2.5 bg-white/10 hover:bg-white/15 active:bg-white/20 border border-white/15 rounded-full px-3.5 py-1.5 cursor-pointer transition-colors shadow-inner"
-          >
-            <Search className="w-3.5 h-3.5 text-brand-gold/80 shrink-0" />
-            <span className="text-xs text-white/60 select-none truncate">Search for jewelry, collections, rings...</span>
           </div>
         </header>
       </div>

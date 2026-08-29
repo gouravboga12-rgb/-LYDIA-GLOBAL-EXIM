@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind, Bell, Droplet, Flower2, Cloud, Grid, Package, MapPin, Globe, Users, Store, ShieldCheck, Gem, Quote, CheckCircle2, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
@@ -8,9 +8,10 @@ import { useStoreData } from '../store/useStoreData';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
 
+import bannerBridal from '../assets/banner_bridal.jpg';
+import bannerAntiTarnish from '../assets/banner_antitarnish.jpg';
+import bannerTemple from '../assets/banner_temple.jpg';
 import imgHeroBanner from '../assets/hero_banner.png';
-import bannerJewelry from '../assets/banner_jewelry.jpg';
-import imgMeditation from '../assets/story_meditation.png';
 import defaultReviews from '../data/reviews.json';
 
 // Inline Instagram icon (not available in this version of lucide-react)
@@ -199,6 +200,7 @@ function FeaturesBanner() {
 }
 
 export function HomePage() {
+  const navigate = useNavigate();
   const container = useRef(null);
   const { products, categories, loading } = useStoreData();
   const [banners, setBanners] = React.useState([]);
@@ -262,34 +264,34 @@ export function HomePage() {
   const defaultHeroSlides = [
     {
       id: 'slide_1',
-      tag: 'Lydia Global Exim Collection',
-      title: 'Handcrafted Elegance, Royal Imitation Luxury',
-      subtitle: 'Explore exquisite Kundan bridal sets, anti-tarnish micro-gold plated jewelry, and timeless designs crafted for celebrations and everyday elegance.',
-      image: '/images/about_hero.jpg',
+      tag: 'Heritage Bridal Collection',
+      title: 'Handcrafted Kundan & Pearl Elegance',
+      subtitle: 'Exquisite bridal necklaces, royal choker sets, and timeless heirloom jewelry.',
+      image: bannerBridal,
       link: '/category/all'
     },
     {
       id: 'slide_2',
       tag: 'Everyday Luxury & Durability',
       title: '18K Anti-Tarnish Gold Plated Jewelry',
-      subtitle: 'Waterproof, sweatproof, and hypoallergenic designs crafted with premium PVD coating for endless daily brilliance.',
-      image: imgHeroBanner,
+      subtitle: 'Waterproof, sweatproof, and hypoallergenic designs crafted for daily brilliance.',
+      image: bannerAntiTarnish,
       link: '/category/all'
     },
     {
       id: 'slide_3',
-      tag: 'Heritage South Indian Collection',
-      title: 'Royal Temple & Traditional Classics',
-      subtitle: 'Intricate nakshi motifs, authentic matte finishes, and heirloom artistry honoring timeless Indian tradition.',
-      image: bannerJewelry,
+      tag: 'South Indian Classics',
+      title: 'Royal Temple & Antique Lakshmi Sets',
+      subtitle: 'Intricate nakshi motifs, authentic matte gold finish, and divine South Indian artistry.',
+      image: bannerTemple,
       link: '/category/all'
     },
     {
       id: 'slide_4',
-      tag: 'Sparkling Glamour',
-      title: 'American Diamond & CZ Solitaire Sets',
-      subtitle: 'Stunning brilliance and radiant precision cut crystals to make every festive evening shine with perfection.',
-      image: imgMeditation,
+      tag: 'Festive Glamour',
+      title: 'Celebration & Traditional Festive Collection',
+      subtitle: 'Radiant handcrafted jewelry to make every festival, wedding, and special occasion shine.',
+      image: imgHeroBanner,
       link: '/category/all'
     }
   ];
@@ -332,6 +334,19 @@ export function HomePage() {
     <div ref={container} className="bg-brand-beige flex-grow w-full flex flex-col pb-8">
       <Header variant="home" />
 
+      {/* Mobile Search Bar — Placed below header and above banners on Home page */}
+      <div className="md:hidden px-3 pt-3 pb-1">
+        <div
+          onClick={() => navigate('/search')}
+          className="w-full flex items-center gap-3 bg-white border border-brand-gold/30 rounded-2xl px-4 py-2.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] cursor-pointer active:scale-[0.99] transition-all"
+        >
+          <Search className="w-4 h-4 text-[#B38827] shrink-0" />
+          <span className="text-xs text-gray-500 font-medium truncate select-none">
+            Search for jewelry, collections, rings...
+          </span>
+        </div>
+      </div>
+
       {/* Hero Banner Section with Horizontal Scroll & Left/Right Arrows */}
       <div className="animate-section py-2 md:py-6 px-3 sm:px-8 md:px-16 lg:px-24">
         <div className="relative w-full h-[250px] xs:h-[280px] sm:h-[340px] md:h-[420px] rounded-2xl md:rounded-[24px] overflow-hidden shadow-xl border border-brand-gold/20 bg-[#FAF6F0] group">
@@ -347,9 +362,9 @@ export function HomePage() {
                   <img
                     src={slide.image}
                     alt={slide.title}
-                    className="w-full h-full object-cover object-right md:object-[center_35%] transition-transform duration-1000 group-hover:scale-105"
+                    className="w-full h-full object-cover object-center md:object-right transition-transform duration-1000 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0]/95 via-[#FAF6F0]/85 sm:via-[#FAF6F0]/75 md:via-[#FAF6F0]/70 to-transparent z-10 pointer-events-none w-full md:w-[70%]"></div>
+                  <div className="absolute inset-0 bg-gradient-to-r from-[#FAF6F0]/95 via-[#FAF6F0]/75 sm:via-[#FAF6F0]/60 md:via-[#FAF6F0]/50 to-transparent z-10 pointer-events-none w-full md:w-[65%]"></div>
                 </div>
 
                 {/* Slide Content */}
