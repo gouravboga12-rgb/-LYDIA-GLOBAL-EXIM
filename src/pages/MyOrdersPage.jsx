@@ -73,7 +73,7 @@ export function MyOrdersPage() {
         <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:center;font-size:9pt;">${escapeHtml(item.variant?.size || item.size || '—')}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:center;font-size:9pt;">${item.qty}</td>
         <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:right;font-size:9pt;font-weight:600;">₹${Number(item.variant?.price || item.product?.price || item.price || 0).toLocaleString('en-IN')}</td>
-        <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:right;font-size:9pt;font-weight:700;color:#2A0845;">₹${(Number(item.variant?.price || item.product?.price || item.price || 0) * item.qty).toLocaleString('en-IN')}</td>
+        <td style="padding:10px 12px;border-bottom:1px solid #F6EFEF;vertical-align:middle;text-align:right;font-size:9pt;font-weight:700;color:#45055B;">₹${(Number(item.variant?.price || item.product?.price || item.price || 0) * item.qty).toLocaleString('en-IN')}</td>
       </tr>`;
     }).join('');
 
@@ -88,26 +88,26 @@ export function MyOrdersPage() {
     body { font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333; margin: 0; padding: 20px; font-size: 10pt; line-height: 1.4; background: #fff; }
     .print-btn { text-align: center; margin: 20px 0; }
     .print-btn button { padding: 8px 24px; margin: 0 6px; border-radius: 999px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
-    .btn-print { background: #2A0845; color: #D4AF37; }
-    .btn-dl { background: #D4AF37; color: #2A0845; }
+    .btn-print { background: #45055B; color: #D4AF37; }
+    .btn-dl { background: #D4AF37; color: #45055B; }
     @media print { .print-btn { display: none !important; } * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; } }
   </style>
 </head>
 <body>
 
 <!-- HEADER -->
-<table style="width:100%;border-collapse:collapse;border-bottom:3px solid #2A0845;padding-bottom:16px;margin-bottom:20px;">
+<table style="width:100%;border-collapse:collapse;border-bottom:3px solid #45055B;padding-bottom:16px;margin-bottom:20px;">
   <tr>
     <td style="vertical-align:middle;width:50%;">
       <div style="display:flex;align-items:center;gap:10px;">
         <img src="${new URL(logoUrl, window.location.href).href}" style="height:48px;width:auto;object-fit:contain;" alt="LYDIA GLOBAL EXIM Logo" />
         <div style="display:flex;flex-direction:column;">
-          <span style="font-family:serif;font-weight:900;font-size:22px;color:#2A0845;line-height:1;">LYDIA GLOBAL EXIM</span>
+          <span style="font-family:serif;font-weight:900;font-size:22px;color:#45055B;line-height:1;">LYDIA GLOBAL EXIM</span>
         </div>
       </div>
     </td>
     <td style="vertical-align:top;text-align:right;">
-      <div style="font-size:20pt;font-weight:900;color:#2A0845;letter-spacing:-0.5px;">INVOICE</div>
+      <div style="font-size:20pt;font-weight:900;color:#45055B;letter-spacing:-0.5px;">INVOICE</div>
       <div style="font-size:9pt;color:#555;margin-top:6px;line-height:1.7;">
         <strong>Invoice No:</strong> #${escapeHtml(order.order_number || String(order.id))}<br>
         <strong>Date:</strong>${orderDate}<br>
@@ -123,23 +123,23 @@ export function MyOrdersPage() {
 <table style="width:100%;border-collapse:collapse;margin-bottom:22px;">
   <tr>
     <td style="width:${isPickup ? '100%' : '50%'};vertical-align:top;padding:12px;border:1px solid #e8d5b0;background:#FFFDFD;border-radius:4px;">
-      <div style="font-size:9pt;font-weight:700;color:#2A0845;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">From</div>
+      <div style="font-size:9pt;font-weight:700;color:#45055B;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">From</div>
       <div style="font-size:9.5pt;color:#555;line-height:1.6;">
-        <strong style="color:#2A0845;">LYDIA GLOBAL EXIM</strong><br>
+        <strong style="color:#45055B;">LYDIA GLOBAL EXIM</strong><br>
         Phone: +91 9014863411<br>
         Email: lydiaglobalexim@gmail.com
       </div>
     </td>${!isPickup ? `
     <td style="width:4px;"></td>
     <td style="width:50%;vertical-align:top;padding:12px;border:1px solid #e8d5b0;background:#FFFAF9;border-radius:4px;">
-      <div style="font-size:9pt;font-weight:700;color:#2A0845;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Ship To</div>
+      <div style="font-size:9pt;font-weight:700;color:#45055B;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Ship To</div>
       <div style="font-size:9.5pt;color:#555;line-height:1.6;">
-        <strong style="color:#2A0845;">${escapeHtml(address.name || user?.name || '')}</strong><br>${escapeHtml(address.line1 || '')}${address.line2 ? ', ' + escapeHtml(address.line2) : ''}<br>${escapeHtml(address.city || '')}, ${escapeHtml(address.state || '')} ${escapeHtml(address.pincode || '')}<br>${address.mobile ? `<strong>Phone:</strong>${escapeHtml(address.mobile)}` : ''}
+        <strong style="color:#45055B;">${escapeHtml(address.name || user?.name || '')}</strong><br>${escapeHtml(address.line1 || '')}${address.line2 ? ', ' + escapeHtml(address.line2) : ''}<br>${escapeHtml(address.city || '')}, ${escapeHtml(address.state || '')} ${escapeHtml(address.pincode || '')}<br>${address.mobile ? `<strong>Phone:</strong>${escapeHtml(address.mobile)}` : ''}
       </div>
     </td>` : `
     <td style="width:4px;"></td>
     <td style="width:50%;vertical-align:top;padding:12px;border:1px solid #e8d5b0;background:#f8fafc;border-radius:4px;">
-      <div style="font-size:9pt;font-weight:700;color:#2A0845;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Payment Details</div>
+      <div style="font-size:9pt;font-weight:700;color:#45055B;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Payment Details</div>
       <div style="font-size:9.5pt;color:#555;line-height:1.6;">
         <strong>Type:</strong> <span style="text-transform:capitalize;">${escapeHtml(order.payment_method || 'Card')}</span><br>${order.stripe_payment_intent_id ? `<strong>Transaction ID:</strong> <span style="font-family:monospace;">${escapeHtml(order.stripe_payment_intent_id)}</span><br>` : ''}
         <strong>Amount Received:</strong> ₹${parseFloat(order.total || 0).toFixed(2)}
@@ -151,7 +151,7 @@ export function MyOrdersPage() {
 <table style="width:100%;border-collapse:collapse;margin-bottom:22px;">
   <tr>
     <td style="width:100%;vertical-align:top;padding:12px;border:1px solid #e8d5b0;background:#f8fafc;border-radius:4px;">
-      <div style="font-size:9pt;font-weight:700;color:#2A0845;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Payment Details</div>
+      <div style="font-size:9pt;font-weight:700;color:#45055B;text-transform:uppercase;letter-spacing:0.5px;border-bottom:1px solid #e8d5b0;padding-bottom:5px;margin-bottom:8px;">Payment Details</div>
       <div style="font-size:9.5pt;color:#555;line-height:1.6;display:flex;justify-content:space-between;">
         <div><strong>Type:</strong> <span style="text-transform:capitalize;">${escapeHtml(order.payment_method || 'Card')}</span></div>${order.stripe_payment_intent_id ? `<div><strong>Transaction ID:</strong> <span style="font-family:monospace;">${escapeHtml(order.stripe_payment_intent_id)}</span></div>` : ''}
         <div><strong>Amount Received:</strong> ₹${parseFloat(order.total || 0).toFixed(2)}</div>
@@ -164,7 +164,7 @@ export function MyOrdersPage() {
 <!-- ITEMS TABLE -->
 <table style="width:100%;border-collapse:collapse;margin-bottom:20px;">
   <thead>
-    <tr style="background:#2A0845;">
+    <tr style="background:#45055B;">
       <th style="padding:10px 12px;color:#D4AF37;font-size:9pt;text-align:center;width:5%;">#</th>
       <th style="padding:10px 12px;color:#D4AF37;font-size:9pt;text-align:left;width:45%;">Item</th>
       <th style="padding:10px 12px;color:#D4AF37;font-size:9pt;text-align:center;width:15%;">Size</th>
@@ -187,7 +187,7 @@ export function MyOrdersPage() {
         ${signatureFee > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Signature Confirmation</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">₹${signatureFee.toFixed(2)}</td></tr>` : ''}
         ${insuranceFee > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Shipping Insurance</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">₹${insuranceFee.toFixed(2)}</td></tr>` : ''}
         ${taxAmt > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Tax</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">₹${taxAmt.toFixed(2)}</td></tr>` : ''}
-        <tr style="background:#FAF6F0;"><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#2A0845;border-top:2px solid #2A0845;">TOTAL</td><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#D4AF37;border-top:2px solid #2A0845;">₹${Number(order.total).toFixed(2)}</td></tr>${parseFloat(order.refund_amount) > 0 ? `
+        <tr style="background:#FAF6F0;"><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#45055B;border-top:2px solid #45055B;">TOTAL</td><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#D4AF37;border-top:2px solid #45055B;">₹${Number(order.total).toFixed(2)}</td></tr>${parseFloat(order.refund_amount) > 0 ? `
         <tr><td colspan="2" style="padding:12px;text-align:right;border-bottom:1px solid #F6EFEF;">
           <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:4px;padding:8px;display:inline-block;text-align:right;min-width:200px;">
             <div style="color:#DC2626;font-size:8.5pt;text-transform:uppercase;font-weight:700;margin-bottom:4px;">Refund Processed</div>
@@ -241,18 +241,18 @@ export function MyOrdersPage() {
 
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-2xl font-serif font-bold text-[#2A0845]">Order History</h2>
-          <span className="text-sm font-semibold text-[#2A0845]/60 bg-[#2A0845]/10 px-3 py-1 rounded-full">{orders.length} Orders</span>
+          <h2 className="text-2xl font-serif font-bold text-[#45055B]">Order History</h2>
+          <span className="text-sm font-semibold text-[#45055B]/60 bg-[#45055B]/10 px-3 py-1 rounded-full">{orders.length} Orders</span>
         </div>
 
         {orders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4 bg-white rounded-3xl border border-gray-100 shadow-sm">
             <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center">
-              <ShoppingBag className="w-12 h-12 text-[#2A0845]" />
+              <ShoppingBag className="w-12 h-12 text-[#45055B]" />
             </div>
-            <p className="text-[#2A0845] font-bold text-lg">No orders yet</p>
-            <p className="text-sm text-[#2A0845]/50 text-center max-w-sm">Looks like you haven't made your first order. Explore our spiritual collection today!</p>
-            <Link to="/" className="mt-4 bg-gradient-to-r from-[#2A0845] to-[#D4AF37] text-white text-sm font-bold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+            <p className="text-[#45055B] font-bold text-lg">No orders yet</p>
+            <p className="text-sm text-[#45055B]/50 text-center max-w-sm">Looks like you haven't made your first order. Explore our spiritual collection today!</p>
+            <Link to="/" className="mt-4 bg-gradient-to-r from-[#45055B] to-[#D4AF37] text-white text-sm font-bold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
               Start Shopping
             </Link>
           </div>
@@ -265,8 +265,8 @@ export function MyOrdersPage() {
                 {/* Order Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-4 border-b border-gray-100 bg-[#FAF6F0]">
                   <div>
-                    <p className="text-sm font-bold text-[#2A0845]">Order #{order.order_number || order.id}</p>
-                    <p className="text-xs text-[#2A0845]/60 mt-1">
+                    <p className="text-sm font-bold text-[#45055B]">Order #{order.order_number || order.id}</p>
+                    <p className="text-xs text-[#45055B]/60 mt-1">
                       Placed on {new Date(order.created_at).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Chicago', timeZoneName: 'short' })}
                     </p>
                     {order.stripe_payment_intent_id && (
@@ -300,19 +300,19 @@ export function MyOrdersPage() {
                         {STATUS_STEPS.map((step, i) => (
                           <div key={step} className="flex flex-col items-center flex-1 relative">
                             <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all z-10 ${
-                              i <= stepIdx ? 'bg-[#2A0845] border-[#2A0845] text-white shadow-md' : 'bg-white border-gray-200 text-gray-400'
+                              i <= stepIdx ? 'bg-[#45055B] border-[#45055B] text-white shadow-md' : 'bg-white border-gray-200 text-gray-400'
                             }`}>
                               {i < stepIdx ? '✓' : i + 1}
                             </div>
                             {i < STATUS_STEPS.length - 1 && (
-                              <div className={`absolute top-4 left-1/2 w-full h-0.5 -z-0 ${i < stepIdx ? 'bg-[#2A0845]' : 'bg-gray-200'}`} />
+                              <div className={`absolute top-4 left-1/2 w-full h-0.5 -z-0 ${i < stepIdx ? 'bg-[#45055B]' : 'bg-gray-200'}`} />
                             )}
                           </div>
                         ))}
                       </div>
                       <div className="flex items-center mt-2">
                         {STATUS_STEPS.map((step, i) => (
-                          <span key={step} className={`text-[10px] sm:text-xs font-bold capitalize flex-1 text-center ${i <= stepIdx ? 'text-[#2A0845]' : 'text-gray-400'}`}>
+                          <span key={step} className={`text-[10px] sm:text-xs font-bold capitalize flex-1 text-center ${i <= stepIdx ? 'text-[#45055B]' : 'text-gray-400'}`}>
                             {step}
                           </span>
                         ))}
@@ -404,8 +404,8 @@ export function MyOrdersPage() {
                         const productName = item.product?.name || item.name || 'Product';
                         return (
                           <div key={`c-${i}`} className="flex items-start gap-4 p-3 rounded-xl border border-red-50 bg-red-50/20 grayscale opacity-60">
-                            <div className="w-16 h-16 bg-[#FAF6F0] rounded-xl flex items-center justify-center shrink-0 border border-[#2A0845]/10 overflow-hidden">
-                              {variantImg ? <img src={variantImg} alt={productName} className="w-full h-full object-cover" /> : <Package className="w-8 h-8 text-[#2A0845]/40" />}
+                            <div className="w-16 h-16 bg-[#FAF6F0] rounded-xl flex items-center justify-center shrink-0 border border-[#45055B]/10 overflow-hidden">
+                              {variantImg ? <img src={variantImg} alt={productName} className="w-full h-full object-cover" /> : <Package className="w-8 h-8 text-[#45055B]/40" />}
                             </div>
                             <div className="flex-1 min-w-0 pt-1">
                               <p className="text-sm font-bold text-gray-500 line-clamp-1 line-through">{productName}{item.color || item.variant?.color ? ` — ${item.color || item.variant?.color}` : ''}</p>
@@ -439,31 +439,31 @@ export function MyOrdersPage() {
                         const qty = item.qty || 1;
                         return (
                         <div key={i} className="flex items-start gap-4 p-3 rounded-xl border border-gray-50 hover:bg-gray-50 transition-colors">
-                          <div className="w-16 h-16 bg-[#FAF6F0] rounded-xl flex items-center justify-center shrink-0 border border-[#2A0845]/10 overflow-hidden">
+                          <div className="w-16 h-16 bg-[#FAF6F0] rounded-xl flex items-center justify-center shrink-0 border border-[#45055B]/10 overflow-hidden">
                             {variantImg ? (
                               <img src={variantImg} alt={productName} className="w-full h-full object-cover" />
                             ) : (
-                              <Package className="w-8 h-8 text-[#2A0845]/40" />
+                              <Package className="w-8 h-8 text-[#45055B]/40" />
                             )}
                           </div>
                           <div className="flex-1 min-w-0 pt-1">
-                            <p className="text-sm font-bold text-[#2A0845] line-clamp-1">
+                            <p className="text-sm font-bold text-[#45055B] line-clamp-1">
                               <Link to={`/product/${productId}${urlCode ? `?variantCode=${urlCode}` : ''}`} className="hover:text-[#D4AF37] transition-colors">
                                 {productName}{item.variant?.color ? ` — ${item.variant.color}` : ''}
                               </Link>
                             </p>
                             <div className="flex items-center gap-2 mt-1.5 flex-wrap">
                               {(item.size || item.variant?.size) && (
-                                <span className="text-xs text-[#2A0845]/60 bg-white px-2 py-0.5 rounded-md border border-gray-100">{item.size || item.variant?.size}</span>
+                                <span className="text-xs text-[#45055B]/60 bg-white px-2 py-0.5 rounded-md border border-gray-100">{item.size || item.variant?.size}</span>
                               )}
                               {variantCode && (
                                 <span className="text-xs text-[#D4AF37] font-bold bg-[#D4AF37]/10 px-2 py-0.5 rounded-md border border-[#D4AF37]/20">#{variantCode}</span>
                               )}
                             </div>
                             <div className="flex items-center gap-1.5 mt-1.5">
-                              <span className="text-xs text-[#2A0845]/50">${unitPrice.toFixed(2)} × {qty}</span>
-                              <span className="text-xs text-[#2A0845]/30">=</span>
-                              <span className="text-xs font-bold text-[#2A0845]">${(unitPrice * qty).toFixed(2)}</span>
+                              <span className="text-xs text-[#45055B]/50">${unitPrice.toFixed(2)} × {qty}</span>
+                              <span className="text-xs text-[#45055B]/30">=</span>
+                              <span className="text-xs font-bold text-[#45055B]">${(unitPrice * qty).toFixed(2)}</span>
                             </div>
                           </div>
                         </div>
@@ -484,8 +484,8 @@ export function MyOrdersPage() {
                   const taxRate = subtotal > 0 && tax > 0 ? ((tax / (subtotal - discount)) * 100).toFixed(2) : null;
                   return (
                     <div className="mx-6 mb-4 rounded-xl border border-gray-100 overflow-hidden">
-                      <div className="px-4 py-2 bg-[#2A0845]/5 border-b border-gray-100">
-                        <p className="text-[10px] font-bold text-[#2A0845]/50 uppercase tracking-wider">Price Summary</p>
+                      <div className="px-4 py-2 bg-[#45055B]/5 border-b border-gray-100">
+                        <p className="text-[10px] font-bold text-[#45055B]/50 uppercase tracking-wider">Price Summary</p>
                       </div>
                       <div className="px-4 py-3 space-y-2 bg-white">
                         {/* Per-item breakdown */}
@@ -494,17 +494,17 @@ export function MyOrdersPage() {
                           const qty = item.qty || 1;
                           const name = item.product?.name || item.name || 'Item';
                           return (
-                            <div key={i} className="flex justify-between text-xs text-[#2A0845]/70">
+                            <div key={i} className="flex justify-between text-xs text-[#45055B]/70">
                               <span className="truncate max-w-[60%]">{name}{qty > 1 ? ` ×${qty}` : ''}</span>
                               <span className="font-semibold shrink-0">
-                                {qty > 1 ? <span className="text-[#2A0845]/40 mr-1">${unitPrice.toFixed(2)} ea</span> : null}
+                                {qty > 1 ? <span className="text-[#45055B]/40 mr-1">${unitPrice.toFixed(2)} ea</span> : null}
                                 ${(unitPrice * qty).toFixed(2)}
                               </span>
                             </div>
                           );
                         })}
                         <div className="border-t border-dashed border-gray-100 pt-2 mt-1 space-y-1.5">
-                          <div className="flex justify-between text-xs text-[#2A0845]/70">
+                          <div className="flex justify-between text-xs text-[#45055B]/70">
                             <span>Item Total</span>
                             <span className="font-semibold">${subtotal.toFixed(2)}</span>
                           </div>
@@ -515,7 +515,7 @@ export function MyOrdersPage() {
                             </div>
                           )}
                           {shipping > 0 && (
-                            <div className="flex justify-between text-xs text-[#2A0845]/70">
+                            <div className="flex justify-between text-xs text-[#45055B]/70">
                               <span>Shipping Fee</span>
                               <span className="font-semibold">${shipping.toFixed(2)}</span>
                             </div>
@@ -526,13 +526,13 @@ export function MyOrdersPage() {
                             return (
                               <>
                                 {addr.signature_fee > 0 && (
-                                  <div className="flex justify-between text-xs text-[#2A0845]/70">
+                                  <div className="flex justify-between text-xs text-[#45055B]/70">
                                     <span>Signature Confirmation</span>
                                     <span className="font-semibold">${parseFloat(addr.signature_fee).toFixed(2)}</span>
                                   </div>
                                 )}
                                 {addr.insurance_fee > 0 && (
-                                  <div className="flex justify-between text-xs text-[#2A0845]/70">
+                                  <div className="flex justify-between text-xs text-[#45055B]/70">
                                     <span>Shipping Insurance</span>
                                     <span className="font-semibold">${parseFloat(addr.insurance_fee).toFixed(2)}</span>
                                   </div>
@@ -541,17 +541,17 @@ export function MyOrdersPage() {
                             );
                           })()}
                           {tax > 0 && (
-                            <div className="flex justify-between text-xs text-[#2A0845]/70">
+                            <div className="flex justify-between text-xs text-[#45055B]/70">
                               <span>Tax{taxRate ? ` (${taxRate}%)` : ''}</span>
                               <span className="font-semibold">${tax.toFixed(2)}</span>
                             </div>
                           )}
                         </div>
-                        <div className="flex justify-between text-sm font-bold text-[#2A0845] border-t border-gray-200 pt-2 mt-1">
+                        <div className="flex justify-between text-sm font-bold text-[#45055B] border-t border-gray-200 pt-2 mt-1">
                           <span>Grand Total</span>
                           <span className="text-[#D4AF37]">${Number(order.total).toFixed(2)}</span>
                         </div>
-                        <p className="text-center text-[10px] text-[#2A0845]/40 pt-1">🔒 100% Secure Transaction</p>
+                        <p className="text-center text-[10px] text-[#45055B]/40 pt-1">🔒 100% Secure Transaction</p>
                       </div>
                     </div>
                   );
@@ -559,13 +559,13 @@ export function MyOrdersPage() {
 
                 {/* Payment Details */}
                 <div className="mx-6 mb-4 rounded-xl border border-gray-100 overflow-hidden">
-                  <div className="px-4 py-2 bg-[#2A0845]/5 border-b border-gray-100">
-                    <p className="text-[10px] font-bold text-[#2A0845]/50 uppercase tracking-wider">Payment Details</p>
+                  <div className="px-4 py-2 bg-[#45055B]/5 border-b border-gray-100">
+                    <p className="text-[10px] font-bold text-[#45055B]/50 uppercase tracking-wider">Payment Details</p>
                   </div>
                   <div className="px-4 py-3 bg-white space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs text-[#2A0845]/60">Payment Mode</span>
-                      <span className="text-xs font-bold text-[#2A0845] capitalize flex items-center gap-1.5">
+                      <span className="text-xs text-[#45055B]/60">Payment Mode</span>
+                      <span className="text-xs font-bold text-[#45055B] capitalize flex items-center gap-1.5">
                         {order.stripe_payment_intent_id || order.payment_method === 'stripe' ? (
                           <><CreditCard className="w-3.5 h-3.5 text-[#635BFF]" /> Online (Card)</>  
                         ) : order.payment_method === 'cod' ? (
@@ -577,24 +577,24 @@ export function MyOrdersPage() {
                     </div>
                     {order.card_last4 && (
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-[#2A0845]/60">Card</span>
-                        <span className="text-xs font-bold text-[#2A0845] font-mono flex items-center gap-1.5">
-                          <CreditCard className="w-3.5 h-3.5 text-[#2A0845]/40" />
+                        <span className="text-xs text-[#45055B]/60">Card</span>
+                        <span className="text-xs font-bold text-[#45055B] font-mono flex items-center gap-1.5">
+                          <CreditCard className="w-3.5 h-3.5 text-[#45055B]/40" />
                           •••• •••• •••• {order.card_last4}
-                          {order.card_brand && <span className="text-[#2A0845]/40 font-sans capitalize ml-1">{order.card_brand}</span>}
+                          {order.card_brand && <span className="text-[#45055B]/40 font-sans capitalize ml-1">{order.card_brand}</span>}
                         </span>
                       </div>
                     )}
                     {order.payment_method === 'cod' && !order.stripe_payment_intent_id && (
                       <div className="flex items-center justify-between">
-                        <span className="text-xs text-[#2A0845]/60">Amount Pending</span>
+                        <span className="text-xs text-[#45055B]/60">Amount Pending</span>
                         <span className="text-xs font-bold text-amber-600">${(Number(order.total) - Number(order.advance_paid || 0)).toFixed(2)}</span>
                       </div>
                     )}
                     {order.stripe_payment_intent_id && (
                       <div className="flex items-center justify-between gap-4">
-                        <span className="text-xs text-[#2A0845]/60 shrink-0">Transaction ID</span>
-                        <span className="text-[10px] font-mono text-[#2A0845]/70 truncate">{order.stripe_payment_intent_id}</span>
+                        <span className="text-xs text-[#45055B]/60 shrink-0">Transaction ID</span>
+                        <span className="text-[10px] font-mono text-[#45055B]/70 truncate">{order.stripe_payment_intent_id}</span>
                       </div>
                     )}
                   </div>
@@ -610,8 +610,8 @@ export function MyOrdersPage() {
                     <div className="px-4 py-3 bg-white space-y-2">
                       {order.tracking_id && (
                         <div className="flex items-center justify-between">
-                          <span className="text-xs text-[#2A0845]/60">Tracking ID</span>
-                          <span className="text-xs font-mono font-bold text-[#2A0845]">{order.tracking_id}</span>
+                          <span className="text-xs text-[#45055B]/60">Tracking ID</span>
+                          <span className="text-xs font-mono font-bold text-[#45055B]">{order.tracking_id}</span>
                         </div>
                       )}
                       {order.tracking_link && (
@@ -626,13 +626,13 @@ export function MyOrdersPage() {
                 )}
 
                 {/* Footer Actions */}
-                <div className="flex flex-col sm:flex-row items-center justify-end gap-3 px-6 py-4 bg-[#FAF6F0] border-t border-[#2A0845]/10">
+                <div className="flex flex-col sm:flex-row items-center justify-end gap-3 px-6 py-4 bg-[#FAF6F0] border-t border-[#45055B]/10">
                   <button onClick={() => openInvoice(order)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-[#2A0845] border border-[#2A0845]/20 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#2A0845]/5 transition-colors shadow-sm">
-                    <FileText className="w-4 h-4 text-[#2A0845]" /> Download Invoice
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-white text-[#45055B] border border-[#45055B]/20 px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#45055B]/5 transition-colors shadow-sm">
+                    <FileText className="w-4 h-4 text-[#45055B]" /> Download Invoice
                   </button>
                   <button onClick={() => handleReorder(order)}
-                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#2A0845] text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#D4AF37] transition-colors shadow-sm">
+                    className="w-full sm:w-auto flex items-center justify-center gap-2 bg-[#45055B] text-white px-5 py-2.5 rounded-xl text-sm font-bold hover:bg-[#D4AF37] transition-colors shadow-sm">
                     <RefreshCw className="w-4 h-4" /> Reorder Items
                   </button>
                 </div>

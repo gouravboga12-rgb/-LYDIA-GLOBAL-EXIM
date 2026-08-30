@@ -34,7 +34,7 @@ export function Footer() {
   return (
     <footer className="w-full">
       {/* ── TOP 4 VALUE PROPOSITIONS BAR (Royal Purple matching Reference) ──── */}
-      <div className="w-full bg-[#2A0845] text-white py-8 px-4 md:px-12 border-b border-[#D4AF37]/20">
+      <div className="w-full bg-[#45055B] text-white py-8 px-4 md:px-12 border-b border-[#D4AF37]/20">
         <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-0">
           
           {/* Feature 1: Premium Quality */}
@@ -85,7 +85,7 @@ export function Footer() {
       </div>
 
       {/* ── MAIN FOOTER (Clean Cream Background matching Reference) ────────── */}
-      <div className="w-full bg-[#FAF5EE] text-[#2A0845] pt-12 pb-24 md:pb-12 border-t border-[#2A0845]/10">
+      <div className="w-full bg-[#FAF5EE] text-[#45055B] pt-12 pb-24 md:pb-12 border-t border-[#45055B]/10">
         <div className="max-w-7xl mx-auto px-4 md:px-8 lg:px-12">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
             
@@ -105,7 +105,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Instagram"
-                  className="w-10 h-10 rounded-full border border-[#2A0845]/30 flex items-center justify-center text-[#2A0845] hover:bg-[#2A0845] hover:text-[#D4AF37] transition-all duration-300 shadow-sm"
+                  className="w-10 h-10 rounded-full border border-[#45055B]/30 flex items-center justify-center text-[#45055B] hover:bg-[#45055B] hover:text-[#D4AF37] transition-all duration-300 shadow-sm"
                 >
                   <InstagramIcon className="w-4.5 h-4.5" />
                 </a>
@@ -115,7 +115,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="Facebook"
-                  className="w-10 h-10 rounded-full border border-[#2A0845]/30 flex items-center justify-center text-[#2A0845] hover:bg-[#2A0845] hover:text-[#D4AF37] transition-all duration-300 shadow-sm"
+                  className="w-10 h-10 rounded-full border border-[#45055B]/30 flex items-center justify-center text-[#45055B] hover:bg-[#45055B] hover:text-[#D4AF37] transition-all duration-300 shadow-sm"
                 >
                   <FacebookIcon className="w-4.5 h-4.5" />
                 </a>
@@ -125,7 +125,7 @@ export function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label="WhatsApp"
-                  className="w-10 h-10 rounded-full border border-[#2A0845]/30 flex items-center justify-center text-[#2A0845] hover:bg-[#2A0845] hover:text-[#D4AF37] transition-all duration-300 shadow-sm"
+                  className="w-10 h-10 rounded-full border border-[#45055B]/30 flex items-center justify-center text-[#45055B] hover:bg-[#45055B] hover:text-[#D4AF37] transition-all duration-300 shadow-sm"
                 >
                   <WhatsAppIcon className="w-4.5 h-4.5" />
                 </a>
@@ -134,47 +134,47 @@ export function Footer() {
 
             {/* Column 2: QUICK LINKS */}
             <div className="flex flex-col gap-2.5">
-              <h3 className="text-xs md:text-sm font-bold tracking-[0.14em] uppercase text-[#2A0845] mb-2 font-serif">QUICK LINKS</h3>
-              <Link to="/" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Home</Link>
-              <Link to="/category/all" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Shop All</Link>
-              <Link to="/category/Necklaces" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Necklaces</Link>
-              <Link to="/category/Earrings" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Earrings</Link>
-              <Link to="/category/Bangles" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Bangles</Link>
-              <Link to="/category/Rings" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Rings</Link>
-              <Link to="/category/Bracelets" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Bracelets</Link>
-              <Link to="/category/Hair%20Accessories" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Hair Accessories</Link>
-              <Link to="/category/Lifestyle%20Products" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Lifestyle Products</Link>
+              <h3 className="text-xs md:text-sm font-bold tracking-[0.14em] uppercase text-[#45055B] mb-2 font-serif">QUICK LINKS</h3>
+              <Link to="/" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Home</Link>
+              <Link to="/category/all" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Shop All</Link>
+              <Link to="/category/Necklaces" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Necklaces</Link>
+              <Link to="/category/Earrings" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Earrings</Link>
+              <Link to="/category/Bangles" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Bangles</Link>
+              <Link to="/category/Rings" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Rings</Link>
+              <Link to="/category/Bracelets" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Bracelets</Link>
+              <Link to="/category/Hair%20Accessories" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Hair Accessories</Link>
+              <Link to="/category/Lifestyle%20Products" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Lifestyle Products</Link>
             </div>
 
             {/* Column 3: CUSTOMER SERVICE */}
             <div className="flex flex-col gap-2.5">
-              <h3 className="text-xs md:text-sm font-bold tracking-[0.14em] uppercase text-[#2A0845] mb-2 font-serif">CUSTOMER SERVICE</h3>
-              <Link to="/about" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">About Us</Link>
-              <Link to="/my-orders" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Track Order</Link>
-              <Link to="/shipping-policy" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Shipping Policy</Link>
-              <Link to="/returns-policy" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Return & Refund Policy</Link>
-              <Link to="/terms-of-service" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Terms & Conditions</Link>
-              <Link to="/privacy-policy" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Privacy Policy</Link>
-              <Link to="/contact#faq-section" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">FAQ's</Link>
-              <Link to="/contact" className="text-xs md:text-sm text-[#2A0845]/80 hover:text-[#B38827] transition-colors">Contact Us</Link>
+              <h3 className="text-xs md:text-sm font-bold tracking-[0.14em] uppercase text-[#45055B] mb-2 font-serif">CUSTOMER SERVICE</h3>
+              <Link to="/about" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">About Us</Link>
+              <Link to="/my-orders" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Track Order</Link>
+              <Link to="/shipping-policy" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Shipping Policy</Link>
+              <Link to="/returns-policy" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Return & Refund Policy</Link>
+              <Link to="/terms-of-service" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Terms & Conditions</Link>
+              <Link to="/privacy-policy" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Privacy Policy</Link>
+              <Link to="/contact#faq-section" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">FAQ's</Link>
+              <Link to="/contact" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Contact Us</Link>
             </div>
 
             {/* Column 4: CONTACT US */}
             <div className="flex flex-col gap-3">
-              <h3 className="text-xs md:text-sm font-bold tracking-[0.14em] uppercase text-[#2A0845] mb-2 font-serif">CONTACT US</h3>
+              <h3 className="text-xs md:text-sm font-bold tracking-[0.14em] uppercase text-[#45055B] mb-2 font-serif">CONTACT US</h3>
               
-              <div className="flex items-start gap-2.5 text-xs md:text-sm text-[#2A0845]/80">
-                <MapPin className="w-4 h-4 text-[#2A0845] shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 text-xs md:text-sm text-[#45055B]/80">
+                <MapPin className="w-4 h-4 text-[#45055B] shrink-0 mt-0.5" />
                 <span className="leading-relaxed">H.No. 3-6-555/7, 1st Floor, Nizampet Road, Kukatpally, Hyderabad - 500072, Telangana, India.</span>
               </div>
 
-              <div className="flex items-center gap-2.5 text-xs md:text-sm text-[#2A0845]/80">
-                <Phone className="w-4 h-4 text-[#2A0845] shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs md:text-sm text-[#45055B]/80">
+                <Phone className="w-4 h-4 text-[#45055B] shrink-0" />
                 <a href="tel:9014863411" className="hover:text-[#B38827] transition-colors">+91 9014863411</a>
               </div>
 
-              <div className="flex items-center gap-2.5 text-xs md:text-sm text-[#2A0845]/80">
-                <Mail className="w-4 h-4 text-[#2A0845] shrink-0" />
+              <div className="flex items-center gap-2.5 text-xs md:text-sm text-[#45055B]/80">
+                <Mail className="w-4 h-4 text-[#45055B] shrink-0" />
                 <a href="mailto:lydiaglobalexim@gmail.com" className="hover:text-[#B38827] transition-colors">lydiaglobalexim@gmail.com</a>
               </div>
             </div>
@@ -182,12 +182,12 @@ export function Footer() {
           </div>
 
           {/* Bottom Copyright Bar */}
-          <div className="mt-10 pt-6 border-t border-[#2A0845]/10 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-[#2A0845]/60">
+          <div className="mt-10 pt-6 border-t border-[#45055B]/10 flex flex-col md:flex-row items-center justify-between gap-3 text-xs text-[#45055B]/60">
             <p>© {new Date().getFullYear()} Lydia Global Exim. All rights reserved.</p>
             <div className="flex items-center gap-4">
-              <Link to="/privacy-policy" className="hover:text-[#2A0845] transition-colors">Privacy Policy</Link>
+              <Link to="/privacy-policy" className="hover:text-[#45055B] transition-colors">Privacy Policy</Link>
               <span>•</span>
-              <Link to="/terms-of-service" className="hover:text-[#2A0845] transition-colors">Terms & Conditions</Link>
+              <Link to="/terms-of-service" className="hover:text-[#45055B] transition-colors">Terms & Conditions</Link>
             </div>
           </div>
         </div>

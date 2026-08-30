@@ -18,12 +18,16 @@ export const useStoreData = create((set) => ({
       ]);
 
       const liveProducts = prodsRes.data && prodsRes.data.length > 0 ? prodsRes.data : defaultProducts;
-      const liveCategories = catsRes.data && catsRes.data.length > 0 ? catsRes.data : defaultCategories;
-      const liveOffers = offersRes.data && offersRes.data.length > 0 ? offersRes.data : defaultOffers;
+      const normalizedCategories = (catsRes.data && catsRes.data.length > 0 ? catsRes.data : defaultCategories).map(c => ({
+        ...c,
+        image_url: c.image_url && c.image_url.startsWith('/images/') && !c.image_url.includes('?v=')
+          ? `${c.image_url}?v=lifestyle_bag_11`
+          : c.image_url
+      }));
 
       set({
         products: liveProducts,
-        categories: liveCategories,
+        categories: normalizedCategories,
         offers: liveOffers,
         loading: false
       });

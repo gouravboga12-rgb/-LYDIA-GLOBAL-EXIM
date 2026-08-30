@@ -543,7 +543,7 @@ export function SignupPage() {
           <Link to="/" className="hover:opacity-95 transition-opacity mb-1">
             <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-20 h-auto object-contain" />
           </Link>
-          <span className="font-serif font-bold text-base tracking-[0.1em] text-[#2A0845]">
+          <span className="font-serif font-bold text-base tracking-[0.1em] text-[#45055B]">
             LYDIA GLOBAL EXIM
           </span>
           <span className="text-[#B38827] text-[10px] font-bold tracking-widest uppercase mt-1">
@@ -562,7 +562,7 @@ export function SignupPage() {
         {step === 'form' ? (
           <>
             <div className="text-center mb-4">
-              <h2 className="text-2xl font-serif font-bold text-[#2A0845] mb-0.5">
+              <h2 className="text-2xl font-serif font-bold text-[#45055B] mb-0.5">
                 Sign <span className="text-[#B38827]">Up</span>
               </h2>
               <div className="w-8 h-0.5 bg-[#D4AF37] mx-auto rounded-full mb-1"></div>
@@ -571,38 +571,38 @@ export function SignupPage() {
 
             <form onSubmit={handleSignup} className="w-full max-w-sm space-y-4">
               <div>
-                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Full Name</label>
+                <label className="text-xs font-semibold text-[#45055B] block mb-1.5 pl-1">Full Name</label>
                 <div className="relative">
                   <User className="w-4 h-4 text-[#B38827] absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
                     name="name" value={form.name} onChange={handleChange} required
                     placeholder="Your full name"
-                    className="w-full bg-white border border-brand-gold/30 rounded-xl px-4 py-3.5 pl-11 text-sm text-[#2A0845] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
+                    className="w-full bg-white border border-brand-gold/30 rounded-xl px-4 py-3.5 pl-11 text-sm text-[#45055B] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Email Address</label>
+                <label className="text-xs font-semibold text-[#45055B] block mb-1.5 pl-1">Email Address</label>
                 <div className="relative">
                   <Mail className="w-4 h-4 text-[#B38827] absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
                     name="email" type="email" value={form.email} onChange={handleChange} required
                     placeholder="you@example.com"
-                    className="w-full bg-white border border-brand-gold/30 rounded-xl px-4 py-3.5 pl-11 text-sm text-[#2A0845] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
+                    className="w-full bg-white border border-brand-gold/30 rounded-xl px-4 py-3.5 pl-11 text-sm text-[#45055B] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
                   />
                 </div>
               </div>
 
               {/* Country - Mobile */}
               <div className="mb-4">
-                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Country <span className="text-red-500">*</span></label>
+                <label className="text-xs font-semibold text-[#45055B] block mb-1.5 pl-1">Country <span className="text-red-500">*</span></label>
                 <CountryPicker dark={false} allowedCountries={[]} value={form.country} onChange={(val) => setForm(f => ({ ...f, country: val }))} />
               </div>
 
               {/* Phone - Mobile */}
               <div>
-                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Phone Number</label>
+                <label className="text-xs font-semibold text-[#45055B] block mb-1.5 pl-1">Phone Number</label>
                 <PhoneInput 
                   allowedCountries={[]} 
                   value={form.phone} 
@@ -614,19 +614,19 @@ export function SignupPage() {
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Password</label>
+                <label className="text-xs font-semibold text-[#45055B] block mb-1.5 pl-1">Password</label>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-[#B38827] absolute left-4 top-1/2 -translate-y-1/2" />
                   <input
                     name="password" type={showPass ? 'text' : 'password'} value={form.password}
                     onChange={handleChange} onBlur={() => setPasswordTouched(true)} required
                     placeholder="Min 8 chars, 1 number, 1 special"
-                    className={`w-full bg-white border rounded-xl px-4 py-3.5 pl-11 pr-12 text-sm text-[#2A0845] placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-all shadow-sm ${
+                    className={`w-full bg-white border rounded-xl px-4 py-3.5 pl-11 pr-12 text-sm text-[#45055B] placeholder:text-gray-400 focus:outline-none focus:ring-2 transition-all shadow-sm ${
                       passwordTouched && !passwordValid ? 'border-red-400 focus:ring-red-200' : 'border-brand-gold/30 focus:ring-brand-gold/40'
                     }`}
                   />
                   <button type="button" onClick={() => setShowPass(!showPass)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#B38827] hover:text-[#2A0845] transition-colors">
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-[#B38827] hover:text-[#45055B] transition-colors">
                     {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                   </button>
                 </div>
@@ -644,12 +644,12 @@ export function SignupPage() {
               {/* Consent - Mobile */}
               <label className="flex items-start gap-2.5 cursor-pointer">
                 <input type="checkbox" checked={consentAccepted} onChange={e => setConsentAccepted(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 accent-[#2A0845] rounded shrink-0" />
+                  className="mt-0.5 w-4 h-4 accent-[#45055B] rounded shrink-0" />
                 <span className="text-[11px] text-gray-600 leading-relaxed">
                   I confirm that I am at least 13 years old, agree to the LYDIA GLOBAL EXIM{' '}
-                  <Link to="/terms-of-service" target="_blank" className="text-[#2A0845] font-bold underline">Terms & Conditions</Link>,
+                  <Link to="/terms-of-service" target="_blank" className="text-[#45055B] font-bold underline">Terms & Conditions</Link>,
                   and acknowledge the LYDIA GLOBAL EXIM{' '}
-                  <Link to="/privacy-policy" target="_blank" className="text-[#2A0845] font-bold underline">Privacy Policy</Link>.
+                  <Link to="/privacy-policy" target="_blank" className="text-[#45055B] font-bold underline">Privacy Policy</Link>.
                 </span>
               </label>
 
@@ -661,7 +661,7 @@ export function SignupPage() {
 
               <button
                 type="submit" disabled={loading || !isFormValid}
-                className="w-full bg-[#2A0845] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-md hover:bg-[#2A0845]/90"
+                className="w-full bg-[#45055B] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-md hover:bg-[#45055B]/90"
               >
                 {loading ? 'Sending OTP...' : 'Send OTP & Continue →'}
               </button>
@@ -682,30 +682,30 @@ export function SignupPage() {
         ) : step === 'phone_otp' ? (
           <>
             <div className="text-center mb-6">
-              <h2 className="text-3xl font-serif font-bold text-[#2A0845] mb-1.5">Verify <span className="text-[#B38827]">Mobile</span></h2>
+              <h2 className="text-3xl font-serif font-bold text-[#45055B] mb-1.5">Verify <span className="text-[#B38827]">Mobile</span></h2>
               <div className="w-8 h-1 bg-[#D4AF37] mx-auto rounded-full mb-3"></div>
             </div>
             <form onSubmit={handleVerifyPhone} className="w-full max-w-sm space-y-6">
-              <OtpInput value={phoneOtp} onChange={setPhoneOtp} className="flex justify-center gap-2" inputClassName="w-10 h-12 text-center text-xl font-bold bg-white border border-brand-gold/30 rounded-xl text-[#2A0845] focus:outline-none focus:border-[#2A0845] focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all" />
+              <OtpInput value={phoneOtp} onChange={setPhoneOtp} className="flex justify-center gap-2" inputClassName="w-10 h-12 text-center text-xl font-bold bg-white border border-brand-gold/30 rounded-xl text-[#45055B] focus:outline-none focus:border-[#45055B] focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all" />
               {(localError || error) && <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-600 text-center">{localError || error}</div>}
               <button type="submit" disabled={loading}
-                className="w-full bg-[#2A0845] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 shadow-md hover:bg-[#2A0845]/90">
+                className="w-full bg-[#45055B] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 shadow-md hover:bg-[#45055B]/90">
                 {loading ? 'Verifying...' : 'Verify Mobile →'}
               </button>
-              <button type="button" onClick={() => setStep('form')} className="w-full text-sm text-gray-500 hover:text-[#2A0845] transition-colors">← Change details</button>
+              <button type="button" onClick={() => setStep('form')} className="w-full text-sm text-gray-500 hover:text-[#45055B] transition-colors">← Change details</button>
             </form>
           </>
         ) : step === 'email_otp' ? (
           <>
             <div className="text-center mb-6">
-              <h2 className="text-3xl font-serif font-bold text-[#2A0845] mb-1.5">Verify <span className="text-[#B38827]">Email</span></h2>
+              <h2 className="text-3xl font-serif font-bold text-[#45055B] mb-1.5">Verify <span className="text-[#B38827]">Email</span></h2>
               <div className="w-8 h-1 bg-[#D4AF37] mx-auto rounded-full mb-3"></div>
             </div>
             <form onSubmit={handleVerifyEmail} className="w-full max-w-sm space-y-4">
-              <OtpInput value={emailOtp} onChange={setEmailOtp} className="flex justify-center gap-2" inputClassName="w-11 h-12 text-center text-xl font-bold bg-white border-2 border-brand-gold/30 rounded-xl text-[#2A0845] focus:outline-none focus:border-[#2A0845] shadow-sm transition-colors" />
+              <OtpInput value={emailOtp} onChange={setEmailOtp} className="flex justify-center gap-2" inputClassName="w-11 h-12 text-center text-xl font-bold bg-white border-2 border-brand-gold/30 rounded-xl text-[#45055B] focus:outline-none focus:border-[#45055B] shadow-sm transition-colors" />
               {(localError || error) && <div className="bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-xs text-red-600 text-center">{localError || error}</div>}
               <button type="submit" disabled={loading}
-                className="w-full bg-[#2A0845] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-md hover:bg-[#2A0845]/90">
+                className="w-full bg-[#45055B] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-md hover:bg-[#45055B]/90">
                 {loading ? 'Verifying...' : 'Complete Sign Up →'}
               </button>
               <button type="button" onClick={() => setStep('phone_otp')} className="w-full text-sm text-gray-500 mt-4">← Back to mobile verification</button>
@@ -713,7 +713,7 @@ export function SignupPage() {
           </>
         ) : step === 'google_extra' ? (
           <>
-            <h2 className="text-2xl font-serif font-bold text-[#2A0845] mb-1.5">Almost Done!</h2>
+            <h2 className="text-2xl font-serif font-bold text-[#45055B] mb-1.5">Almost Done!</h2>
             <div className="w-12 h-1 bg-[#D4AF37] rounded-full mb-4"></div>
             <p className="text-gray-600 text-sm mb-6">
               Please provide your phone number and country.
@@ -722,13 +722,13 @@ export function SignupPage() {
             <form onSubmit={handleGoogleSubmit} className="space-y-4">
               {/* Country - Mobile */}
               <div className="mb-4">
-                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Country <span className="text-red-500">*</span></label>
+                <label className="text-xs font-semibold text-[#45055B] block mb-1.5 pl-1">Country <span className="text-red-500">*</span></label>
                 <CountryPicker dark={false} allowedCountries={[]} value={form.country} onChange={(val) => setForm(f => ({ ...f, country: val }))} />
               </div>
 
               {/* Phone - Mobile */}
               <div className="mb-4">
-                <label className="text-xs font-semibold text-[#2A0845] block mb-1.5 pl-1">Phone Number</label>
+                <label className="text-xs font-semibold text-[#45055B] block mb-1.5 pl-1">Phone Number</label>
                 <PhoneInput 
                   allowedCountries={[]} 
                   value={form.phone} 
@@ -742,12 +742,12 @@ export function SignupPage() {
               {/* Consent - Mobile */}
               <label className="flex items-start gap-2.5 cursor-pointer pt-2">
                 <input type="checkbox" checked={consentAccepted} onChange={e => setConsentAccepted(e.target.checked)}
-                  className="mt-0.5 w-4 h-4 accent-[#2A0845] rounded shrink-0" />
+                  className="mt-0.5 w-4 h-4 accent-[#45055B] rounded shrink-0" />
                 <span className="text-[11px] text-gray-600 leading-relaxed">
                   I confirm that I am at least 13 years old, agree to the LYDIA GLOBAL EXIM{' '}
-                  <Link to="/terms-of-service" target="_blank" className="text-[#2A0845] font-bold underline">Terms & Conditions</Link>,
+                  <Link to="/terms-of-service" target="_blank" className="text-[#45055B] font-bold underline">Terms & Conditions</Link>,
                   and acknowledge the LYDIA GLOBAL EXIM{' '}
-                  <Link to="/privacy-policy" target="_blank" className="text-[#2A0845] font-bold underline">Privacy Policy</Link>.
+                  <Link to="/privacy-policy" target="_blank" className="text-[#45055B] font-bold underline">Privacy Policy</Link>.
                 </span>
               </label>
 
@@ -759,7 +759,7 @@ export function SignupPage() {
 
               <button
                 type="submit" disabled={loading}
-                className="w-full bg-[#2A0845] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-md hover:bg-[#2A0845]/90"
+                className="w-full bg-[#45055B] text-brand-gold font-bold py-3.5 rounded-xl text-sm transition-all disabled:opacity-60 mt-4 shadow-md hover:bg-[#45055B]/90"
               >
                 {loading ? 'Completing...' : 'Complete Sign Up →'}
               </button>
@@ -771,14 +771,14 @@ export function SignupPage() {
             <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center">
               <ShieldCheck className="w-10 h-10 text-green-600" />
             </div>
-            <h2 className="text-2xl font-serif font-bold text-[#2A0845]">Account Created!</h2>
+            <h2 className="text-2xl font-serif font-bold text-[#45055B]">Account Created!</h2>
             <p className="text-gray-500 text-sm">Redirecting you to the store...</p>
           </div>
         )}
 
         <p className="text-center text-xs text-gray-600 mt-8">
           Already have an account?{' '}
-          <Link to="/login" className="text-[#2A0845] font-bold hover:underline">
+          <Link to="/login" className="text-[#45055B] font-bold hover:underline">
             Sign In
           </Link>
         </p>

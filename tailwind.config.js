@@ -7,16 +7,16 @@ export default {
   theme: {
     extend: {
       colors: {
-        'brand-dark-blue': '#2A0845',
-        'brand-purple': '#2A0845',
-        'brand-purple-dark': '#1B0629',
-        'brand-purple-light': '#6B21A8',
+        'brand-dark-blue': '#45055B',
+        'brand-purple': '#45055B',
+        'brand-purple-dark': '#26002B',
+        'brand-purple-light': '#70148D',
         'brand-beige': '#FAF6F0',
         'brand-beige-darker': '#F3ECE2',
         'brand-cream': '#FAF6F0',
         'brand-cream-light': '#FFFDF9',
         'brand-gold': '#D4AF37',
-        'brand-accent': '#8B5CF6',
+        'brand-accent': '#8F2BAE',
       },
       fontFamily: {
         sans: ['Poppins', 'sans-serif'],

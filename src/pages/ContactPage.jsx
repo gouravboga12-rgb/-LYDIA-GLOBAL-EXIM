@@ -245,7 +245,7 @@ export function ContactPage() {
             className="group relative overflow-hidden rounded-[32px] p-8 md:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xl transition-all duration-500"
           >
             {/* Background elements */}
-            <div className="absolute inset-0 bg-gradient-to-br from-[#2A0845] to-[#3B0764] z-0"></div>
+            <div className="absolute inset-0 bg-gradient-to-br from-[#45055B] to-[#5A0E72] z-0"></div>
             <div className="absolute -right-20 -top-20 w-72 h-72 bg-brand-gold/20 rounded-full blur-3xl z-0 group-hover:bg-brand-gold/30 transition-all duration-700"></div>
             <div className="absolute -left-20 -bottom-20 w-56 h-56 bg-blue-500/20 rounded-full blur-3xl z-0 group-hover:scale-110 transition-all duration-700"></div>
             

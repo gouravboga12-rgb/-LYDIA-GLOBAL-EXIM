@@ -95,7 +95,7 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
             type="text"
             value={inputVal}
             onChange={handleInput}
-            className="w-full text-sm border border-[#2A0845]/15 rounded-xl px-3 py-2 bg-[#FAF6F0] text-[#2A0845] focus:outline-none focus:border-[#2A0845]/30 transition-colors"
+            className="w-full text-sm border border-[#45055B]/15 rounded-xl px-3 py-2 bg-[#FAF6F0] text-[#45055B] focus:outline-none focus:border-[#45055B]/30 transition-colors"
             placeholder="Address Line 1"
           />
         </div>
@@ -107,7 +107,7 @@ export default function AddressAutocomplete({ value, onChange, onSelect }) {
               value={inputVal}
               onChange={handleInput}
               autoComplete="off"
-              className="w-full text-sm border border-[#2A0845]/15 rounded-xl px-3 py-2 bg-[#FAF6F0] text-[#2A0845] focus:outline-none focus:border-[#2A0845]/30 transition-colors"
+              className="w-full text-sm border border-[#45055B]/15 rounded-xl px-3 py-2 bg-[#FAF6F0] text-[#45055B] focus:outline-none focus:border-[#45055B]/30 transition-colors"
               placeholder="Start typing your address..."
             />
             {suggestions.length > 0 && (

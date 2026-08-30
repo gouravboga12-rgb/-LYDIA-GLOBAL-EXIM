@@ -2,12 +2,12 @@
 @import "tailwindcss";
 
 @theme {
-  --color-brand-orange: #6B21A8;
-  --color-brand-maroon: #2D0C4E;
-  --color-brand-dark-blue: #2A0845;
-  --color-brand-purple: #2A0845;
-  --color-brand-purple-dark: #1B0629;
-  --color-brand-purple-light: #7E22CE;
+  --color-brand-orange: #70148D;
+  --color-brand-maroon: #45055B;
+  --color-brand-dark-blue: #45055B;
+  --color-brand-purple: #45055B;
+  --color-brand-purple-dark: #26002B;
+  --color-brand-purple-light: #8F2BAE;
   --color-brand-gold: #D4AF37;
   --color-brand-beige: #FAF6F0;
   --color-brand-beige-darker: #F3ECE2;
@@ -16,10 +16,10 @@
   --color-brand-green: #3B5F4A;
 
   /* Admin / theme */
-  --color-terracotta: #6B21A8;
-  --color-terracotta-dark: #581C87;
-  --color-brown: #2A0845;
-  --color-brown-light: #7E22CE;
+  --color-terracotta: #70148D;
+  --color-terracotta-dark: #5A0E72;
+  --color-brown: #45055B;
+  --color-brown-light: #8F2BAE;
   --color-cream: #FAF6F0;
   --color-cream-dark: #F3ECE2;
   --color-gold: #D4AF37;
@@ -75,5 +75,5 @@
 body {
   font-family: 'Poppins', sans-serif;
   background-color: #FAF6F0;
-  color: #2A0845;
+  color: #45055B;
 }

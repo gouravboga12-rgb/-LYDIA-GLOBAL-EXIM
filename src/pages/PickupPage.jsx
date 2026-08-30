@@ -22,7 +22,7 @@ function StripeCardForm({ onReady }) {
     <div className="p-3 border border-brand-gold/30 rounded-xl bg-white">
       <CardElement options={{
         style: {
-          base: { fontSize: '16px', color: '#2A0845', '::placeholder': { color: '#9ca3af' } },
+          base: { fontSize: '16px', color: '#45055B', '::placeholder': { color: '#9ca3af' } },
           invalid: { color: '#ef4444' }
         }
       }} />
@@ -511,10 +511,10 @@ export function PickupPage() {
       {isPlacingOrder && (
         <div ref={overlayRef} className="fixed inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center w-full h-full">
           <div className="flex flex-col items-center gap-4">
-            <div ref={iconRef} className="w-24 h-24 bg-[#2A0845] rounded-full flex items-center justify-center shadow-lg">
+            <div ref={iconRef} className="w-24 h-24 bg-[#45055B] rounded-full flex items-center justify-center shadow-lg">
               <CheckCircle className="w-12 h-12 text-white" strokeWidth={2.5} />
             </div>
-            <h2 ref={textRef} className="text-2xl font-serif font-bold text-[#2A0845]">Order Confirmed!</h2>
+            <h2 ref={textRef} className="text-2xl font-serif font-bold text-[#45055B]">Order Confirmed!</h2>
             <p className="text-sm text-gray-500">Redirecting to tracking...</p>
           </div>
         </div>

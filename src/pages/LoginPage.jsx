@@ -395,13 +395,13 @@ export function LoginPage() {
           <Link to="/" className="hover:opacity-95 transition-opacity mb-1">
             <img src={brandLogo} alt="LYDIA GLOBAL EXIM Logo" className="w-20 h-auto object-contain" />
           </Link>
-          <span className="font-serif font-bold text-base tracking-[0.1em] text-[#2A0845]">
+          <span className="font-serif font-bold text-base tracking-[0.1em] text-[#45055B]">
             LYDIA GLOBAL EXIM
           </span>
           <span className="text-[#B38827] text-[10px] font-bold tracking-widest uppercase mt-1">
             Welcome Back
           </span>
-          <h2 className="text-2xl font-serif font-bold text-[#2A0845] mt-1 mb-0.5">
+          <h2 className="text-2xl font-serif font-bold text-[#45055B] mt-1 mb-0.5">
             Sign <span className="text-[#B38827]">In</span>
           </h2>
           <div className="w-8 h-0.5 bg-[#D4AF37] mx-auto rounded-full mb-1"></div>
@@ -416,29 +416,29 @@ export function LoginPage() {
         ) : (
           <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-3">
             <div>
-              <label className="text-[11px] font-semibold text-[#2A0845] block mb-1 pl-1">Email Address</label>
+              <label className="text-[11px] font-semibold text-[#45055B] block mb-1 pl-1">Email Address</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-[#B38827] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   name="email" type="email" value={form.email} onChange={handleChange} required
                   placeholder="you@example.com"
-                  className="w-full bg-white border border-brand-gold/30 rounded-xl px-3.5 py-2.5 pl-10 text-xs text-[#2A0845] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
+                  className="w-full bg-white border border-brand-gold/30 rounded-xl px-3.5 py-2.5 pl-10 text-xs text-[#45055B] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
                 />
               </div>
             </div>
 
             <div>
-              <label className="text-[11px] font-semibold text-[#2A0845] block mb-1 pl-1">Password</label>
+              <label className="text-[11px] font-semibold text-[#45055B] block mb-1 pl-1">Password</label>
               <div className="relative">
                 <Lock className="w-4 h-4 text-[#B38827] absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
                   name="password" type={showPass ? 'text' : 'password'} value={form.password}
                   onChange={handleChange} required
                   placeholder="Your password"
-                  className="w-full bg-white border border-brand-gold/30 rounded-xl px-3.5 py-2.5 pl-10 pr-10 text-xs text-[#2A0845] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
+                  className="w-full bg-white border border-brand-gold/30 rounded-xl px-3.5 py-2.5 pl-10 pr-10 text-xs text-[#45055B] placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-gold/40 shadow-sm transition-all"
                 />
                 <button type="button" onClick={() => setShowPass(!showPass)}
-                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#B38827] hover:text-[#2A0845] transition-colors">
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#B38827] hover:text-[#45055B] transition-colors">
                   {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
@@ -452,12 +452,12 @@ export function LoginPage() {
 
             <button
               type="submit" disabled={loading}
-              className="w-full bg-[#2A0845] text-brand-gold font-bold py-3 rounded-xl text-xs tracking-wide uppercase transition-all disabled:opacity-60 mt-2 shadow-md hover:bg-[#2A0845]/90"
+              className="w-full bg-[#45055B] text-brand-gold font-bold py-3 rounded-xl text-xs tracking-wide uppercase transition-all disabled:opacity-60 mt-2 shadow-md hover:bg-[#45055B]/90"
             >
               {loading ? 'Signing in...' : 'Sign In →'}
             </button>
             <button type="button" onClick={() => setShowForgot(true)}
-              className="w-full text-center text-[11px] text-gray-500 hover:text-[#2A0845] transition-colors pt-0.5">
+              className="w-full text-center text-[11px] text-gray-500 hover:text-[#45055B] transition-colors pt-0.5">
               Forgot Password?
             </button>
           </form>
@@ -477,7 +477,7 @@ export function LoginPage() {
 
         <p className="text-center text-xs text-gray-600 mt-3.5">
           Don't have an account?{' '}
-          <Link to="/signup" className="text-[#2A0845] font-bold hover:underline">
+          <Link to="/signup" className="text-[#45055B] font-bold hover:underline">
             Sign Up
           </Link>
         </p>

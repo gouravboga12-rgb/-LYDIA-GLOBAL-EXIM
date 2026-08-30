@@ -66,7 +66,7 @@ export function AdminCustomersPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center py-20">
-      <div className="w-8 h-8 border-4 border-[#2A0845]/20 border-t-[#2A0845] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-[#45055B]/20 border-t-[#45055B] rounded-full animate-spin" />
     </div>
   );
 
@@ -74,23 +74,23 @@ export function AdminCustomersPage() {
     <div className="w-full max-w-5xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#2A0845]">Customers</h1>
-          <p className="text-[#2A0845]/40 text-xs font-sans mt-0.5">{customers.length} total users</p>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#45055B]">Customers</h1>
+          <p className="text-[#45055B]/40 text-xs font-sans mt-0.5">{customers.length} total users</p>
         </div>
       </div>
 
       <div className="relative mb-6">
-        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#2A0845]/40" />
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#45055B]/40" />
         <input value={search} onChange={(e) => setSearch(e.target.value)}
           placeholder="Search by name, email, or phone..."
-          className="w-full pl-9 pr-4 py-3 rounded-xl bg-white border border-[#2A0845]/10 text-[#2A0845] font-sans text-sm focus:outline-none focus:border-[#2A0845]/30 shadow-sm" />
+          className="w-full pl-9 pr-4 py-3 rounded-xl bg-white border border-[#45055B]/10 text-[#45055B] font-sans text-sm focus:outline-none focus:border-[#45055B]/30 shadow-sm" />
       </div>
 
-      <div className="bg-white rounded-2xl border border-[#2A0845]/10 overflow-hidden shadow-sm">
+      <div className="bg-white rounded-2xl border border-[#45055B]/10 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-sm font-sans min-w-[800px]">
             <thead>
-              <tr className="bg-[#FAF6F0] text-[#2A0845]/60 text-xs uppercase tracking-wider border-b border-[#2A0845]/10">
+              <tr className="bg-[#FAF6F0] text-[#45055B]/60 text-xs uppercase tracking-wider border-b border-[#45055B]/10">
                 <th className="text-left py-4 px-4 font-semibold">Name</th>
                 <th className="text-left py-4 px-4 font-semibold">Contact</th>
                 <th className="text-left py-4 px-4 font-semibold">Country</th>
@@ -99,7 +99,7 @@ export function AdminCustomersPage() {
                 <th className="py-4 px-4 font-semibold sticky right-0 bg-[#FAF6F0] z-10 shadow-[-4px_0_12px_rgba(0,0,0,0.03)]">Action</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#2A0845]/5 relative">
+            <tbody className="divide-y divide-[#45055B]/5 relative">
               {filtered.map((customer, i) => (
                 <motion.tr key={customer.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.02 }} className="hover:bg-[#FAF6F0]/50 transition-colors">
@@ -107,23 +107,23 @@ export function AdminCustomersPage() {
                   {/* Name */}
                   <td className="py-4 px-4">
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-full bg-[#2A0845]/10 flex items-center justify-center text-[#2A0845] font-bold shrink-0">
+                      <div className="w-8 h-8 rounded-full bg-[#45055B]/10 flex items-center justify-center text-[#45055B] font-bold shrink-0">
                         {(customer.name || "U")[0].toUpperCase()}
                       </div>
-                      <span className="font-semibold text-[#2A0845]">{customer.name || "Unknown"}</span>
+                      <span className="font-semibold text-[#45055B]">{customer.name || "Unknown"}</span>
                     </div>
                   </td>
 
                   {/* Contact (Email + Phone) */}
                   <td className="py-4 px-4">
                     <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-1.5 text-xs text-[#2A0845]/70">
+                      <div className="flex items-center gap-1.5 text-xs text-[#45055B]/70">
                         <Mail className="w-3.5 h-3.5 shrink-0" />
                         <span className="truncate max-w-[160px]">{customer.email}</span>
                         <VerifiedBadge verified={customer.email_verified} label="" />
                       </div>
                       {customer.phone && (
-                        <div className="flex items-center gap-1.5 text-xs text-[#2A0845]/70">
+                        <div className="flex items-center gap-1.5 text-xs text-[#45055B]/70">
                           <Phone className="w-3.5 h-3.5 shrink-0" />
                           <span>{customer.phone}</span>
                           <VerifiedBadge verified={customer.phone_verified} label="" />
@@ -133,14 +133,14 @@ export function AdminCustomersPage() {
                   </td>
 
                   {/* Country */}
-                  <td className="py-4 px-4 text-xs text-[#2A0845]/70">
+                  <td className="py-4 px-4 text-xs text-[#45055B]/70">
                     {customer.country || "—"}
                   </td>
 
                   {/* Joined / Type */}
                   <td className="py-4 px-4">
                     <div className="flex flex-col gap-1.5">
-                      <div className="flex items-center gap-1.5 text-xs text-[#2A0845]/60">
+                      <div className="flex items-center gap-1.5 text-xs text-[#45055B]/60">
                         <Calendar className="w-3.5 h-3.5" />
                         {new Date(customer.created_at).toLocaleDateString("en-IN")}
                       </div>
@@ -182,7 +182,7 @@ export function AdminCustomersPage() {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-[#2A0845]/50">
+                  <td colSpan={8} className="py-12 text-center text-[#45055B]/50">
                     No customers found
                   </td>
                 </tr>

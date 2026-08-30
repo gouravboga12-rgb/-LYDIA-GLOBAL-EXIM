@@ -109,7 +109,7 @@ async function sendSignupOTPEmail(email, otp, name = 'Customer') {
     html: `
       <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: auto; padding: 36px 28px; border: 1px solid #e8dfcf; border-radius: 16px; background: #ffffff; color: #1e293b;">
         <div style="text-align: center; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid #f1ece1;">
-          <h1 style="color: #060B19; margin: 0 0 6px 0; font-family: Georgia, serif; font-size: 26px; letter-spacing: 3px; font-weight: 700;">
+          <h1 style="color: #45055B; margin: 0 0 6px 0; font-family: Georgia, serif; font-size: 26px; letter-spacing: 3px; font-weight: 700;">
             LYDIA GLOBAL EXIM
           </h1>
           <p style="color: #c6a184; margin: 0; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;">
@@ -117,14 +117,14 @@ async function sendSignupOTPEmail(email, otp, name = 'Customer') {
           </p>
         </div>
 
-        <h2 style="color: #060B19; text-align: center; font-size: 20px; margin: 0 0 16px 0;">Verify Your Email Address ✨</h2>
+        <h2 style="color: #45055B; text-align: center; font-size: 20px; margin: 0 0 16px 0;">Verify Your Email Address ✨</h2>
         <p style="font-size: 15px; line-height: 1.6; color: #334155;">Hi <strong>${name || 'Customer'}</strong>,</p>
         <p style="font-size: 15px; line-height: 1.6; color: #334155;">
           Thank you for creating an account with <strong>Lydia Global Exim</strong>. Please enter the verification code below to complete your registration:
         </p>
 
         <div style="text-align: center; margin: 32px 0;">
-          <div style="display: inline-block; padding: 14px 32px; font-size: 32px; font-weight: 800; color: #060B19; background: #faf7f2; border: 2px dashed #d4af37; border-radius: 12px; letter-spacing: 8px;">
+          <div style="display: inline-block; padding: 14px 32px; font-size: 32px; font-weight: 800; color: #45055B; background: #faf7f2; border: 2px dashed #d4af37; border-radius: 12px; letter-spacing: 8px;">
             ${otp}
           </div>
         </div>
@@ -140,7 +140,7 @@ async function sendSignupOTPEmail(email, otp, name = 'Customer') {
         </p>
 
         <div style="text-align: center; margin-top: 36px; padding-top: 24px; border-top: 1px solid #f1ece1;">
-          <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: #060B19;">Team Lydia Global Exim</p>
+          <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: #45055B;">Team Lydia Global Exim</p>
           <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748b;">
             <a href="mailto:lydiaglobalexim@gmail.com" style="color: #b38827; text-decoration: none; font-weight: 600;">lydiaglobalexim@gmail.com</a>
           </p>
@@ -165,7 +165,7 @@ async function sendForgotPasswordOTPEmail(email, otp, name = 'Customer') {
     html: `
       <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: auto; padding: 36px 28px; border: 1px solid #e8dfcf; border-radius: 16px; background: #ffffff; color: #1e293b;">
         <div style="text-align: center; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid #f1ece1;">
-          <h1 style="color: #060B19; margin: 0 0 6px 0; font-family: Georgia, serif; font-size: 26px; letter-spacing: 3px; font-weight: 700;">
+          <h1 style="color: #45055B; margin: 0 0 6px 0; font-family: Georgia, serif; font-size: 26px; letter-spacing: 3px; font-weight: 700;">
             LYDIA GLOBAL EXIM
           </h1>
           <p style="color: #c6a184; margin: 0; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;">
@@ -173,14 +173,14 @@ async function sendForgotPasswordOTPEmail(email, otp, name = 'Customer') {
           </p>
         </div>
 
-        <h2 style="color: #060B19; text-align: center; font-size: 20px; margin: 0 0 16px 0;">Reset Your Password 🔐</h2>
+        <h2 style="color: #45055B; text-align: center; font-size: 20px; margin: 0 0 16px 0;">Reset Your Password 🔐</h2>
         <p style="font-size: 15px; line-height: 1.6; color: #334155;">Hi <strong>${name || 'Customer'}</strong>,</p>
         <p style="font-size: 15px; line-height: 1.6; color: #334155;">
           We received a request to reset the password for your <strong>Lydia Global Exim</strong> account. Use the one-time verification code below to set a new password:
         </p>
 
         <div style="text-align: center; margin: 32px 0;">
-          <div style="display: inline-block; padding: 14px 32px; font-size: 32px; font-weight: 800; color: #060B19; background: #faf7f2; border: 2px dashed #d4af37; border-radius: 12px; letter-spacing: 8px;">
+          <div style="display: inline-block; padding: 14px 32px; font-size: 32px; font-weight: 800; color: #45055B; background: #faf7f2; border: 2px dashed #d4af37; border-radius: 12px; letter-spacing: 8px;">
             ${otp}
           </div>
         </div>
@@ -196,7 +196,7 @@ async function sendForgotPasswordOTPEmail(email, otp, name = 'Customer') {
         </p>
 
         <div style="text-align: center; margin-top: 36px; padding-top: 24px; border-top: 1px solid #f1ece1;">
-          <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: #060B19;">Team Lydia Global Exim</p>
+          <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: #45055B;">Team Lydia Global Exim</p>
           <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748b;">
             <a href="mailto:lydiaglobalexim@gmail.com" style="color: #b38827; text-decoration: none; font-weight: 600;">lydiaglobalexim@gmail.com</a>
           </p>

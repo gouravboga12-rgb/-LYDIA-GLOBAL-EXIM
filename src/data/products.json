@@ -4,16 +4,16 @@
     "name": "Kundan Necklace Set",
     "category": "Necklaces",
     "description": "Exquisite handcrafted Kundan Necklace Set plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/feat_necklace.png",
+    "image_url": "/images/feat_necklace.png?v=pure_royal_cloth_9",
     "images": [
-      "/images/feat_necklace.png"
+      "/images/feat_necklace.png?v=pure_royal_cloth_9"
     ],
     "is_trending": true,
     "is_festive": true,
     "is_bestseller": true,
     "is_offer": false,
     "stock": 50,
-    "rating": 5.0,
+    "rating": 5,
     "variants": [
       {
         "color": "Royal Gold",
@@ -36,16 +36,16 @@
     "name": "Pearl Jhumka Earrings",
     "category": "Earrings",
     "description": "Exquisite handcrafted Pearl Jhumka Earrings plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/feat_earrings.png",
+    "image_url": "/images/feat_earrings.png?v=pure_royal_cloth_9",
     "images": [
-      "/images/feat_earrings.png"
+      "/images/feat_earrings.png?v=pure_royal_cloth_9"
     ],
     "is_trending": true,
     "is_festive": true,
     "is_bestseller": true,
     "is_offer": false,
     "stock": 50,
-    "rating": 5.0,
+    "rating": 5,
     "variants": [
       {
         "color": "Royal Gold",
@@ -68,16 +68,16 @@
     "name": "American Diamond Bangles",
     "category": "Bangles",
     "description": "Exquisite handcrafted American Diamond Bangles plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/feat_bangles.png",
+    "image_url": "/images/feat_bangles.png?v=pure_royal_cloth_9",
     "images": [
-      "/images/feat_bangles.png"
+      "/images/feat_bangles.png?v=pure_royal_cloth_9"
     ],
     "is_trending": true,
     "is_festive": true,
     "is_bestseller": true,
     "is_offer": false,
     "stock": 50,
-    "rating": 5.0,
+    "rating": 5,
     "variants": [
       {
         "color": "Royal Gold",
@@ -100,16 +100,16 @@
     "name": "AD Stone Finger Ring",
     "category": "Rings",
     "description": "Exquisite handcrafted AD Stone Finger Ring plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/feat_rings.png",
+    "image_url": "/images/feat_rings.png?v=pure_royal_cloth_9",
     "images": [
-      "/images/feat_rings.png"
+      "/images/feat_rings.png?v=pure_royal_cloth_9"
     ],
     "is_trending": true,
     "is_festive": true,
     "is_bestseller": true,
     "is_offer": false,
     "stock": 50,
-    "rating": 5.0,
+    "rating": 5,
     "variants": [
       {
         "color": "Royal Gold",
@@ -132,16 +132,16 @@
     "name": "Charm Bracelet",
     "category": "Bracelets",
     "description": "Exquisite handcrafted Charm Bracelet plated in luxury 22k gold and micro-finish stones.",
-    "image_url": "/images/feat_bracelets.png",
+    "image_url": "/images/feat_bracelets.png?v=pure_royal_cloth_9",
     "images": [
-      "/images/feat_bracelets.png"
+      "/images/feat_bracelets.png?v=pure_royal_cloth_9"
     ],
     "is_trending": true,
     "is_festive": true,
     "is_bestseller": true,
     "is_offer": false,
     "stock": 50,
-    "rating": 5.0,
+    "rating": 5,
     "variants": [
       {
         "color": "Royal Gold",

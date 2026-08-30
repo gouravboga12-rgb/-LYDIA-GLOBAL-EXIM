@@ -258,7 +258,7 @@ function AddressForm({ onClose, onSave, saving, mapsLoaded, initial, shippingCon
         </label>
 
         <button onClick={handleSubmit} disabled={saving}
-          className="w-full mt-5 bg-[#2A0845] text-[#D4AF37] font-bold py-3.5 rounded-xl text-sm hover:bg-[#2A0845]/90 shadow-md transition-all disabled:opacity-60 shrink-0">
+          className="w-full mt-5 bg-[#45055B] text-[#D4AF37] font-bold py-3.5 rounded-xl text-sm hover:bg-[#45055B]/90 shadow-md transition-all disabled:opacity-60 shrink-0">
           {saving ? 'Saving...' : initial ? 'Update Address' : 'Save Address'}
         </button>
       </div>
@@ -313,7 +313,7 @@ export function MyAddressesPage() {
       <Header title="My Addresses" />
       <div className="max-w-4xl mx-auto px-4 py-8">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-serif font-bold text-[#2A0845]">Saved Addresses</h2>
+          <h2 className="text-2xl font-serif font-bold text-[#45055B]">Saved Addresses</h2>
           <button onClick={() => { setEditingAddress(null); setShowForm(true); }}
             className="flex items-center gap-2 text-sm font-bold text-white bg-brand-gold px-4 py-2.5 rounded-xl hover:bg-gray-600 transition-colors shadow-sm">
             <Plus className="w-4 h-4" /> Add New Address

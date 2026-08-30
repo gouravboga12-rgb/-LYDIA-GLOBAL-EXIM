@@ -97,7 +97,7 @@ export function SplashScreen({ onComplete }) {
           />
         </div>
         <div className="flex flex-col items-center text-center mt-3">
-          <span className="text-[#2A0845] text-sm md:text-lg tracking-[0.18em] font-semibold uppercase" style={{ fontFamily: 'serif' }}>
+          <span className="text-[#45055B] text-sm md:text-lg tracking-[0.18em] font-semibold uppercase" style={{ fontFamily: 'serif' }}>
             Excellence &{' '}
             <span className="text-[#B38827] font-bold">Premium Quality</span>
           </span>

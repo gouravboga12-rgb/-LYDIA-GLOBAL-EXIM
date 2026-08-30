@@ -107,7 +107,7 @@ function StatsBanner() {
       <div
         className="relative rounded-3xl overflow-hidden py-10 px-6 md:px-12"
         style={{
-          background: 'linear-gradient(135deg, #1f0533 0%, #3b0764 50%, #1f0533 100%)',
+          background: 'linear-gradient(135deg, #26002B 0%, #5A0E72 50%, #26002B 100%)',
           boxShadow: '0 12px 48px rgba(8,24,58,0.4), inset 0 1px 0 rgba(212,175,55,0.2)'
         }}
       >
@@ -314,7 +314,7 @@ export function HomePage() {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="relative w-full h-[320px] xs:h-[360px] sm:h-[420px] md:h-[500px] lg:h-[560px] overflow-hidden md:rounded-2xl shadow-2xl bg-[#2A0845] group select-none touch-pan-y"
+          className="relative w-full h-[320px] xs:h-[360px] sm:h-[420px] md:h-[500px] lg:h-[560px] overflow-hidden md:rounded-2xl shadow-2xl bg-[#45055B] group select-none touch-pan-y"
         >
           {/* Slides Track */}
           <div
@@ -322,7 +322,7 @@ export function HomePage() {
             style={{ transform: `translateX(-${currentSlide * 100}%)` }}
           >
             {activeSlides.map((slide) => (
-              <div key={slide.id} className="relative w-full min-w-full flex-[0_0_100%] h-full shrink-0 flex items-center overflow-hidden select-none bg-[#2A0845]">
+              <div key={slide.id} className="relative w-full min-w-full flex-[0_0_100%] h-full shrink-0 flex items-center overflow-hidden select-none bg-[#45055B]">
                 {/* Background Image & Non-blocking Luxury Overlay */}
                 <div className="absolute inset-0 z-0 select-none pointer-events-none">
                   <img
@@ -332,9 +332,9 @@ export function HomePage() {
                     className="w-full h-full object-cover object-right md:object-center lg:object-right transition-transform duration-1000 group-hover:scale-105 select-none pointer-events-none"
                   />
                   {/* Desktop subtle text gradient overlay (does NOT block jewelry on the right) */}
-                  <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-[#2A0845]/90 via-[#2A0845]/50 to-transparent z-10 pointer-events-none w-[58%]"></div>
+                  <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-[#45055B]/90 via-[#45055B]/50 to-transparent z-10 pointer-events-none w-[58%]"></div>
                   {/* Mobile gradient overlay (soft bottom/left gradient so jewelry is 100% visible) */}
-                  <div className="md:hidden absolute inset-0 bg-gradient-to-t from-[#2A0845]/90 via-[#2A0845]/40 to-transparent z-10 pointer-events-none"></div>
+                  <div className="md:hidden absolute inset-0 bg-gradient-to-t from-[#45055B]/90 via-[#45055B]/40 to-transparent z-10 pointer-events-none"></div>
                 </div>
 
                 {/* Slide Content with WhatsApp Reference Format */}
@@ -363,7 +363,7 @@ export function HomePage() {
                   {/* Gold Bordered SHOP NOW Button */}
                   <Link
                     to={slide.link}
-                    className="w-fit border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#2A0845] px-5 py-2 md:px-8 md:py-3 text-[11px] md:text-sm font-semibold tracking-[0.2em] uppercase transition-all duration-300 shadow-xl active:scale-95 cursor-pointer backdrop-blur-md bg-[#2A0845]/50 hover:shadow-[0_0_20px_rgba(212,175,55,0.6)]"
+                    className="w-fit border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#45055B] px-5 py-2 md:px-8 md:py-3 text-[11px] md:text-sm font-semibold tracking-[0.2em] uppercase transition-all duration-300 shadow-xl active:scale-95 cursor-pointer backdrop-blur-md bg-[#45055B]/50 hover:shadow-[0_0_20px_rgba(212,175,55,0.6)]"
                   >
                     SHOP NOW
                   </Link>
@@ -376,14 +376,14 @@ export function HomePage() {
           <button
             onClick={prevSlide}
             aria-label="Previous Slide"
-            className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#2A0845] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#45055B] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
             <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
           </button>
           <button
             onClick={nextSlide}
             aria-label="Next Slide"
-            className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#2A0845] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#45055B] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
             <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
           </button>
@@ -411,7 +411,7 @@ export function HomePage() {
         <div className="animate-section px-4 md:px-24 mb-14 text-center">
           <div className="flex items-center justify-center gap-4 mb-8">
             <span className="h-[1px] w-12 sm:w-20 bg-[#D4AF37]/50" />
-            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.18em] uppercase text-[#2A0845]">
+            <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.18em] uppercase text-[#45055B]">
               SHOP BY CATEGORY
             </h2>
             <span className="h-[1px] w-12 sm:w-20 bg-[#D4AF37]/50" />
@@ -424,7 +424,7 @@ export function HomePage() {
                 to={`/category/${cat.id}`}
                 className={`reveal-on-scroll reveal-delay-${(idx % 7) + 1} group flex flex-col items-center`}
               >
-                <div className="w-24 h-24 xs:w-26 xs:h-26 sm:w-28 sm:h-28 md:w-30 md:h-30 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-md bg-[#2A0845] relative flex items-center justify-center group-hover:scale-105 group-hover:shadow-xl transition-all duration-500 p-0">
+                <div className="w-24 h-24 xs:w-26 xs:h-26 sm:w-28 sm:h-28 md:w-30 md:h-30 rounded-full overflow-hidden border-2 border-[#D4AF37] shadow-md bg-[#45055B] relative flex items-center justify-center group-hover:scale-105 group-hover:shadow-xl transition-all duration-500 p-0">
                   {cat.image_url ? (
                     <img
                       src={cat.image_url}
@@ -435,7 +435,7 @@ export function HomePage() {
                     <Star className="w-8 h-8 text-brand-gold" strokeWidth={1.5} />
                   )}
                 </div>
-                <span className="text-[11px] sm:text-xs font-bold tracking-wider text-[#2A0845] uppercase text-center mt-2.5 group-hover:text-[#B38827] transition-colors leading-tight">
+                <span className="text-[11px] sm:text-xs font-bold tracking-wider text-[#45055B] uppercase text-center mt-2.5 group-hover:text-[#B38827] transition-colors leading-tight">
                   {cat.name}
                 </span>
               </Link>
@@ -445,7 +445,7 @@ export function HomePage() {
           <div className="mt-8">
             <Link
               to="/category/all"
-              className="inline-block bg-[#2A0845] hover:bg-[#3b0764] text-[#D4AF37] text-xs font-bold px-8 py-3 rounded shadow-md tracking-[0.14em] uppercase transition-colors"
+              className="inline-block bg-[#45055B] hover:bg-[#5A0E72] text-[#D4AF37] text-xs font-bold px-8 py-3 rounded shadow-md tracking-[0.14em] uppercase transition-colors"
             >
               VIEW ALL CATEGORIES
             </Link>
@@ -457,7 +457,7 @@ export function HomePage() {
           <div className="animate-section mb-14 px-4 md:px-24 text-center">
             <div className="flex items-center justify-center gap-4 mb-8">
               <span className="h-[1px] w-12 sm:w-20 bg-[#D4AF37]/50" />
-              <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.18em] uppercase text-[#2A0845]">
+              <h2 className="font-serif text-xl sm:text-2xl md:text-3xl font-bold tracking-[0.18em] uppercase text-[#45055B]">
                 FEATURED PRODUCTS
               </h2>
               <span className="h-[1px] w-12 sm:w-20 bg-[#D4AF37]/50" />
@@ -474,7 +474,7 @@ export function HomePage() {
             <div className="mt-8">
               <Link
                 to="/category/all"
-                className="inline-block bg-[#2A0845] hover:bg-[#3b0764] text-[#D4AF37] text-xs font-bold px-8 py-3 rounded shadow-md tracking-[0.14em] uppercase transition-colors"
+                className="inline-block bg-[#45055B] hover:bg-[#5A0E72] text-[#D4AF37] text-xs font-bold px-8 py-3 rounded shadow-md tracking-[0.14em] uppercase transition-colors"
               >
                 VIEW ALL PRODUCTS
               </Link>
@@ -544,7 +544,7 @@ export function HomePage() {
                       {/* Bottom Row: Customer Info */}
                       <div className="pt-4 mt-2 border-t border-gray-100 flex items-center justify-between gap-3">
                         <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#2A0845] to-[#4A154B] text-[#D4AF37] font-bold text-xs flex items-center justify-center shadow-md ring-2 ring-[#D4AF37]/30 shrink-0">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#45055B] to-[#45055B] text-[#D4AF37] font-bold text-xs flex items-center justify-center shadow-md ring-2 ring-[#D4AF37]/30 shrink-0">
                             {initials}
                           </div>
                           <div>

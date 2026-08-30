@@ -232,7 +232,7 @@ export function CartPage() {
                         {item.variant?.size || 'Standard'}
                       </p>
                       {item.variant?.color && (
-                        <p className="text-[10px] text-[#2A0845] font-medium bg-[#2A0845]/10 px-1.5 py-0.5 rounded inline-block">
+                        <p className="text-[10px] text-[#45055B] font-medium bg-[#45055B]/10 px-1.5 py-0.5 rounded inline-block">
                           {item.variant.color}
                         </p>
                       )}
@@ -243,7 +243,7 @@ export function CartPage() {
                       )}
                     </div>
                   </div>
-                  <div className="font-bold text-[#2A0845] mb-2">₹{item.variant?.price || item.product.price}</div>
+                  <div className="font-bold text-[#45055B] mb-2">₹{item.variant?.price || item.product.price}</div>
                   
                   <div className="flex items-center w-24 border border-brand-gold/30 rounded-lg p-0.5 bg-white">
                     <button 
@@ -358,13 +358,13 @@ export function CartPage() {
           <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden">
             <div className="p-6 text-center space-y-4">
               {/* <div className="text-5xl">🌴</div> */}
-              <h2 className="font-serif text-xl font-bold text-[#2A0845]">Orders are temporarily paused</h2>
-              <p className="text-sm text-[#2A0845]/70 leading-relaxed">
+              <h2 className="font-serif text-xl font-bold text-[#45055B]">Orders are temporarily paused</h2>
+              <p className="text-sm text-[#45055B]/70 leading-relaxed">
                 {vacation.message || 'We are temporarily not accepting orders. Please check back soon!'}
               </p>
               <button
                 onClick={() => setShowVacationModal(false)}
-                className="w-full bg-[#2A0845] text-[#D4AF37] font-bold py-3 rounded-xl hover:opacity-90 transition-opacity"
+                className="w-full bg-[#45055B] text-[#D4AF37] font-bold py-3 rounded-xl hover:opacity-90 transition-opacity"
               >
                 Got it
               </button>

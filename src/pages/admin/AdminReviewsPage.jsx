@@ -113,7 +113,7 @@ export function AdminReviewsPage() {
 
   if (loading) return (
     <div className="flex items-center justify-center py-20">
-      <div className="w-8 h-8 border-4 border-[#2A0845]/20 border-t-[#2A0845] rounded-full animate-spin" />
+      <div className="w-8 h-8 border-4 border-[#45055B]/20 border-t-[#45055B] rounded-full animate-spin" />
     </div>
   );
 
@@ -121,45 +121,45 @@ export function AdminReviewsPage() {
     <div className="w-full max-w-5xl mx-auto">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#2A0845] flex items-center gap-2">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#45055B] flex items-center gap-2">
             <MessageSquare className="w-6 h-6 text-[#D4AF37]" /> Reviews
           </h1>
-          <p className="text-[#2A0845]/40 text-xs font-sans mt-0.5">Manage client testimonials shown on the homepage</p>
+          <p className="text-[#45055B]/40 text-xs font-sans mt-0.5">Manage client testimonials shown on the homepage</p>
         </div>
         <button onClick={openAdd}
-          className="flex items-center gap-2 bg-[#2A0845] hover:bg-[#D4AF37] text-white px-4 py-2 rounded-xl font-semibold transition-colors whitespace-nowrap">
+          className="flex items-center gap-2 bg-[#45055B] hover:bg-[#D4AF37] text-white px-4 py-2 rounded-xl font-semibold transition-colors whitespace-nowrap">
           <Plus className="w-4 h-4" /> Add Review
         </button>
       </div>
 
-      <div className="bg-white rounded-2xl border border-[#2A0845]/10 overflow-hidden shadow-sm">
+      <div className="bg-white rounded-2xl border border-[#45055B]/10 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-[#FAF6F0] border-b border-[#2A0845]/10">
-                <th className="px-4 py-3 text-xs font-bold text-[#2A0845]/60 uppercase tracking-wider">Client & Image</th>
-                <th className="px-4 py-3 text-xs font-bold text-[#2A0845]/60 uppercase tracking-wider">Stars</th>
-                <th className="px-4 py-3 text-xs font-bold text-[#2A0845]/60 uppercase tracking-wider">Review</th>
-                <th className="px-4 py-3 text-xs font-bold text-[#2A0845]/60 uppercase tracking-wider">Status</th>
-                <th className="px-4 py-3 text-right text-xs font-bold text-[#2A0845]/60 uppercase tracking-wider">Actions</th>
+              <tr className="bg-[#FAF6F0] border-b border-[#45055B]/10">
+                <th className="px-4 py-3 text-xs font-bold text-[#45055B]/60 uppercase tracking-wider">Client & Image</th>
+                <th className="px-4 py-3 text-xs font-bold text-[#45055B]/60 uppercase tracking-wider">Stars</th>
+                <th className="px-4 py-3 text-xs font-bold text-[#45055B]/60 uppercase tracking-wider">Review</th>
+                <th className="px-4 py-3 text-xs font-bold text-[#45055B]/60 uppercase tracking-wider">Status</th>
+                <th className="px-4 py-3 text-right text-xs font-bold text-[#45055B]/60 uppercase tracking-wider">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#2A0845]/5">
+            <tbody className="divide-y divide-[#45055B]/5">
               {reviews.map(r => (
                 <tr key={r.id} className="hover:bg-[#FAF6F0]/50 transition-colors">
                   <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                       {r.image_url ? (
-                        <div className="w-10 h-10 rounded-full overflow-hidden border border-[#2A0845]/20 shrink-0">
+                        <div className="w-10 h-10 rounded-full overflow-hidden border border-[#45055B]/20 shrink-0">
                           <img src={r.image_url} alt={r.name} className="w-full h-full object-cover" />
                         </div>
                       ) : (
-                        <div className="w-10 h-10 rounded-full bg-[#2A0845] text-[#D4AF37] flex items-center justify-center font-bold text-sm shrink-0">
+                        <div className="w-10 h-10 rounded-full bg-[#45055B] text-[#D4AF37] flex items-center justify-center font-bold text-sm shrink-0">
                           {r.name?.charAt(0).toUpperCase()}
                         </div>
                       )}
                       <div>
-                        <span className="font-semibold text-[#2A0845] text-sm block">{r.name}</span>
+                        <span className="font-semibold text-[#45055B] text-sm block">{r.name}</span>
                         {r.image_url ? (
                           <span className="text-[10px] text-green-600 font-medium">Image attached</span>
                         ) : (
@@ -175,7 +175,7 @@ export function AdminReviewsPage() {
                       ))}
                     </div>
                   </td>
-                  <td className="px-4 py-3 text-sm text-[#2A0845]/70 max-w-xs">
+                  <td className="px-4 py-3 text-sm text-[#45055B]/70 max-w-xs">
                     <p className="line-clamp-2">{r.review}</p>
                   </td>
                   <td className="px-4 py-3">
@@ -185,14 +185,14 @@ export function AdminReviewsPage() {
                   </td>
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-2">
-                      <button onClick={() => openEdit(r)} className="p-1.5 text-[#2A0845] hover:bg-[#2A0845]/10 rounded"><Edit2 className="w-4 h-4" /></button>
+                      <button onClick={() => openEdit(r)} className="p-1.5 text-[#45055B] hover:bg-[#45055B]/10 rounded"><Edit2 className="w-4 h-4" /></button>
                       <button onClick={() => handleDelete(r.id)} className="p-1.5 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </td>
                 </tr>
               ))}
               {reviews.length === 0 && (
-                <tr><td colSpan="5" className="px-4 py-12 text-center text-[#2A0845]/50">No reviews yet. Add your first one.</td></tr>
+                <tr><td colSpan="5" className="px-4 py-12 text-center text-[#45055B]/50">No reviews yet. Add your first one.</td></tr>
               )}
             </tbody>
           </table>
@@ -204,29 +204,29 @@ export function AdminReviewsPage() {
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
           <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
             className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl flex flex-col max-h-[90vh]">
-            <div className="px-6 py-4 border-b border-[#2A0845]/10 flex items-center justify-between shrink-0">
-              <h2 className="font-serif text-lg font-bold text-[#2A0845]">{modal === 'add' ? 'Add Review' : 'Edit Review'}</h2>
-              <button onClick={() => setModal(null)} className="text-[#2A0845]/40 hover:text-[#2A0845]"><X className="w-5 h-5" /></button>
+            <div className="px-6 py-4 border-b border-[#45055B]/10 flex items-center justify-between shrink-0">
+              <h2 className="font-serif text-lg font-bold text-[#45055B]">{modal === 'add' ? 'Add Review' : 'Edit Review'}</h2>
+              <button onClick={() => setModal(null)} className="text-[#45055B]/40 hover:text-[#45055B]"><X className="w-5 h-5" /></button>
             </div>
             
             <div className="p-6 space-y-4 overflow-y-auto">
               <div>
-                <label className="text-xs font-bold text-[#2A0845]/60 uppercase tracking-wider mb-1 block">Customer Name</label>
+                <label className="text-xs font-bold text-[#45055B]/60 uppercase tracking-wider mb-1 block">Customer Name</label>
                 <input value={form.name} onChange={e => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g. Sarah M."
-                  className="w-full px-3 py-2 rounded-lg bg-[#FAF6F0] border border-[#2A0845]/10 focus:outline-none text-sm" />
+                  className="w-full px-3 py-2 rounded-lg bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none text-sm" />
               </div>
 
               {/* Review Image Upload Section */}
               <div>
                 <div className="flex justify-between items-baseline mb-1">
-                  <label className="text-xs font-bold text-[#2A0845]/60 uppercase tracking-wider block">Review Image</label>
-                  <span className="text-[11px] text-[#2A0845]/50 font-medium">Standard 4:3 aspect ratio recommended</span>
+                  <label className="text-xs font-bold text-[#45055B]/60 uppercase tracking-wider block">Review Image</label>
+                  <span className="text-[11px] text-[#45055B]/50 font-medium">Standard 4:3 aspect ratio recommended</span>
                 </div>
                 
-                <div className="flex items-center gap-3 bg-[#FAF6F0] p-3 rounded-xl border border-[#2A0845]/10">
+                <div className="flex items-center gap-3 bg-[#FAF6F0] p-3 rounded-xl border border-[#45055B]/10">
                   {form.image_url ? (
-                    <div className="w-20 h-15 aspect-[4/3] rounded-lg overflow-hidden border border-[#2A0845]/20 shrink-0 relative group">
+                    <div className="w-20 h-15 aspect-[4/3] rounded-lg overflow-hidden border border-[#45055B]/20 shrink-0 relative group">
                       <img src={form.image_url} alt="Review attachment" className="w-full h-full object-cover" />
                       <button 
                         type="button"
@@ -237,7 +237,7 @@ export function AdminReviewsPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="w-20 h-15 aspect-[4/3] rounded-lg bg-white border border-dashed border-[#2A0845]/20 shrink-0 flex flex-col items-center justify-center text-[#2A0845]/30">
+                    <div className="w-20 h-15 aspect-[4/3] rounded-lg bg-white border border-dashed border-[#45055B]/20 shrink-0 flex flex-col items-center justify-center text-[#45055B]/30">
                       <ImageIcon className="w-6 h-6" />
                       <span className="text-[9px] mt-0.5">4:3 Ratio</span>
                     </div>
@@ -247,39 +247,39 @@ export function AdminReviewsPage() {
                     <input type="file" id="rev_image" accept="image/*" onChange={handleImageUpload} className="hidden" />
                     <label 
                       htmlFor="rev_image" 
-                      className={`inline-flex items-center gap-2 bg-[#2A0845] hover:bg-[#D4AF37] text-white px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
+                      className={`inline-flex items-center gap-2 bg-[#45055B] hover:bg-[#D4AF37] text-white px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition-colors ${uploading ? 'opacity-50 pointer-events-none' : ''}`}
                     >
                       <Upload className="w-3.5 h-3.5" />
                       {uploading ? 'Uploading...' : form.image_url ? 'Change Image' : 'Upload Image'}
                     </label>
-                    <p className="text-[10px] text-[#2A0845]/50 mt-1">Upload a customer photo or product photo in 4:3 or standard size</p>
+                    <p className="text-[10px] text-[#45055B]/50 mt-1">Upload a customer photo or product photo in 4:3 or standard size</p>
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-bold text-[#2A0845]/60 uppercase tracking-wider mb-2 block">Rating</label>
+                <label className="text-xs font-bold text-[#45055B]/60 uppercase tracking-wider mb-2 block">Rating</label>
                 <StarPicker value={form.rating} onChange={v => setForm({ ...form, rating: v })} />
               </div>
               
               <div>
-                <label className="text-xs font-bold text-[#2A0845]/60 uppercase tracking-wider mb-1 block">Review Text</label>
+                <label className="text-xs font-bold text-[#45055B]/60 uppercase tracking-wider mb-1 block">Review Text</label>
                 <textarea value={form.review} onChange={e => setForm({ ...form, review: e.target.value })}
                   rows={4} placeholder="Write the review content..."
-                  className="w-full px-3 py-2 rounded-lg bg-[#FAF6F0] border border-[#2A0845]/10 focus:outline-none text-sm resize-none" />
+                  className="w-full px-3 py-2 rounded-lg bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none text-sm resize-none" />
               </div>
               
               <div className="flex items-center gap-2 pt-1">
                 <input type="checkbox" id="rev_active" checked={form.is_active}
-                  onChange={e => setForm({ ...form, is_active: e.target.checked })} className="w-4 h-4 accent-[#2A0845]" />
-                <label htmlFor="rev_active" className="text-sm font-semibold text-[#2A0845] cursor-pointer">Show on homepage</label>
+                  onChange={e => setForm({ ...form, is_active: e.target.checked })} className="w-4 h-4 accent-[#45055B]" />
+                <label htmlFor="rev_active" className="text-sm font-semibold text-[#45055B] cursor-pointer">Show on homepage</label>
               </div>
             </div>
 
-            <div className="px-6 py-4 border-t border-[#2A0845]/10 flex gap-3 shrink-0">
-              <button onClick={() => setModal(null)} className="flex-1 px-4 py-2 bg-[#FAF6F0] text-[#2A0845] rounded-xl font-semibold hover:bg-gray-100">Cancel</button>
+            <div className="px-6 py-4 border-t border-[#45055B]/10 flex gap-3 shrink-0">
+              <button onClick={() => setModal(null)} className="flex-1 px-4 py-2 bg-[#FAF6F0] text-[#45055B] rounded-xl font-semibold hover:bg-gray-100">Cancel</button>
               <button onClick={handleSave} disabled={saving || uploading || !form.name.trim() || !form.review.trim()}
-                className="flex-1 px-4 py-2 bg-[#2A0845] text-white rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-[#D4AF37] transition-colors">
+                className="flex-1 px-4 py-2 bg-[#45055B] text-white rounded-xl font-semibold flex items-center justify-center gap-2 disabled:opacity-50 hover:bg-[#D4AF37] transition-colors">
                 {saving ? 'Saving...' : <><Save className="w-4 h-4" /> Save Review</>}
               </button>
             </div>

@@ -23,7 +23,7 @@ export function OrderTrackingPage() {
 
     // Fire confetti
     const end = Date.now() + 1.5 * 1000;
-    const colors = ['#2A0845', '#7D2A2A', '#ffffff'];
+    const colors = ['#45055B', '#7D2A2A', '#ffffff'];
 
     (function frame() {
       confetti({
@@ -85,7 +85,7 @@ export function OrderTrackingPage() {
             <div className="flex items-center justify-between border-b border-gray-100 pb-5">
               <div>
                 <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1">Order Number</p>
-                <p className="text-lg font-bold text-[#2A0845]">#{orderId}</p>
+                <p className="text-lg font-bold text-[#45055B]">#{orderId}</p>
               </div>
               <div className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-xs font-bold ${
                 order?.order_type === 'pickup' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'

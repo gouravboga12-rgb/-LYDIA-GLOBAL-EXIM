@@ -36,7 +36,7 @@ function AddressModal({ onClose, onSave, shippingConfig }) {
             <div key={field}>
               <label className="text-xs font-semibold text-gray-600 block mb-1">{label}</label>
               <input name={field} value={form[field]} onChange={handleChange}
-                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2A0845]/30" />
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#45055B]/30" />
             </div>
           ))}
           <div>
@@ -45,20 +45,20 @@ function AddressModal({ onClose, onSave, shippingConfig }) {
               const states = getStatesForCountry(form.country);
               return states ? (
                 <select name="state" value={form.state} onChange={handleChange}
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2A0845]/30">
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#45055B]/30">
                   <option value="">Select state</option>
                   {states.map(s => <option key={s.code} value={s.name}>{s.name}</option>)}
                 </select>
               ) : (
                 <input name="state" value={form.state} onChange={handleChange} placeholder="State (optional)"
-                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2A0845]/30" />
+                  className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#45055B]/30" />
               );
             })()}
           </div>
           <div>
             <label className="text-xs font-semibold text-gray-600 block mb-1">Country</label>
             <select name="country" value={form.country} onChange={handleChange}
-              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#2A0845]/30"
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#45055B]/30"
             >
               <option value="">Select country</option>
               {displayCountries.map(c => (
@@ -70,12 +70,12 @@ function AddressModal({ onClose, onSave, shippingConfig }) {
             </p>
           </div>
           <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer pt-1">
-            <input type="checkbox" name="is_default" checked={form.is_default} onChange={handleChange} className="accent-[#2A0845]" />
+            <input type="checkbox" name="is_default" checked={form.is_default} onChange={handleChange} className="accent-[#45055B]" />
             Set as default address
           </label>
         </div>
         <button onClick={() => onSave(form)}
-          className="w-full mt-5 bg-[#2A0845] text-[#D4AF37] font-bold py-3.5 rounded-xl text-sm hover:bg-[#2A0845]/90 shadow-md transition-all shrink-0">
+          className="w-full mt-5 bg-[#45055B] text-[#D4AF37] font-bold py-3.5 rounded-xl text-sm hover:bg-[#45055B]/90 shadow-md transition-all shrink-0">
           Save Address
         </button>
       </div>

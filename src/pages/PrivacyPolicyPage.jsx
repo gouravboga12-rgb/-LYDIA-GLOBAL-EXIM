@@ -8,7 +8,7 @@ export function PrivacyPolicyPage() {
     <div className="bg-[#FAF6F0] min-h-screen font-sans text-gray-800">
       <Header />
       <div className="max-w-4xl mx-auto px-6 py-12 md:py-20">
-        <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#2A0845] mb-4">Privacy Policy</h1>
+        <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#45055B] mb-4">Privacy Policy</h1>
         <p className="text-gray-500 mb-1">Effective Date: August 23, 2026</p>
         <p className="text-gray-500 mb-10">Last Updated: August 11, 2026</p>
 
@@ -26,7 +26,7 @@ export function PrivacyPolicyPage() {
             By using our website, you acknowledge this Privacy Policy. Where applicable law requires consent for a particular use of personal information, we will obtain the required consent.
           </p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">1. Who We Are</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">1. Who We Are</h2>
           <p>
             LYDIA GLOBAL EXIM is a U.S.-based jewelry business that sells fashion jewelry through its online store and other sales channels.
           </p>
@@ -34,7 +34,7 @@ export function PrivacyPolicyPage() {
             For privacy-related questions or requests, please contact us using the information provided in the Contact Us section of this Privacy Policy.
           </p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">2. Age Requirement</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">2. Age Requirement</h2>
           <p>Our website is intended for users who are 13 years of age or older.</p>
           <p>
             You must be at least 13 years old to create an LYDIA GLOBAL EXIM customer account or knowingly provide personal information to us through account registration.
@@ -49,7 +49,7 @@ export function PrivacyPolicyPage() {
             If you believe that an individual under 13 has provided personal information to us, please contact us using the information provided below.
           </p>
           
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Teen Users</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Teen Users</h3>
           <p>
             Individuals between 13 and 17 years of age may use the website subject to our <Link to="/terms-of-service" className="text-brand-gold underline font-semibold">Terms & Conditions</Link> and applicable law.
           </p>
@@ -60,10 +60,10 @@ export function PrivacyPolicyPage() {
             We do not knowingly request information from teenagers that is unnecessary for operating their account, processing an order, providing customer support, or performing another disclosed business purpose.
           </p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">3. Personal Information We Collect</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">3. Personal Information We Collect</h2>
           <p>Depending on how you interact with LYDIA GLOBAL EXIM, we may collect the following categories of personal information.</p>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">A. Account Information</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">A. Account Information</h3>
           <p>When you create an LYDIA GLOBAL EXIM account, we may collect:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>First and last name</li>
@@ -78,7 +78,7 @@ export function PrivacyPolicyPage() {
             Your password should be kept confidential. We recommend that you do not reuse your LYDIA GLOBAL EXIM password on other websites.
           </p>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">B. Shipping and Billing Information</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">B. Shipping and Billing Information</h3>
           <p>When you place an order, we may collect:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Customer name</li>
@@ -90,7 +90,7 @@ export function PrivacyPolicyPage() {
             <li>Other information necessary to fulfill and deliver your order</li>
           </ul>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">C. Order and Purchase Information</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">C. Order and Purchase Information</h3>
           <p>We may collect information associated with your purchases, including:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Order number</li>
@@ -109,7 +109,7 @@ export function PrivacyPolicyPage() {
           </ul>
           <p>Your order history may be associated with your customer account.</p>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">D. Payment Information</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">D. Payment Information</h3>
           <p>
             Payments may be processed through third-party payment processors. Depending on the payment method you select, the payment processor may collect payment information such as credit or debit card information.
           </p>
@@ -120,7 +120,7 @@ export function PrivacyPolicyPage() {
             We may receive limited payment-related information, such as payment status, transaction identifiers, card type, or the last four digits of a payment card, where provided by our payment processor.
           </p>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">E. Customer Communications</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">E. Customer Communications</h3>
           <p>When you contact us, we may collect information contained in your communication, including:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Emails</li>
@@ -131,7 +131,7 @@ export function PrivacyPolicyPage() {
             <li>Other information you voluntarily provide</li>
           </ul>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">F. Website and Device Information</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">F. Website and Device Information</h3>
           <p>When you visit our website, certain information may be collected automatically, including:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>IP address</li>
@@ -148,7 +148,7 @@ export function PrivacyPolicyPage() {
           </ul>
           <p>We use this information to operate, secure, analyze, and improve our website.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">4. How We Collect Personal Information</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">4. How We Collect Personal Information</h2>
           <p>We may collect personal information:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Directly from you when you create an account</li>
@@ -162,10 +162,10 @@ export function PrivacyPolicyPage() {
             <li>From service providers that assist us with website operations, payments, shipping, analytics, security, marketing, and other business functions</li>
           </ul>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">5. How We Use Personal Information</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">5. How We Use Personal Information</h2>
           <p>We may use personal information for the following purposes.</p>
           
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Providing and Managing Our Services</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Providing and Managing Our Services</h3>
           <p>We may use your information to:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Create and manage your customer account</li>
@@ -179,7 +179,7 @@ export function PrivacyPolicyPage() {
             <li>Respond to questions and requests</li>
           </ul>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Website Operations</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Website Operations</h3>
           <p>We may use information to:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Operate our website</li>
@@ -192,7 +192,7 @@ export function PrivacyPolicyPage() {
             <li>Maintain website security</li>
           </ul>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Fraud and Security</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Fraud and Security</h3>
           <p>We may use information to:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Detect and prevent fraudulent transactions</li>
@@ -203,7 +203,7 @@ export function PrivacyPolicyPage() {
             <li>Prevent abuse or misuse of our services</li>
           </ul>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Communications</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Communications</h3>
           <p>We may use your information to send:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Account-related messages</li>
@@ -217,7 +217,7 @@ export function PrivacyPolicyPage() {
           </ul>
           <p>Some transactional communications may be necessary to provide the services you requested and may not be treated as marketing communications.</p>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Marketing</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Marketing</h3>
           <p>Where permitted by applicable law, we may use your information to send marketing communications regarding:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>New products</li>
@@ -232,7 +232,7 @@ export function PrivacyPolicyPage() {
           <p>You can unsubscribe from marketing emails at any time by using the unsubscribe mechanism included in the communication or by contacting us.</p>
           <p>Unsubscribing from marketing communications will not prevent us from sending necessary transactional or service-related communications.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">6. Marketing Consent</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">6. Marketing Consent</h2>
           <p>Marketing communications are separate from your ability to create an account or place an order.</p>
           <p>Where applicable, we may provide a separate optional marketing checkbox during account registration, checkout, or another interaction.</p>
           <p>For example:</p>
@@ -242,7 +242,7 @@ export function PrivacyPolicyPage() {
           <p>Marketing consent is not required to purchase products from LYDIA GLOBAL EXIM.</p>
           <p>You may withdraw marketing consent at any time.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">7. Cookies and Similar Technologies</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">7. Cookies and Similar Technologies</h2>
           <p>We may use cookies, pixels, tags, scripts, local storage, and similar technologies.</p>
           <p>These technologies may help us:</p>
           <ul className="list-disc pl-6 space-y-1">
@@ -261,15 +261,15 @@ export function PrivacyPolicyPage() {
           <p>You may be able to control certain cookies through your browser or device settings.</p>
           <p>Where required by applicable law, we will provide additional cookie choices or consent mechanisms.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">8. How We Share Personal Information</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">8. How We Share Personal Information</h2>
           <p>We do not sell personal information as a source of revenue.</p>
           <p>We may, however, disclose or make personal information available to third parties when reasonably necessary to operate our business, provide our services, or fulfill the purposes described in this Privacy Policy.</p>
           <p>These third parties may include:</p>
           
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Payment Providers</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Payment Providers</h3>
           <p>Payment processors may process payment information to authorize and complete transactions.</p>
           
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Shipping and Delivery Providers</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Shipping and Delivery Providers</h3>
           <p>We may provide shipping and delivery companies with information necessary to fulfill and deliver your order, such as:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Name</li>
@@ -278,7 +278,7 @@ export function PrivacyPolicyPage() {
             <li>Order information</li>
           </ul>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Website and Technology Providers</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Website and Technology Providers</h3>
           <p>We may use third-party providers for:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Website hosting</li>
@@ -293,7 +293,7 @@ export function PrivacyPolicyPage() {
             <li>Website performance</li>
           </ul>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Marketing and Advertising Providers</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Marketing and Advertising Providers</h3>
           <p>Where applicable, we may use third-party services for:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Email marketing</li>
@@ -306,10 +306,10 @@ export function PrivacyPolicyPage() {
           <p>Some of these providers may use cookies, pixels, or similar technologies.</p>
           <p>The actual providers used by LYDIA GLOBAL EXIM may change over time.</p>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Professional and Business Service Providers</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Professional and Business Service Providers</h3>
           <p>We may share information with service providers such as accountants, attorneys, consultants, auditors, insurers, and other professionals where reasonably necessary for our business operations.</p>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Legal and Safety Purposes</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Legal and Safety Purposes</h3>
           <p>We may disclose personal information when reasonably necessary to:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Comply with applicable law</li>
@@ -323,16 +323,16 @@ export function PrivacyPolicyPage() {
             <li>Prevent illegal activity</li>
           </ul>
 
-          <h3 className="text-lg font-bold text-[#2A0845] mt-6 mb-2">Business Transactions</h3>
+          <h3 className="text-lg font-bold text-[#45055B] mt-6 mb-2">Business Transactions</h3>
           <p>If LYDIA GLOBAL EXIM is involved in a merger, acquisition, financing, restructuring, sale of assets, sale of the business, bankruptcy, or similar transaction, personal information may be transferred as part of that transaction, subject to applicable law.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">9. Third-Party Service Providers</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">9. Third-Party Service Providers</h2>
           <p>Third-party companies that provide services to LYDIA GLOBAL EXIM may process personal information on our behalf or independently according to their own privacy practices.</p>
           <p>Examples may include payment processors, shipping providers, website hosting providers, analytics providers, email providers, security providers, and advertising providers.</p>
           <p>These companies may have their own privacy policies.</p>
           <p>We encourage you to review the privacy policies of third-party services you interact with.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">10. Order History and Customer Accounts</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">10. Order History and Customer Accounts</h2>
           <p>If you create an LYDIA GLOBAL EXIM account, we may maintain information associated with your account, including:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Account details</li>
@@ -348,13 +348,13 @@ export function PrivacyPolicyPage() {
           <p>This information allows you to view your order history and helps us provide customer service and manage transactions.</p>
           <p>You may request deletion of your account or certain personal information, subject to applicable legal and business recordkeeping requirements.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">11. Data Security</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">11. Data Security</h2>
           <p>We use reasonable administrative, technical, and organizational safeguards designed to protect personal information against unauthorized access, use, disclosure, alteration, or destruction.</p>
           <p>These measures may include appropriate access controls, security monitoring, encryption or secure transmission technologies where appropriate, and security practices provided by our third-party service providers.</p>
           <p>However, no website, internet transmission, electronic storage system, or security measure can be guaranteed to be completely secure.</p>
           <p>Therefore, while we take reasonable steps to protect your information, we cannot guarantee absolute security.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">12. Data Retention</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">12. Data Retention</h2>
           <p>We retain personal information only for as long as reasonably necessary for the purposes described in this Privacy Policy, including:</p>
           <ul className="list-disc pl-6 space-y-1">
             <li>Providing services</li>
@@ -370,7 +370,7 @@ export function PrivacyPolicyPage() {
           <p>Different categories of information may be retained for different periods.</p>
           <p>When information is no longer reasonably necessary, we may delete, anonymize, or securely dispose of it, subject to applicable legal and business requirements.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">13. Children's and Teen Privacy</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">13. Children's and Teen Privacy</h2>
           <p>LYDIA GLOBAL EXIM is a 13+ general-audience website and is not directed toward children under 13.</p>
           <p>We do not knowingly collect personal information from children under 13 through account registration or knowingly permit children under 13 to create accounts.</p>
           <p>If we learn that we have collected personal information from a child under 13 in circumstances where parental consent was legally required, we will take reasonable steps to delete the information as required by applicable law.</p>
@@ -379,7 +379,7 @@ export function PrivacyPolicyPage() {
           <p>We do not knowingly use a teenager's information for purposes that are prohibited by applicable law.</p>
           <p>Where applicable law provides additional privacy rights or protections for minors, we will honor those requirements.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">14. Your Privacy Rights</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">14. Your Privacy Rights</h2>
           <p>Depending on where you live and which privacy laws apply to you, you may have certain rights concerning your personal information.</p>
           <p>These rights may include:</p>
           <ul className="list-disc pl-6 space-y-1">
@@ -408,43 +408,43 @@ export function PrivacyPolicyPage() {
             <li>Establish or defend legal claims</li>
           </ul>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">15. How to Submit a Privacy Request</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">15. How to Submit a Privacy Request</h2>
           <p>If you would like to exercise an applicable privacy right, please contact us using the information provided in the “Contact Us” section.</p>
           <p>Your request should provide enough information for us to understand what you are requesting.</p>
           <p>For security purposes, we may need to verify your identity before completing certain requests.</p>
           <p>We will process applicable privacy requests according to the requirements and timelines of the laws that apply to the request.</p>
           <p>If applicable law provides a right to appeal our decision, you may contact us to request an appeal.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">18. International Visitors</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">18. International Visitors</h2>
           <p>LYDIA GLOBAL EXIM is based in the United States.</p>
           <p>If you access our website from outside the United States, your personal information may be processed or stored in the United States or other countries where our service providers operate.</p>
           <p>Privacy laws in those locations may differ from the laws in your country.</p>
           <p>By using our website, you understand that your information may be transferred to and processed in the United States, subject to applicable law.</p>
           <p>Where required by applicable law, we will implement appropriate safeguards for international transfers.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">19. Third-Party Websites and Social Media</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">19. Third-Party Websites and Social Media</h2>
           <p>Our website may contain links to third-party websites, applications, social media platforms, payment services, shipping services, or other third-party services.</p>
           <p>LYDIA GLOBAL EXIM does not control the privacy practices of third-party websites or services.</p>
           <p>If you leave our website or interact with a third-party service, that third party's privacy policy may apply.</p>
           <p>We encourage you to review the privacy policies of third parties before providing personal information.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">20. Social Media Interactions</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">20. Social Media Interactions</h2>
           <p>If you interact with LYDIA GLOBAL EXIM through social media platforms, those platforms may collect information about you according to their own privacy policies.</p>
           <p>If you voluntarily post, comment, tag, message, or otherwise interact with LYDIA GLOBAL EXIM publicly, information you provide may be visible to others depending on the platform and your account settings.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">21. Promotional Events and Customer Content</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">21. Promotional Events and Customer Content</h2>
           <p>From time to time, LYDIA GLOBAL EXIM may conduct promotions, giveaways, events, or customer-content campaigns.</p>
           <p>If you voluntarily submit information, photographs, reviews, testimonials, or other content, we may use that information according to the terms disclosed when you submit it and applicable law.</p>
           <p>Where separate permission is required to use your name, image, testimonial, photograph, or other content for promotional purposes, we will obtain the appropriate permission.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">22. Account Deletion</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">22. Account Deletion</h2>
           <p>You may request that your LYDIA GLOBAL EXIM account be deleted by contacting us.</p>
           <p>When an account deletion request is received, we may delete or deactivate information associated with the account, subject to applicable law and legitimate business requirements.</p>
           <p>Deleting an account may not result in immediate deletion of every record.</p>
           <p>For example, we may retain certain transactions, tax, accounting, fraud-prevention, dispute, or legal records when required or reasonably necessary.</p>
           <p>Where information must be retained, we will limit its use to the purposes for which retention is required or permitted.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">23. Changes to This Privacy Policy</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">23. Changes to This Privacy Policy</h2>
           <p>We may update this Privacy Policy from time to time.</p>
           <p>Changes may be made because of:</p>
           <ul className="list-disc pl-6 space-y-1">
@@ -460,7 +460,7 @@ export function PrivacyPolicyPage() {
           <p>If we make a material change and applicable law requires additional notice, we may provide notice through our website, email, account notification, or another appropriate method.</p>
           <p>We encourage you to periodically review this Privacy Policy.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">24. Contact Us</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">24. Contact Us</h2>
           <p>If you have questions about this Privacy Policy, want to exercise an applicable privacy right, or believe that personal information has been collected from a child under 13, please contact us:</p>
           <ul className="list-none pl-0 space-y-2 font-medium">
             <li><strong>LYDIA GLOBAL EXIM</strong></li>
@@ -469,7 +469,7 @@ export function PrivacyPolicyPage() {
           </ul>
           <p className="text-sm text-gray-600 mt-2">When contacting us regarding a privacy request, please provide enough information for us to identify and process your request.</p>
 
-          <h2 className="text-xl md:text-2xl font-bold text-[#2A0845] mt-10 mb-4">25. Your Acknowledgment</h2>
+          <h2 className="text-xl md:text-2xl font-bold text-[#45055B] mt-10 mb-4">25. Your Acknowledgment</h2>
           <p>By using the LYDIA GLOBAL EXIM website, you acknowledge that you have had an opportunity to review this Privacy Policy.</p>
           <p>Where a separate consent is legally required for a particular processing activity, LYDIA GLOBAL EXIM will obtain that consent separately.</p>
           <p>This Privacy Policy does not replace the LYDIA GLOBAL EXIM <Link to="/terms-of-service" className="text-brand-gold underline font-semibold">Terms & Conditions</Link>.</p>

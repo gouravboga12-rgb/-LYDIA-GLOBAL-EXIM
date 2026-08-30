@@ -29,25 +29,25 @@ export function WishlistPage() {
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-8">
         <div className="flex items-center justify-between mb-6 md:mb-8">
-          <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-[#2A0845] flex items-center gap-3">
-            <Heart className="w-6 h-6 md:w-8 md:h-8 text-[#2A0845] fill-[#2A0845]" />
+          <h1 className="font-serif text-2xl md:text-3xl lg:text-4xl font-bold text-[#45055B] flex items-center gap-3">
+            <Heart className="w-6 h-6 md:w-8 md:h-8 text-[#45055B] fill-[#45055B]" />
             My Wishlist
           </h1>
-          <span className="text-sm font-sans font-semibold text-[#2A0845] bg-[#2A0845]/10 px-3 py-1.5 rounded-full">
+          <span className="text-sm font-sans font-semibold text-[#45055B] bg-[#45055B]/10 px-3 py-1.5 rounded-full">
             {wishlistProducts.length} {wishlistProducts.length === 1 ? 'Item' : 'Items'}
           </span>
         </div>
 
         {wishlistProducts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 md:py-32 bg-white rounded-3xl shadow-sm border border-[#2A0845]/10 text-center px-4">
+          <div className="flex flex-col items-center justify-center py-24 md:py-32 bg-white rounded-3xl shadow-sm border border-[#45055B]/10 text-center px-4">
             <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-6">
               <Heart className="w-10 h-10 text-gray-300" />
             </div>
-            <h2 className="text-xl md:text-2xl font-serif font-bold text-[#2A0845] mb-2">Your wishlist is empty</h2>
-            <p className="text-[#2A0845]/60 mb-8 font-sans text-sm md:text-base max-w-md">
+            <h2 className="text-xl md:text-2xl font-serif font-bold text-[#45055B] mb-2">Your wishlist is empty</h2>
+            <p className="text-[#45055B]/60 mb-8 font-sans text-sm md:text-base max-w-md">
               Save your favorite Fashion Jewellery  pieces here. They'll be waiting for you when you're ready.
             </p>
-            <Link to="/category/all" className="bg-[#2A0845] text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-[#D4AF37] hover:shadow-lg transition-all hover:scale-105 inline-flex items-center justify-center">
+            <Link to="/category/all" className="bg-[#45055B] text-white px-8 py-3 rounded-full font-bold text-sm hover:bg-[#D4AF37] hover:shadow-lg transition-all hover:scale-105 inline-flex items-center justify-center">
               Discover Products
             </Link>
           </div>

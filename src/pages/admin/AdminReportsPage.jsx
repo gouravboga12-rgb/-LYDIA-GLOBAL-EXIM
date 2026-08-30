@@ -176,7 +176,7 @@ export function AdminReportsPage() {
       <motion.div 
         animate={{ rotate: 360 }}
         transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-        className="w-10 h-10 border-4 border-[#2A0845]/20 border-t-[#2A0845] rounded-full" 
+        className="w-10 h-10 border-4 border-[#45055B]/20 border-t-[#45055B] rounded-full" 
       />
     </div>
   );
@@ -189,8 +189,8 @@ export function AdminReportsPage() {
     >
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#2A0845] tracking-tight">Reports & Analytics</h1>
-          <p className="text-[#2A0845]/60 text-sm font-sans mt-2">Comprehensive overview of your store's performance and data exports.</p>
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-[#45055B] tracking-tight">Reports & Analytics</h1>
+          <p className="text-[#45055B]/60 text-sm font-sans mt-2">Comprehensive overview of your store's performance and data exports.</p>
         </div>
       </div>
 
@@ -198,7 +198,7 @@ export function AdminReportsPage() {
         {/* Revenue Card */}
         <motion.div 
           whileHover={{ y: -4 }}
-          className="relative overflow-hidden bg-gradient-to-br from-[#2A0845] to-[#1a3673] rounded-3xl p-8 shadow-xl shadow-[#2A0845]/10 text-white group"
+          className="relative overflow-hidden bg-gradient-to-br from-[#45055B] to-[#1a3673] rounded-3xl p-8 shadow-xl shadow-[#45055B]/10 text-white group"
         >
           <div className="absolute top-0 right-0 p-6 opacity-10 pointer-events-none transform group-hover:scale-110 transition-transform duration-500">
             <DollarSign className="w-32 h-32" />
@@ -212,7 +212,7 @@ export function AdminReportsPage() {
             <button 
               onClick={() => downloadReport('revenue')} 
               disabled={downloading}
-              className="w-full flex items-center justify-center gap-2 bg-white text-[#2A0845] py-3.5 rounded-xl font-bold hover:bg-gray-50 transition-all hover:shadow-lg active:scale-[0.98] disabled:opacity-70"
+              className="w-full flex items-center justify-center gap-2 bg-white text-[#45055B] py-3.5 rounded-xl font-bold hover:bg-gray-50 transition-all hover:shadow-lg active:scale-[0.98] disabled:opacity-70"
             >
               {downloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />} 
               {downloading ? 'Preparing...' : 'Download Sales Report'}
@@ -223,21 +223,21 @@ export function AdminReportsPage() {
         {/* Orders Card */}
         <motion.div 
           whileHover={{ y: -4 }}
-          className="relative overflow-hidden bg-white rounded-3xl p-8 shadow-xl shadow-[#2A0845]/5 border border-[#2A0845]/5 group"
+          className="relative overflow-hidden bg-white rounded-3xl p-8 shadow-xl shadow-[#45055B]/5 border border-[#45055B]/5 group"
         >
           <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none transform group-hover:scale-110 transition-transform duration-500">
-            <ShoppingBag className="w-32 h-32 text-[#2A0845]" />
+            <ShoppingBag className="w-32 h-32 text-[#45055B]" />
           </div>
           <div className="relative z-10">
             <div className="w-12 h-12 rounded-2xl bg-[#FAF6F0] flex items-center justify-center mb-6">
-              <ShoppingBag className="w-6 h-6 text-[#2A0845]" />
+              <ShoppingBag className="w-6 h-6 text-[#45055B]" />
             </div>
-            <p className="text-[#2A0845]/50 font-medium text-sm uppercase tracking-wider mb-2">Total Orders</p>
-            <h2 className="text-4xl sm:text-5xl font-serif font-bold text-[#2A0845] mb-8">{stats?.totalOrders?.toLocaleString() || 0}</h2>
+            <p className="text-[#45055B]/50 font-medium text-sm uppercase tracking-wider mb-2">Total Orders</p>
+            <h2 className="text-4xl sm:text-5xl font-serif font-bold text-[#45055B] mb-8">{stats?.totalOrders?.toLocaleString() || 0}</h2>
             <button 
               onClick={() => downloadReport('orders')} 
               disabled={downloading}
-              className="w-full flex items-center justify-center gap-2 bg-[#2A0845] text-white py-3.5 rounded-xl font-bold hover:bg-[#122A5C] transition-all hover:shadow-lg hover:shadow-[#2A0845]/20 active:scale-[0.98] disabled:opacity-70"
+              className="w-full flex items-center justify-center gap-2 bg-[#45055B] text-white py-3.5 rounded-xl font-bold hover:bg-[#122A5C] transition-all hover:shadow-lg hover:shadow-[#45055B]/20 active:scale-[0.98] disabled:opacity-70"
             >
               {downloading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Download className="w-5 h-5" />} 
               {downloading ? 'Preparing...' : 'Download Orders Report'}
@@ -251,15 +251,15 @@ export function AdminReportsPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.1 }}
-        className="bg-white rounded-3xl border border-[#2A0845]/10 p-8 shadow-xl shadow-[#2A0845]/5"
+        className="bg-white rounded-3xl border border-[#45055B]/10 p-8 shadow-xl shadow-[#45055B]/5"
       >
         <div className="flex items-center justify-between mb-8">
           <div>
-            <h3 className="font-serif text-2xl font-bold text-[#2A0845]">Export Data Center</h3>
-            <p className="text-[#2A0845]/50 text-sm mt-1">Download comprehensive CSV reports for offline analysis.</p>
+            <h3 className="font-serif text-2xl font-bold text-[#45055B]">Export Data Center</h3>
+            <p className="text-[#45055B]/50 text-sm mt-1">Download comprehensive CSV reports for offline analysis.</p>
           </div>
           <div className="hidden sm:flex w-12 h-12 rounded-full bg-[#FAF6F0] items-center justify-center">
-            <FileText className="w-6 h-6 text-[#2A0845]" />
+            <FileText className="w-6 h-6 text-[#45055B]" />
           </div>
         </div>
         
@@ -272,18 +272,18 @@ export function AdminReportsPage() {
             <motion.div 
               key={i} 
               whileHover={{ y: -4 }}
-              className="flex flex-col bg-[#FAF6F0] rounded-2xl p-6 border border-[#2A0845]/5 hover:shadow-md hover:border-[#2A0845]/20 transition-all group"
+              className="flex flex-col bg-[#FAF6F0] rounded-2xl p-6 border border-[#45055B]/5 hover:shadow-md hover:border-[#45055B]/20 transition-all group"
             >
-              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-[#2A0845] mb-4 shadow-sm">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-[#45055B] mb-4 shadow-sm">
                 {report.icon}
               </div>
-              <h4 className="font-sans font-bold text-[#2A0845] mb-1">{report.title}</h4>
-              <p className="text-xs text-[#2A0845]/60 mb-6 flex-grow">{report.desc}</p>
+              <h4 className="font-sans font-bold text-[#45055B] mb-1">{report.title}</h4>
+              <p className="text-xs text-[#45055B]/60 mb-6 flex-grow">{report.desc}</p>
               
               <button 
                 onClick={() => downloadReport(report.type)} 
                 disabled={downloading}
-                className="w-full flex items-center justify-center gap-2 bg-white border border-[#2A0845]/10 text-[#2A0845] py-2.5 rounded-xl text-sm font-semibold hover:bg-[#2A0845] hover:text-white transition-colors disabled:opacity-70"
+                className="w-full flex items-center justify-center gap-2 bg-white border border-[#45055B]/10 text-[#45055B] py-2.5 rounded-xl text-sm font-semibold hover:bg-[#45055B] hover:text-white transition-colors disabled:opacity-70"
               >
                 {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} 
                 Export CSV
