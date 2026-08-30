@@ -338,7 +338,7 @@ export function HomePage() {
                 </div>
 
                 {/* Slide Content with WhatsApp Reference Format */}
-                <div className="relative flex flex-col justify-end md:justify-center pl-6 xs:pl-8 sm:pl-12 md:pl-20 pr-4 sm:pr-8 pb-8 md:pb-0 z-20 w-[95%] sm:w-[80%] md:w-[60%] lg:w-[50%] select-none text-white">
+                <div className="relative flex flex-col justify-end md:justify-center pl-12 xs:pl-14 sm:pl-16 md:pl-20 pr-4 sm:pr-8 pb-8 md:pb-0 z-20 w-[95%] sm:w-[80%] md:w-[60%] lg:w-[50%] select-none text-white">
                   
                   {/* Main Headline */}
                   <h2 className="text-lg xs:text-xl sm:text-2xl md:text-5xl font-serif font-bold uppercase tracking-[0.06em] leading-tight mb-1.5 md:mb-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
@@ -376,16 +376,16 @@ export function HomePage() {
           <button
             onClick={prevSlide}
             aria-label="Previous Slide"
-            className="absolute left-3 md:left-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#45055B] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute left-1.5 xs:left-2 md:left-6 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#45055B] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
-            <ChevronLeft className="w-5 h-5 md:w-6 md:h-6" />
+            <ChevronLeft className="w-4 h-4 xs:w-5 xs:h-5 md:w-6 md:h-6" />
           </button>
           <button
             onClick={nextSlide}
             aria-label="Next Slide"
-            className="absolute right-3 md:right-6 top-1/2 -translate-y-1/2 z-20 w-8 h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#45055B] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
+            className="absolute right-1.5 xs:right-2 md:right-6 top-1/2 -translate-y-1/2 z-20 w-7 h-7 xs:w-8 xs:h-8 md:w-11 md:h-11 rounded-full bg-black/40 hover:bg-[#45055B] text-white/80 hover:text-[#D4AF37] backdrop-blur-md flex items-center justify-center border border-white/20 hover:border-[#D4AF37]/50 shadow-xl transition-all duration-300 hover:scale-110 active:scale-95 cursor-pointer"
           >
-            <ChevronRight className="w-5 h-5 md:w-6 md:h-6" />
+            <ChevronRight className="w-4 h-4 xs:w-5 xs:h-5 md:w-6 md:h-6" />
           </button>
 
           {/* Slider Dots matching WhatsApp reference */}
