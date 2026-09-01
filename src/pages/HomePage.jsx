@@ -275,6 +275,7 @@ const HERO_ASSET_MAP = {
           titleLine2: titleLine2,
           subtitle: b.subtitle || 'Discover hand-selected artisan jewelry tailored to perfection for every celebration.',
           image: slideImg,
+          btn_text: b.btn_text || 'SHOP NOW',
           link: b.link_url || '/category/all'
         };
       });
@@ -363,6 +364,16 @@ const HERO_ASSET_MAP = {
                 {/* Slide Content with WhatsApp Reference Format */}
                 <div className="relative flex flex-col justify-end md:justify-center pl-12 xs:pl-14 sm:pl-16 md:pl-20 pr-4 sm:pr-8 pb-8 md:pb-0 z-20 w-[95%] sm:w-[80%] md:w-[60%] lg:w-[50%] select-none text-white">
                   
+                  {/* Tag / Category Badge */}
+                  {slide.tag && (
+                    <div className="flex items-center gap-1.5 mb-1.5 md:mb-2">
+                      <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                      <span className="text-[10px] sm:text-xs font-bold uppercase tracking-[0.2em] text-[#D4AF37] drop-shadow">
+                        {slide.tag}
+                      </span>
+                    </div>
+                  )}
+
                   {/* Main Headline */}
                   <h2 className="text-lg xs:text-xl sm:text-2xl md:text-5xl font-serif font-bold uppercase tracking-[0.06em] leading-tight mb-1.5 md:mb-2 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                     <span className="block text-white">{slide.titleLine1}</span>
@@ -388,7 +399,7 @@ const HERO_ASSET_MAP = {
                     to={slide.link}
                     className="w-fit border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#45055B] px-5 py-2 md:px-8 md:py-3 text-[11px] md:text-sm font-semibold tracking-[0.2em] uppercase transition-all duration-300 shadow-xl active:scale-95 cursor-pointer backdrop-blur-md bg-[#45055B]/50 hover:shadow-[0_0_20px_rgba(212,175,55,0.6)]"
                   >
-                    SHOP NOW
+                    {slide.btn_text || "SHOP NOW"}
                   </Link>
                 </div>
               </div>

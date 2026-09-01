@@ -56,15 +56,23 @@ CREATE TABLE offers (
 );
 
 -- 6. Create Banners Table
-CREATE TABLE banners (
+CREATE TABLE IF NOT EXISTS banners (
   id SERIAL PRIMARY KEY,
+  tag TEXT DEFAULT 'Exclusive Collection',
+  titleLine1 TEXT,
+  titleLine2 TEXT,
   title TEXT NOT NULL,
   subtitle TEXT,
+  btn_text TEXT DEFAULT 'SHOP NOW',
   image_url TEXT NOT NULL,
   link_url TEXT DEFAULT '/category/all',
   active BOOLEAN DEFAULT TRUE,
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+ALTER TABLE banners ADD COLUMN IF NOT EXISTS tag TEXT DEFAULT 'Exclusive Collection';
+ALTER TABLE banners ADD COLUMN IF NOT EXISTS titleLine1 TEXT;
+ALTER TABLE banners ADD COLUMN IF NOT EXISTS titleLine2 TEXT;
+ALTER TABLE banners ADD COLUMN IF NOT EXISTS btn_text TEXT DEFAULT 'SHOP NOW';
 
 -- 7. Create User Profiles Table (Linked with Supabase Auth)
 CREATE TABLE profiles (
@@ -191,10 +199,12 @@ SELECT setval('offers_id_seq', (SELECT MAX(id) FROM offers));
 -- ==============================================================================
 -- INSERT BANNERS (4 Real Homepage Hero Section Slides)
 -- ==============================================================================
-INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (1, 'TIMELESS BEAUTY, UNIQUELY YOURS', 'Explore our exclusive collection of imitation jewellery crafted with elegance and perfection.', '/assets/banner_1_velvet_necklace.jpg', '/category/all', true) ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, subtitle=EXCLUDED.subtitle, image_url=EXCLUDED.image_url, link_url=EXCLUDED.link_url, active=EXCLUDED.active;
-INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (2, 'HERITAGE BRIDAL, ROYAL KUNDAN ELEGANCE', 'Exquisite bridal necklaces, royal choker sets, and timeless luxury heirloom jewelry.', '/assets/banner_2_bridal_kundan.jpg', '/category/all', true) ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, subtitle=EXCLUDED.subtitle, image_url=EXCLUDED.image_url, link_url=EXCLUDED.link_url, active=EXCLUDED.active;
-INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (3, '18K ANTI-TARNISH, WATERPROOF GOLD BRILLIANCE', 'Waterproof, sweatproof, and hypoallergenic designs crafted for daily brilliance.', '/assets/banner_3_antitarnish_gold.jpg', '/category/all', true) ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, subtitle=EXCLUDED.subtitle, image_url=EXCLUDED.image_url, link_url=EXCLUDED.link_url, active=EXCLUDED.active;
-INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (4, 'CELEBRATION GLAMOUR, DESIGNER CHOKERS & BANGLES', 'Radiant handcrafted partywear jewelry to make every celebration and special occasion shine.', '/assets/banner_4_designer_jewelry.jpg', '/category/all', true) ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, subtitle=EXCLUDED.subtitle, image_url=EXCLUDED.image_url, link_url=EXCLUDED.link_url, active=EXCLUDED.active;
+INSERT INTO banners (id, tag, titleLine1, titleLine2, title, subtitle, btn_text, image_url, link_url, active) VALUES 
+(1, 'Exclusive Collection', 'TIMELESS BEAUTY,', 'UNIQUELY YOURS', 'TIMELESS BEAUTY, UNIQUELY YOURS', 'Explore our exclusive collection of imitation jewellery crafted with elegance and perfection.', 'SHOP NOW', '/assets/banner_1_velvet_necklace.jpg', '/category/all', true),
+(2, 'Bridal & Wedding Couture', 'HERITAGE BRIDAL,', 'ROYAL KUNDAN ELEGANCE', 'HERITAGE BRIDAL, ROYAL KUNDAN ELEGANCE', 'Exquisite bridal necklaces, royal choker sets, and timeless luxury heirloom jewelry.', 'SHOP NOW', '/assets/banner_2_bridal_kundan.jpg', '/category/all', true),
+(3, 'Everyday Luxury', '18K ANTI-TARNISH,', 'WATERPROOF GOLD BRILLIANCE', '18K ANTI-TARNISH, WATERPROOF GOLD BRILLIANCE', 'Waterproof, sweatproof, and hypoallergenic designs crafted for daily brilliance.', 'SHOP NOW', '/assets/banner_3_antitarnish_gold.jpg', '/category/all', true),
+(4, 'Statement Glamour', 'CELEBRATION GLAMOUR,', 'DESIGNER CHOKERS & BANGLES', 'CELEBRATION GLAMOUR, DESIGNER CHOKERS & BANGLES', 'Radiant handcrafted partywear jewelry to make every celebration and special occasion shine.', 'EXPLORE NOW', '/assets/banner_4_designer_jewelry.jpg', '/category/all', true)
+ON CONFLICT (id) DO UPDATE SET tag=EXCLUDED.tag, titleLine1=EXCLUDED.titleLine1, titleLine2=EXCLUDED.titleLine2, title=EXCLUDED.title, subtitle=EXCLUDED.subtitle, btn_text=EXCLUDED.btn_text, image_url=EXCLUDED.image_url, link_url=EXCLUDED.link_url, active=EXCLUDED.active;
 SELECT setval('banners_id_seq', (SELECT MAX(id) FROM banners));
 
 -- ==============================================================================

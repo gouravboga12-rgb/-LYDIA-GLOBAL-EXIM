@@ -14,7 +14,6 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: <LayoutDashboard className="w-4 h-4" /> },
   { href: "/admin/orders", label: "Orders", icon: <ShoppingBag className="w-4 h-4" /> },
-  { href: "/admin/pickup-orders", label: "Pickup Orders", icon: <Store className="w-4 h-4" /> },
   { href: "/admin/customers", label: "Customers", icon: <Users className="w-4 h-4" /> },
   { href: "/admin/products", label: "Products", icon: <Package className="w-4 h-4" /> },
   { href: "/admin/categories", label: "Categories", icon: <Layers className="w-4 h-4" /> },

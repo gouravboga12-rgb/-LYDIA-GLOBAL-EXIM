@@ -74,7 +74,6 @@ function App() {
                   <Route path="products" element={<AdminProductsPage />} />
                   <Route path="categories" element={<AdminCategoriesPage />} />
                   <Route path="offers" element={<AdminOffersPage />} />
-                  <Route path="pickup-orders" element={<AdminPickupOrdersPage />} />
                   <Route path="reviews" element={<AdminReviewsPage />} />
                   <Route path="enquiries" element={<AdminEnquiriesPage />} />
                   <Route path="vacation" element={<AdminVacationPage />} />
