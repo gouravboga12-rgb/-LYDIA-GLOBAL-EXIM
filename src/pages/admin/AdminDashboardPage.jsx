@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { ShoppingBag, Users, TrendingUp, MessageCircle, Package, Clock } from "lucide-react";
 import { motion } from "framer-motion";
+import defaultProducts from "../../data/products.json";
+import defaultCategories from "../../data/categories.json";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const WA_NUMBER = "919505550051";
@@ -8,20 +10,23 @@ const WA_NUMBER = "919505550051";
 export function AdminDashboardPage() {
   const [orders, setOrders] = useState([]);
   const [users, setUsers] = useState([]);
-  const [productsCount, setProductsCount] = useState(0);
+  const [productsCount, setProductsCount] = useState(defaultProducts?.length || 0);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) return;
-    const h = { Authorization: `Bearer ${token}` };
+    const h = token ? { Authorization: `Bearer ${token}` } : {};
     Promise.all([
-      fetch(`${BACKEND_URL}/admin/orders`, { headers: h }).then((r) => r.json()),
-      fetch(`${BACKEND_URL}/admin/users`, { headers: h }).then((r) => r.json()),
-      fetch(`${BACKEND_URL}/admin/products`, { headers: h }).then((r) => r.json()),
+      fetch(`${BACKEND_URL}/admin/orders`, { headers: h }).then((r) => r.json()).catch(() => ({})),
+      fetch(`${BACKEND_URL}/admin/users`, { headers: h }).then((r) => r.json()).catch(() => ({})),
+      fetch(`${BACKEND_URL}/admin/products`, { headers: h }).then((r) => r.json()).catch(() => ({})),
     ]).then(([od, ud, pd]) => {
-      if (od.orders) setOrders(od.orders);
-      if (ud.users) setUsers(ud.users);
-      if (pd.products) setProductsCount(pd.products.length);
+      if (od && od.orders) setOrders(od.orders);
+      if (ud && ud.users) setUsers(ud.users);
+      if (pd && pd.products && pd.products.length > 0) {
+        setProductsCount(pd.products.length);
+      } else {
+        setProductsCount(defaultProducts?.length || 0);
+      }
     }).catch(() => {});
   }, []);
 

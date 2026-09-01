@@ -2,10 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Plus, Trash2, Edit2, X, Save, Upload, FolderTree, Tag } from "lucide-react";
 import { motion } from "framer-motion";
 
+import defaultCategories from "../../data/categories.json";
+import { uploadToCloudinary, deleteFromCloudinary } from "../../utils/cloudinary";
+import { supabase } from "../../utils/supabase";
+import { useStoreData } from "../../store/useStoreData";
+
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function AdminCategoriesPage() {
-  const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState(defaultCategories || []);
   const [loading, setLoading] = useState(true);
   const [editCategory, setEditCategory] = useState(null);
   const [formData, setFormData] = useState({ name: "", models: [], image_url: "" });
@@ -21,11 +26,17 @@ export function AdminCategoriesPage() {
   const fetchCategories = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${BACKEND_URL}/admin/categories`, { headers: { Authorization: `Bearer ${token}` } });
-      const data = await res.json();
-      if (data.categories) setCategories(data.categories);
+      const h = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch(`${BACKEND_URL}/admin/categories`, { headers: h }).catch(() => null);
+      const data = res ? await res.json().catch(() => ({})) : {};
+      if (data && data.categories && data.categories.length > 0) {
+        setCategories(data.categories);
+      } else {
+        setCategories(defaultCategories || []);
+      }
     } catch (err) {
       console.error(err);
+      setCategories(defaultCategories || []);
     } finally {
       setLoading(false);
     }
@@ -36,18 +47,9 @@ export function AdminCategoriesPage() {
     if (!file) return;
     setUploading(true);
     try {
-      const token = localStorage.getItem("token");
-      const fd = new FormData();
-      fd.append("image", file);
-
-      const res = await fetch(`${BACKEND_URL}/admin/upload`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: fd
-      });
-      const data = await res.json();
-      if (data.url) {
-        setFormData({ ...formData, image_url: data.url });
+      const url = await uploadToCloudinary(file);
+      if (url) {
+        setFormData({ ...formData, image_url: url });
       } else {
         alert("Upload failed");
       }
@@ -74,13 +76,29 @@ export function AdminCategoriesPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete this category?")) return;
+    if (!confirm("Delete this category? This will also remove its media and update the database.")) return;
     try {
+      const catToDelete = categories.find(c => String(c.id) === String(id));
+      if (catToDelete && catToDelete.image_url && catToDelete.image_url.includes('cloudinary.com')) {
+        await deleteFromCloudinary(catToDelete.image_url);
+      }
+
+      // 1. Delete from Supabase
+      try {
+        await supabase.from('categories').delete().eq('id', id);
+      } catch (sbErr) {
+        console.warn("Supabase category delete note:", sbErr);
+      }
+
+      // 2. Delete from Backend REST
       const token = localStorage.getItem("token");
       await fetch(`${BACKEND_URL}/admin/categories/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
-      fetchCategories();
+
+      await fetchCategories();
+      useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
+      alert("Error deleting category: " + err.message);
     }
   };
 
@@ -98,23 +116,45 @@ export function AdminCategoriesPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem("token");
-      const url = isNew ? `${BACKEND_URL}/admin/categories` : `${BACKEND_URL}/admin/categories/${editCategory.id}`;
+      // Check if image was replaced to clean up old Cloudinary storage
+      if (!isNew && editCategory && editCategory.image_url && editCategory.image_url !== formData.image_url) {
+        if (editCategory.image_url.includes('cloudinary.com')) {
+          await deleteFromCloudinary(editCategory.image_url);
+        }
+      }
+
       const payload = {
         name: formData.name,
         models: formData.models,
         image_url: formData.image_url
       };
+
+      // 1. Sync with Supabase
+      try {
+        await supabase.from('categories').upsert({
+          ...(isNew ? {} : { id: editCategory.id }),
+          ...payload
+        });
+      } catch (sbErr) {
+        console.warn("Supabase category save note:", sbErr);
+      }
+
+      // 2. Save via Backend REST
+      const token = localStorage.getItem("token");
+      const url = isNew ? `${BACKEND_URL}/admin/categories` : `${BACKEND_URL}/admin/categories/${editCategory.id}`;
       
       await fetch(url, {
         method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(payload),
       });
+
       setEditCategory(null);
-      fetchCategories();
+      await fetchCategories();
+      useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
+      alert("Error saving category: " + err.message);
     } finally {
       setSaving(false);
     }

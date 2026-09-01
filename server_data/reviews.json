@@ -1,0 +1,62 @@
+[
+  {
+    "id": 1,
+    "name": "Kavya Reddy",
+    "location": "Dallas, TX",
+    "rating": 5,
+    "review": "The intricate craftsmanship and weight of this Kundan set is mesmerizing. Wore it for my reception and received endless compliments on the antique gold polish!",
+    "product_name": "Classic Kundan Jewelry Set",
+    "is_active": true,
+    "created_at": "2026-08-15T10:30:00.000Z"
+  },
+  {
+    "id": 2,
+    "name": "Pooja Sharma",
+    "location": "San Jose, CA",
+    "rating": 5,
+    "review": "The anti-tarnish finish is 100% genuine! I've worn these pieces repeatedly and the rose gold luster is just as sparkling as day one. Truly premium export quality.",
+    "product_name": "Vintage 18k Rose Gold Set",
+    "is_active": true,
+    "created_at": "2026-08-18T14:20:00.000Z"
+  },
+  {
+    "id": 3,
+    "name": "Ananya Mehta",
+    "location": "Edison, NJ",
+    "rating": 5,
+    "review": "Ordered this for family wedding festivities. The stone setting is tight and pristine, and the micro-gold plating has a rich, regal sheen. Delivery to NJ was seamless.",
+    "product_name": "Royal Kundan Necklace",
+    "is_active": true,
+    "created_at": "2026-08-22T09:15:00.000Z"
+  },
+  {
+    "id": 4,
+    "name": "Deepika Patel",
+    "location": "Chicago, IL",
+    "rating": 5,
+    "review": "Stunning brilliance and lightweight comfort! The packaging was luxurious with cushioned velvet casing. Lydia Global Exim exceeded all my expectations.",
+    "product_name": "Bridal Platinum Chain Set",
+    "is_active": true,
+    "created_at": "2026-08-24T16:45:00.000Z"
+  },
+  {
+    "id": 5,
+    "name": "Sneha Varma",
+    "location": "Austin, TX",
+    "rating": 5,
+    "review": "Traditional aesthetics combined with modern durability. The clasp is secure and the 22k gold tone looks identical to authentic heirloom jewelry.",
+    "product_name": "Classic 22k Gold Chain",
+    "is_active": true,
+    "created_at": "2026-08-27T11:00:00.000Z"
+  },
+  {
+    "id": 6,
+    "name": "Ritika Sengupta",
+    "location": "Seattle, WA",
+    "rating": 5,
+    "review": "The detailed temple motifs and ruby-toned stone accents make these earrings standout statement pieces. Very comfortable to wear for hours without irritation.",
+    "product_name": "Handcrafted Temple Earrings",
+    "is_active": true,
+    "created_at": "2026-08-28T15:30:00.000Z"
+  }
+]

@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { Plus, Trash2, Edit2, X, Save, Shield, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
+import defaultOffers from "../../data/offers.json";
+import { supabase } from "../../utils/supabase";
+import { useStoreData } from "../../store/useStoreData";
+
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function AdminOffersPage() {
-  const [offers, setOffers] = useState([]);
+  const [offers, setOffers] = useState(defaultOffers || []);
   const [loading, setLoading] = useState(true);
   
   // Edit/Create state
@@ -24,6 +28,7 @@ export function AdminOffersPage() {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedProducts, setSelectedProducts] = useState([]);
+  const [applying, setApplying] = useState(false);
 
   useEffect(() => {
     fetchOffers();
@@ -34,11 +39,17 @@ export function AdminOffersPage() {
   const fetchOffers = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${BACKEND_URL}/admin/offers`, { headers: { Authorization: `Bearer ${token}` } });
-      const data = await res.json();
-      if (data.offers) setOffers(data.offers);
+      const h = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch(`${BACKEND_URL}/admin/offers`, { headers: h }).catch(() => null);
+      const data = res ? await res.json().catch(() => ({})) : {};
+      if (data && data.offers && data.offers.length > 0) {
+        setOffers(data.offers);
+      } else {
+        setOffers(defaultOffers || []);
+      }
     } catch (err) {
       console.error(err);
+      setOffers(defaultOffers || []);
     } finally {
       setLoading(false);
     }
@@ -47,7 +58,8 @@ export function AdminOffersPage() {
   const fetchCategories = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${BACKEND_URL}/admin/categories`, { headers: { Authorization: `Bearer ${token}` } });
+      const h = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch(`${BACKEND_URL}/admin/categories`, { headers: h });
       const data = await res.json();
       if (data.categories) setCategories(data.categories);
     } catch (err) {}
@@ -62,7 +74,7 @@ export function AdminOffersPage() {
   };
 
   const handleAdd = () => {
-    setFormData({ title: "", discount_percentage: 0, is_active: true });
+    setFormData({ title: "", code: "SAVE" + Math.floor(10 + Math.random() * 90), discount_percentage: 0, is_active: true });
     setEditOffer({});
     setIsNew(true);
   };
@@ -76,15 +88,45 @@ export function AdminOffersPage() {
   const handleDelete = async (id) => {
     if (!confirm("Delete offer? This will also remove the offer from all associated products.")) return;
     try {
+      // 1. Delete from Supabase
+      try {
+        await supabase.from('offers').delete().eq('id', id);
+      } catch (sbErr) {
+        console.warn("Supabase offer delete note:", sbErr);
+      }
+
+      // 2. Delete from Backend REST
       const token = localStorage.getItem("token");
       await fetch(`${BACKEND_URL}/admin/offers/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
-      fetchOffers();
-    } catch (err) {}
+      
+      await fetchOffers();
+      useStoreData.getState().fetchData();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleSave = async () => {
     setSaving(true);
     try {
+      const payload = {
+        title: formData.title,
+        code: formData.code || "SAVE" + Math.floor(10 + Math.random() * 90),
+        discount_percentage: Number(formData.discount_percentage || 0),
+        active: formData.is_active ?? true
+      };
+
+      // 1. Sync with Supabase
+      try {
+        await supabase.from('offers').upsert({
+          ...(isNew ? {} : { id: editOffer.id }),
+          ...payload
+        });
+      } catch (sbErr) {
+        console.warn("Supabase offer save note:", sbErr);
+      }
+
+      // 2. Save via Backend REST
       const token = localStorage.getItem("token");
       const url = isNew ? `${BACKEND_URL}/admin/offers` : `${BACKEND_URL}/admin/offers/${editOffer.id}`;
       await fetch(url, {
@@ -92,9 +134,13 @@ export function AdminOffersPage() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(formData),
       });
+
       setEditOffer(null);
-      fetchOffers();
+      await fetchOffers();
+      useStoreData.getState().fetchData();
     } catch (err) {
+      console.error(err);
+      alert("Error saving offer: " + err.message);
     } finally {
       setSaving(false);
     }

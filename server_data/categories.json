@@ -1,0 +1,81 @@
+[
+  {
+    "id": 1,
+    "name": "Necklaces",
+    "models": [
+      "Back Beads"
+    ],
+    "image_url": "/images/necklace.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:23.068Z"
+  },
+  {
+    "id": 2,
+    "name": "Earrings",
+    "models": [],
+    "image_url": "/images/earrings.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:24.219Z"
+  },
+  {
+    "id": 3,
+    "name": "Bangles",
+    "models": [],
+    "image_url": "/images/bangles.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:28.113Z"
+  },
+  {
+    "id": 4,
+    "name": "Rings",
+    "models": [],
+    "image_url": "/images/rings.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:25.343Z"
+  },
+  {
+    "id": 5,
+    "name": "Bracelets",
+    "models": [],
+    "image_url": "/images/bracelets.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:26.347Z"
+  },
+  {
+    "id": 6,
+    "name": "Hair Accessories",
+    "models": [],
+    "image_url": "/images/hair_accessories.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:35.000Z"
+  },
+  {
+    "id": 7,
+    "name": "Lifestyle Products",
+    "models": [],
+    "image_url": "/images/lifestyle.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:36.000Z"
+  },
+  {
+    "id": 8,
+    "name": "Jewelry Sets",
+    "models": [],
+    "image_url": "/images/jewelry_sets.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:34.348Z"
+  },
+  {
+    "id": 9,
+    "name": "Pendants",
+    "models": [],
+    "image_url": "/images/pendants.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:30.568Z"
+  },
+  {
+    "id": 10,
+    "name": "Mangalsutras",
+    "models": [],
+    "image_url": "/images/mangalsutras.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:32.472Z"
+  },
+  {
+    "id": 11,
+    "name": "Chains",
+    "models": [],
+    "image_url": "/images/chains.png?v=lifestyle_bag_11",
+    "created_at": "2026-07-22T19:43:34.063Z"
+  }
+]

@@ -2,10 +2,14 @@ import React, { useEffect, useState } from "react";
 import { ImageIcon, Plus, Trash2, Edit2, X, Save, Upload } from "lucide-react";
 import { motion } from "framer-motion";
 
+import defaultBanners from "../../data/banners.json";
+import { uploadToCloudinary, deleteFromCloudinary } from "../../utils/cloudinary";
+import { supabase } from "../../utils/supabase";
+
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function AdminBannersPage() {
-  const [banners, setBanners] = useState([]);
+  const [banners, setBanners] = useState(defaultBanners || []);
   const [loading, setLoading] = useState(true);
   const [editBanner, setEditBanner] = useState(null);
   const [formData, setFormData] = useState({ title: "", image_url: "", link_url: "", is_active: true });
@@ -20,11 +24,17 @@ export function AdminBannersPage() {
   const fetchBanners = async () => {
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${BACKEND_URL}/admin/banners`, { headers: { Authorization: `Bearer ${token}` } });
-      const data = await res.json();
-      if (data.banners) setBanners(data.banners);
+      const h = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch(`${BACKEND_URL}/admin/banners`, { headers: h }).catch(() => null);
+      const data = res ? await res.json().catch(() => ({})) : {};
+      if (data && data.banners && data.banners.length > 0) {
+        setBanners(data.banners);
+      } else {
+        setBanners(defaultBanners || []);
+      }
     } catch (err) {
       console.error(err);
+      setBanners(defaultBanners || []);
     } finally {
       setLoading(false);
     }
@@ -43,19 +53,60 @@ export function AdminBannersPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete banner?")) return;
+    if (!confirm("Delete banner? This will also remove the image from Cloudinary.")) return;
     try {
+      const bannerToDelete = banners.find(b => String(b.id) === String(id));
+      if (bannerToDelete && bannerToDelete.image_url && bannerToDelete.image_url.includes('cloudinary.com')) {
+        await deleteFromCloudinary(bannerToDelete.image_url);
+      }
+
+      // 1. Delete from Supabase
+      try {
+        await supabase.from('banners').delete().eq('id', id);
+      } catch (sbErr) {
+        console.warn("Supabase banner delete note:", sbErr);
+      }
+
+      // 2. Delete from Backend REST
       const token = localStorage.getItem("token");
       await fetch(`${BACKEND_URL}/admin/banners/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
-      fetchBanners();
+
+      await fetchBanners();
     } catch (err) {
       console.error(err);
+      alert("Error deleting banner: " + err.message);
     }
   };
 
   const handleSave = async () => {
     setSaving(true);
     try {
+      // Check if image was replaced to purge old image from Cloudinary
+      if (!isNew && editBanner && editBanner.image_url && editBanner.image_url !== formData.image_url) {
+        if (editBanner.image_url.includes('cloudinary.com')) {
+          await deleteFromCloudinary(editBanner.image_url);
+        }
+      }
+
+      const payload = {
+        title: formData.title,
+        subtitle: formData.subtitle || '',
+        image_url: formData.image_url,
+        link_url: formData.link_url || '/category/all',
+        active: formData.is_active ?? true
+      };
+
+      // 1. Sync with Supabase
+      try {
+        await supabase.from('banners').upsert({
+          ...(isNew ? {} : { id: editBanner.id }),
+          ...payload
+        });
+      } catch (sbErr) {
+        console.warn("Supabase banner save note:", sbErr);
+      }
+
+      // 2. Save via Backend REST
       const token = localStorage.getItem("token");
       const url = `${BACKEND_URL}/admin/banners`;
       await fetch(url, {
@@ -63,10 +114,12 @@ export function AdminBannersPage() {
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(formData),
       });
+
       setEditBanner(null);
-      fetchBanners();
+      await fetchBanners();
     } catch (err) {
       console.error(err);
+      alert("Error saving banner: " + err.message);
     } finally {
       setSaving(false);
     }
@@ -78,19 +131,9 @@ export function AdminBannersPage() {
 
     setUploading(true);
     try {
-      const token = localStorage.getItem("token");
-      const uploadData = new FormData();
-      uploadData.append("image", file);
-
-      const res = await fetch(`${BACKEND_URL}/admin/upload`, {
-        method: "POST",
-        headers: { Authorization: `Bearer ${token}` },
-        body: uploadData,
-      });
-
-      const data = await res.json();
-      if (data.url) {
-        setFormData({ ...formData, image_url: data.url });
+      const url = await uploadToCloudinary(file);
+      if (url) {
+        setFormData({ ...formData, image_url: url });
       } else {
         alert("Upload failed");
       }

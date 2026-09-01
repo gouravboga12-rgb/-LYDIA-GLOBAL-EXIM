@@ -249,15 +249,26 @@ export function HomePage() {
     }
   ];
 
-  const activeSlides = banners.length >= 2 ? banners.map(b => ({
-    id: b.id,
-    tag: 'Exclusive Collection',
-    titleLine1: b.title,
-    titleLine2: '',
-    subtitle: 'Discover hand-selected artisan jewelry tailored to perfection for every celebration.',
-    image: b.image_url,
-    link: b.link_url || '/category/all'
-  })) : defaultHeroSlides;
+  const activeSlides = useMemo(() => {
+    const validBanners = (banners || []).filter(b => b.active !== false && b.is_active !== false);
+    if (validBanners.length > 0) {
+      return validBanners.map(b => {
+        const parts = (b.title || '').split(',');
+        const titleLine1 = parts[0] ? parts[0].trim() + (parts.length > 1 ? ',' : '') : b.title;
+        const titleLine2 = parts.slice(1).join(',').trim();
+        return {
+          id: b.id,
+          tag: b.tag || 'Exclusive Collection',
+          titleLine1: titleLine1 || 'TIMELESS BEAUTY,',
+          titleLine2: titleLine2,
+          subtitle: b.subtitle || 'Discover hand-selected artisan jewelry tailored to perfection for every celebration.',
+          image: b.image_url,
+          link: b.link_url || '/category/all'
+        };
+      });
+    }
+    return defaultHeroSlides;
+  }, [banners]);
 
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);

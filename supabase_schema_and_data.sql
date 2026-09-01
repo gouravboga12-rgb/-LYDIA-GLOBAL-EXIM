@@ -113,7 +113,19 @@ CREATE TABLE reviews (
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
 
--- 10. Enable Row Level Security (RLS) on all tables
+-- 10. Create Enquiries Table
+CREATE TABLE IF NOT EXISTS enquiries (
+  id SERIAL PRIMARY KEY,
+  name TEXT,
+  email TEXT,
+  phone TEXT,
+  subject TEXT,
+  message TEXT,
+  status TEXT DEFAULT 'new',
+  created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- 11. Enable Row Level Security (RLS) and Set Permissive Access Policies
 ALTER TABLE categories ENABLE ROW LEVEL SECURITY;
 ALTER TABLE products ENABLE ROW LEVEL SECURITY;
 ALTER TABLE offers ENABLE ROW LEVEL SECURITY;
@@ -121,22 +133,17 @@ ALTER TABLE banners ENABLE ROW LEVEL SECURITY;
 ALTER TABLE reviews ENABLE ROW LEVEL SECURITY;
 ALTER TABLE orders ENABLE ROW LEVEL SECURITY;
 ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
+ALTER TABLE enquiries ENABLE ROW LEVEL SECURITY;
 
--- 11. Create Security Policies (Public read for catalog, secure writes for users)
-CREATE POLICY "Public categories read" ON categories FOR SELECT USING (true);
-CREATE POLICY "Admin categories all" ON categories FOR ALL USING (auth.jwt()->>'role' = 'service_role' OR auth.jwt()->>'email' IN ('gouravboga12@gmail.com', 'lydiaglobalexim@gmail.com'));
-
-CREATE POLICY "Public products read" ON products FOR SELECT USING (true);
-CREATE POLICY "Admin products all" ON products FOR ALL USING (auth.jwt()->>'role' = 'service_role' OR auth.jwt()->>'email' IN ('gouravboga12@gmail.com', 'lydiaglobalexim@gmail.com'));
-
-CREATE POLICY "Public offers read" ON offers FOR SELECT USING (true);
-CREATE POLICY "Public banners read" ON banners FOR SELECT USING (true);
-CREATE POLICY "Public reviews read" ON reviews FOR SELECT USING (true);
-CREATE POLICY "Authenticated reviews insert" ON reviews FOR INSERT WITH CHECK (auth.role() = 'authenticated');
-
-CREATE POLICY "Users read own orders" ON orders FOR SELECT USING (auth.uid() = user_id OR auth.jwt()->>'role' = 'service_role');
-CREATE POLICY "Users insert orders" ON orders FOR INSERT WITH CHECK (true);
-CREATE POLICY "Users view/update own profile" ON profiles FOR ALL USING (auth.uid() = id);
+-- Allow Public & Admin full access for storefront and admin management
+CREATE POLICY "Allow all on categories" ON categories FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on products" ON products FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on offers" ON offers FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on banners" ON banners FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on reviews" ON reviews FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on orders" ON orders FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on profiles" ON profiles FOR ALL USING (true) WITH CHECK (true);
+CREATE POLICY "Allow all on enquiries" ON enquiries FOR ALL USING (true) WITH CHECK (true);
 
 -- 12. Create Automatic Profile Trigger on Auth Signup
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -174,18 +181,20 @@ INSERT INTO categories (id, name, image_url, models) VALUES (9, 'Jewelry Sets', 
 SELECT setval('categories_id_seq', (SELECT MAX(id) FROM categories));
 
 -- ==============================================================================
--- INSERT OFFERS & COUPONS
+-- INSERT OFFERS
 -- ==============================================================================
-INSERT INTO offers (id, code, title, discount_percentage, min_order_value, min_qty, active) VALUES (3, NULL, '15% off', 0.00, 0, 1, true) ON CONFLICT (code) DO NOTHING;
-INSERT INTO offers (id, code, title, discount_percentage, min_order_value, min_qty, active) VALUES (2, NULL, 'test offer', 10.00, 0, 1, true) ON CONFLICT (code) DO NOTHING;
-INSERT INTO offers (id, code, title, discount_percentage, min_order_value, min_qty, active) VALUES (1, NULL, 'Flat 25% Off', 23.00, 0, 1, true) ON CONFLICT (code) DO NOTHING;
+INSERT INTO offers (id, code, title, discount_percentage, min_order_value, min_qty, active) VALUES (1, 'FLAT25', 'Flat 25% Off', 25.00, 0, 1, true) ON CONFLICT (code) DO NOTHING;
+INSERT INTO offers (id, code, title, discount_percentage, min_order_value, min_qty, active) VALUES (2, 'TEST10', 'Test Offer', 10.00, 0, 1, true) ON CONFLICT (code) DO NOTHING;
+INSERT INTO offers (id, code, title, discount_percentage, min_order_value, min_qty, active) VALUES (3, 'SAVE15', '15% Off', 15.00, 0, 1, true) ON CONFLICT (code) DO NOTHING;
 SELECT setval('offers_id_seq', (SELECT MAX(id) FROM offers));
 
 -- ==============================================================================
--- INSERT BANNERS
+-- INSERT BANNERS (4 Real Homepage Hero Section Slides)
 -- ==============================================================================
-INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (1, 'Royal Kundan & Imitation Jewelry', 'Handcrafted for weddings, celebrations & festive elegance.', '/images/about_hero.jpg', '/category/all', true) ON CONFLICT (id) DO NOTHING;
-INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (2, 'Anti-Tarnish Daily Luxury', '18K Micro Gold & Rhodium Plated Sets with AAA+ Zircon Crystals.', '/images/about_craft.jpg', '/category/all', true) ON CONFLICT (id) DO NOTHING;
+INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (1, 'TIMELESS BEAUTY, UNIQUELY YOURS', 'Explore our exclusive collection of imitation jewellery crafted with elegance and perfection.', '/assets/banner_1_velvet_necklace.jpg', '/category/all', true) ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, subtitle=EXCLUDED.subtitle, image_url=EXCLUDED.image_url, link_url=EXCLUDED.link_url, active=EXCLUDED.active;
+INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (2, 'HERITAGE BRIDAL, ROYAL KUNDAN ELEGANCE', 'Exquisite bridal necklaces, royal choker sets, and timeless luxury heirloom jewelry.', '/assets/banner_2_bridal_kundan.jpg', '/category/all', true) ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, subtitle=EXCLUDED.subtitle, image_url=EXCLUDED.image_url, link_url=EXCLUDED.link_url, active=EXCLUDED.active;
+INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (3, '18K ANTI-TARNISH, WATERPROOF GOLD BRILLIANCE', 'Waterproof, sweatproof, and hypoallergenic designs crafted for daily brilliance.', '/assets/banner_3_antitarnish_gold.jpg', '/category/all', true) ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, subtitle=EXCLUDED.subtitle, image_url=EXCLUDED.image_url, link_url=EXCLUDED.link_url, active=EXCLUDED.active;
+INSERT INTO banners (id, title, subtitle, image_url, link_url, active) VALUES (4, 'CELEBRATION GLAMOUR, DESIGNER CHOKERS & BANGLES', 'Radiant handcrafted partywear jewelry to make every celebration and special occasion shine.', '/assets/banner_4_designer_jewelry.jpg', '/category/all', true) ON CONFLICT (id) DO UPDATE SET title=EXCLUDED.title, subtitle=EXCLUDED.subtitle, image_url=EXCLUDED.image_url, link_url=EXCLUDED.link_url, active=EXCLUDED.active;
 SELECT setval('banners_id_seq', (SELECT MAX(id) FROM banners));
 
 -- ==============================================================================

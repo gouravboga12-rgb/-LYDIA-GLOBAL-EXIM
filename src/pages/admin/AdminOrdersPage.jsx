@@ -6,6 +6,7 @@ import logoUrl from '../../assets/logo.png';
 import { ShippoConfigModal } from '../../components/admin/ShippoConfigModal';
 import AddressAutocomplete from '../../components/AddressAutocomplete';
 import { useLoadScript } from '@react-google-maps/api';
+import { supabase } from '../../utils/supabase';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const FROM_ADDRESS = {
@@ -983,6 +984,15 @@ export function AdminOrdersPage() {
       setRefundModal(order);
       return;
     }
+
+    // 1. Sync with Supabase
+    try {
+      await supabase.from('orders').update({ status }).or(`id.eq.${orderId},order_number.eq.${orderId}`);
+    } catch (sbErr) {
+      console.warn("Supabase order status sync note:", sbErr);
+    }
+
+    // 2. Sync with Backend REST
     const token = localStorage.getItem("token");
     await fetch(`${BACKEND_URL}/admin/orders/${orderId}/status`, {
       method: "PUT",

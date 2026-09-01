@@ -157,6 +157,9 @@ export function Footer() {
               <Link to="/privacy-policy" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Privacy Policy</Link>
               <Link to="/contact#faq-section" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">FAQ's</Link>
               <Link to="/contact" className="text-xs md:text-sm text-[#45055B]/80 hover:text-[#B38827] transition-colors">Contact Us</Link>
+              <Link to="/admin" className="text-xs md:text-sm text-[#45055B]/90 hover:text-[#B38827] transition-colors font-semibold flex items-center gap-1 mt-1">
+                <span>🔐 Admin Portal</span>
+              </Link>
             </div>
 
             {/* Column 4: CONTACT US */}
@@ -188,6 +191,8 @@ export function Footer() {
               <Link to="/privacy-policy" className="hover:text-[#45055B] transition-colors">Privacy Policy</Link>
               <span>•</span>
               <Link to="/terms-of-service" className="hover:text-[#45055B] transition-colors">Terms & Conditions</Link>
+              <span>•</span>
+              <Link to="/admin" className="hover:text-[#45055B] font-medium transition-colors">Admin Portal</Link>
             </div>
           </div>
         </div>

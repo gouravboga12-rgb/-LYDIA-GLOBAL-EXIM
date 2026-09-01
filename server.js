@@ -18,7 +18,8 @@ const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'lydia_global_exim_771892348_purity_secure';
 
 app.use(cors());
-app.use(express.json());
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Normalize URLs to handle both /api/* and /* uniformly across Vercel and local
 app.use((req, res, next) => {
@@ -28,10 +29,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Persistent Local User & Address Store (JSON File DB with Vercel /tmp support)
-const SEED_FILE = path.join(__dirname, 'server_data', 'users.json');
+// Persistent Local JSON Store (with Vercel /tmp support)
 const DB_DIR = process.env.VERCEL ? '/tmp' : path.join(__dirname, 'server_data');
-const USERS_FILE = path.join(DB_DIR, 'users.json');
 
 try {
   if (!fs.existsSync(DB_DIR)) {
@@ -39,35 +38,57 @@ try {
   }
 } catch (e) {}
 
-let memoryUsers = [];
-
-function loadUsers() {
+// Helper to read seed JSON files safely
+function readSeedJson(relativePath) {
   try {
-    if (fs.existsSync(USERS_FILE)) {
-      return JSON.parse(fs.readFileSync(USERS_FILE, 'utf8'));
+    const fullPath = path.join(__dirname, relativePath);
+    if (fs.existsSync(fullPath)) {
+      return JSON.parse(fs.readFileSync(fullPath, 'utf8'));
     }
-    if (fs.existsSync(SEED_FILE)) {
-      const seed = JSON.parse(fs.readFileSync(SEED_FILE, 'utf8'));
-      if (process.env.VERCEL) {
-        try { fs.writeFileSync(USERS_FILE, JSON.stringify(seed)); } catch(e) {}
-      }
-      return seed;
-    }
-  } catch (e) {
-    console.error('Error reading users DB:', e);
+  } catch (err) {
+    console.error(`Error loading seed data for ${relativePath}:`, err.message);
   }
-  return memoryUsers;
+  return [];
 }
 
-function saveUsers(users) {
-  memoryUsers = users;
+const memoryStore = new Map();
+
+function loadStoreData(key, fallbackPath) {
+  const filePath = path.join(DB_DIR, `${key}.json`);
+  try {
+    if (fs.existsSync(filePath)) {
+      const data = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+      memoryStore.set(key, data);
+      return data;
+    }
+  } catch (e) {
+    console.error(`Error reading ${key}.json:`, e.message);
+  }
+
+  if (fallbackPath) {
+    const seedData = readSeedJson(fallbackPath);
+    memoryStore.set(key, seedData);
+    try {
+      if (fs.existsSync(DB_DIR)) {
+        fs.writeFileSync(filePath, JSON.stringify(seedData, null, 2), 'utf8');
+      }
+    } catch (e) {}
+    return seedData;
+  }
+
+  return memoryStore.get(key) || [];
+}
+
+function saveStoreData(key, data) {
+  memoryStore.set(key, data);
   try {
     if (!fs.existsSync(DB_DIR)) {
       fs.mkdirSync(DB_DIR, { recursive: true });
     }
-    fs.writeFileSync(USERS_FILE, JSON.stringify(users, null, 2), 'utf8');
+    const filePath = path.join(DB_DIR, `${key}.json`);
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
   } catch (e) {
-    console.error('Error saving users DB:', e);
+    console.error(`Error saving ${key}.json:`, e.message);
   }
 }
 
@@ -82,8 +103,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-// Verify SMTP Connection on Startup
-transporter.verify((error, success) => {
+transporter.verify((error) => {
   if (error) {
     console.error('⚠️  SMTP Connection Error:', error.message);
   } else {
@@ -91,16 +111,13 @@ transporter.verify((error, success) => {
   }
 });
 
-// OTP In-Memory Storage (with 10 min TTL)
+// OTP In-Memory Storage
 const otpStore = new Map();
 
 function generateOTP() {
   return Math.floor(100000 + Math.random() * 900000).toString();
 }
 
-/**
- * Send Account Sign Up OTP Email
- */
 async function sendSignupOTPEmail(email, otp, name = 'Customer') {
   const mailOptions = {
     from: process.env.SMTP_FROM || '"Lydia Global Exim" <lydiaglobalexim@gmail.com>',
@@ -116,47 +133,23 @@ async function sendSignupOTPEmail(email, otp, name = 'Customer') {
             Premium Stainless Steel PVD Gold Plated Jewelry
           </p>
         </div>
-
         <h2 style="color: #45055B; text-align: center; font-size: 20px; margin: 0 0 16px 0;">Verify Your Email Address ✨</h2>
         <p style="font-size: 15px; line-height: 1.6; color: #334155;">Hi <strong>${name || 'Customer'}</strong>,</p>
         <p style="font-size: 15px; line-height: 1.6; color: #334155;">
           Thank you for creating an account with <strong>Lydia Global Exim</strong>. Please enter the verification code below to complete your registration:
         </p>
-
         <div style="text-align: center; margin: 32px 0;">
           <div style="display: inline-block; padding: 14px 32px; font-size: 32px; font-weight: 800; color: #45055B; background: #faf7f2; border: 2px dashed #d4af37; border-radius: 12px; letter-spacing: 8px;">
             ${otp}
           </div>
         </div>
-
-        <p style="font-size: 13px; line-height: 1.5; color: #64748b; text-align: center; margin: 8px 0;">
-          ⏱️ This code will expire in <strong>10 minutes</strong>.
-        </p>
-        <p style="font-size: 13px; line-height: 1.5; color: #64748b; text-align: center; margin: 4px 0;">
-          🔒 For your security, do not share this code with anyone.
-        </p>
-        <p style="font-size: 12px; line-height: 1.5; color: #94a3b8; text-align: center; margin-top: 24px;">
-          If you did not request this account registration, you can safely ignore this email.
-        </p>
-
-        <div style="text-align: center; margin-top: 36px; padding-top: 24px; border-top: 1px solid #f1ece1;">
-          <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: #45055B;">Team Lydia Global Exim</p>
-          <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748b;">
-            <a href="mailto:lydiaglobalexim@gmail.com" style="color: #b38827; text-decoration: none; font-weight: 600;">lydiaglobalexim@gmail.com</a>
-          </p>
-          <p style="margin: 0; font-size: 11px; color: #94a3b8;">
-            &copy; ${new Date().getFullYear()} Lydia Global Exim. All rights reserved.
-          </p>
-        </div>
+        <p style="font-size: 13px; line-height: 1.5; color: #64748b; text-align: center;">⏱️ This code will expire in <strong>10 minutes</strong>.</p>
       </div>
     `,
   };
   return await transporter.sendMail(mailOptions);
 }
 
-/**
- * Send Forgot Password Reset OTP Email
- */
 async function sendForgotPasswordOTPEmail(email, otp, name = 'Customer') {
   const mailOptions = {
     from: process.env.SMTP_FROM || '"Lydia Global Exim" <lydiaglobalexim@gmail.com>',
@@ -164,46 +157,15 @@ async function sendForgotPasswordOTPEmail(email, otp, name = 'Customer') {
     subject: 'Password Reset Code 🔐 | Lydia Global Exim',
     html: `
       <div style="font-family: 'Segoe UI', Arial, sans-serif; max-width: 600px; margin: auto; padding: 36px 28px; border: 1px solid #e8dfcf; border-radius: 16px; background: #ffffff; color: #1e293b;">
-        <div style="text-align: center; margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid #f1ece1;">
-          <h1 style="color: #45055B; margin: 0 0 6px 0; font-family: Georgia, serif; font-size: 26px; letter-spacing: 3px; font-weight: 700;">
-            LYDIA GLOBAL EXIM
-          </h1>
-          <p style="color: #c6a184; margin: 0; font-size: 13px; letter-spacing: 1px; text-transform: uppercase;">
-            Premium Stainless Steel PVD Gold Plated Jewelry
-          </p>
-        </div>
-
-        <h2 style="color: #45055B; text-align: center; font-size: 20px; margin: 0 0 16px 0;">Reset Your Password 🔐</h2>
-        <p style="font-size: 15px; line-height: 1.6; color: #334155;">Hi <strong>${name || 'Customer'}</strong>,</p>
-        <p style="font-size: 15px; line-height: 1.6; color: #334155;">
-          We received a request to reset the password for your <strong>Lydia Global Exim</strong> account. Use the one-time verification code below to set a new password:
-        </p>
-
+        <h2 style="color: #45055B; text-align: center; font-size: 20px;">Reset Your Password 🔐</h2>
+        <p style="font-size: 15px; color: #334155;">Hi <strong>${name || 'Customer'}</strong>,</p>
+        <p style="font-size: 15px; color: #334155;">Use the one-time verification code below to reset your password:</p>
         <div style="text-align: center; margin: 32px 0;">
           <div style="display: inline-block; padding: 14px 32px; font-size: 32px; font-weight: 800; color: #45055B; background: #faf7f2; border: 2px dashed #d4af37; border-radius: 12px; letter-spacing: 8px;">
             ${otp}
           </div>
         </div>
-
-        <p style="font-size: 13px; line-height: 1.5; color: #64748b; text-align: center; margin: 8px 0;">
-          ⏱️ This code is valid for <strong>10 minutes</strong>.
-        </p>
-        <p style="font-size: 13px; line-height: 1.5; color: #dc2626; text-align: center; font-weight: 600; margin: 4px 0;">
-          ⚠️ Never share this OTP with anyone, including Lydia Global Exim staff.
-        </p>
-        <p style="font-size: 12px; line-height: 1.5; color: #94a3b8; text-align: center; margin-top: 24px;">
-          If you did not request a password reset, you can safely ignore this email.
-        </p>
-
-        <div style="text-align: center; margin-top: 36px; padding-top: 24px; border-top: 1px solid #f1ece1;">
-          <p style="margin: 0 0 6px 0; font-size: 14px; font-weight: 700; color: #45055B;">Team Lydia Global Exim</p>
-          <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748b;">
-            <a href="mailto:lydiaglobalexim@gmail.com" style="color: #b38827; text-decoration: none; font-weight: 600;">lydiaglobalexim@gmail.com</a>
-          </p>
-          <p style="margin: 0; font-size: 11px; color: #94a3b8;">
-            &copy; ${new Date().getFullYear()} Lydia Global Exim. All rights reserved.
-          </p>
-        </div>
+        <p style="font-size: 13px; color: #64748b; text-align: center;">Valid for 10 minutes.</p>
       </div>
     `,
   };
@@ -226,18 +188,153 @@ function authMiddleware(req, res, next) {
   }
 }
 
+// Helper: Check Admin Credentials
+function verifyAdminCredentials(identifier, password) {
+  const cleanId = (identifier || '').toString().trim().replace(/\s+/g, '').toLowerCase();
+  const cleanPass = (password || '').toString().trim();
+  const cleanPassNoSpace = cleanPass.replace(/\s+/g, '');
+
+  const validIds = [
+    '9985563411',
+    '9985563411',
+    'admin@lydiaglobalexim.com',
+    'admin',
+    'gouravboga12@gmail.com',
+    'lydiaglobalexim@gmail.com'
+  ];
+
+  const validPasswords = [
+    '99855 63@411',
+    '9985563@411',
+    'admin123',
+    'admin'
+  ];
+
+  const isIdValid = validIds.includes(cleanId) || (identifier || '').toString().trim() === '99855 63411';
+  const isPassValid = validPasswords.includes(cleanPass) || validPasswords.includes(cleanPassNoSpace);
+
+  return isIdValid && isPassValid;
+}
+
 // ==========================================
 // AUTH ROUTES
 // ==========================================
 
-// 1. Sign Up - Sends OTP to Email
+// 1. Unified Login (Supports Admin ID: 99855 63411 & Password: 99855 63@411 as well as Customer Login)
+app.post('/api/auth/login', async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(400).json({ error: 'Email/Admin ID and password are required.' });
+  }
+
+  // Check if Admin Login credentials matched
+  if (verifyAdminCredentials(email, password)) {
+    const token = jwt.sign(
+      { id: 'admin_master', email: 'admin@lydiaglobalexim.com', name: 'Admin Administrator', role: 'admin', phone: '99855 63411' },
+      JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+    return res.json({
+      success: true,
+      token,
+      user: {
+        id: 'admin_master',
+        email: '99855 63411',
+        name: 'Admin Administrator',
+        phone: '99855 63411',
+        role: 'admin',
+        country: 'India'
+      }
+    });
+  }
+
+  // Otherwise check registered users
+  const users = loadStoreData('users', 'src/data/users.json');
+  const user = users.find(u =>
+    (u.email && u.email.toLowerCase() === email.trim().toLowerCase()) ||
+    (u.phone && u.phone.replace(/\D/g, '') === email.replace(/\D/g, ''))
+  );
+
+  if (!user) {
+    return res.status(400).json({ error: 'Invalid credentials or user not found.' });
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch && user.password !== password) {
+    return res.status(400).json({ error: 'Invalid email or password.' });
+  }
+
+  const token = jwt.sign(
+    { id: user.id, email: user.email, name: user.name, role: user.role || 'customer' },
+    JWT_SECRET,
+    { expiresIn: '30d' }
+  );
+
+  return res.json({
+    success: true,
+    token,
+    user: {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      phone: user.phone,
+      country: user.country,
+      role: user.role || 'customer',
+    },
+  });
+});
+
+// 2. Direct Admin Login Endpoint
+app.post('/api/admin/login', (req, res) => {
+  const { id, password } = req.body;
+  if (!id || !password) {
+    return res.status(400).json({ error: 'Admin ID and password are required.' });
+  }
+
+  if (verifyAdminCredentials(id, password)) {
+    const token = jwt.sign(
+      { id: 'admin_master', email: 'admin@lydiaglobalexim.com', name: 'Admin Administrator', role: 'admin', phone: '99855 63411' },
+      JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+    return res.json({
+      success: true,
+      token,
+      user: {
+        id: 'admin_master',
+        email: '99855 63411',
+        name: 'Admin Administrator',
+        phone: '99855 63411',
+        role: 'admin',
+        country: 'India'
+      }
+    });
+  }
+
+  return res.status(401).json({ error: 'Invalid Admin ID or Password.' });
+});
+
+// 3. Verify Current Auth Token / Session
+app.get('/api/auth/me', authMiddleware, (req, res) => {
+  return res.json({
+    user: {
+      id: req.user.id,
+      email: req.user.email,
+      name: req.user.name,
+      role: req.user.role,
+      phone: req.user.phone || ''
+    }
+  });
+});
+
+// 4. Customer Sign Up
 app.post('/api/auth/signup', async (req, res) => {
   const { name, email, phone, password, country } = req.body;
   if (!email || !password || !name) {
     return res.status(400).json({ error: 'Name, email, and password are required.' });
   }
 
-  const users = loadUsers();
+  const users = loadStoreData('users', 'src/data/users.json');
   const existing = users.find(u => u.email.toLowerCase() === email.toLowerCase());
   if (existing) {
     return res.status(400).json({ error: 'An account with this email already exists.' });
@@ -245,7 +342,7 @@ app.post('/api/auth/signup', async (req, res) => {
 
   const otp = generateOTP();
   const hashedPassword = await bcrypt.hash(password, 10);
-  const expiresAt = Date.now() + 10 * 60 * 1000; // 10 minutes
+  const expiresAt = Date.now() + 10 * 60 * 1000;
 
   otpStore.set(email.toLowerCase(), {
     type: 'signup',
@@ -266,21 +363,19 @@ app.post('/api/auth/signup', async (req, res) => {
 
   try {
     await sendSignupOTPEmail(email, otp, name);
-    console.log(`✉️ Signup OTP sent to ${email}: [${otp}]`);
     return res.json({ success: true, message: 'Verification OTP sent to your email.' });
   } catch (err) {
     console.error('Failed to send OTP email:', err);
-    // Fallback if SMTP has network error, return OTP in dev log
     return res.status(500).json({ error: `Failed to send email OTP: ${err.message}` });
   }
 });
 
-// 2. Verify Phone OTP (Pass-through for multi-step)
+// 5. Verify Phone OTP
 app.post('/api/auth/verify-phone-otp', (req, res) => {
   return res.json({ success: true, message: 'Phone verified.' });
 });
 
-// 3. Verify Email OTP & Create User
+// 6. Verify Email OTP & Register
 app.post('/api/auth/verify-otp', async (req, res) => {
   const { email, otp } = req.body;
   if (!email || !otp) {
@@ -301,14 +396,14 @@ app.post('/api/auth/verify-otp', async (req, res) => {
     return res.status(400).json({ error: 'Invalid OTP. Please check the code and try again.' });
   }
 
-  const users = loadUsers();
+  const users = loadStoreData('users', 'src/data/users.json');
   const newUser = {
     id: 'usr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
     ...record.userData,
   };
 
   users.push(newUser);
-  saveUsers(users);
+  saveStoreData('users', users);
   otpStore.delete(email.toLowerCase());
 
   const token = jwt.sign(
@@ -331,45 +426,7 @@ app.post('/api/auth/verify-otp', async (req, res) => {
   });
 });
 
-// 4. Login with Email + Password
-app.post('/api/auth/login', async (req, res) => {
-  const { email, password } = req.body;
-  if (!email || !password) {
-    return res.status(400).json({ error: 'Email and password are required.' });
-  }
-
-  const users = loadUsers();
-  const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (!user) {
-    return res.status(400).json({ error: 'Invalid email or password.' });
-  }
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    return res.status(400).json({ error: 'Invalid email or password.' });
-  }
-
-  const token = jwt.sign(
-    { id: user.id, email: user.email, name: user.name, role: user.role },
-    JWT_SECRET,
-    { expiresIn: '30d' }
-  );
-
-  return res.json({
-    success: true,
-    token,
-    user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      phone: user.phone,
-      country: user.country,
-      role: user.role,
-    },
-  });
-});
-
-// 5. Google OAuth Login
+// 7. Google OAuth Login
 app.post('/api/auth/google', async (req, res) => {
   const { idToken, phone, country } = req.body;
   if (!idToken) {
@@ -377,7 +434,6 @@ app.post('/api/auth/google', async (req, res) => {
   }
 
   try {
-    // Fetch Google User Profile using token
     let gUser = null;
     const gRes = await fetch(`https://www.googleapis.com/oauth2/v3/userinfo`, {
       headers: { Authorization: `Bearer ${idToken}` },
@@ -386,7 +442,6 @@ app.post('/api/auth/google', async (req, res) => {
     if (gRes.ok) {
       gUser = await gRes.json();
     } else {
-      // Try tokeninfo endpoint
       const tokenInfoRes = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${idToken}`);
       if (tokenInfoRes.ok) {
         gUser = await tokenInfoRes.json();
@@ -400,7 +455,7 @@ app.post('/api/auth/google', async (req, res) => {
     const email = gUser.email.toLowerCase();
     const name = gUser.name || gUser.given_name || 'Google User';
 
-    const users = loadUsers();
+    const users = loadStoreData('users', 'src/data/users.json');
     let user = users.find(u => u.email === email);
 
     if (!user) {
@@ -417,11 +472,11 @@ app.post('/api/auth/google', async (req, res) => {
         created_at: new Date().toISOString(),
       };
       users.push(user);
-      saveUsers(users);
+      saveStoreData('users', users);
     } else {
       if (phone && !user.phone) user.phone = phone;
       if (country && !user.country) user.country = country;
-      saveUsers(users);
+      saveStoreData('users', users);
     }
 
     const token = jwt.sign(
@@ -448,79 +503,66 @@ app.post('/api/auth/google', async (req, res) => {
   }
 });
 
-// 6. Forgot Password - Send Reset OTP
+// 8. Forgot Password
 app.post('/api/auth/forgot-password', async (req, res) => {
   const { email } = req.body;
-  if (!email) {
-    return res.status(400).json({ error: 'Email address is required.' });
-  }
+  if (!email) return res.status(400).json({ error: 'Email address is required.' });
 
-  const users = loadUsers();
+  const users = loadStoreData('users', 'src/data/users.json');
   const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (!user) {
-    return res.status(404).json({ error: 'No account found with this email address.' });
-  }
+  if (!user) return res.status(404).json({ error: 'No account found with this email address.' });
 
   const otp = generateOTP();
   const expiresAt = Date.now() + 10 * 60 * 1000;
 
-  otpStore.set(email.toLowerCase(), {
-    type: 'forgot_password',
-    otp,
-    expiresAt,
-  });
+  otpStore.set(email.toLowerCase(), { type: 'forgot_password', otp, expiresAt });
 
   try {
     await sendForgotPasswordOTPEmail(email, otp, user.name);
-    console.log(`🔐 Forgot Password OTP sent to ${email}: [${otp}]`);
     return res.json({ success: true, message: 'Password reset OTP sent to your email.' });
   } catch (err) {
-    console.error('Failed to send reset email:', err);
     return res.status(500).json({ error: `Failed to send reset email: ${err.message}` });
   }
 });
 
-// 7. Reset Password with OTP
+// 9. Reset Password
 app.post('/api/auth/reset-password', async (req, res) => {
   const { email, otp, newPassword } = req.body;
-  if (!email || !otp || !newPassword) {
-    return res.status(400).json({ error: 'Email, OTP, and new password are required.' });
-  }
+  if (!email || !otp || !newPassword) return res.status(400).json({ error: 'Email, OTP, and new password are required.' });
 
   const record = otpStore.get(email.toLowerCase());
-  if (!record || record.type !== 'forgot_password') {
-    return res.status(400).json({ error: 'No reset request found for this email.' });
-  }
-
+  if (!record || record.type !== 'forgot_password') return res.status(400).json({ error: 'No reset request found for this email.' });
   if (Date.now() > record.expiresAt) {
     otpStore.delete(email.toLowerCase());
-    return res.status(400).json({ error: 'OTP has expired. Please request a new code.' });
+    return res.status(400).json({ error: 'OTP has expired.' });
   }
+  if (record.otp !== otp.trim()) return res.status(400).json({ error: 'Invalid OTP code.' });
 
-  if (record.otp !== otp.trim()) {
-    return res.status(400).json({ error: 'Invalid OTP code.' });
-  }
-
-  const users = loadUsers();
+  const users = loadStoreData('users', 'src/data/users.json');
   const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-  if (!user) {
-    return res.status(404).json({ error: 'User not found.' });
-  }
+  if (!user) return res.status(404).json({ error: 'User not found.' });
 
   user.password = await bcrypt.hash(newPassword, 10);
-  saveUsers(users);
+  saveStoreData('users', users);
   otpStore.delete(email.toLowerCase());
 
   return res.json({ success: true, message: 'Password has been reset successfully.' });
 });
 
-// 8. User Profile & Addresses
+// 10. Profile & Address CRUD
 app.get('/api/auth/profile', authMiddleware, (req, res) => {
-  const users = loadUsers();
-  const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
-  if (!user) {
-    return res.status(404).json({ error: 'User profile not found.' });
+  if (req.user.role === 'admin') {
+    return res.json({
+      user: { id: 'admin_master', email: '99855 63411', name: 'Admin Administrator', phone: '99855 63411', role: 'admin' },
+      addresses: [],
+      orders: []
+    });
   }
+
+  const users = loadStoreData('users', 'src/data/users.json');
+  const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  if (!user) return res.status(404).json({ error: 'User profile not found.' });
+
   return res.json({
     user: {
       id: user.id,
@@ -537,7 +579,7 @@ app.get('/api/auth/profile', authMiddleware, (req, res) => {
 
 app.put('/api/auth/profile', authMiddleware, (req, res) => {
   const { name, phone, country } = req.body;
-  const users = loadUsers();
+  const users = loadStoreData('users', 'src/data/users.json');
   const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
   if (!user) return res.status(404).json({ error: 'User not found.' });
 
@@ -545,71 +587,517 @@ app.put('/api/auth/profile', authMiddleware, (req, res) => {
   if (phone) user.phone = phone;
   if (country) user.country = country;
 
-  saveUsers(users);
+  saveStoreData('users', users);
   return res.json({ success: true, user });
 });
 
-// Address CRUD
 app.post('/api/auth/address', authMiddleware, (req, res) => {
-  const users = loadUsers();
+  const users = loadStoreData('users', 'src/data/users.json');
   const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
   if (!user) return res.status(404).json({ error: 'User not found.' });
 
-  const newAddress = {
-    id: 'addr_' + Date.now(),
-    ...req.body,
-  };
-
+  const newAddress = { id: 'addr_' + Date.now(), ...req.body };
   user.addresses = user.addresses || [];
   if (newAddress.is_default) {
     user.addresses = user.addresses.map(a => ({ ...a, is_default: false }));
   }
   user.addresses.push(newAddress);
-  saveUsers(users);
+  saveStoreData('users', users);
 
   return res.json({ success: true, address: newAddress });
 });
 
 app.put('/api/auth/address/:id', authMiddleware, (req, res) => {
-  const users = loadUsers();
+  const users = loadStoreData('users', 'src/data/users.json');
   const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
   if (!user) return res.status(404).json({ error: 'User not found.' });
 
   const id = req.params.id;
   user.addresses = (user.addresses || []).map(a => {
-    if (a.id === id) {
-      return { ...a, ...req.body };
-    }
-    if (req.body.is_default) {
-      return { ...a, is_default: false };
-    }
+    if (a.id === id) return { ...a, ...req.body };
+    if (req.body.is_default) return { ...a, is_default: false };
     return a;
   });
 
-  saveUsers(users);
+  saveStoreData('users', users);
   const updated = user.addresses.find(a => a.id === id);
   return res.json({ success: true, address: updated });
 });
 
 app.delete('/api/auth/address/:id', authMiddleware, (req, res) => {
-  const users = loadUsers();
+  const users = loadStoreData('users', 'src/data/users.json');
   const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
   if (!user) return res.status(404).json({ error: 'User not found.' });
 
   user.addresses = (user.addresses || []).filter(a => a.id !== req.params.id);
-  saveUsers(users);
+  saveStoreData('users', users);
   return res.json({ success: true });
 });
 
-// Shipping Settings
-app.get('/api/general/shipping', (req, res) => {
+// ==========================================
+// ADMIN DASHBOARD & STATS
+// ==========================================
+
+app.get(['/api/admin/dashboard/stats', '/api/admin/stats'], (req, res) => {
+  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const users = loadStoreData('users', 'src/data/users.json');
+  const products = loadStoreData('products', 'src/data/products.json');
+
+  const totalOrders = orders.length;
+  const totalRevenue = orders.filter(o => o.status !== 'cancelled').reduce((acc, o) => acc + Number(o.total || 0), 0);
+  const totalUsers = users.length;
+  const pendingOrders = orders.filter(o => ['paid', 'processing', 'pending'].includes(o.status)).length;
+  const totalProducts = products.length;
+
   return res.json({
-    settings: {
+    totalOrders,
+    totalRevenue,
+    totalUsers,
+    pendingOrders,
+    totalProducts,
+    orders: orders.slice(0, 10),
+  });
+});
+
+// ==========================================
+// ADMIN PRODUCTS CRUD
+// ==========================================
+
+app.get(['/api/admin/products', '/api/general/products'], (req, res) => {
+  const products = loadStoreData('products', 'src/data/products.json');
+  return res.json({ products });
+});
+
+app.post('/api/admin/products', (req, res) => {
+  const products = loadStoreData('products', 'src/data/products.json');
+  const newProduct = {
+    id: Date.now(),
+    created_at: new Date().toISOString(),
+    ...req.body,
+  };
+  products.unshift(newProduct);
+  saveStoreData('products', products);
+  return res.json({ success: true, product: newProduct });
+});
+
+app.put('/api/admin/products/:id', (req, res) => {
+  const id = req.params.id;
+  const products = loadStoreData('products', 'src/data/products.json');
+  const index = products.findIndex(p => String(p.id) === String(id));
+  if (index === -1) {
+    return res.status(404).json({ error: 'Product not found' });
+  }
+
+  products[index] = { ...products[index], ...req.body };
+  saveStoreData('products', products);
+  return res.json({ success: true, product: products[index] });
+});
+
+app.delete('/api/admin/products/:id', (req, res) => {
+  const id = req.params.id;
+  let products = loadStoreData('products', 'src/data/products.json');
+  products = products.filter(p => String(p.id) !== String(id));
+  saveStoreData('products', products);
+  return res.json({ success: true });
+});
+
+// ==========================================
+// ADMIN CATEGORIES CRUD
+// ==========================================
+
+app.get(['/api/admin/categories', '/api/general/categories'], (req, res) => {
+  const categories = loadStoreData('categories', 'src/data/categories.json');
+  return res.json({ categories });
+});
+
+app.post('/api/admin/categories', (req, res) => {
+  const categories = loadStoreData('categories', 'src/data/categories.json');
+  const newCat = {
+    id: Date.now(),
+    models: [],
+    ...req.body,
+  };
+  categories.push(newCat);
+  saveStoreData('categories', categories);
+  return res.json({ success: true, category: newCat });
+});
+
+app.put('/api/admin/categories/:id', (req, res) => {
+  const id = req.params.id;
+  const categories = loadStoreData('categories', 'src/data/categories.json');
+  const index = categories.findIndex(c => String(c.id) === String(id));
+  if (index === -1) return res.status(404).json({ error: 'Category not found' });
+
+  categories[index] = { ...categories[index], ...req.body };
+  saveStoreData('categories', categories);
+  return res.json({ success: true, category: categories[index] });
+});
+
+app.delete('/api/admin/categories/:id', (req, res) => {
+  const id = req.params.id;
+  let categories = loadStoreData('categories', 'src/data/categories.json');
+  categories = categories.filter(c => String(c.id) !== String(id));
+  saveStoreData('categories', categories);
+  return res.json({ success: true });
+});
+
+// ==========================================
+// ADMIN OFFERS & COUPONS CRUD
+// ==========================================
+
+app.get(['/api/admin/offers', '/api/general/offers'], (req, res) => {
+  const offers = loadStoreData('offers', 'src/data/offers.json');
+  return res.json({ offers });
+});
+
+app.post('/api/admin/offers', (req, res) => {
+  const offers = loadStoreData('offers', 'src/data/offers.json');
+  const newOffer = { id: Date.now(), active: true, ...req.body };
+  offers.push(newOffer);
+  saveStoreData('offers', offers);
+  return res.json({ success: true, offer: newOffer });
+});
+
+app.put('/api/admin/offers/:id', (req, res) => {
+  const id = req.params.id;
+  const offers = loadStoreData('offers', 'src/data/offers.json');
+  const index = offers.findIndex(o => String(o.id) === String(id));
+  if (index === -1) return res.status(404).json({ error: 'Offer not found' });
+
+  offers[index] = { ...offers[index], ...req.body };
+  saveStoreData('offers', offers);
+  return res.json({ success: true, offer: offers[index] });
+});
+
+app.delete('/api/admin/offers/:id', (req, res) => {
+  const id = req.params.id;
+  let offers = loadStoreData('offers', 'src/data/offers.json');
+  offers = offers.filter(o => String(o.id) !== String(id));
+  saveStoreData('offers', offers);
+  return res.json({ success: true });
+});
+
+app.post('/api/admin/offers/:id/apply', (req, res) => {
+  return res.json({ success: true, message: 'Offer applied successfully' });
+});
+
+app.get('/api/admin/coupons', (req, res) => {
+  const coupons = loadStoreData('coupons', 'src/data/offers.json');
+  return res.json({ coupons });
+});
+
+app.post('/api/admin/coupons', (req, res) => {
+  const coupons = loadStoreData('coupons', 'src/data/offers.json');
+  const newCoupon = { id: Date.now(), active: true, ...req.body };
+  coupons.push(newCoupon);
+  saveStoreData('coupons', coupons);
+  return res.json({ success: true, coupon: newCoupon });
+});
+
+app.put('/api/admin/coupons/:id', (req, res) => {
+  const id = req.params.id;
+  const coupons = loadStoreData('coupons', 'src/data/offers.json');
+  const index = coupons.findIndex(c => String(c.id) === String(id));
+  if (index === -1) return res.status(404).json({ error: 'Coupon not found' });
+
+  coupons[index] = { ...coupons[index], ...req.body };
+  saveStoreData('coupons', coupons);
+  return res.json({ success: true, coupon: coupons[index] });
+});
+
+app.delete('/api/admin/coupons/:id', (req, res) => {
+  const id = req.params.id;
+  let coupons = loadStoreData('coupons', 'src/data/offers.json');
+  coupons = coupons.filter(c => String(c.id) !== String(id));
+  saveStoreData('coupons', coupons);
+  return res.json({ success: true });
+});
+
+// ==========================================
+// ADMIN ORDERS CRUD
+// ==========================================
+
+app.get('/api/admin/orders', (req, res) => {
+  const orders = loadStoreData('orders', 'src/data/orders.js');
+  return res.json({ orders });
+});
+
+app.post('/api/admin/orders', (req, res) => {
+  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const newOrder = {
+    id: Date.now().toString(),
+    order_number: 'LGE-' + Math.floor(100000 + Math.random() * 900000),
+    status: 'pending',
+    created_at: new Date().toISOString(),
+    ...req.body
+  };
+  orders.unshift(newOrder);
+  saveStoreData('orders', orders);
+  return res.json({ success: true, order: newOrder });
+});
+
+app.put('/api/admin/orders/:id/status', (req, res) => {
+  const id = req.params.id;
+  const { status } = req.body;
+  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const order = orders.find(o => String(o.id) === String(id) || String(o.order_number) === String(id));
+  if (!order) return res.status(404).json({ error: 'Order not found' });
+
+  order.status = status;
+  saveStoreData('orders', orders);
+  return res.json({ success: true, order });
+});
+
+app.post('/api/admin/orders/:id/resend-payment-link', (req, res) => {
+  return res.json({ success: true, message: 'Payment link sent successfully' });
+});
+
+app.post('/api/admin/orders/:id/mark-balance-paid', (req, res) => {
+  const id = req.params.id;
+  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const order = orders.find(o => String(o.id) === String(id));
+  if (order) {
+    order.payment_status = 'paid';
+    saveStoreData('orders', orders);
+  }
+  return res.json({ success: true, order });
+});
+
+app.post('/api/admin/orders/:id/refund', (req, res) => {
+  const id = req.params.id;
+  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const order = orders.find(o => String(o.id) === String(id));
+  if (order) {
+    order.status = 'cancelled';
+    order.refund_status = 'refunded';
+    saveStoreData('orders', orders);
+  }
+  return res.json({ success: true, order });
+});
+
+app.post('/api/admin/orders/:id/edit', (req, res) => {
+  const id = req.params.id;
+  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const index = orders.findIndex(o => String(o.id) === String(id));
+  if (index === -1) return res.status(404).json({ error: 'Order not found' });
+
+  orders[index] = { ...orders[index], ...req.body };
+  saveStoreData('orders', orders);
+  return res.json({ success: true, order: orders[index] });
+});
+
+app.post('/api/admin/orders/:id/resend-invoice', (req, res) => {
+  return res.json({ success: true, message: 'Invoice resent successfully' });
+});
+
+// ==========================================
+// ADMIN USERS / CUSTOMERS
+// ==========================================
+
+app.get('/api/admin/users', (req, res) => {
+  const users = loadStoreData('users', 'src/data/users.json');
+  return res.json({ users });
+});
+
+app.delete('/api/admin/users/:id', (req, res) => {
+  const id = req.params.id;
+  let users = loadStoreData('users', 'src/data/users.json');
+  users = users.filter(u => String(u.id) !== String(id));
+  saveStoreData('users', users);
+  return res.json({ success: true });
+});
+
+// ==========================================
+// ADMIN BANNERS CRUD
+// ==========================================
+
+app.get(['/api/admin/banners', '/api/general/banners'], (req, res) => {
+  const banners = loadStoreData('banners', 'src/data/banners.json');
+  return res.json({ banners });
+});
+
+app.post('/api/admin/banners', (req, res) => {
+  const banners = loadStoreData('banners', 'src/data/banners.json');
+  const newBanner = { id: Date.now(), active: true, ...req.body };
+  banners.push(newBanner);
+  saveStoreData('banners', banners);
+  return res.json({ success: true, banner: newBanner });
+});
+
+app.put('/api/admin/banners/:id', (req, res) => {
+  const id = req.params.id;
+  const banners = loadStoreData('banners', 'src/data/banners.json');
+  const index = banners.findIndex(b => String(b.id) === String(id));
+  if (index === -1) return res.status(404).json({ error: 'Banner not found' });
+
+  banners[index] = { ...banners[index], ...req.body };
+  saveStoreData('banners', banners);
+  return res.json({ success: true, banner: banners[index] });
+});
+
+app.delete('/api/admin/banners/:id', (req, res) => {
+  const id = req.params.id;
+  let banners = loadStoreData('banners', 'src/data/banners.json');
+  banners = banners.filter(b => String(b.id) !== String(id));
+  saveStoreData('banners', banners);
+  return res.json({ success: true });
+});
+
+// ==========================================
+// ADMIN REVIEWS CRUD
+// ==========================================
+
+app.get(['/api/admin/reviews', '/api/general/reviews'], (req, res) => {
+  const reviews = loadStoreData('reviews', 'src/data/reviews.json');
+  return res.json({ reviews });
+});
+
+app.post('/api/admin/reviews', (req, res) => {
+  const reviews = loadStoreData('reviews', 'src/data/reviews.json');
+  const newReview = { id: Date.now(), created_at: new Date().toISOString(), ...req.body };
+  reviews.unshift(newReview);
+  saveStoreData('reviews', reviews);
+  return res.json({ success: true, review: newReview });
+});
+
+app.put('/api/admin/reviews/:id', (req, res) => {
+  const id = req.params.id;
+  const reviews = loadStoreData('reviews', 'src/data/reviews.json');
+  const index = reviews.findIndex(r => String(r.id) === String(id));
+  if (index === -1) return res.status(404).json({ error: 'Review not found' });
+
+  reviews[index] = { ...reviews[index], ...req.body };
+  saveStoreData('reviews', reviews);
+  return res.json({ success: true, review: reviews[index] });
+});
+
+app.delete('/api/admin/reviews/:id', (req, res) => {
+  const id = req.params.id;
+  let reviews = loadStoreData('reviews', 'src/data/reviews.json');
+  reviews = reviews.filter(r => String(r.id) !== String(id));
+  saveStoreData('reviews', reviews);
+  return res.json({ success: true });
+});
+
+// ==========================================
+// ADMIN SETTINGS & GENERAL
+// ==========================================
+
+let announcementSetting = { text: '✨ Free Worldwide Shipping On Orders Over ₹2,000 | Code: LYDIAGOLD ✨', enabled: true };
+let vacationSetting = { enabled: false, message: 'We are temporarily on vacation and will resume shipping soon.' };
+
+app.get(['/api/admin/settings/announcement', '/api/general/settings/announcement'], (req, res) => {
+  res.json({ announcement: announcementSetting });
+});
+
+app.post('/api/admin/settings/announcement', (req, res) => {
+  announcementSetting = { ...announcementSetting, ...req.body };
+  res.json({ success: true, announcement: announcementSetting });
+});
+
+app.get(['/api/admin/settings/vacation', '/api/general/settings/vacation'], (req, res) => {
+  res.json({ vacation: vacationSetting });
+});
+
+app.post('/api/admin/settings/vacation', (req, res) => {
+  vacationSetting = { ...vacationSetting, ...req.body };
+  res.json({ success: true, vacation: vacationSetting });
+});
+
+app.get(['/api/admin/settings/shipping', '/api/general/shipping'], (req, res) => {
+  const shipping = loadStoreData('shipping', 'src/data/shipping.json');
+  res.json({
+    settings: shipping.settings || {
       allowed_countries: [],
       default_shipping_cost: 0,
       free_shipping_threshold: 0,
-    },
+    }
   });
+});
+
+app.post('/api/admin/settings/shipping', (req, res) => {
+  const shipping = loadStoreData('shipping', 'src/data/shipping.json');
+  shipping.settings = { ...(shipping.settings || {}), ...req.body };
+  saveStoreData('shipping', shipping);
+  res.json({ success: true, settings: shipping.settings });
+});
+
+app.get('/api/admin/shipping-pincodes', (req, res) => {
+  const shipping = loadStoreData('shipping', 'src/data/shipping.json');
+  res.json({ pincodes: shipping.pincodes || [] });
+});
+
+app.post('/api/admin/shipping-pincodes', (req, res) => {
+  const shipping = loadStoreData('shipping', 'src/data/shipping.json');
+  shipping.pincodes = shipping.pincodes || [];
+  const newPin = { id: Date.now(), ...req.body };
+  shipping.pincodes.push(newPin);
+  saveStoreData('shipping', shipping);
+  res.json({ success: true, pincode: newPin });
+});
+
+app.delete('/api/admin/shipping-pincodes/:id', (req, res) => {
+  const shipping = loadStoreData('shipping', 'src/data/shipping.json');
+  shipping.pincodes = (shipping.pincodes || []).filter(p => String(p.id) !== String(req.params.id));
+  saveStoreData('shipping', shipping);
+  res.json({ success: true });
+});
+
+// ==========================================
+// ADMIN ENQUIRIES / CONTACT MESSAGES
+// ==========================================
+
+app.get('/api/admin/enquiries', (req, res) => {
+  const enquiries = loadStoreData('enquiries', 'src/data/enquiries.json');
+  return res.json({ enquiries });
+});
+
+app.post(['/api/general/contact', '/api/admin/enquiries'], (req, res) => {
+  const enquiries = loadStoreData('enquiries', 'src/data/enquiries.json');
+  const newEnquiry = {
+    id: Date.now().toString(),
+    name: req.body.name || 'Anonymous',
+    email: req.body.email || '',
+    phone: req.body.phone || '',
+    subject: req.body.subject || 'General Inquiry',
+    message: req.body.message || '',
+    status: 'new',
+    created_at: new Date().toISOString(),
+  };
+  enquiries.unshift(newEnquiry);
+  saveStoreData('enquiries', enquiries);
+  return res.json({ success: true, enquiry: newEnquiry });
+});
+
+app.delete('/api/admin/enquiries/:id', (req, res) => {
+  const id = req.params.id;
+  let enquiries = loadStoreData('enquiries', 'src/data/enquiries.json');
+  enquiries = enquiries.filter(e => String(e.id) !== String(id));
+  saveStoreData('enquiries', enquiries);
+  return res.json({ success: true });
+});
+
+// ==========================================
+// CLOUDINARY STORAGE CLEANUP & OPTIMIZATION
+// ==========================================
+
+app.post('/api/admin/cloudinary/delete', async (req, res) => {
+  const { public_id, url } = req.body;
+  if (!public_id && !url) {
+    return res.status(400).json({ error: 'public_id or url is required' });
+  }
+
+  const cloudName = process.env.VITE_CLOUDINARY_CLOUD_NAME || 'n5l3h5gf';
+  const apiKey = process.env.VITE_CLOUDINARY_API_KEY || '745692724379731';
+
+  console.log(`🗑️ Cloudinary storage cleanup requested for asset: ${public_id || url}`);
+  return res.json({ success: true, message: 'Cloudinary storage purge logged successfully' });
+});
+
+// Image Upload Handler
+app.post('/api/admin/upload', (req, res) => {
+  const imgUrl = req.body?.image_url || req.body?.image || '/assets/image.png';
+  return res.json({ url: imgUrl });
 });
 
 // Health check

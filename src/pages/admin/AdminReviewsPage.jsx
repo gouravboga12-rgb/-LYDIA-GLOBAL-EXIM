@@ -2,12 +2,16 @@ import React, { useEffect, useState } from 'react';
 import { Star, Plus, Trash2, Edit2, X, Save, MessageSquare, Upload, Image as ImageIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 
+import defaultReviews from '../../data/reviews.json';
+import { uploadToCloudinary, deleteFromCloudinary } from '../../utils/cloudinary';
+import { supabase } from '../../utils/supabase';
+
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
 
 const EMPTY = { name: '', rating: 5, review: '', image_url: '', is_active: true };
 
 export function AdminReviewsPage() {
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState(defaultReviews || []);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null); // null | 'add' | review object
   const [form, setForm] = useState(EMPTY);
@@ -19,13 +23,17 @@ export function AdminReviewsPage() {
   const fetchReviews = async () => {
     try {
       const token = localStorage.getItem('token');
-      const res = await fetch(`${BACKEND_URL}/admin/reviews`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json();
-      setReviews(data.reviews || []);
+      const h = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch(`${BACKEND_URL}/admin/reviews`, { headers: h }).catch(() => null);
+      const data = res ? await res.json().catch(() => ({})) : {};
+      if (data && data.reviews && data.reviews.length > 0) {
+        setReviews(data.reviews);
+      } else {
+        setReviews(defaultReviews || []);
+      }
     } catch (err) {
       console.error(err);
+      setReviews(defaultReviews || []);
     } finally {
       setLoading(false);
     }
@@ -34,9 +42,9 @@ export function AdminReviewsPage() {
   const openAdd = () => { setForm(EMPTY); setModal('add'); };
   const openEdit = (r) => { 
     setForm({ 
-      name: r.name, 
+      name: r.name || r.user_name, 
       rating: r.rating, 
-      review: r.review, 
+      review: r.review || r.comment, 
       image_url: r.image_url || '', 
       is_active: r.is_active ?? true 
     }); 
@@ -48,19 +56,11 @@ export function AdminReviewsPage() {
     if (!file) return;
     setUploading(true);
     try {
-      const token = localStorage.getItem('token');
-      const body = new FormData();
-      body.append('image', file);
-      const res = await fetch(`${BACKEND_URL}/admin/upload`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` },
-        body
-      });
-      const data = await res.json();
-      if (data.url) {
-        setForm(prev => ({ ...prev, image_url: data.url }));
+      const url = await uploadToCloudinary(file);
+      if (url) {
+        setForm(prev => ({ ...prev, image_url: url }));
       } else {
-        alert(data.error || 'Failed to upload image');
+        alert('Failed to upload image');
       }
     } catch (err) {
       console.error(err);
@@ -74,8 +74,30 @@ export function AdminReviewsPage() {
     if (!form.name.trim() || !form.review.trim()) return;
     setSaving(true);
     try {
-      const token = localStorage.getItem('token');
       const isNew = modal === 'add';
+
+      // Check if image was replaced to clean up old Cloudinary storage
+      if (!isNew && modal && modal.image_url && modal.image_url !== form.image_url) {
+        if (modal.image_url.includes('cloudinary.com')) {
+          await deleteFromCloudinary(modal.image_url);
+        }
+      }
+
+      // 1. Sync with Supabase
+      try {
+        await supabase.from('reviews').upsert({
+          ...(isNew ? {} : { id: modal.id }),
+          user_name: form.name,
+          rating: form.rating,
+          comment: form.review,
+          image_url: form.image_url || ''
+        });
+      } catch (sbErr) {
+        console.warn("Supabase review save note:", sbErr);
+      }
+
+      // 2. Save via Backend REST
+      const token = localStorage.getItem('token');
       const url = isNew ? `${BACKEND_URL}/admin/reviews` : `${BACKEND_URL}/admin/reviews/${modal.id}`;
       await fetch(url, {
         method: isNew ? 'POST' : 'PUT',
@@ -92,13 +114,30 @@ export function AdminReviewsPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm('Delete this review?')) return;
-    const token = localStorage.getItem('token');
-    await fetch(`${BACKEND_URL}/admin/reviews/${id}`, {
-      method: 'DELETE',
-      headers: { Authorization: `Bearer ${token}` }
-    });
-    fetchReviews();
+    if (!confirm('Delete this review? This will also remove its media from Cloudinary.')) return;
+    try {
+      const reviewToDelete = reviews.find(r => String(r.id) === String(id));
+      if (reviewToDelete && reviewToDelete.image_url && reviewToDelete.image_url.includes('cloudinary.com')) {
+        await deleteFromCloudinary(reviewToDelete.image_url);
+      }
+
+      // 1. Delete from Supabase
+      try {
+        await supabase.from('reviews').delete().eq('id', id);
+      } catch (sbErr) {
+        console.warn("Supabase review delete note:", sbErr);
+      }
+
+      // 2. Delete from Backend REST
+      const token = localStorage.getItem('token');
+      await fetch(`${BACKEND_URL}/admin/reviews/${id}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      fetchReviews();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const StarPicker = ({ value, onChange }) => (

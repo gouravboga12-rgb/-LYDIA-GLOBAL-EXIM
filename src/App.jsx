@@ -41,6 +41,7 @@ import { AdminOffersPage } from './pages/admin/AdminOffersPage';
 import { AdminShippingPage } from './pages/admin/AdminShippingPage';
 import { AdminPickupOrdersPage } from './pages/admin/AdminPickupOrdersPage';
 import { AdminReviewsPage } from './pages/admin/AdminReviewsPage';
+import { AdminEnquiriesPage } from './pages/admin/AdminEnquiriesPage';
 import { AdminVacationPage } from './pages/admin/AdminVacationPage';
 import { PickupPage } from './pages/PickupPage';
 import { SearchPage } from './pages/SearchPage';
@@ -69,17 +70,15 @@ function App() {
                 <Routes>
                   <Route path="/" element={<AdminDashboardPage />} />
                   <Route path="/orders" element={<AdminOrdersPage />} />
-                  <Route path="/orders/new" element={<AdminCreateOrderPage />} />
                   <Route path="customers" element={<AdminCustomersPage />} />
                   <Route path="products" element={<AdminProductsPage />} />
                   <Route path="categories" element={<AdminCategoriesPage />} />
                   <Route path="offers" element={<AdminOffersPage />} />
-                  <Route path="shipping" element={<AdminShippingPage />} />
                   <Route path="pickup-orders" element={<AdminPickupOrdersPage />} />
                   <Route path="reviews" element={<AdminReviewsPage />} />
+                  <Route path="enquiries" element={<AdminEnquiriesPage />} />
                   <Route path="vacation" element={<AdminVacationPage />} />
                   <Route path="banners" element={<AdminBannersPage />} />
-                  <Route path="/coupons" element={<AdminCouponsPage />} />
                   <Route path="/reports" element={<AdminReportsPage />} />
                   <Route path="/settings" element={<AdminSettingsPage />} />
                 </Routes>

@@ -1,13 +1,19 @@
 import React, { useEffect, useState } from "react";
 import { Package, Plus, Trash2, Edit2, X, Save, Upload, Search } from "lucide-react";
 import { motion } from "framer-motion";
+import defaultProducts from "../../data/products.json";
+import defaultCategories from "../../data/categories.json";
+import defaultOffers from "../../data/offers.json";
+import { uploadToCloudinary, deleteFromCloudinary } from "../../utils/cloudinary";
+import { supabase } from "../../utils/supabase";
+import { useStoreData } from "../../store/useStoreData";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function AdminProductsPage() {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [offers, setOffers] = useState([]);
+  const [products, setProducts] = useState(defaultProducts || []);
+  const [categories, setCategories] = useState(defaultCategories || []);
+  const [offers, setOffers] = useState(defaultOffers || []);
   const [loading, setLoading] = useState(true);
   const [editProduct, setEditProduct] = useState(null);
   
@@ -39,21 +45,39 @@ export function AdminProductsPage() {
   const fetchData = async () => {
     try {
       const token = localStorage.getItem("token");
+      const h = token ? { Authorization: `Bearer ${token}` } : {};
       const [prodRes, catRes, offerRes] = await Promise.all([
-        fetch(`${BACKEND_URL}/admin/products`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${BACKEND_URL}/admin/categories`, { headers: { Authorization: `Bearer ${token}` } }),
-        fetch(`${BACKEND_URL}/admin/offers`, { headers: { Authorization: `Bearer ${token}` } })
+        fetch(`${BACKEND_URL}/admin/products`, { headers: h }).catch(() => null),
+        fetch(`${BACKEND_URL}/admin/categories`, { headers: h }).catch(() => null),
+        fetch(`${BACKEND_URL}/admin/offers`, { headers: h }).catch(() => null)
       ]);
       
-      const prodData = await prodRes.json();
-      const catData = await catRes.json();
-      const offerData = await offerRes.json();
+      const prodData = prodRes ? await prodRes.json().catch(() => ({})) : {};
+      const catData = catRes ? await catRes.json().catch(() => ({})) : {};
+      const offerData = offerRes ? await offerRes.json().catch(() => ({})) : {};
       
-      if (prodData.products) setProducts(prodData.products);
-      if (catData.categories) setCategories(catData.categories);
-      if (offerData.offers) setOffers(offerData.offers);
+      if (prodData && prodData.products && prodData.products.length > 0) {
+        setProducts(prodData.products);
+      } else {
+        setProducts(defaultProducts || []);
+      }
+
+      if (catData && catData.categories && catData.categories.length > 0) {
+        setCategories(catData.categories);
+      } else {
+        setCategories(defaultCategories || []);
+      }
+
+      if (offerData && offerData.offers && offerData.offers.length > 0) {
+        setOffers(offerData.offers);
+      } else {
+        setOffers(defaultOffers || []);
+      }
     } catch (err) {
       console.error(err);
+      setProducts(defaultProducts || []);
+      setCategories(defaultCategories || []);
+      setOffers(defaultOffers || []);
     } finally {
       setLoading(false);
     }
@@ -65,19 +89,10 @@ export function AdminProductsPage() {
     setUploading(true);
     
     try {
-      const token = localStorage.getItem("token");
       const uploadedUrls = [];
-      
       for (const file of files) {
-        const fd = new FormData();
-        fd.append("image", file);
-        const res = await fetch(`${BACKEND_URL}/admin/upload`, {
-          method: "POST",
-          headers: { Authorization: `Bearer ${token}` },
-          body: fd
-        });
-        const data = await res.json();
-        if (data.url) uploadedUrls.push(data.url);
+        const url = await uploadToCloudinary(file);
+        if (url) uploadedUrls.push(url);
       }
       
       if (uploadedUrls.length > 0) {
@@ -87,7 +102,7 @@ export function AdminProductsPage() {
       }
     } catch (err) {
       console.error(err);
-      alert("Upload error");
+      alert("Cloudinary upload error");
     } finally {
       setUploading(false);
     }
@@ -141,13 +156,43 @@ export function AdminProductsPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete product?")) return;
+    if (!confirm("Delete product? This will also remove its media from Cloudinary and database.")) return;
     try {
+      const productToDelete = products.find(p => String(p.id) === String(id));
+      if (productToDelete) {
+        // Collect all image URLs for storage cleanup in Cloudinary
+        const imagesToPurge = [];
+        if (productToDelete.image_url) imagesToPurge.push(productToDelete.image_url);
+        if (Array.isArray(productToDelete.images)) imagesToPurge.push(...productToDelete.images);
+        if (Array.isArray(productToDelete.variants)) {
+          productToDelete.variants.forEach(v => {
+            if (Array.isArray(v.images)) imagesToPurge.push(...v.images);
+          });
+        }
+        for (const imgUrl of imagesToPurge) {
+          if (imgUrl && typeof imgUrl === 'string' && imgUrl.includes('cloudinary.com')) {
+            await deleteFromCloudinary(imgUrl);
+          }
+        }
+      }
+
+      // 1. Delete from Supabase
+      try {
+        await supabase.from('products').delete().eq('id', id);
+      } catch (sbErr) {
+        console.warn("Supabase direct delete note:", sbErr);
+      }
+
+      // 2. Delete from Backend REST
       const token = localStorage.getItem("token");
       await fetch(`${BACKEND_URL}/admin/products/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
-      fetchData();
+
+      // 3. Refresh local Admin view & Global Storefront Store
+      await fetchData();
+      useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
+      alert("Error deleting product: " + err.message);
     }
   };
 
@@ -159,6 +204,54 @@ export function AdminProductsPage() {
       
       const payload = { ...formData };
 
+      // Check if any old images were removed during editing to purge from Cloudinary
+      if (!isNew && editProduct) {
+        const oldImages = [];
+        if (editProduct.image_url) oldImages.push(editProduct.image_url);
+        if (Array.isArray(editProduct.images)) oldImages.push(...editProduct.images);
+        if (Array.isArray(editProduct.variants)) {
+          editProduct.variants.forEach(v => {
+            if (Array.isArray(v.images)) oldImages.push(...v.images);
+          });
+        }
+
+        const newImages = new Set();
+        if (payload.image_url) newImages.add(payload.image_url);
+        if (Array.isArray(payload.images)) payload.images.forEach(img => newImages.add(img));
+        if (Array.isArray(payload.variants)) {
+          payload.variants.forEach(v => {
+            if (Array.isArray(v.images)) v.images.forEach(img => newImages.add(img));
+          });
+        }
+
+        for (const oldImg of oldImages) {
+          if (oldImg && typeof oldImg === 'string' && oldImg.includes('cloudinary.com') && !newImages.has(oldImg)) {
+            await deleteFromCloudinary(oldImg);
+          }
+        }
+      }
+
+      // 1. Sync directly to Supabase
+      try {
+        const supabasePayload = {
+          ...(isNew ? {} : { id: editProduct.id }),
+          name: payload.name,
+          category: payload.category,
+          description: payload.description || '',
+          image_url: (payload.variants && payload.variants[0]?.images?.[0]) || payload.image_url || '',
+          images: (payload.variants && payload.variants[0]?.images) || payload.images || [],
+          variants: payload.variants || [],
+          sizes: payload.variants?.[0]?.sizes || payload.sizes || [],
+          model: payload.model || '',
+          sku: payload.product_code || payload.sku || '',
+          rating: payload.rating || 4.8
+        };
+        await supabase.from('products').upsert(supabasePayload);
+      } catch (sbErr) {
+        console.warn("Supabase direct save note:", sbErr);
+      }
+
+      // 2. Save via Backend REST API
       const res = await fetch(url, {
         method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
@@ -166,10 +259,15 @@ export function AdminProductsPage() {
       });
       const data = await res.json();
       if (!res.ok) { alert('Save failed: ' + (data.error || res.status)); return; }
+
       setEditProduct(null);
-      fetchData();
+      await fetchData();
+
+      // 3. Update global website storefront store in real time
+      useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
+      alert("Error saving product: " + err.message);
     } finally {
       setSaving(false);
     }

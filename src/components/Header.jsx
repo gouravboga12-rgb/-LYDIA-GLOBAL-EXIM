@@ -26,8 +26,10 @@ function AvatarDropdown({ user, onLogout }) {
   }, []);
 
   const initials = user?.name?.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'U';
+  const isAdmin = user?.role === 'admin';
 
   const items = [
+    ...(isAdmin ? [{ icon: Shield, label: 'Admin Panel', path: '/admin', highlight: true }] : []),
     { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
     { icon: Package, label: 'My Orders', path: '/my-orders' },
     { icon: MapPin, label: 'My Addresses', path: '/my-addresses' },
@@ -50,12 +52,19 @@ function AvatarDropdown({ user, onLogout }) {
           <div className="px-4 py-3 border-b border-[#D4AF37]/20">
             <p className="text-sm font-bold text-[#D4AF37] truncate">{user?.name}</p>
             <p className="text-[11px] text-gray-300 truncate">{user?.email}</p>
+            {isAdmin && (
+              <span className="inline-block mt-1 bg-[#D4AF37] text-[#45055B] text-[9px] font-extrabold px-2 py-0.5 rounded-full uppercase tracking-wider">
+                Administrator
+              </span>
+            )}
           </div>
 
-          {items.map(({ icon: Icon, label, path }) => (
+          {items.map(({ icon: Icon, label, path, highlight }) => (
             <button key={path} onClick={() => { navigate(path); setOpen(false); }}
-              className="w-full flex items-center gap-3 px-4 py-2.5 text-sm text-gray-200 hover:bg-[#5A0E72] hover:text-[#D4AF37] transition-colors text-left">
-              <Icon className="w-4 h-4 shrink-0 text-[#D4AF37]" />
+              className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm transition-colors text-left ${
+                highlight ? "bg-[#D4AF37]/20 text-[#D4AF37] font-bold hover:bg-[#D4AF37]/30" : "text-gray-200 hover:bg-[#5A0E72] hover:text-[#D4AF37]"
+              }`}>
+              <Icon className={`w-4 h-4 shrink-0 ${highlight ? "text-[#D4AF37]" : "text-[#D4AF37]"}`} />
               {label}
             </button>
           ))}
