@@ -57,7 +57,7 @@ function App() {
   return (
     <>
       {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
-      <div style={{ opacity: showSplash ? 0 : 1 }} className="transition-opacity duration-300">
+      <div className="w-full min-h-screen">
         <BrowserRouter>
           <Routes>
             {/* Auth pages — no layout */}

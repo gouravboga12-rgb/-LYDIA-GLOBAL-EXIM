@@ -249,6 +249,17 @@ export function HomePage() {
     }
   ];
 
+const HERO_ASSET_MAP = {
+  '/assets/banner_1_velvet_necklace.jpg': banner1Velvet,
+  '/assets/banner_2_bridal_kundan.jpg': banner2Bridal,
+  '/assets/banner_3_antitarnish_gold.jpg': banner3AntiTarnish,
+  '/assets/banner_4_designer_jewelry.jpg': banner4Designer,
+  1: banner1Velvet,
+  2: banner2Bridal,
+  3: banner3AntiTarnish,
+  4: banner4Designer,
+};
+
   const activeSlides = useMemo(() => {
     const validBanners = (banners || []).filter(b => b.active !== false && b.is_active !== false);
     if (validBanners.length > 0) {
@@ -256,13 +267,14 @@ export function HomePage() {
         const parts = (b.title || '').split(',');
         const titleLine1 = parts[0] ? parts[0].trim() + (parts.length > 1 ? ',' : '') : b.title;
         const titleLine2 = parts.slice(1).join(',').trim();
+        const slideImg = HERO_ASSET_MAP[b.image_url] || HERO_ASSET_MAP[b.id] || b.image_url || banner1Velvet;
         return {
           id: b.id,
           tag: b.tag || 'Exclusive Collection',
           titleLine1: titleLine1 || 'TIMELESS BEAUTY,',
           titleLine2: titleLine2,
           subtitle: b.subtitle || 'Discover hand-selected artisan jewelry tailored to perfection for every celebration.',
-          image: b.image_url,
+          image: slideImg,
           link: b.link_url || '/category/all'
         };
       });
