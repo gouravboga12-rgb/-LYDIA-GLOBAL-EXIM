@@ -19,9 +19,8 @@ export function ProductCarousel({ title = "You May Also Like", maxItems = 4, cat
   
   displayProducts = displayProducts.slice(0, maxItems);
 
-  if (displayProducts.length === 0) return null;
-
   useGSAP(() => {
+    if (!container.current || displayProducts.length === 0) return;
     gsap.from('.carousel-item', {
       scrollTrigger: {
         trigger: container.current,
@@ -33,7 +32,9 @@ export function ProductCarousel({ title = "You May Also Like", maxItems = 4, cat
       stagger: 0.1,
       ease: 'power3.out'
     });
-  }, { scope: container });
+  }, { scope: container, dependencies: [displayProducts.length] });
+
+  if (displayProducts.length === 0) return null;
 
   return (
     <div ref={container} className="py-16 md:py-24 border-t border-gray-100 mt-12 w-full">
