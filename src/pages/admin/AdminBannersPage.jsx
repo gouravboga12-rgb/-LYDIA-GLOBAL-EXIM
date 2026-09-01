@@ -5,6 +5,28 @@ import { motion } from "framer-motion";
 import defaultBanners from "../../data/banners.json";
 import { uploadToCloudinary, deleteFromCloudinary } from "../../utils/cloudinary";
 import { supabase } from "../../utils/supabase";
+import banner1Velvet from '../../assets/banner_1_velvet_necklace.jpg';
+import banner2Bridal from '../../assets/banner_2_bridal_kundan.jpg';
+import banner3AntiTarnish from '../../assets/banner_3_antitarnish_gold.jpg';
+import banner4Designer from '../../assets/banner_4_designer_jewelry.jpg';
+
+const BANNER_ASSET_MAP = {
+  '/assets/banner_1_velvet_necklace.jpg': banner1Velvet,
+  '/assets/banner_2_bridal_kundan.jpg': banner2Bridal,
+  '/assets/banner_3_antitarnish_gold.jpg': banner3AntiTarnish,
+  '/assets/banner_4_designer_jewelry.jpg': banner4Designer,
+  1: banner1Velvet,
+  2: banner2Bridal,
+  3: banner3AntiTarnish,
+  4: banner4Designer,
+};
+
+function getBannerSrc(banner) {
+  if (!banner) return '';
+  if (banner.image_url && BANNER_ASSET_MAP[banner.image_url]) return BANNER_ASSET_MAP[banner.image_url];
+  if (BANNER_ASSET_MAP[banner.id]) return BANNER_ASSET_MAP[banner.id];
+  return banner.image_url || '';
+}
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
@@ -165,35 +187,48 @@ export function AdminBannersPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {banners.map((banner, i) => (
-          <motion.div key={banner.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-            className="bg-white rounded-2xl border border-[#45055B]/10 overflow-hidden shadow-sm">
-            <div className="relative aspect-[21/9] bg-[#FAF6F0]">
-              {banner.image_url ? (
-                <img src={banner.image_url} alt={banner.title} className="w-full h-full object-cover" />
-              ) : (
-                <div className="flex items-center justify-center h-full text-[#45055B]/30"><ImageIcon className="w-10 h-10" /></div>
-              )}
-              <div className="absolute top-2 right-2 flex gap-2">
-                <button onClick={() => handleDelete(banner.id)} className="bg-white/90 hover:bg-white text-red-500 p-2 rounded-full shadow-lg transition-colors">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-                <button onClick={() => handleEdit(banner)} className="bg-white/90 hover:bg-white text-[#45055B] p-2 rounded-full shadow-lg transition-colors">
-                  <Edit2 className="w-4 h-4" />
-                </button>
-              </div>
-              {!banner.is_active && (
-                <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
-                  <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Inactive</span>
+        {banners.map((banner, i) => {
+          const imgSrc = getBannerSrc(banner);
+          const isInactive = banner.is_active === false || banner.active === false;
+          return (
+            <motion.div key={banner.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+              className="bg-white rounded-2xl border border-[#45055B]/10 overflow-hidden shadow-sm">
+              <div className="relative aspect-[21/9] bg-[#FAF6F0]">
+                {imgSrc ? (
+                  <img
+                    src={imgSrc}
+                    alt={banner.title}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      if (BANNER_ASSET_MAP[banner.id] && e.currentTarget.src !== BANNER_ASSET_MAP[banner.id]) {
+                        e.currentTarget.src = BANNER_ASSET_MAP[banner.id];
+                      }
+                    }}
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-[#45055B]/30"><ImageIcon className="w-10 h-10" /></div>
+                )}
+                <div className="absolute top-2 right-2 flex gap-2">
+                  <button onClick={() => handleDelete(banner.id)} className="bg-white/90 hover:bg-white text-red-500 p-2 rounded-full shadow-lg transition-colors cursor-pointer">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                  <button onClick={() => handleEdit(banner)} className="bg-white/90 hover:bg-white text-[#45055B] p-2 rounded-full shadow-lg transition-colors cursor-pointer">
+                    <Edit2 className="w-4 h-4" />
+                  </button>
                 </div>
-              )}
-            </div>
-            <div className="p-4">
-              <h3 className="font-sans font-bold text-[#45055B] truncate">{banner.title || "Untitled Banner"}</h3>
-              <p className="text-[#45055B]/50 text-xs mt-1 truncate">{banner.link_url || "No link"}</p>
-            </div>
-          </motion.div>
-        ))}
+                {isInactive && (
+                  <div className="absolute inset-0 bg-black/40 flex items-center justify-center pointer-events-none">
+                    <span className="bg-red-500 text-white px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">Inactive</span>
+                  </div>
+                )}
+              </div>
+              <div className="p-4">
+                <h3 className="font-sans font-bold text-[#45055B] truncate">{banner.title || "Untitled Banner"}</h3>
+                <p className="text-[#45055B]/50 text-xs mt-1 truncate">{banner.link_url || "/category/all"}</p>
+              </div>
+            </motion.div>
+          );
+        })}
       </div>
 
       {editBanner && (
