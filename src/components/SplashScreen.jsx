@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
-import logoImg from '../assets/logo.png';
+import headerLogo from '../assets/header_logo.png';
 
 export function SplashScreen({ onComplete }) {
   const container = useRef(null);
@@ -89,9 +89,9 @@ export function SplashScreen({ onComplete }) {
       <div ref={logoGroup} className="relative z-10 flex flex-col items-center justify-center px-4">
         <div className="flex items-center justify-center">
           <img
-            src={logoImg}
+            src={headerLogo}
             alt="LYDIA GLOBAL EXIM Logo"
-            className="w-[280px] sm:w-[380px] md:w-[480px] max-w-[90vw] max-h-[60vh] h-auto object-contain mix-blend-multiply"
+            className="w-[280px] sm:w-[380px] md:w-[480px] max-w-[90vw] max-h-[60vh] h-auto object-contain drop-shadow-sm"
           />
         </div>
         <div className="flex flex-col items-center text-center mt-3">
