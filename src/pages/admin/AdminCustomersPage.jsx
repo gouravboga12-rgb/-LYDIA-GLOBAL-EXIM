@@ -2,6 +2,9 @@ import React, { useEffect, useState } from "react";
 import { Users, Mail, Phone, Calendar, Search, Trash2, CheckCircle, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
+import defaultUsers from "../../data/users.json";
+import { supabase } from "../../utils/supabase";
+
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 function VerifiedBadge({ verified, label }) {
@@ -17,20 +20,66 @@ function VerifiedBadge({ verified, label }) {
 }
 
 export function AdminCustomersPage() {
-  const [customers, setCustomers] = useState([]);
+  const [customers, setCustomers] = useState(defaultUsers || []);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [clearing, setClearing] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) return;
-    fetch(`${BACKEND_URL}/admin/users`, { headers: { Authorization: `Bearer ${token}` } })
-      .then((r) => r.json())
-      .then((d) => { if (d.users) setCustomers(d.users); })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+    fetchCustomers();
   }, []);
+
+  const fetchCustomers = async () => {
+    try {
+      let combined = [];
+
+      // 1. Fetch from Supabase profiles
+      try {
+        const { data: profiles, error } = await supabase.from('profiles').select('*');
+        if (!error && profiles && profiles.length > 0) {
+          combined = profiles.map(p => ({
+            id: p.id,
+            name: p.full_name || p.name || 'Customer',
+            email: p.email || '',
+            phone: p.phone || p.mobile || '',
+            country: p.country || 'India',
+            role: p.role || 'customer',
+            created_at: p.created_at,
+            is_email_verified: true,
+            is_phone_verified: !!(p.phone || p.mobile)
+          }));
+        }
+      } catch (e) {}
+
+      // 2. Fetch from Backend API
+      const token = localStorage.getItem("token");
+      const h = token ? { Authorization: `Bearer ${token}` } : {};
+      const res = await fetch(`${BACKEND_URL}/admin/users`, { headers: h }).catch(() => null);
+      const data = res ? await res.json().catch(() => ({})) : {};
+
+      if (data && data.users && data.users.length > 0) {
+        // Merge without duplicating emails
+        const existingEmails = new Set(combined.map(u => u.email.toLowerCase()));
+        for (const u of data.users) {
+          if (!existingEmails.has((u.email || '').toLowerCase())) {
+            combined.push(u);
+          }
+        }
+      }
+
+      // 3. Fallback to default demo customers if database is still fresh
+      if (combined.length === 0) {
+        combined = defaultUsers || [];
+      }
+
+      setCustomers(combined);
+    } catch (err) {
+      console.error(err);
+      setCustomers(defaultUsers || []);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleClearUser = async (customer) => {
     if (!window.confirm(
