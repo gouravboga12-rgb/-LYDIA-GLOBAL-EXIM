@@ -263,12 +263,24 @@ export function ProductDetailPage() {
                 </div>
               )}
               {mainImg ? (
-                <div className="w-full h-full p-4">
-                  <ImageZoom 
-                    src={mainImg} 
-                    alt={product.name} 
-                    className="w-full h-full rounded-xl" 
-                  />
+                <div className="w-full h-full p-4 flex items-center justify-center">
+                  {(/\.(mp4|webm|mov|avi|mkv|3gp)($|\?)/i.test(mainImg) || mainImg.includes('/video/upload/')) ? (
+                    <video
+                      src={mainImg}
+                      controls
+                      autoPlay
+                      muted
+                      loop
+                      playsInline
+                      className="max-h-full max-w-full rounded-xl object-contain shadow-sm"
+                    />
+                  ) : (
+                    <ImageZoom 
+                      src={mainImg} 
+                      alt={product.name} 
+                      className="w-full h-full rounded-xl" 
+                    />
+                  )}
                 </div>
               ) : (
                 <div className="w-full h-full flex items-center justify-center text-gray-400">No Image Available</div>
@@ -295,15 +307,25 @@ export function ProductDetailPage() {
             {/* Thumbnails */}
             {productImages.length > 1 && (
               <div className="flex gap-3 overflow-x-auto hide-scrollbar mt-4 pb-2">
-                {productImages.map((img, i) => (
-                  <button 
-                    key={i} 
-                    onClick={() => setMainImg(img)}
-                    className={`w-20 h-20 bg-white rounded-xl overflow-hidden flex-shrink-0 transition-all ${mainImg === img ? 'border-2 border-brand-dark-blue shadow-sm' : 'border-2 border-transparent opacity-70 hover:opacity-100'}`}
-                  >
-                    <img src={img} alt={`thumb-${i}`} className="w-full h-full object-cover p-1" />
-                  </button>
-                ))}
+                {productImages.map((img, i) => {
+                  const isVid = /\.(mp4|webm|mov|avi|mkv|3gp)($|\?)/i.test(img) || img.includes('/video/upload/');
+                  return (
+                    <button 
+                      key={i} 
+                      onClick={() => setMainImg(img)}
+                      className={`w-20 h-20 bg-white rounded-xl overflow-hidden flex-shrink-0 relative transition-all ${mainImg === img ? 'border-2 border-brand-dark-blue shadow-sm' : 'border-2 border-transparent opacity-70 hover:opacity-100'}`}
+                    >
+                      {isVid ? (
+                        <div className="w-full h-full bg-slate-900 flex flex-col items-center justify-center text-white">
+                          <PlayCircle className="w-6 h-6 text-brand-gold" />
+                          <span className="text-[9px] font-bold text-amber-300 mt-0.5">VIDEO</span>
+                        </div>
+                      ) : (
+                        <img src={img} alt={`thumb-${i}`} className="w-full h-full object-cover p-1" />
+                      )}
+                    </button>
+                  );
+                })}
               </div>
             )}
           </div>

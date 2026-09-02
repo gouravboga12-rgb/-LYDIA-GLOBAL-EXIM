@@ -33,20 +33,22 @@ export function extractCloudinaryPublicId(url) {
 }
 
 /**
- * Upload an image file directly to Cloudinary
+ * Upload an image or video file directly to Cloudinary
  */
 export async function uploadToCloudinary(file) {
   if (!file) return null;
 
   const cloudName = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'n5l3h5gf';
   const uploadPreset = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET || 'lydia_jewelry_uploads';
+  const isVideo = file.type?.startsWith('video/') || /\.(mp4|webm|mov|avi|mkv|3gp)$/i.test(file.name || '');
+  const resourceType = isVideo ? 'video' : 'auto';
 
   const formData = new FormData();
   formData.append('file', file);
   formData.append('upload_preset', uploadPreset);
 
   try {
-    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/${resourceType}/upload`, {
       method: 'POST',
       body: formData
     });
