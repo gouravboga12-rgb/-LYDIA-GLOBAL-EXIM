@@ -3,11 +3,14 @@
     "id": 10,
     "name": "Royal Kundan Choker Necklace with Pearls",
     "description": "Exquisitely handcrafted Royal Kundan Choker Necklace with Pearls by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 1299
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "Sterling Silver",
@@ -21,11 +24,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:43:37.813Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": 1,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/necklace.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -62,17 +81,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 9,
     "name": "Antique Matte Gold Temple Haran Necklace",
     "description": "Exquisitely handcrafted Antique Matte Gold Temple Haran Necklace by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 1449
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "Sterling Silver",
@@ -86,11 +111,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:43:37.413Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": 1,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/necklace.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -127,17 +168,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 20,
     "name": "Royal Chandbali Earrings with Faux Pearls",
     "description": "Exquisitely handcrafted Royal Chandbali Earrings with Faux Pearls by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 499
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "18k Rose Gold",
@@ -151,11 +198,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:43:41.838Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/earrings.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -192,17 +255,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 19,
     "name": "Handcrafted Antique Gold Temple Jhumkas",
     "description": "Exquisitely handcrafted Handcrafted Antique Gold Temple Jhumkas by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 549
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "Polki",
@@ -216,11 +285,27 @@
     "is_bestseller": true,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:43:40.948Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/earrings.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -257,17 +342,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 50,
     "name": "Royal Matte Gold Antique Temple Bangles (Set of 2)",
     "description": "Exquisitely handcrafted Royal Matte Gold Antique Temple Bangles (Set of 2) by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 899
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "18k Rose Gold",
@@ -281,11 +372,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": true,
-    "created_at": "2026-07-22T19:44:04.027Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/bangles.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -322,17 +429,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 49,
     "name": "Kundan & Ruby Studded Bridal Chooda Bangles (Set of 4)",
     "description": "Exquisitely handcrafted Kundan & Ruby Studded Bridal Chooda Bangles (Set of 4) by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 999
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "18k Rose Gold",
@@ -346,11 +459,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:44:00.504Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": true,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/bangles.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -387,17 +516,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 30,
     "name": "Royal Kundan Adjustable Statement Cocktail Ring",
     "description": "Exquisitely handcrafted Royal Kundan Adjustable Statement Cocktail Ring by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 349
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "22k Gold",
@@ -411,11 +546,27 @@
     "is_bestseller": true,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:43:52.918Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/rings.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -452,17 +603,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 29,
     "name": "Brilliant Cut Solitaire CZ Halo Ring",
     "description": "Exquisitely handcrafted Brilliant Cut Solitaire CZ Halo Ring by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 379
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "22k Gold",
@@ -476,11 +633,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:43:52.652Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/rings.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -517,17 +690,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 40,
     "name": "Sparkling AAA Zirconia Tennis Bracelet",
     "description": "Exquisitely handcrafted Sparkling AAA Zirconia Tennis Bracelet by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 599
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "18k Rose Gold",
@@ -541,11 +720,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": true,
-    "created_at": "2026-07-22T19:43:55.858Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": true,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/bracelets.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -582,17 +777,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 39,
     "name": "Kundan & Pearl Adjustable Kada Bracelet",
     "description": "Exquisitely handcrafted Kundan & Pearl Adjustable Kada Bracelet by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 659
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "Kundan",
@@ -606,11 +807,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": true,
-    "created_at": "2026-07-22T19:43:55.527Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/bracelets.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -647,17 +864,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 88,
     "name": "Sparkling American Diamond CZ Partywear Necklace Set",
     "description": "Exquisitely handcrafted Sparkling American Diamond CZ Partywear Necklace Set by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
+        "mrp": 3899,
+        "code": "123",
         "size": "Standard",
-        "price": 2899
+        "stock": 10,
+        "our_price": 2899
       }
     ],
     "color": "18k Rose Gold",
@@ -671,7 +894,7 @@
     "is_bestseller": true,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:44:26.768Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": true,
     "offer_id": null,
     "product_code": null,
@@ -683,7 +906,7 @@
             "mrp": 3899,
             "code": "123",
             "size": "Standard",
-            "stock": 1,
+            "stock": 10,
             "our_price": 2899
           }
         ],
@@ -728,7 +951,10 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 86,
@@ -737,8 +963,11 @@
     "stock": 10,
     "sizes": [
       {
+        "mrp": 4299,
+        "code": "345",
         "size": "Standard",
-        "price": 3299
+        "stock": 10,
+        "our_price": 3299
       }
     ],
     "color": "18k Rose Gold",
@@ -785,11 +1014,14 @@
     "id": 80,
     "name": "Classic 22k Gold Micro Plated Rope Chain (24 inch)",
     "description": "Exquisitely handcrafted Classic 22k Gold Micro Plated Rope Chain (24 inch) by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 699
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "22k Gold",
@@ -803,11 +1035,27 @@
     "is_bestseller": true,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:44:24.717Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": 2,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/chains.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -844,17 +1092,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 74,
     "name": "Minimalist Dainty Cable Chain for Pendants",
     "description": "Exquisitely handcrafted Minimalist Dainty Cable Chain for Pendants by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 1059
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "Polki",
@@ -868,11 +1122,27 @@
     "is_bestseller": true,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:44:23.208Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": 2,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/chains.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -909,17 +1179,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 69,
     "name": "Modern Minimalist Solitaire CZ Mangalsutra",
     "description": "Exquisitely handcrafted Modern Minimalist Solitaire CZ Mangalsutra by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 879
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "18k Rose Gold",
@@ -933,11 +1209,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:44:19.427Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/mangalsutras.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -974,17 +1266,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 62,
     "name": "Geometric American Diamond Pendant Mangalsutra",
     "description": "Exquisitely handcrafted Geometric American Diamond Pendant Mangalsutra by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 1439
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "22k Gold",
@@ -998,11 +1296,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:44:12.893Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/mangalsutras.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -1039,17 +1353,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 57,
     "name": "Ganesha Spiritual Micro Gold Plated Pendant",
     "description": "Exquisitely handcrafted Ganesha Spiritual Micro Gold Plated Pendant by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 569
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "Sterling Silver",
@@ -1063,11 +1383,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": true,
-    "created_at": "2026-07-22T19:44:11.193Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/pendants.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -1104,17 +1440,23 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 56,
     "name": "Victorian Emerald Green Crystal Halo Pendant",
     "description": "Exquisitely handcrafted Victorian Emerald Green Crystal Halo Pendant by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
-        "price": 609
+        "mrp": 0,
+        "our_price": 0,
+        "stock": 10,
+        "code": ""
       }
     ],
     "color": "22k Gold",
@@ -1128,11 +1470,27 @@
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": true,
-    "created_at": "2026-07-22T19:44:10.493Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": null,
-    "variants": [],
+    "variants": [
+      {
+        "color": "Gold",
+        "images": [
+          "/images/pendants.png"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 0,
+            "our_price": 0,
+            "stock": 10,
+            "code": ""
+          }
+        ]
+      }
+    ],
     "reviews": [],
     "details": [
       {
@@ -1169,6 +1527,9 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null
+    "instagram_reel_url": null,
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   }
 ]

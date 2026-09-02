@@ -26,7 +26,23 @@ export const useStoreData = create((set) => ({
         ]);
 
         if (sbProds.data && sbProds.data.length > 0) {
-          liveProducts = sbProds.data;
+          liveProducts = sbProds.data.map(p => {
+            let variants = Array.isArray(p.variants) && p.variants.length > 0 ? p.variants : null;
+            if (!variants) {
+              const match = (defaultProducts || []).find(dp => dp.id === p.id || dp.name === p.name);
+              variants = match?.variants || [{
+                color: p.color || "Gold",
+                images: Array.isArray(p.images) ? p.images : (p.image_url ? [p.image_url] : []),
+                sizes: [{ size: "Standard", mrp: p.mrp || p.price || 0, our_price: p.price || 0, stock: p.stock !== undefined ? p.stock : 10, code: p.sku || p.product_code || "" }]
+              }];
+            }
+            return {
+              ...p,
+              variants: variants,
+              sizes: variants[0]?.sizes || [],
+              stock: p.stock !== undefined ? p.stock : 10
+            };
+          });
         }
         if (sbCats.data && sbCats.data.length > 0) {
           liveCategories = sbCats.data;
