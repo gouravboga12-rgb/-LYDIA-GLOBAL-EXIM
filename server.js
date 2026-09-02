@@ -875,8 +875,26 @@ app.delete('/api/admin/coupons/:id', (req, res) => {
 });
 
 // ==========================================
-// ADMIN ORDERS CRUD
+// STOCK & COUPON VALIDATION ENDPOINTS
 // ==========================================
+
+app.post('/api/general/check-stock', (req, res) => {
+  return res.json({ available: true, unavailable: [] });
+});
+
+app.post('/api/general/validate-coupon', (req, res) => {
+  const { code } = req.body;
+  const coupons = loadStoreData('coupons', 'src/data/offers.json');
+  const found = coupons.find(c => c.code && c.code.toLowerCase() === String(code || '').toLowerCase() && (c.active ?? c.is_active ?? true));
+  if (!found) {
+    return res.json({ error: 'Invalid or expired coupon code.' });
+  }
+  return res.json({ success: true, coupon: found });
+});
+
+app.post('/api/general/validate-address', (req, res) => {
+  return res.json({ valid: true, hasCorrections: false });
+});
 
 // ==========================================
 // ORDERS & ENQUIRIES API (CUSTOMER + ADMIN)

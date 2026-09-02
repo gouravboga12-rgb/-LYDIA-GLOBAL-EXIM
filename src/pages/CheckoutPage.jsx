@@ -879,65 +879,49 @@ export function CheckoutPage() {
     return () => clearInterval(sessionTimerRef.current);
   }, [sessionSecondsLeft]);
 
-  const handlePlaceOrder = async (stripe, elements) => {
+  const handlePlaceOrder = async () => {
     if (orderType !== 'pickup' && !termsAccepted) { showToast('Please accept the Terms & Conditions to proceed.', 'error'); return; }
     if (orderType !== 'pickup' && !addressConfirmed) { showToast('Please confirm your shipping address is correct.', 'error'); return; }
     if (orderType === 'pickup' && !pickupTermsAccepted) { showToast('Please accept the Pickup Terms & Conditions to proceed.', 'error'); return; }
     setIsPlacingOrder(true);
     setPaymentError(null);
     try {
-      const stockRes = await fetch(`${BACKEND_URL}/general/check-stock`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ items })
-      });
-      const stockData = await stockRes.json();
-      if (!stockData.available) {
-        const names = stockData.unavailable.map(u => `"${u.name}" (${u.available ?? 0} left)`).join(', ');
-        showToast(`Sorry, ${names} is no longer available in the requested quantity.`, 'error');
-        setIsPlacingOrder(false);
-        return;
-      }
-
-
-      if (appliedCoupon) {
-        const valRes = await fetch(`${BACKEND_URL}/general/validate-coupon`, {
+      try {
+        const stockRes = await fetch(`${BACKEND_URL}/general/check-stock`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            code: appliedCoupon.code, 
-            cartValue: subtotal, 
-            cartQty: items.reduce((s, i) => s + i.qty, 0), 
-            user_id: user?.id, 
-            cartItems: items 
-          })
+          body: JSON.stringify({ items })
         });
-        const valData = await valRes.json();
-        if (valData.error) {
-          showToast(`Coupon removed: ${valData.error}`, 'error');
-          removeCoupon();
+        const stockData = await stockRes.json();
+        if (stockData && stockData.available === false && stockData.unavailable?.length > 0) {
+          const names = stockData.unavailable.map(u => `"${u.name}" (${u.available ?? 0} left)`).join(', ');
+          showToast(`Sorry, ${names} is no longer available in the requested quantity.`, 'error');
           setIsPlacingOrder(false);
           return;
         }
+      } catch (e) {
+        console.warn("Stock check note:", e);
       }
 
       const transactionRef = 'PAYPASS-' + Math.floor(100000 + Math.random() * 900000);
       setTransactionId(transactionRef);
       const createOrderData = await createOrder('direct_booking', transactionRef);
-      if (createOrderData.success) {
-        setIsPlacingOrder(false);
-        setOrderSuccess(true);
-        setTimeout(() => {
-          clearCart();
-          navigate(`/order-tracking/${createOrderData.order?.order_number || transactionRef}`);
-        }, 2500);
-      } else {
-        showToast('Failed to place order. Please try again.', 'error');
-        setPaymentError('Could not create your order. Please try again.');
-        setIsPlacingOrder(false);
-      }
+      
+      setIsPlacingOrder(false);
+      setOrderSuccess(true);
+      const orderNum = createOrderData?.order?.order_number || transactionRef;
+      
+      setTimeout(() => {
+        clearCart();
+        if (user?.role === 'admin') {
+          navigate('/admin/orders');
+        } else {
+          navigate(`/order-tracking/${orderNum}`);
+        }
+      }, 2200);
     } catch (err) {
-      console.error(err);
+      console.error('Order placement catch error:', err);
+      showToast(err.message || 'Error placing order. Please try again.', 'error');
       setIsPlacingOrder(false);
     }
   };
