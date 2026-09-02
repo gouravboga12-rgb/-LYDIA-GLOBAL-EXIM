@@ -127,23 +127,6 @@ export function AdminCategoriesPage() {
     setFormData({ ...formData, models: formData.models.filter(m => m !== modelToRemove) });
   };
 
-  const handleImageUpload = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    setUploading(true);
-    try {
-      const url = await uploadToCloudinary(file);
-      if (url) {
-        setFormData({ ...formData, image_url: url });
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Error uploading image");
-    } finally {
-      setUploading(false);
-    }
-  };
-
   const handleSave = async () => {
     setSaving(true);
     try {
