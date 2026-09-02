@@ -343,28 +343,67 @@ export function AdminProductsPage() {
     try {
       const isCurrentlyInStock = Number(row.size.stock || 0) > 0;
       const newStock = isCurrentlyInStock ? 0 : 10;
-      const product = row.product;
-      const variants = Array.isArray(product.variants) ? JSON.parse(JSON.stringify(product.variants)) : [];
+      const targetProductId = row.product.id;
 
-      let updated = false;
-      for (let v of variants) {
-        if (v.color === row.variant.color) {
-          for (let s of (v.sizes || [])) {
-            if ((s.code && s.code === row.size.code) || (s.size === row.size.size)) {
-              s.stock = newStock;
-              updated = true;
-              break;
-            }
-          }
+      // 1. Calculate updated variants for this product
+      let variants = Array.isArray(row.product.variants) && row.product.variants.length > 0
+        ? JSON.parse(JSON.stringify(row.product.variants))
+        : [{
+            color: row.product.color || "Gold",
+            images: Array.isArray(row.product.images) ? row.product.images : (row.product.image_url ? [row.product.image_url] : []),
+            sizes: [{ size: "Standard", mrp: row.product.mrp || row.product.price || 0, our_price: row.product.price || 0, stock: newStock, code: row.product.sku || row.product.product_code || "" }]
+          }];
+
+      const vIdx = row.vIndex ?? 0;
+      const sIdx = row.sIndex ?? 0;
+
+      if (!variants[vIdx]) {
+        variants[vIdx] = {
+          color: row.variant?.color || "Gold",
+          images: [],
+          sizes: [{ size: "Standard", mrp: 0, our_price: 0, stock: newStock, code: "" }]
+        };
+      }
+
+      if (!Array.isArray(variants[vIdx].sizes) || variants[vIdx].sizes.length === 0) {
+        variants[vIdx].sizes = [{ size: "Standard", mrp: 0, our_price: 0, stock: newStock, code: "" }];
+      } else if (variants[vIdx].sizes[sIdx]) {
+        variants[vIdx].sizes[sIdx].stock = newStock;
+      } else {
+        variants[vIdx].sizes[0].stock = newStock;
+      }
+
+      // 2. Optimistically update local component state immediately
+      setProducts(prev => prev.map(p => {
+        if (p.id === targetProductId) {
+          return {
+            ...p,
+            variants: variants,
+            sizes: variants[0]?.sizes || [],
+            stock: newStock
+          };
         }
-      }
+        return p;
+      }));
 
-      if (!updated && variants.length > 0 && variants[0].sizes && variants[0].sizes.length > 0) {
-        variants[0].sizes[0].stock = newStock;
-      }
+      // 3. Update global Zustand store optimistically
+      useStoreData.setState(state => ({
+        products: state.products.map(p => {
+          if (p.id === targetProductId) {
+            return {
+              ...p,
+              variants: variants,
+              sizes: variants[0]?.sizes || [],
+              stock: newStock
+            };
+          }
+          return p;
+        })
+      }));
 
-      const numId = Number(product.id);
-      const supabaseId = !isNaN(numId) ? numId : product.id;
+      // 4. Update Supabase
+      const numId = Number(targetProductId);
+      const supabaseId = !isNaN(numId) ? numId : targetProductId;
 
       await supabase.from('products').update({
         variants: variants,
@@ -372,18 +411,18 @@ export function AdminProductsPage() {
         stock: newStock
       }).eq('id', supabaseId);
 
+      // 5. Update Backend REST API
       const token = localStorage.getItem("token");
-      await fetch(`${BACKEND_URL}/admin/products/${product.id}`, {
+      await fetch(`${BACKEND_URL}/admin/products/${targetProductId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ ...product, variants, stock: newStock })
+        body: JSON.stringify({ ...row.product, variants, sizes: variants[0]?.sizes || [], stock: newStock })
       }).catch(() => null);
 
-      await fetchData();
-      await useStoreData.getState().fetchData();
     } catch (err) {
       console.error('Failed to toggle stock:', err);
       alert('Error updating stock: ' + err.message);
+      await fetchData();
     } finally {
       setTogglingSkuId(null);
     }
