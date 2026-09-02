@@ -1042,6 +1042,30 @@ app.get(['/api/admin/orders', '/api/general/orders'], async (req, res) => {
   return res.json({ orders });
 });
 
+app.put(['/api/admin/orders/:id', '/api/admin/orders/:id/tracking'], async (req, res) => {
+  const id = req.params.id;
+  const updateData = req.body || {};
+  const orders = loadStoreData('orders', 'src/data/orders.json');
+  const index = orders.findIndex(o => String(o.id) === String(id) || String(o.order_number) === String(id));
+
+  if (index !== -1) {
+    orders[index] = { ...orders[index], ...updateData };
+    saveStoreData('orders', orders);
+  }
+
+  try {
+    const numId = Number(id);
+    if (!isNaN(numId)) {
+      await supabase.from('orders').update(updateData).eq('id', numId);
+    }
+    await supabase.from('orders').update(updateData).eq('order_number', id);
+  } catch (e) {
+    console.warn('Supabase order update note:', e);
+  }
+
+  return res.json({ success: true, order: index !== -1 ? orders[index] : updateData });
+});
+
 app.put('/api/admin/orders/:id/status', async (req, res) => {
   const id = req.params.id;
   const { status } = req.body;

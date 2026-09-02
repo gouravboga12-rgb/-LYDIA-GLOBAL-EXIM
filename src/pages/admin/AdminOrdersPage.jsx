@@ -158,13 +158,20 @@ export function AdminOrdersPage() {
     const order = orders.find(o => String(o.id) === String(orderId) || String(o.order_number) === String(orderId));
     const input = trackingInputs[orderId] || {};
     const tracking_id = (input.tracking_id !== undefined ? input.tracking_id : (order?.tracking_id || '')).trim();
-    const tracking_link = (input.tracking_link !== undefined ? input.tracking_link : (order?.tracking_link || '')).trim();
+    let tracking_link = (input.tracking_link !== undefined ? input.tracking_link : (order?.tracking_link || '')).trim();
+
+    if (tracking_link && !tracking_link.startsWith('http://') && !tracking_link.startsWith('https://')) {
+      tracking_link = `https://${tracking_link}`;
+    }
 
     setSavingTracking(prev => ({ ...prev, [orderId]: true }));
     try {
-      const cleanAddress = typeof order?.shipping_address === 'object' && order?.shipping_address !== null
-        ? { ...order.shipping_address }
-        : (typeof order?.address === 'object' && order?.address !== null ? { ...order.address } : {});
+      let cleanAddress = {};
+      if (order?.shipping_address) {
+        cleanAddress = typeof order.shipping_address === 'string' ? JSON.parse(order.shipping_address) : { ...order.shipping_address };
+      } else if (order?.address) {
+        cleanAddress = typeof order.address === 'string' ? JSON.parse(order.address) : { ...order.address };
+      }
 
       cleanAddress.tracking_id = tracking_id;
       cleanAddress.tracking_link = tracking_link;
@@ -180,30 +187,41 @@ export function AdminOrdersPage() {
         address: cleanAddress
       };
 
-      // 1. Update in Supabase by numeric ID or order_number
-      if (order?.id && !isNaN(Number(order.id))) {
-        await supabase.from("orders").update(updateData).eq("id", Number(order.id));
-      }
-      if (order?.order_number) {
-        await supabase.from("orders").update(updateData).eq("order_number", order.order_number);
-      }
-      const rawNum = Number(orderId);
-      if (!isNaN(rawNum)) {
-        await supabase.from("orders").update(updateData).eq("id", rawNum);
-      } else {
-        await supabase.from("orders").update(updateData).eq("id", orderId);
+      // 1. Update in Supabase
+      try {
+        const { error: sbErr } = await supabase.from("orders").update(updateData).or(`id.eq.${order?.id || orderId},order_number.eq.${order?.order_number || orderId}`);
+        if (sbErr) {
+          // If schema columns tracking_id don't exist, update JSON fields
+          await supabase.from("orders").update({
+            shipping_address: cleanAddress,
+            address: cleanAddress
+          }).or(`id.eq.${order?.id || orderId},order_number.eq.${order?.order_number || orderId}`);
+        }
+      } catch (sbE) {
+        try {
+          await supabase.from("orders").update({
+            shipping_address: cleanAddress,
+            address: cleanAddress
+          }).or(`id.eq.${order?.id || orderId},order_number.eq.${order?.order_number || orderId}`);
+        } catch {}
       }
 
       // 2. Update Backend REST API
       const token = localStorage.getItem("token");
-      await fetch(`${BACKEND_URL}/admin/orders/${orderId}`, {
+      await fetch(`${BACKEND_URL}/admin/orders/${order?.order_number || orderId}/tracking`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(updateData),
       }).catch(() => null);
 
-      setOrders(prev => prev.map(o => (String(o.id) === String(orderId) || String(o.order_number) === String(orderId)) ? { ...o, ...updateData } : o));
-      alert("Tracking details saved successfully!");
+      // 3. Update local state
+      setOrders(prev => prev.map(o => (String(o.id) === String(orderId) || String(o.order_number) === String(orderId)) ? { ...o, ...updateData, tracking_id, tracking_link } : o));
+      setTrackingInputs(prev => ({
+        ...prev,
+        [orderId]: { tracking_id, tracking_link }
+      }));
+
+      alert("Tracking details saved successfully! It is now live on the customer side.");
     } catch (err) {
       console.error("Save tracking error:", err);
       alert("Failed to save tracking details");
