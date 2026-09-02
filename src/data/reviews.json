@@ -1,68 +1,128 @@
 [
   {
     "id": 1,
-    "name": "Kavya Reddy",
-    "location": "Dallas, TX",
+    "name": "Priya Sharma",
+    "location": "Mumbai, Maharashtra",
     "rating": 5,
-    "review": "The intricate craftsmanship and weight of this Kundan set is mesmerizing. Wore it for my reception and received endless compliments on the antique gold polish!",
-    "comment": "The intricate craftsmanship and weight of this Kundan set is mesmerizing. Wore it for my reception and received endless compliments on the antique gold polish!",
-    "product_name": "Classic Kundan Jewelry Set",
-    "is_active": true,
-    "created_at": "2026-08-15T10:30:00.000Z"
+    "review": "The intricate craftsmanship and weight of this Kundan choker set is mesmerizing. Wore it for my reception and received endless compliments on the antique 22k gold polish!",
+    "product_name": "Royal Kundan Choker Set",
+    "is_active": true
   },
   {
     "id": 2,
-    "name": "Pooja Sharma",
-    "location": "San Jose, CA",
+    "name": "Ananya Mehta",
+    "location": "Edison, NJ, USA",
     "rating": 5,
-    "review": "The anti-tarnish finish is 100% genuine! I've worn these pieces repeatedly and the rose gold luster is just as sparkling as day one. Truly premium export quality.",
-    "comment": "The anti-tarnish finish is 100% genuine! I've worn these pieces repeatedly and the rose gold luster is just as sparkling as day one. Truly premium export quality.",
-    "product_name": "Vintage 18k Rose Gold Set",
-    "is_active": true,
-    "created_at": "2026-08-18T14:20:00.000Z"
+    "review": "The anti-tarnish finish is 100% genuine! I've worn these bangles repeatedly and the rose gold luster is just as sparkling as day one. Truly premium export quality.",
+    "product_name": "18k Rose Gold CZ Bangles",
+    "is_active": true
   },
   {
     "id": 3,
-    "name": "Ananya Mehta",
-    "location": "Edison, NJ",
+    "name": "Sneha Reddy",
+    "location": "Hyderabad, Telangana",
     "rating": 5,
-    "review": "Ordered this for family wedding festivities. The stone setting is tight and pristine, and the micro-gold plating has a rich, regal sheen. Delivery to NJ was seamless.",
-    "comment": "Ordered this for family wedding festivities. The stone setting is tight and pristine, and the micro-gold plating has a rich, regal sheen. Delivery to NJ was seamless.",
-    "product_name": "Royal Kundan Necklace",
-    "is_active": true,
-    "created_at": "2026-08-22T09:15:00.000Z"
+    "review": "Ordered for my sister's wedding festivities. The stone setting is tight and pristine, and the micro-gold plating has a rich, heirloom sheen. Delivery was super fast!",
+    "product_name": "Temple Heritage Haram",
+    "is_active": true
   },
   {
     "id": 4,
     "name": "Deepika Patel",
-    "location": "Chicago, IL",
+    "location": "Ahmedabad, Gujarat",
     "rating": 5,
     "review": "Stunning brilliance and lightweight comfort! The packaging was luxurious with cushioned velvet casing. Lydia Global Exim exceeded all my expectations.",
-    "comment": "Stunning brilliance and lightweight comfort! The packaging was luxurious with cushioned velvet casing. Lydia Global Exim exceeded all my expectations.",
-    "product_name": "Bridal Platinum Chain Set",
-    "is_active": true,
-    "created_at": "2026-08-24T16:45:00.000Z"
+    "product_name": "American Diamond Bridal Set",
+    "is_active": true
   },
   {
     "id": 5,
-    "name": "Sneha Varma",
-    "location": "Austin, TX",
+    "name": "Kavya Iyer",
+    "location": "Chennai, Tamil Nadu",
     "rating": 5,
-    "review": "Traditional aesthetics combined with modern durability. The clasp is secure and the 22k gold tone looks identical to authentic heirloom jewelry.",
-    "comment": "Traditional aesthetics combined with modern durability. The clasp is secure and the 22k gold tone looks identical to authentic heirloom jewelry.",
-    "product_name": "Classic 22k Gold Chain",
-    "is_active": true,
-    "created_at": "2026-08-27T11:00:00.000Z"
+    "review": "Traditional South Indian aesthetics combined with modern durability. The clasp is secure and the matte gold tone looks identical to authentic heirloom jewelry.",
+    "product_name": "Antique Matte Gold Lakshmi Set",
+    "is_active": true
   },
   {
     "id": 6,
-    "name": "Ritika Sengupta",
-    "location": "Seattle, WA",
+    "name": "Pooja Joshi",
+    "location": "San Jose, CA, USA",
     "rating": 5,
     "review": "The detailed temple motifs and ruby-toned stone accents make these earrings standout statement pieces. Very comfortable to wear for hours without irritation.",
-    "comment": "The detailed temple motifs and ruby-toned stone accents make these earrings standout statement pieces. Very comfortable to wear for hours without irritation.",
-    "product_name": "Handcrafted Temple Earrings",
-    "is_active": true,
-    "created_at": "2026-08-28T15:30:00.000Z"
+    "product_name": "Handcrafted Ruby Jhumkas",
+    "is_active": true
+  },
+  {
+    "id": 7,
+    "name": "Meera Nair",
+    "location": "Bengaluru, Karnataka",
+    "rating": 5,
+    "review": "Exceptional micro-plating quality! The sparkle of the CZ diamonds in evening lighting is breathtaking. Definitely ordering more for upcoming festival gifting.",
+    "product_name": "CZ Diamond Tennis Necklace",
+    "is_active": true
+  },
+  {
+    "id": 8,
+    "name": "Ritu Verma",
+    "location": "New Delhi, Delhi",
+    "rating": 5,
+    "review": "Purchased for family Sangeet and everyone thought it was real gold. The velvet box and guarantee certificate gave total peace of mind. Outstanding finish.",
+    "product_name": "Victorian Emerald Choker",
+    "is_active": true
+  },
+  {
+    "id": 9,
+    "name": "Sunita Rao",
+    "location": "Dallas, TX, USA",
+    "rating": 5,
+    "review": "Worldwide shipping was seamless and arrived within 5 days in pristine condition. The craftsmanship on the pendant is delicate, elegant, and extremely sturdy.",
+    "product_name": "22k Micro Plated Rope Chain",
+    "is_active": true
+  },
+  {
+    "id": 10,
+    "name": "Tanvi Deshmukh",
+    "location": "Pune, Maharashtra",
+    "rating": 5,
+    "review": "Hypoallergenic and so smooth against the skin. No green marks, no itching. You can genuinely feel the export-grade alloy quality. 10/10 recommend!",
+    "product_name": "Floral CZ Anti-Tarnish Ring",
+    "is_active": true
+  },
+  {
+    "id": 11,
+    "name": "Shruti Nair",
+    "location": "Kochi, Kerala",
+    "rating": 5,
+    "review": "The micro-gold polish has survived multiple monsoon weddings without the slightest color fade. Customer service was also very responsive on WhatsApp.",
+    "product_name": "Traditional Kerala Kasu Mala",
+    "is_active": true
+  },
+  {
+    "id": 12,
+    "name": "Aditi Sen",
+    "location": "Kolkata, West Bengal",
+    "rating": 5,
+    "review": "Royal look with unmatched comfort. The pearls have a rich natural luster and the Kundan work is neat and secure. Best luxury imitation jewelry brand by far.",
+    "product_name": "Pearl & Kundan Chandbali Set",
+    "is_active": true
+  },
+  {
+    "id": 13,
+    "name": "Radhika Menon",
+    "location": "London, UK",
+    "rating": 5,
+    "review": "Ordered to the UK and the express dispatch was remarkable. The finish and weight feel authentic and luxurious. Perfect for destination weddings.",
+    "product_name": "Meenakari Bridal Choker",
+    "is_active": true
+  },
+  {
+    "id": 14,
+    "name": "Swati Kulkarni",
+    "location": "Nagpur, Maharashtra",
+    "rating": 5,
+    "review": "Magnificent design and perfect shine. It effortlessly complements both ethnic sarees and modern Indo-western attire. Very happy with my purchase!",
+    "product_name": "Solitaire CZ Layered Chain",
+    "is_active": true
   }
 ]

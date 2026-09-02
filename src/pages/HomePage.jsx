@@ -155,7 +155,7 @@ export function HomePage() {
   const { products, categories, loading } = useStoreData();
   const [banners, setBanners] = React.useState([]);
   const [currentSlide, setCurrentSlide] = React.useState(0);
-  const [reviews, setReviews] = React.useState(defaultReviews || []);
+  const [reviews] = React.useState(defaultReviews || []);
   const reviewTrackRef = useRef(null);
 
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || '';
@@ -170,25 +170,6 @@ export function HomePage() {
             .then(r => r.json())
             .then(d => { if (d && d.banners && d.banners.length > 0) setBanners(d.banners); })
             .catch(e => console.warn('Banners load error:', e.message));
-        }
-      })
-      .catch(() => {});
-
-    supabase.from('reviews').select('*').order('id', { ascending: false })
-      .then(({ data, error }) => {
-        if (!error && data && data.length > 0) {
-          const valid = data.filter(r => r.is_active !== false && (r.comment || r.review) && (r.comment || r.review).trim().length > 5);
-          if (valid.length > 0) setReviews(valid);
-        } else if (BACKEND_URL) {
-          fetch(`${BACKEND_URL}/general/reviews`)
-            .then(r => r.json())
-            .then(d => {
-              if (d && d.reviews && d.reviews.length > 0) {
-                const valid = d.reviews.filter(r => r.is_active !== false && r.review && r.review.trim().length > 5);
-                if (valid.length > 0) setReviews(valid);
-              }
-            })
-            .catch(() => {});
         }
       })
       .catch(() => {});
