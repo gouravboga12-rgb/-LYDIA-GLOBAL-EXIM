@@ -1561,12 +1561,12 @@ export function AdminOrdersPage() {
                     </span>
                     {order.payment_method === 'cod' && !order.stripe_payment_intent_id && (
                       <span className="text-[9px] sm:text-[10px] font-bold font-sans px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700">
-                        Balance (${order.total - (order.advance_paid || 0)} Pending)
+                        Balance (₹{Number(order.total - (order.advance_paid || 0)).toLocaleString('en-IN', { minimumFractionDigits: 2 })} Pending)
                       </span>
                     )}
                     {Number(order.refund_amount) > 0 && (
                       <span className="text-[9px] sm:text-[10px] font-bold font-sans px-2 py-0.5 rounded-full bg-red-100 text-red-700 border border-red-200">
-                        Refunded ${Number(order.refund_amount).toFixed(2)}
+                        Refunded ₹{Number(order.refund_amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </span>
                     )}
                   </div>
@@ -1574,7 +1574,9 @@ export function AdminOrdersPage() {
                     {order.user_name || "Guest"}
                   </p>
                 </div>
-                <span className="font-serif font-bold text-[#D4AF37] text-sm sm:text-base lg:text-lg flex-shrink-0">${order.total}</span>
+                <span className="font-sans font-bold text-[#45055B] text-sm sm:text-base lg:text-lg flex-shrink-0">
+                  ₹{Number(order.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </span>
                 <ChevronDown className={`w-4 h-4 text-[#45055B]/40 transition-transform flex-shrink-0 ${expanded === order.id ? "rotate-180" : ""}`} />
               </div>
 
@@ -1636,7 +1638,7 @@ export function AdminOrdersPage() {
                       <div className="bg-red-50/50 rounded-xl p-4 border border-red-100 grid grid-cols-1 sm:grid-cols-3 gap-3">
                         <div>
                           <p className="text-[10px] font-semibold text-red-500 uppercase">Refunded Amount</p>
-                          <p className="font-bold text-red-700 text-sm">${parseFloat(order.refund_amount || 0).toFixed(2)}</p>
+                          <p className="font-sans font-bold text-red-700 text-sm">₹{parseFloat(order.refund_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
                         </div>
                         <div>
                           <p className="text-[10px] font-semibold text-red-500 uppercase">Transaction ID</p>
@@ -1740,7 +1742,7 @@ export function AdminOrdersPage() {
                           {address.insurance_requested && (
                             <div className="flex items-start gap-2">
                               <span className="text-[10px] font-bold text-[#45055B]/40 uppercase tracking-wider w-14 shrink-0 mt-0.5">Extras</span>
-                              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">🛡️ Insured (${address.insurance_amount})</span>
+                              <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">🛡️ Insured (₹{address.insurance_amount})</span>
                             </div>
                           )}
                         </div>
@@ -1758,7 +1760,6 @@ export function AdminOrdersPage() {
                         try { cancelledSnap = typeof order.cancelled_items_snapshot === 'string' ? JSON.parse(order.cancelled_items_snapshot) : (order.cancelled_items_snapshot || []); } catch (e) { }
                         if (cancelledSnap.length === 0 && order.status !== 'cancelled') return null;
 
-                        // If fully cancelled, items are the cancelled items
                         const cancelledList = order.status === 'cancelled' && cancelledSnap.length === 0
                           ? (typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []))
                           : cancelledSnap;
@@ -1773,7 +1774,6 @@ export function AdminOrdersPage() {
                                 const variantColor = (item.variant?.color || '').toLowerCase().trim();
                                 const matchedVariant = item.product?.variants?.find(v => (v.color || '').toLowerCase().trim() === variantColor);
                                 const variantImg = item.variant?.image || matchedVariant?.images?.[0] || item.product?.images?.[0] || item.product?.image_url;
-                                const itemCode = item.variant?.size_code || item.variant?.code || matchedVariant?.sizes?.find(s => s.size === item.variant?.size)?.code || matchedVariant?.code;
                                 return (
                                   <div key={`cancel-${idx}`} className="flex gap-3 items-center opacity-60 grayscale">
                                     <div className="w-10 h-10 rounded bg-gray-50 border border-gray-100 flex items-center justify-center p-1 shrink-0">
@@ -1787,7 +1787,8 @@ export function AdminOrdersPage() {
                                         </p>
                                       </div>
                                     </div>
-                                    <div className="text-sm font-bold text-gray-400 line-through">${((item.variant?.price || item.product?.price || item.price || 0) * item.qty).toFixed(2)}
+                                    <div className="text-sm font-sans font-bold text-gray-400 line-through">
+                                      ₹{Number((item.variant?.price || item.product?.price || item.price || 0) * item.qty).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </div>
                                   </div>
                                 );
@@ -1801,7 +1802,7 @@ export function AdminOrdersPage() {
                       {(() => {
                         let activeItems = [];
                         try { activeItems = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []); } catch (e) { }
-                        if (order.status === 'cancelled' && activeItems.length > 0) return null; // If full cancel, they are already shown above (or we just hide active section)
+                        if (order.status === 'cancelled' && activeItems.length > 0) return null;
 
                         return (
                           <div>
@@ -1838,7 +1839,8 @@ export function AdminOrdersPage() {
                                         )}
                                       </div>
                                     </div>
-                                    <div className="text-sm font-bold text-[#D4AF37]">${((item.variant?.price || item.product?.price || 0) * item.qty).toFixed(2)}
+                                    <div className="text-sm font-sans font-bold text-[#45055B]">
+                                      ₹{Number((item.variant?.price || item.product?.price || 0) * item.qty).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                                     </div>
                                   </div>
                                 );
@@ -1865,44 +1867,44 @@ export function AdminOrdersPage() {
                         return (
                           <div className="mt-4 pt-4 border-t border-dashed border-[#45055B]/10">
                             <p className="text-[10px] font-sans text-[#45055B]/40 uppercase tracking-wider mb-2">Price Summary</p>
-                            <div className="space-y-1.5">
+                            <div className="space-y-1.5 font-sans">
                               <div className="flex justify-between text-xs text-[#45055B]/70">
                                 <span>Item Total</span>
-                                <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                                <span className="font-semibold">₹{subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                               </div>
                               {discount > 0 && (
                                 <div className="flex justify-between text-xs text-green-600">
                                   <span>Discount{order.coupon_code ? ` (${order.coupon_code})` : ''}</span>
-                                  <span className="font-semibold">-${discount.toFixed(2)}</span>
+                                  <span className="font-semibold">-₹{discount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                                 </div>
                               )}
                               {shipping > 0 && (
                                 <div className="flex justify-between text-xs text-[#45055B]/70">
                                   <span>Shipping Fee</span>
-                                  <span className="font-semibold">${shipping.toFixed(2)}</span>
+                                  <span className="font-semibold">₹{shipping.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                                 </div>
                               )}
                               {(parseFloat(order.signature_fee) || parseFloat(addr.signature_fee) || 0) > 0 && (
                                 <div className="flex justify-between text-xs text-[#45055B]/70">
                                   <span>Signature Confirmation</span>
-                                  <span className="font-semibold">${(parseFloat(order.signature_fee) || parseFloat(addr.signature_fee) || 0).toFixed(2)}</span>
+                                  <span className="font-semibold">₹{(parseFloat(order.signature_fee) || parseFloat(addr.signature_fee) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                                 </div>
                               )}
                               {(parseFloat(order.insurance_fee) || parseFloat(addr.insurance_fee) || 0) > 0 && (
                                 <div className="flex justify-between text-xs text-[#45055B]/70">
                                   <span>Shipping Insurance</span>
-                                  <span className="font-semibold">${(parseFloat(order.insurance_fee) || parseFloat(addr.insurance_fee) || 0).toFixed(2)}</span>
+                                  <span className="font-semibold">₹{(parseFloat(order.insurance_fee) || parseFloat(addr.insurance_fee) || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                                 </div>
                               )}
                               {tax > 0 && (
                                 <div className="flex justify-between text-xs text-[#45055B]/70">
                                   <span>Tax{taxRate ? ` (${taxRate}%)` : ''}</span>
-                                  <span className="font-semibold">${tax.toFixed(2)}</span>
+                                  <span className="font-semibold">₹{tax.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                                 </div>
                               )}
                               <div className="flex justify-between text-sm font-bold text-[#45055B] border-t border-[#45055B]/10 pt-2 mt-2">
                                 <span>Grand Total</span>
-                                <span className="text-[#D4AF37]">${Number(order.total).toFixed(2)}</span>
+                                <span className="font-sans font-bold text-base text-[#45055B]">₹{Number(order.total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                               </div>
                             </div>
                           </div>

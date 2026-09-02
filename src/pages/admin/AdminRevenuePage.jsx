@@ -466,8 +466,8 @@ export function AdminRevenuePage() {
             </div>
           </div>
           <div className="mt-3">
-            <h2 className="font-serif text-3xl font-bold text-[#D4AF37]">
-              ₹{metrics.grossTotal.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            <h2 className="font-sans text-3xl font-bold text-[#D4AF37] tracking-tight">
+              ₹{Number(metrics.grossTotal).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h2>
             <p className="text-[11px] text-white/70 mt-1 flex items-center gap-1">
               <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
@@ -490,8 +490,8 @@ export function AdminRevenuePage() {
             </div>
           </div>
           <div className="mt-3">
-            <h2 className="font-serif text-3xl font-bold text-emerald-600">
-              ₹{metrics.netRevenue.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            <h2 className="font-sans text-3xl font-bold text-emerald-600 tracking-tight">
+              ₹{Number(metrics.netRevenue).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h2>
             <p className="text-[11px] text-gray-500 mt-1 flex items-center gap-1">
               <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
@@ -514,8 +514,8 @@ export function AdminRevenuePage() {
             </div>
           </div>
           <div className="mt-3">
-            <h2 className="font-serif text-3xl font-bold text-[#45055B]">
-              ₹{metrics.averageOrderValue.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            <h2 className="font-sans text-3xl font-bold text-[#45055B] tracking-tight">
+              ₹{Number(metrics.averageOrderValue).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h2>
             <p className="text-[11px] text-gray-500 mt-1">
               {metrics.totalItemsSold} total jewelry units sold
@@ -539,15 +539,15 @@ export function AdminRevenuePage() {
           <div className="mt-2 space-y-1">
             <div className="flex justify-between text-xs font-semibold">
               <span className="text-gray-500">Discounts Given:</span>
-              <span className="text-red-600">-₹{metrics.totalDiscount.toLocaleString("en-IN")}</span>
+              <span className="font-sans font-bold text-red-600">-₹{Number(metrics.totalDiscount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
             </div>
             <div className="flex justify-between text-xs font-semibold">
               <span className="text-gray-500">Shipping Collected:</span>
-              <span className="text-[#45055B]">₹{metrics.totalShipping.toLocaleString("en-IN")}</span>
+              <span className="font-sans font-bold text-[#45055B]">₹{Number(metrics.totalShipping).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
             </div>
             <div className="flex justify-between text-xs font-semibold">
               <span className="text-gray-500">Pending Pipeline:</span>
-              <span className="text-amber-600">₹{metrics.pendingRevenue.toLocaleString("en-IN")}</span>
+              <span className="font-sans font-bold text-amber-600">₹{Number(metrics.pendingRevenue).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
             </div>
           </div>
         </motion.div>
@@ -613,7 +613,7 @@ export function AdminRevenuePage() {
                       <p className="text-xs font-bold text-[#45055B] capitalize">{mode}</p>
                       <p className="text-[10px] text-gray-400">{pct}% of gross</p>
                     </div>
-                    <span className="text-sm font-serif font-bold text-[#45055B]">
+                    <span className="text-sm font-sans font-bold text-[#45055B]">
                       ₹{amt.toLocaleString("en-IN")}
                     </span>
                   </div>
@@ -720,7 +720,7 @@ export function AdminRevenuePage() {
                       <td className="px-4 py-3.5 text-red-500 font-mono">
                         {discount > 0 ? `-₹${discount.toLocaleString("en-IN")}` : "—"}
                       </td>
-                      <td className="px-4 py-3.5 text-right font-serif font-bold text-sm text-[#45055B]">
+                      <td className="px-4 py-3.5 text-right font-sans font-bold text-sm text-[#45055B]">
                         ₹{total.toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                       </td>
                     </tr>

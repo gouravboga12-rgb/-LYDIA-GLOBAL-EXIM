@@ -1110,13 +1110,16 @@
     "id": 80,
     "name": "Classic 22k Gold Micro Plated Rope Chain (24 inch)",
     "description": "Exquisitely handcrafted Classic 22k Gold Micro Plated Rope Chain (24 inch) by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 0,
+    "stock": 10,
     "sizes": [
       {
         "mrp": 0,
         "code": "",
         "size": "Standard",
-        "stock": 0,
+        "notes": "",
+        "stock": 10,
+        "weight": "",
+        "offer_id": "",
         "our_price": 0
       }
     ],
@@ -1126,7 +1129,7 @@
     ],
     "image_url": "/images/chains.png",
     "category": "Chains",
-    "model": null,
+    "model": "",
     "is_active": true,
     "is_bestseller": true,
     "is_trending": false,
@@ -1143,13 +1146,17 @@
             "mrp": 0,
             "code": "",
             "size": "Standard",
-            "stock": 0,
+            "notes": "",
+            "stock": 10,
+            "weight": "",
+            "offer_id": "",
             "our_price": 0
           }
         ],
         "images": [
           "/images/chains.png"
-        ]
+        ],
+        "instagram_link": ""
       }
     ],
     "reviews": [],
@@ -1189,7 +1196,7 @@
     ],
     "allow_reviews": true,
     "instagram_reel_url": null,
-    "sku": null,
+    "sku": "",
     "specifications": {
       "details": [
         {
