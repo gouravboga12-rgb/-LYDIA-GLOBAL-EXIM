@@ -101,6 +101,9 @@ function InnerApp() {
                 <Route path="/about" element={<AboutPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/category/:categoryId" element={<CategoryListingPage />} />
+                <Route path="/sale" element={<OfferPage />} />
+                <Route path="/offers" element={<OfferPage />} />
+                <Route path="/offers/:id" element={<OfferPage />} />
                 <Route path="/offer/:id" element={<OfferPage />} />
                 <Route path="/product/:id" element={<ProductDetailPage />} />
                 <Route path="/cart" element={<CartPage />} />

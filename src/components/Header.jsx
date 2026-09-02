@@ -424,12 +424,15 @@ export function Header({ variant = 'default', title, showShare = false }) {
                 <ChevronDown className="w-3.5 h-3.5 ml-1 text-white/80 group-hover:text-[#D4AF37] transition-transform group-hover:-rotate-180" />
               </div>
               {offers && offers.length > 0 && (
-                <div className="absolute top-[100%] left-1/2 -translate-x-1/2 hidden group-hover:block w-56 bg-[#45055B] rounded-xl shadow-2xl py-2 z-[100] border border-[#D4AF37]/30 mt-1">
+                <div className="absolute top-[100%] left-1/2 -translate-x-1/2 hidden group-hover:block w-60 bg-[#45055B] rounded-xl shadow-2xl py-2 z-[100] border border-[#D4AF37]/30 mt-1">
                   <div className="w-full h-2 bg-transparent absolute -top-2 left-0" />
-                  {offers.map((offer) => (
+                  <Link to="/sale" className="block px-4 py-2 text-xs font-bold text-[#D4AF37] hover:bg-[#5A0E72] transition-colors uppercase tracking-wider border-b border-white/10 mb-1">
+                    All Sale Offers
+                  </Link>
+                  {offers.filter(o => Boolean(o.active ?? o.is_active ?? true)).map((offer) => (
                     <Link key={offer.id} to={`/offer/${offer.id}`} className="flex justify-between items-center px-4 py-2 text-xs text-gray-200 hover:bg-[#5A0E72] hover:text-[#D4AF37] transition-colors">
-                      <span>{offer.title}</span>
-                      <span className="text-[10px] bg-red-900/60 text-red-200 px-1.5 py-0.5 rounded-full font-bold border border-red-500/30">{parseFloat(offer.discount_percentage)}% OFF</span>
+                      <span className="truncate pr-2">{offer.title}</span>
+                      <span className="text-[10px] bg-red-900/60 text-red-200 px-1.5 py-0.5 rounded-full font-bold border border-red-500/30 shrink-0">{parseFloat(offer.discount_percentage)}% OFF</span>
                     </Link>
                   ))}
                 </div>
@@ -567,10 +570,13 @@ export function Header({ variant = 'default', title, showShare = false }) {
                         className="bg-black/5 overflow-hidden rounded-lg mx-2 mt-1"
                       >
                         <div className="py-2 px-2 flex flex-col gap-1">
-                          {offers && offers.length > 0 ? offers.map((offer) => (
+                          <Link to="/sale" onClick={() => setMobileMenuOpen(false)} className="block text-xs font-bold text-[#45055B] py-2 px-3 rounded-lg hover:bg-black/5 uppercase">
+                            All Sale Offers
+                          </Link>
+                          {offers && offers.length > 0 ? offers.filter(o => Boolean(o.active ?? o.is_active ?? true)).map((offer) => (
                             <Link key={offer.id} to={`/offer/${offer.id}`} onClick={() => setMobileMenuOpen(false)} className="flex items-center justify-between text-xs text-[#45055B] py-2 px-3 rounded-lg hover:bg-black/5">
-                              <span>{offer.title}</span>
-                              <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold">{parseFloat(offer.discount_percentage)}% OFF</span>
+                              <span className="truncate pr-2">{offer.title}</span>
+                              <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-bold shrink-0">{parseFloat(offer.discount_percentage)}% OFF</span>
                             </Link>
                           )) : (
                             <span className="py-2 px-3 text-xs text-gray-500">No active offers</span>
