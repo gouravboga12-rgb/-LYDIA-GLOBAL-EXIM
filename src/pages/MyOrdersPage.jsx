@@ -356,8 +356,7 @@ export function MyOrdersPage() {
           </div>
         ) : (
           userOrders.map((order) => {
-            const STATUS_STEPS = order.order_type === 'pickup' ? PICKUP_STEPS : SHIPPING_STEPS;
-            const stepIdx = STATUS_STEPS.indexOf(order.status);
+            const currentStatus = (order.status || 'Received').toLowerCase();
             return (
               <div key={order.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
                 {/* Order Header */}
@@ -365,21 +364,15 @@ export function MyOrdersPage() {
                   <div>
                     <p className="text-sm font-bold text-[#45055B]">Order #{order.order_number || order.id}</p>
                     <p className="text-xs text-[#45055B]/60 mt-1">
-                      Placed on {new Date(order.created_at).toLocaleString('en-US', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'America/Chicago', timeZoneName: 'short' })}
+                      Placed on {new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
                     </p>
                     {order.stripe_payment_intent_id && (
                       <p className="text-[10px] text-gray-400 font-mono mt-1">Txn: {order.stripe_payment_intent_id}</p>
                     )}
                   </div>
                   <div className="flex items-center gap-3">
-                    <span className={`text-xs font-bold px-3 py-1.5 rounded-full border flex items-center gap-1.5 shadow-sm ${
-                      order.order_type === 'pickup' ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-green-50 text-green-700 border-green-200'
-                    }`}>
-                      {order.order_type === 'pickup' ? <Store className="w-3 h-3" /> : <Truck className="w-3 h-3" />}
-                      {order.order_type === 'pickup' ? 'Pickup' : 'Delivery'}
-                    </span>
-                    <span className={`text-xs font-bold px-4 py-1.5 rounded-full border capitalize shadow-sm ${STATUS_COLORS[order.status.toLowerCase()] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
-                      {order.status}
+                    <span className={`text-xs font-bold px-4 py-1.5 rounded-full border capitalize shadow-sm ${STATUS_COLORS[currentStatus] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                      {order.status || 'Received'}
                     </span>
                     {order.payment_method === 'cod' && !order.stripe_payment_intent_id && (
                       <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm">
