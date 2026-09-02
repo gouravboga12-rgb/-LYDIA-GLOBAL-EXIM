@@ -160,12 +160,9 @@ export function AdminOffersPage() {
       const id = deleteTarget.id;
       // 1. Delete from Supabase
       const numId = Number(id);
-      if (!isNaN(numId)) {
-        const { error: sbErr } = await supabase.from('offers').delete().eq('id', numId);
-        if (sbErr) console.warn("Supabase offer delete note:", sbErr);
-      } else {
-        await supabase.from('offers').delete().eq('id', id).catch(() => null);
-      }
+      const targetId = !isNaN(numId) ? numId : id;
+      const { error: sbErr } = await supabase.from('offers').delete().eq('id', targetId);
+      if (sbErr) console.warn("Supabase offer delete note:", sbErr);
 
       // 2. Delete from Backend REST (if available)
       const token = localStorage.getItem("token");

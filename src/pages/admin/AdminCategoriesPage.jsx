@@ -94,12 +94,9 @@ export function AdminCategoriesPage() {
 
       // 1. Delete from Supabase
       const numId = Number(id);
-      if (!isNaN(numId)) {
-        const { error: sbErr } = await supabase.from('categories').delete().eq('id', numId);
-        if (sbErr) console.warn("Supabase category delete note:", sbErr);
-      } else {
-        await supabase.from('categories').delete().eq('id', id).catch(() => null);
-      }
+      const targetId = !isNaN(numId) ? numId : id;
+      const { error: sbErr } = await supabase.from('categories').delete().eq('id', targetId);
+      if (sbErr) console.warn("Supabase category delete note:", sbErr);
 
       // 2. Delete from Backend REST
       const token = localStorage.getItem("token");

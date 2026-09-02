@@ -439,18 +439,22 @@ export function AdminProductsPage() {
       if (savedProductId && Array.isArray(payload.reviews)) {
         const numPid = Number(savedProductId);
         if (!isNaN(numPid)) {
-          await supabase.from('reviews').delete().eq('product_id', numPid).catch(() => null);
-          const reviewsToInsert = payload.reviews.map(r => ({
-            product_id: numPid,
-            user_name: (r.user_name || r.name || 'Customer').trim(),
-            rating: Number(r.rating || 5),
-            comment: (r.comment || r.review || '').trim(),
-            location: (r.location || 'India').trim(),
-            verified: r.verified !== false
-          })).filter(r => r.comment.length > 0);
+          try {
+            await supabase.from('reviews').delete().eq('product_id', numPid);
+            const reviewsToInsert = payload.reviews.map(r => ({
+              product_id: numPid,
+              user_name: (r.user_name || r.name || 'Customer').trim(),
+              rating: Number(r.rating || 5),
+              comment: (r.comment || r.review || '').trim(),
+              location: (r.location || 'India').trim(),
+              verified: r.verified !== false
+            })).filter(r => r.comment.length > 0);
 
-          if (reviewsToInsert.length > 0) {
-            await supabase.from('reviews').insert(reviewsToInsert).catch(e => console.warn('Supabase reviews sync note:', e));
+            if (reviewsToInsert.length > 0) {
+              await supabase.from('reviews').insert(reviewsToInsert);
+            }
+          } catch (revErr) {
+            console.warn("Reviews sync warning:", revErr);
           }
         }
       }
