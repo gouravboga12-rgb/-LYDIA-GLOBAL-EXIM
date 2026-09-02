@@ -203,20 +203,18 @@ const CARD_ELEMENT_OPTIONS = {
 };
 
 function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, setTermsAccepted, addressConfirmed, setAddressConfirmed, address, sessionSecondsLeft, onEditAddress, paymentError, onRetry, orderType, pickupContact }) {
-  const stripe = useStripe();
-  const elements = useElements();
   const isExpiringSoon = sessionSecondsLeft !== null && sessionSecondsLeft <= 60;
   const isPickup = orderType === 'pickup';
   // For pickup: only require termsAccepted. For shipping: also require addressConfirmed.
-  const canPay = isPickup ? (termsAccepted && !isPlacingOrder && !!stripe) : (termsAccepted && addressConfirmed && !isPlacingOrder && !!stripe);
+  const canPay = isPickup ? (termsAccepted && !isPlacingOrder) : (termsAccepted && addressConfirmed && !isPlacingOrder);
   return (
     <div className="space-y-4 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-2">
         <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-brand-gold/10 flex items-center justify-center">
-            <CreditCard className="w-4 h-4 text-brand-gold" />
+            <CheckCircle className="w-4 h-4 text-brand-gold" />
           </div>
-          Payment
+          Confirm & Book Order
         </h2>
         {sessionSecondsLeft !== null && (
           <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border ${
@@ -254,7 +252,7 @@ function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, se
             <p>{address.line1}{address.line2 ? `, ${address.line2}` : ''}</p>
             <p>{address.city}{address.state ? `, ${address.state}` : ''} {address.pincode}</p>
             <p>{address.country}</p>
-            <p className="text-green-700 mt-0.5">📞 {address.mobile}</p>
+            <p className="text-green-700 mt-0.5">📞 {formatDisplayPhone(address.mobile)}</p>
           </div>
           {address.line2 ? null : (
             <p className="text-[10px] text-amber-700 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
@@ -277,9 +275,16 @@ function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, se
       )}
 
       <div className="bg-white/80 p-5 rounded-2xl shadow-sm border border-brand-gold/20 space-y-4">
-        <p className="text-xs text-brand-dark-blue/60 font-medium">Enter your card details to complete the payment</p>
-        <div className="bg-gray-50 border border-gray-200 rounded-xl px-4 py-3.5">
-          <CardElement options={CARD_ELEMENT_OPTIONS} />
+        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-start gap-3">
+          <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
+            <CheckCircle className="w-5 h-5 text-emerald-600" />
+          </div>
+          <div>
+            <p className="text-sm font-bold text-emerald-900">Direct Order Booking (Payment Gateway Bypassed)</p>
+            <p className="text-xs text-emerald-700 mt-0.5 leading-relaxed">
+              Online card payment is currently bypassed for testing. Your order will be placed directly in the Admin Panel and customer dashboard with status <strong>Paid</strong>.
+            </p>
+          </div>
         </div>
 
         {paymentError && (
@@ -288,14 +293,13 @@ function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, se
               <svg className="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-red-700">Payment Failed</p>
+              <p className="text-sm font-bold text-red-700">Booking Failed</p>
               <p className="text-xs text-red-600 mt-0.5 leading-relaxed">{paymentError}</p>
               <button
                 type="button"
                 onClick={onRetry}
                 className="mt-3 w-full bg-red-600 hover:bg-red-700 text-white font-bold text-sm rounded-xl py-3 flex items-center justify-center gap-2 transition-all"
               >
-                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
                 Try Again
               </button>
             </div>
@@ -309,17 +313,17 @@ function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, se
           </span>
         </label>
         <button
-          onClick={() => handlePlaceOrder(stripe, elements)}
+          onClick={() => handlePlaceOrder()}
           disabled={!canPay}
           className={`w-full font-bold text-base rounded-xl py-4 flex items-center justify-center gap-2 transition-all ${
             !canPay
               ? 'opacity-50 cursor-not-allowed bg-gray-200 text-gray-400'
-              : 'bg-brand-dark-blue text-brand-gold shadow-lg shadow-brand-dark-blue/20 hover:shadow-xl hover:-translate-y-0.5'
+              : 'bg-brand-dark-blue text-brand-gold shadow-lg shadow-brand-dark-blue/20 hover:shadow-xl hover:-translate-y-0.5 cursor-pointer'
           }`}
         >
           {isPlacingOrder ? (
-            <><div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Placing Order...</>
-          ) : 'Confirm & Pay'}
+            <><div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Booking Order...</>
+          ) : 'Confirm & Book Order'}
         </button>
       </div>
     </div>
@@ -917,39 +921,20 @@ export function CheckoutPage() {
         }
       }
 
-      if (!stripe || !elements) { setIsPlacingOrder(false); return; }
-      const intentRes = await fetch(`${BACKEND_URL}/general/stripe/create-payment-intent`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: finalTotal })
-      });
-      const intentData = await intentRes.json();
-      if (!intentData.success) { showToast('Failed to initialize payment', 'error'); setIsPlacingOrder(false); return; }
-
-      const { error, paymentIntent } = await stripe.confirmCardPayment(intentData.clientSecret, {
-        payment_method: { card: elements.getElement(CardElement), billing_details: { name: address.name } }
-      });
-      if (error) {
-        setPaymentError(error.message);
+      const transactionRef = 'PAYPASS-' + Math.floor(100000 + Math.random() * 900000);
+      setTransactionId(transactionRef);
+      const createOrderData = await createOrder('direct_booking', transactionRef);
+      if (createOrderData.success) {
         setIsPlacingOrder(false);
-        return;
-      }
-
-      if (paymentIntent.status === 'succeeded') {
-        setTransactionId(paymentIntent.id);
-        const createOrderData = await createOrder('stripe', paymentIntent.id);
-        if (createOrderData.success) {
-          setIsPlacingOrder(false);
-          setOrderSuccess(true);
-          setTimeout(() => {
-            clearCart();
-            navigate(`/order-tracking/${createOrderData.order.order_number}`);
-          }, 3000);
-        } else {
-          showToast('Failed to place order after payment.', 'error');
-          setPaymentError('Your payment was processed but we could not create your order. Please contact support with your payment reference.');
-          setIsPlacingOrder(false);
-        }
+        setOrderSuccess(true);
+        setTimeout(() => {
+          clearCart();
+          navigate(`/order-tracking/${createOrderData.order?.order_number || transactionRef}`);
+        }, 2500);
+      } else {
+        showToast('Failed to place order. Please try again.', 'error');
+        setPaymentError('Could not create your order. Please try again.');
+        setIsPlacingOrder(false);
       }
     } catch (err) {
       console.error(err);
