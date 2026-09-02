@@ -626,18 +626,28 @@ export function ProductDetailPage() {
                 <p className="text-gray-500 font-mono text-sm tracking-wider">CODE: {selectedSize?.code || selectedVariant?.code}</p>
               )}
               
-              {reviewCount > 0 && (
-                <div className="flex items-center gap-2">
-                  <div className="flex items-center text-brand-gold">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className={`w-4 h-4 ${i < Math.floor(avgRating) ? 'fill-current' : ''}`} />
-                    ))}
-                  </div>
-                  <span className="text-sm text-gray-500 font-medium">
-                    {avgRating} ({reviewCount} {reviewCount === 1 ? 'review' : 'reviews'})
-                  </span>
+              <div className="flex items-center gap-2 pt-0.5">
+                <div className="flex items-center text-amber-400">
+                  {[1, 2, 3, 4, 5].map((s) => {
+                    const rScore = productReviews.length > 0 
+                      ? productReviews.reduce((acc, r) => acc + Number(r.rating || 5), 0) / productReviews.length
+                      : (product.rating ? Number(product.rating) : 4.8);
+                    return (
+                      <Star key={s} className={`w-4 h-4 ${s <= Math.round(rScore) ? 'fill-amber-400' : 'text-gray-200'}`} />
+                    );
+                  })}
                 </div>
-              )}
+                <span className="text-sm text-gray-600 font-semibold">
+                  {productReviews.length > 0 
+                    ? (productReviews.reduce((acc, r) => acc + Number(r.rating || 5), 0) / productReviews.length).toFixed(1)
+                    : (product.rating ? Number(product.rating).toFixed(1) : '4.8')}
+                  {productReviews.length > 0 && (
+                    <span className="text-gray-400 font-normal ml-1">
+                      ({productReviews.length} {productReviews.length === 1 ? 'review' : 'reviews'})
+                    </span>
+                  )}
+                </span>
+              </div>
             </div>
 
             <div className="animate-info">

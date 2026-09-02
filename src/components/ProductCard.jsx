@@ -101,10 +101,10 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
   };
 
   // Determine reviews average
-  let avgRating = 4.5;
-  let reviewCount = 12; // default mock
+  let avgRating = product.rating ? Number(product.rating).toFixed(1) : "4.8";
+  let reviewCount = 0;
   if (product.reviews && product.reviews.length > 0) {
-    const total = product.reviews.reduce((acc, r) => acc + r.rating, 0);
+    const total = product.reviews.reduce((acc, r) => acc + Number(r.rating || 5), 0);
     avgRating = (total / product.reviews.length).toFixed(1);
     reviewCount = product.reviews.length;
   }
@@ -120,20 +120,15 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
             <h3 className="text-sm font-semibold text-gray-800 line-clamp-2 leading-snug mb-1">{product.name}</h3>
           </div>
           
-          <div className="flex items-center gap-1 mb-2">
-            <Star className="w-3.5 h-3.5 fill-brand-gold text-brand-gold" />
-            <span className="text-[10px] font-medium text-gray-500">{avgRating} ({reviewCount})</span>
-            {variants.length > 1 ? (
+          <div className="flex items-center gap-1.5 mb-2">
+            <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+            <span className="text-[11px] font-semibold text-gray-700">
+              {avgRating} {reviewCount > 0 && <span className="text-gray-400 font-normal">({reviewCount})</span>}
+            </span>
+            {variants.length > 1 && (
               <>
-                <span className="text-[10px] font-medium text-gray-300 px-1">•</span>
-                <span className="text-[10px] font-medium text-brand-dark-blue">{variants.length} Colors</span>
-              </>
-            ) : (firstVariant || defaultSize) && (
-              <>
-                <span className="text-[10px] font-medium text-gray-300 px-1">•</span>
-                <span className="text-[10px] font-medium text-gray-500 line-clamp-1">
-                  {defaultSize?.code || firstVariant?.code || firstVariant?.color}
-                </span>
+                <span className="text-[10px] font-medium text-gray-300 px-0.5">•</span>
+                <span className="text-[10px] font-bold text-brand-dark-blue">{variants.length} Colors</span>
               </>
             )}
           </div>
@@ -186,7 +181,7 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
   return (
     <div 
       onClick={handleCardClick}
-      className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#45055B]/10 cursor-pointer transition-all duration-300 hover:shadow-[0_8px_24px_rgba(0,0,0,0.08)] hover:-translate-y-1 h-full p-3 relative"
+      className="group relative bg-white rounded-2xl p-3 shadow-xs hover:shadow-lg transition-all duration-300 flex flex-col justify-between cursor-pointer border border-[#45055B]/10 hover:border-[#45055B]/30"
     >
       <div className="absolute top-3 right-3 z-20 flex flex-col gap-2">
         <button onClick={handleWishlist} className="p-1.5 hover:scale-110 transition-transform bg-white/90 rounded-full shadow-sm">
@@ -223,20 +218,15 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
           <h3 className="text-xs md:text-sm font-semibold text-gray-800 line-clamp-2 leading-snug">{product.name}</h3>
         </div>
         
-        <div className="flex items-center gap-1 mb-2">
-          <Star className="w-3.5 h-3.5 fill-brand-gold text-brand-gold" />
-          <span className="text-[10px] font-medium text-gray-500">{avgRating} ({reviewCount})</span>
-          {variants.length > 1 ? (
-             <>
-               <span className="text-[10px] font-medium text-gray-300 px-1">•</span>
-               <span className="text-[10px] font-medium text-brand-dark-blue">{variants.length} Colors</span>
-             </>
-          ) : (firstVariant || defaultSize) && (
+        <div className="flex items-center gap-1.5 mb-2">
+          <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-400" />
+          <span className="text-[11px] font-semibold text-gray-700">
+            {avgRating} {reviewCount > 0 && <span className="text-gray-400 font-normal">({reviewCount})</span>}
+          </span>
+          {variants.length > 1 && (
             <>
-              <span className="text-[10px] font-medium text-gray-300 px-1">•</span>
-              <span className="text-[10px] font-medium text-gray-500 line-clamp-1">
-                {defaultSize?.code || firstVariant?.code || firstVariant?.color}
-              </span>
+              <span className="text-[10px] font-medium text-gray-300 px-0.5">•</span>
+              <span className="text-[10px] font-bold text-brand-dark-blue">{variants.length} Colors</span>
             </>
           )}
         </div>
