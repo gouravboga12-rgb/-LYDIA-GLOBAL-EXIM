@@ -106,35 +106,58 @@ export function AdminProductsPage() {
     }
   };
 
+  const [uploadingVariantIndex, setUploadingVariantIndex] = useState(null);
+  const [uploadProgress, setUploadProgress] = useState("");
+
   const handleMediaUpload = async (e, variantIndex) => {
-    const files = Array.from(e.target.files);
+    const files = Array.from(e.target.files || []);
     if (files.length === 0) return;
     setUploading(true);
+    setUploadingVariantIndex(variantIndex);
+    setUploadProgress(`Uploading 1 of ${files.length}...`);
     
     try {
       const uploadedUrls = [];
-      for (const file of files) {
-        const url = await uploadToCloudinary(file);
+      for (let i = 0; i < files.length; i++) {
+        setUploadProgress(`Uploading ${i + 1} of ${files.length}...`);
+        const url = await uploadToCloudinary(files[i]);
         if (url) uploadedUrls.push(url);
       }
       
       if (uploadedUrls.length > 0) {
-        const updatedVariants = [...formData.variants];
-        updatedVariants[variantIndex].images = [...(updatedVariants[variantIndex].images || []), ...uploadedUrls];
-        setFormData({ ...formData, variants: updatedVariants });
+        setFormData(prev => ({
+          ...prev,
+          variants: prev.variants.map((v, vi) => {
+            if (vi !== variantIndex) return v;
+            return {
+              ...v,
+              images: [...(v.images || []), ...uploadedUrls]
+            };
+          })
+        }));
       }
     } catch (err) {
-      console.error(err);
+      console.error("Upload error:", err);
       alert("Upload error: " + err.message);
     } finally {
       setUploading(false);
+      setUploadingVariantIndex(null);
+      setUploadProgress("");
+      try { e.target.value = ""; } catch (e) {}
     }
   };
 
   const handleRemoveMedia = (variantIndex, mediaIndex) => {
-    const updatedVariants = [...formData.variants];
-    updatedVariants[variantIndex].images.splice(mediaIndex, 1);
-    setFormData({ ...formData, variants: updatedVariants });
+    setFormData(prev => ({
+      ...prev,
+      variants: prev.variants.map((v, vi) => {
+        if (vi !== variantIndex) return v;
+        return {
+          ...v,
+          images: (v.images || []).filter((_, mi) => mi !== mediaIndex)
+        };
+      })
+    }));
   };
 
   const handleAdd = () => {
@@ -305,8 +328,9 @@ export function AdminProductsPage() {
         }
       }
 
-      const primaryImage = (payload.variants && payload.variants[0]?.images?.[0]) || '';
-      const allImages = (payload.variants && payload.variants[0]?.images) || [];
+      const allVariantImages = (payload.variants || []).flatMap(v => v.images || []);
+      const primaryImage = allVariantImages[0] || (payload.variants && payload.variants[0]?.images?.[0]) || payload.image_url || '';
+      const allImages = allVariantImages.length > 0 ? allVariantImages : (payload.images || (primaryImage ? [primaryImage] : []));
 
       const supabasePayload = {
         name: payload.name.trim(),
@@ -1027,10 +1051,23 @@ export function AdminProductsPage() {
                             />
                             <label 
                               htmlFor={`media_up_${vIndex}`} 
-                              className="inline-flex items-center gap-2 bg-[#FAF6F0] hover:bg-[#FAF6F0]/80 text-[#45055B] border border-[#45055B]/30 px-4 py-3 rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm"
+                              className={`inline-flex items-center gap-2 border px-4 py-3 rounded-xl text-xs font-bold cursor-pointer transition-all shadow-sm ${
+                                uploadingVariantIndex === vIndex
+                                  ? 'bg-amber-100 border-amber-400 text-amber-900 animate-pulse cursor-wait'
+                                  : 'bg-[#FAF6F0] hover:bg-amber-50 text-[#45055B] border-[#45055B]/30 hover:border-[#45055B]'
+                              }`}
                             >
-                              <Upload className="w-4 h-4 text-[#45055B]" /> 
-                              {uploading ? "Uploading media..." : "+ Upload Photos / Videos (Multi)"}
+                              {uploadingVariantIndex === vIndex ? (
+                                <>
+                                  <div className="w-4 h-4 border-2 border-[#45055B] border-t-transparent rounded-full animate-spin shrink-0" />
+                                  <span>{uploadProgress || "Uploading media..."}</span>
+                                </>
+                              ) : (
+                                <>
+                                  <Upload className="w-4 h-4 text-[#45055B]" /> 
+                                  <span>+ Upload Photos / Videos (Multi)</span>
+                                </>
+                              )}
                             </label>
                           </div>
                         </div>
