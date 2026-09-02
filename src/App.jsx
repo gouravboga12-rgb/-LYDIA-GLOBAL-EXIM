@@ -78,8 +78,8 @@ function InnerApp() {
           <Route path="/admin/*" element={
             <AdminLayout>
               <Routes>
-                <Route path="/" element={<AdminDashboardPage />} />
-                <Route path="/orders" element={<AdminOrdersPage />} />
+                <Route path="" element={<AdminDashboardPage />} />
+                <Route path="orders" element={<AdminOrdersPage />} />
                 <Route path="customers" element={<AdminCustomersPage />} />
                 <Route path="products" element={<AdminProductsPage />} />
                 <Route path="categories" element={<AdminCategoriesPage />} />
@@ -90,6 +90,7 @@ function InnerApp() {
                 <Route path="banners" element={<AdminBannersPage />} />
                 <Route path="reports" element={<AdminReportsPage />} />
                 <Route path="settings" element={<AdminSettingsPage />} />
+                <Route path="*" element={<AdminDashboardPage />} />
               </Routes>
             </AdminLayout>
           } />

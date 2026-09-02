@@ -229,12 +229,18 @@ export function AdminLayout({ children }) {
     const token = localStorage.getItem("token");
     const storedUser = useAuthStore.getState().user;
 
+    const safetyTimer = setTimeout(() => {
+      setCheckingAuth(false);
+    }, 1200);
+
     if (!token) {
+      clearTimeout(safetyTimer);
       setCheckingAuth(false);
       return;
     }
 
     if (storedUser && storedUser.role === "admin") {
+      clearTimeout(safetyTimer);
       setAdmin(storedUser);
       setCheckingAuth(false);
       return;
@@ -247,7 +253,6 @@ export function AdminLayout({ children }) {
           setAdmin(d.user);
           useAuthStore.setState({ user: d.user, token });
         } else {
-          // If token was for a standard customer or dummy, allow prompt
           setAdmin(null);
         }
       })
@@ -255,9 +260,13 @@ export function AdminLayout({ children }) {
         setAdmin(null);
       })
       .finally(() => {
+        clearTimeout(safetyTimer);
         setCheckingAuth(false);
       });
+
+    return () => clearTimeout(safetyTimer);
   }, []);
+
 
   const handleLogout = () => {
     localStorage.removeItem("token");
