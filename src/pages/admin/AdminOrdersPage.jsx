@@ -155,22 +155,46 @@ export function AdminOrdersPage() {
   };
 
   const handleSaveTracking = async (orderId) => {
+    const order = orders.find(o => String(o.id) === String(orderId) || String(o.order_number) === String(orderId));
     const input = trackingInputs[orderId] || {};
-    const tracking_id = input.tracking_id !== undefined ? input.tracking_id : (orders.find(o => o.id === orderId)?.tracking_id || '');
-    const tracking_link = input.tracking_link !== undefined ? input.tracking_link : (orders.find(o => o.id === orderId)?.tracking_link || '');
+    const tracking_id = (input.tracking_id !== undefined ? input.tracking_id : (order?.tracking_id || '')).trim();
+    const tracking_link = (input.tracking_link !== undefined ? input.tracking_link : (order?.tracking_link || '')).trim();
 
     setSavingTracking(prev => ({ ...prev, [orderId]: true }));
     try {
-      const numId = Number(orderId);
+      const cleanAddress = typeof order?.shipping_address === 'object' && order?.shipping_address !== null
+        ? { ...order.shipping_address }
+        : (typeof order?.address === 'object' && order?.address !== null ? { ...order.address } : {});
+
+      cleanAddress.tracking_id = tracking_id;
+      cleanAddress.tracking_link = tracking_link;
+      cleanAddress.tracking_number = tracking_id;
+      cleanAddress.tracking_url = tracking_link;
+
       const updateData = {
-        tracking_id: tracking_id.trim(),
-        tracking_number: tracking_id.trim(),
-        tracking_link: tracking_link.trim(),
-        tracking_url: tracking_link.trim()
+        tracking_id,
+        tracking_number: tracking_id,
+        tracking_link,
+        tracking_url: tracking_link,
+        shipping_address: cleanAddress,
+        address: cleanAddress
       };
 
-      await supabase.from("orders").update(updateData).eq("id", !isNaN(numId) ? numId : orderId);
+      // 1. Update in Supabase by numeric ID or order_number
+      if (order?.id && !isNaN(Number(order.id))) {
+        await supabase.from("orders").update(updateData).eq("id", Number(order.id));
+      }
+      if (order?.order_number) {
+        await supabase.from("orders").update(updateData).eq("order_number", order.order_number);
+      }
+      const rawNum = Number(orderId);
+      if (!isNaN(rawNum)) {
+        await supabase.from("orders").update(updateData).eq("id", rawNum);
+      } else {
+        await supabase.from("orders").update(updateData).eq("id", orderId);
+      }
 
+      // 2. Update Backend REST API
       const token = localStorage.getItem("token");
       await fetch(`${BACKEND_URL}/admin/orders/${orderId}`, {
         method: "PUT",
@@ -178,7 +202,7 @@ export function AdminOrdersPage() {
         body: JSON.stringify(updateData),
       }).catch(() => null);
 
-      setOrders(prev => prev.map(o => o.id === orderId ? { ...o, ...updateData } : o));
+      setOrders(prev => prev.map(o => (String(o.id) === String(orderId) || String(o.order_number) === String(orderId)) ? { ...o, ...updateData } : o));
       alert("Tracking details saved successfully!");
     } catch (err) {
       console.error("Save tracking error:", err);
