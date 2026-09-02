@@ -758,27 +758,15 @@ export function CheckoutPage() {
       }]).catch(() => {});
 
       // Deduct inventory stock for each purchased item
-      for (const item of (items || [])) {
-        const prodId = item.product?.id || item.id || item.product_id;
-        const prodName = item.product?.name || item.name || '';
-        const purchaseQty = Number(item.qty || item.quantity || 1);
-        const itemColor = (item.variant?.color || item.color || '').toLowerCase().trim();
-        const itemSize = (item.variant?.size || item.size || '').toLowerCase().trim();
-        const itemCode = (item.variant?.code || item.variant?.size_code || item.code || '').toLowerCase().trim();
+      for (const item of items) {
+        const prodId = item.id || item.product_id;
+        const purchaseQty = Number(item.quantity || 1);
+        if (!prodId) continue;
 
-        if (!prodId && !prodName) continue;
+        const numId = Number(prodId);
+        const supabaseId = !isNaN(numId) ? numId : prodId;
 
-        let pData = null;
-        if (prodId) {
-          const numId = Number(prodId);
-          const { data } = await supabase.from('products').select('*').eq('id', !isNaN(numId) ? numId : prodId).maybeSingle();
-          pData = data;
-        }
-        if (!pData && prodName) {
-          const { data } = await supabase.from('products').select('*').ilike('name', prodName).maybeSingle();
-          pData = data;
-        }
-
+        const { data: pData } = await supabase.from('products').select('*').eq('id', supabaseId).single();
         if (pData) {
           let variants = Array.isArray(pData.variants) && pData.variants.length > 0 ? pData.variants : [{
             color: pData.color || "Gold",
@@ -788,18 +776,13 @@ export function CheckoutPage() {
 
           let matched = false;
           variants = variants.map(v => {
-            const vColor = (v.color || '').toLowerCase().trim();
-            const isColorMatch = !itemColor || !vColor || vColor === itemColor || variants.length === 1;
-
-            if (isColorMatch && Array.isArray(v.sizes)) {
+            if (Array.isArray(v.sizes)) {
               return {
                 ...v,
                 sizes: v.sizes.map(s => {
-                  const sName = (s.size || '').toLowerCase().trim();
-                  const sCode = (s.code || s.sku || '').toLowerCase().trim();
-                  const isSizeMatch = (itemSize && sName === itemSize) ||
-                                      (itemCode && sCode === itemCode) ||
-                                      (!matched && v.sizes.length === 1);
+                  const isSizeMatch = (item.size && s.size && s.size.toLowerCase() === item.size.toLowerCase()) ||
+                                      (item.code && s.code && s.code.toLowerCase() === item.code.toLowerCase()) ||
+                                      (!matched && variants.length === 1 && v.sizes.length === 1);
                   if (isSizeMatch && !matched) {
                     matched = true;
                     const curStock = Number(s.stock !== undefined ? s.stock : 10);
@@ -821,7 +804,7 @@ export function CheckoutPage() {
           await supabase.from('products').update({
             variants: variants,
             sizes: variants[0]?.sizes || []
-          }).eq('id', pData.id);
+          }).eq('id', supabaseId);
         }
       }
 

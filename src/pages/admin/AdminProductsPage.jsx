@@ -17,46 +17,25 @@ const isVideoUrl = (url) => {
 };
 
 function StockControlCell({ row, togglingSkuId, onUpdateStock }) {
-  const [stockVal, setStockVal] = React.useState(row.size.stock ?? 0);
-  const isAvailable = Number(stockVal) > 0;
-
-  React.useEffect(() => {
-    setStockVal(row.size.stock ?? 0);
-  }, [row.size.stock]);
+  const isAvailable = Number(row.size.stock ?? 0) > 0;
 
   const handleStatusSelect = (e) => {
     const status = e.target.value;
     if (status === 'out_of_stock') {
-      setStockVal(0);
       onUpdateStock(row, 0);
     } else {
       const nextQty = Number(row.size._prevStock) > 0 ? Number(row.size._prevStock) : 10;
-      setStockVal(nextQty);
       onUpdateStock(row, nextQty);
     }
   };
 
-  const handleCommitQty = () => {
-    const num = Math.max(0, parseInt(stockVal, 10) || 0);
-    setStockVal(num);
-    if (num !== row.size.stock) {
-      onUpdateStock(row, num);
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.target.blur();
-    }
-  };
-
   return (
-    <div className="w-[230px] min-w-[230px] max-w-[230px] flex items-center gap-2">
+    <div className="w-[160px] min-w-[160px] max-w-[160px] flex items-center gap-2">
       <select
         value={isAvailable ? "available" : "out_of_stock"}
         onChange={handleStatusSelect}
         disabled={togglingSkuId === row.skuId}
-        className={`w-32 px-2 py-1.5 rounded-lg text-xs font-bold border cursor-pointer focus:outline-none transition-colors shrink-0 ${
+        className={`w-36 px-3 py-1.5 rounded-xl text-xs font-bold border cursor-pointer focus:outline-none transition-all shadow-sm ${
           isAvailable
             ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
             : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100'
@@ -65,23 +44,6 @@ function StockControlCell({ row, togglingSkuId, onUpdateStock }) {
         <option value="available">✓ Available</option>
         <option value="out_of_stock">✗ Out of Stock</option>
       </select>
-
-      <div className="flex items-center gap-1 shrink-0">
-        <input
-          type="number"
-          min="0"
-          value={stockVal}
-          onChange={(e) => setStockVal(e.target.value)}
-          onBlur={handleCommitQty}
-          onKeyDown={handleKeyDown}
-          disabled={togglingSkuId === row.skuId}
-          title="Stock Quantity (0 = Out of Stock)"
-          className={`w-16 px-1.5 py-1 bg-white border rounded-lg text-xs font-bold text-center focus:outline-none focus:ring-1 ${
-            isAvailable ? 'border-emerald-300 text-emerald-900 focus:ring-emerald-400' : 'border-red-300 text-red-700 focus:ring-red-400'
-          }`}
-        />
-        <span className="text-[10px] text-gray-400 font-semibold select-none">Qty</span>
-      </div>
 
       {togglingSkuId === row.skuId && (
         <div className="w-3.5 h-3.5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin shrink-0" />
@@ -833,7 +795,7 @@ export function AdminProductsPage() {
                 <th className="px-4 py-3 w-[90px]">Color</th>
                 <th className="px-4 py-3 w-[110px]">Size & Code</th>
                 <th className="px-4 py-3 w-[110px]">MRP / Price</th>
-                <th className="px-4 py-3 w-[240px]">Stock Availability & Qty</th>
+                <th className="px-4 py-3 w-[180px]">Stock Availability</th>
                 <th className="px-4 py-3 w-[120px]">Notes</th>
                 <th className="px-4 py-3 w-[90px]">Offer</th>
                 <th className="px-4 py-3 w-[90px]">Status</th>
@@ -1271,36 +1233,20 @@ export function AdminProductsPage() {
                                   </div>
                                   <div className="lg:col-span-2">
                                     <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Stock Availability</label>
-                                    <div className="flex items-center gap-1.5">
-                                      <button
-                                        type="button"
-                                        onClick={() => {
-                                          updateSizeField(vIndex, sIndex, 'stock', isStockAvailable ? 0 : 10);
-                                        }}
-                                        className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer shrink-0 flex items-center gap-1.5 shadow-2xs ${
-                                          isStockAvailable 
-                                            ? 'bg-emerald-100 text-emerald-900 border-emerald-300 hover:bg-emerald-200' 
-                                            : 'bg-red-100 text-red-800 border-red-300 hover:bg-red-200'
-                                        }`}
-                                      >
-                                        <span className={`w-2 h-2 rounded-full ${isStockAvailable ? 'bg-emerald-500' : 'bg-red-500'}`} />
-                                        {isStockAvailable ? '✓ Available' : '✗ Out of Stock'}
-                                      </button>
-                                      {isStockAvailable && (
-                                        <input 
-                                          type="number" 
-                                          min="1"
-                                          value={sizeObj.stock || 1} 
-                                          onChange={e => {
-                                            const val = Math.max(0, parseInt(e.target.value, 10) || 0);
-                                            updateSizeField(vIndex, sIndex, 'stock', val);
-                                          }} 
-                                          placeholder="Qty" 
-                                          title="Available stock quantity"
-                                          className="w-16 px-1.5 py-1.5 bg-[#FAF6F0] border border-emerald-300 rounded-lg text-xs font-bold text-emerald-900 text-center focus:outline-none" 
-                                        />
-                                      )}
-                                    </div>
+                                    <button
+                                      type="button"
+                                      onClick={() => {
+                                        updateSizeField(vIndex, sIndex, 'stock', isStockAvailable ? 0 : 10);
+                                      }}
+                                      className={`w-full px-3 py-2 rounded-lg text-xs font-bold border transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-sm ${
+                                        isStockAvailable 
+                                          ? 'bg-emerald-100 text-emerald-900 border-emerald-300 hover:bg-emerald-200' 
+                                          : 'bg-red-100 text-red-800 border-red-300 hover:bg-red-200'
+                                      }`}
+                                    >
+                                      <span className={`w-2 h-2 rounded-full ${isStockAvailable ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                                      {isStockAvailable ? '✓ Available' : '✗ Out of Stock'}
+                                    </button>
                                   </div>
                                   <div className="lg:col-span-1">
                                     <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Offer</label>
