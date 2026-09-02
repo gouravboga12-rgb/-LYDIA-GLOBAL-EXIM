@@ -21,6 +21,11 @@ export function CategoryListingPage() {
   const modelQuery = searchParams.get('model') || '';
   const categoryQuery = searchParams.get('category') || searchParams.get('model') || '';
   const searchQuery = searchParams.get('search') || '';
+  const [searchTerm, setSearchTerm] = useState(searchQuery);
+
+  useEffect(() => {
+    setSearchTerm(searchQuery);
+  }, [searchQuery]);
   
   // Prevent body scroll when mobile filter is open
   useEffect(() => {
@@ -74,10 +79,24 @@ export function CategoryListingPage() {
     }
 
     let matchSearch = true;
-    if (searchQuery) {
-      const lowerSearch = searchQuery.toLowerCase();
-      matchSearch = p.name.toLowerCase().includes(lowerSearch) || 
-                    (p.description && p.description.toLowerCase().includes(lowerSearch));
+    const effectiveSearch = (searchTerm || searchQuery || '').trim().toLowerCase();
+    if (effectiveSearch) {
+      const pName = (p.name || '').toLowerCase();
+      const pDesc = (p.description || '').toLowerCase();
+      const pCat = (p.category || '').toLowerCase();
+      const pModel = (p.model || '').toLowerCase();
+      const pCode = String(p.code || '').toLowerCase();
+      const variantCodes = (p.variants || []).flatMap(v => [
+        String(v.code || '').toLowerCase(),
+        ...(v.sizes || []).map(s => String(s.code || '').toLowerCase())
+      ]).join(' ');
+
+      matchSearch = pName.includes(effectiveSearch) || 
+                    pDesc.includes(effectiveSearch) || 
+                    pCat.includes(effectiveSearch) || 
+                    pModel.includes(effectiveSearch) ||
+                    pCode.includes(effectiveSearch) ||
+                    variantCodes.includes(effectiveSearch);
     }
 
     let matchOffer = true;
@@ -150,6 +169,7 @@ export function CategoryListingPage() {
   const handleCategoryChange = (newCatId) => {
     // Clear subcategory when changing category
     setSearchParams({});
+    setSearchTerm('');
     navigate(`/category/${newCatId}`);
     setShowMobileFilters(false);
     setShowOnlyOffers(false);
@@ -297,10 +317,12 @@ export function CategoryListingPage() {
         
         {/* Filter and Sort Bar for Mobile / Top Bar for Desktop */}
         <div className="reveal-on-scroll flex flex-col sm:flex-row sm:items-center justify-between mb-6 bg-white p-3 md:p-4 rounded-xl shadow-[0_2px_12px_rgba(0,0,0,0.03)] border border-[#D4AF37]/20 gap-3">
-          <div className="flex items-center justify-between w-full sm:w-auto gap-4">
-            <span className="text-sm font-bold text-[#45055B] bg-[#D4AF37]/10 px-3 py-1.5 rounded-lg">{flattenedProducts.length} Items</span>
+          <div className="flex items-center justify-between w-full sm:w-auto gap-3">
+            <span className="text-sm font-bold text-[#45055B] bg-[#D4AF37]/10 px-3 py-1.5 rounded-lg whitespace-nowrap">
+              {flattenedProducts.length} Items
+            </span>
             {showOnlyOffers && (
-              <span className="flex items-center gap-1 text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg">
+              <span className="flex items-center gap-1 text-xs font-bold text-red-600 bg-red-50 border border-red-200 px-2.5 py-1 rounded-lg whitespace-nowrap">
                 <span className="w-1.5 h-1.5 rounded-full bg-red-500 inline-block" />
                 Reduced Price Active
               </span>
@@ -309,18 +331,43 @@ export function CategoryListingPage() {
             {/* Mobile Filter Trigger */}
             <button 
               onClick={() => setShowMobileFilters(true)}
-              className="lg:hidden flex items-center gap-1.5 text-sm font-bold text-[#D4AF37] bg-[#45055B]/10 px-4 py-1.5 rounded-lg"
+              className="lg:hidden flex items-center gap-1.5 text-sm font-bold text-[#D4AF37] bg-[#45055B]/10 px-4 py-1.5 rounded-lg whitespace-nowrap"
             >
               <Filter className="w-4 h-4" />
               Filters
             </button>
           </div>
 
-          <div className="hidden lg:flex items-center gap-3">
-            <span className="text-sm font-semibold text-[#45055B]/60">View:</span>
-            <div className="flex bg-gray-100 rounded-lg p-1">
-              <button onClick={() => setLayout('grid')} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${layout === 'grid' ? 'bg-white shadow-sm text-[#D4AF37]' : 'text-gray-500 hover:text-gray-900'}`}>Grid</button>
-              <button onClick={() => setLayout('list')} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${layout === 'list' ? 'bg-white shadow-sm text-[#D4AF37]' : 'text-gray-500 hover:text-gray-900'}`}>List</button>
+          {/* Desktop Search & View Controls */}
+          <div className="flex items-center gap-3 md:gap-4 w-full sm:w-auto justify-between sm:justify-end">
+            {/* Search Input in Top Bar */}
+            <div className="relative flex-1 sm:w-64 md:w-80">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#D4AF37] pointer-events-none" />
+              <input
+                type="text"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search products in this list..."
+                className="w-full pl-9 pr-8 py-1.5 text-xs sm:text-sm bg-gray-50/80 hover:bg-white focus:bg-white text-[#45055B] placeholder:text-[#45055B]/40 rounded-lg border border-gray-200 focus:border-[#D4AF37] focus:ring-2 focus:ring-[#D4AF37]/20 transition-all outline-none"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#45055B] p-0.5 rounded-full hover:bg-gray-200/60 transition-colors"
+                  title="Clear search"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+
+            {/* Desktop View Switcher */}
+            <div className="hidden lg:flex items-center gap-2">
+              <span className="text-sm font-semibold text-[#45055B]/60">View:</span>
+              <div className="flex bg-gray-100 rounded-lg p-1">
+                <button onClick={() => setLayout('grid')} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${layout === 'grid' ? 'bg-white shadow-sm text-[#D4AF37]' : 'text-gray-500 hover:text-gray-900'}`}>Grid</button>
+                <button onClick={() => setLayout('list')} className={`px-4 py-1.5 text-xs font-bold rounded-md transition-colors ${layout === 'list' ? 'bg-white shadow-sm text-[#D4AF37]' : 'text-gray-500 hover:text-gray-900'}`}>List</button>
+              </div>
             </div>
           </div>
         </div>
@@ -347,7 +394,7 @@ export function CategoryListingPage() {
                   </div>
                   <h3 className="font-serif text-xl font-bold text-[#45055B] mb-1">No products found</h3>
                   <p className="text-sm text-[#45055B]/60 max-w-md">Try adjusting your filters or search terms to find what you're looking for.</p>
-                  <button onClick={() => { handleCategoryChange('all'); setSortBy('featured'); }} className="mt-6 text-[#D4AF37] font-bold text-sm bg-[#45055B]/10 px-6 py-2 rounded-full hover:bg-[#45055B]/20 transition-colors">
+                  <button onClick={() => { handleCategoryChange('all'); setSortBy('featured'); setSearchTerm(''); }} className="mt-6 text-[#D4AF37] font-bold text-sm bg-[#45055B]/10 px-6 py-2 rounded-full hover:bg-[#45055B]/20 transition-colors">
                     Clear Filters
                   </button>
                 </div>
