@@ -6,6 +6,7 @@ import defaultBanners from "../../data/banners.json";
 import { uploadToCloudinary, deleteFromCloudinary } from "../../utils/cloudinary";
 import { supabase } from "../../utils/supabase";
 import { useStoreData } from "../../store/useStoreData";
+import { DeleteConfirmModal } from "../../components/admin/DeleteConfirmModal";
 
 import banner1Velvet from '../../assets/banner_1_velvet_necklace.jpg';
 import banner2Bridal from '../../assets/banner_2_bridal_kundan.jpg';
