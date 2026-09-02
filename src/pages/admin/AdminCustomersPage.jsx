@@ -3,6 +3,7 @@ import { Users, Mail, Phone, Calendar, Search, Trash2, CheckCircle, XCircle } fr
 import { motion } from "framer-motion";
 
 import { supabase } from "../../utils/supabase";
+import { DeleteConfirmModal } from "../../components/admin/DeleteConfirmModal";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
@@ -22,7 +23,8 @@ export function AdminCustomersPage() {
   const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [clearing, setClearing] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchCustomers();
@@ -92,11 +94,10 @@ export function AdminCustomersPage() {
     }
   };
 
-  const handleClearUser = async (customer) => {
-    if (!window.confirm(
-      `Clear "${customer.name}" (${customer.email})?\n\nThis anonymizes their account so they can re-register with the same email/phone. Their orders are preserved.`
-    )) return;
-    setClearing(customer.id);
+  const confirmClearUser = async () => {
+    if (!deleteTarget) return;
+    const customer = deleteTarget;
+    setIsDeleting(true);
     try {
       const token = localStorage.getItem("token");
       await fetch(`${BACKEND_URL}/admin/users/${customer.id}`, {
@@ -115,12 +116,14 @@ export function AdminCustomersPage() {
       } catch (e) {}
 
       setCustomers(prev => prev.filter(c => c.id !== customer.id && c.email !== customer.email));
+      setDeleteTarget(null);
     } catch (err) {
-      alert(err.message);
+      alert("Error clearing customer: " + err.message);
     } finally {
-      setClearing(null);
+      setIsDeleting(false);
     }
   };
+
 
   const filtered = customers.filter(c =>
     (!search ||
@@ -235,10 +238,9 @@ export function AdminCustomersPage() {
                   <td className="py-4 px-4 text-center sticky right-0 bg-white z-10 shadow-[-4px_0_12px_rgba(0,0,0,0.03)] group-hover:bg-[#FAF6F0]/50">
                     {customer.role !== "admin" && (
                       <button
-                        onClick={() => handleClearUser(customer)}
-                        disabled={clearing === customer.id}
-                        title="Clear user so they can re-register"
-                        className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors disabled:opacity-40"
+                        onClick={() => setDeleteTarget(customer)}
+                        title="Clear customer record"
+                        className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
@@ -257,6 +259,27 @@ export function AdminCustomersPage() {
           </table>
         </div>
       </div>
+
+      {/* Sticky Deletion Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Clear Customer Record"
+        itemName={deleteTarget?.name ? `${deleteTarget.name} (${deleteTarget.email || deleteTarget.phone})` : deleteTarget?.email}
+        message={
+          <>
+            Are you sure you want to clear customer{" "}
+            <span className="font-bold text-[#45055B] bg-[#FAF6F0] px-2 py-0.5 rounded-md border border-[#45055B]/10 mx-1 inline-block">
+              {deleteTarget?.name || deleteTarget?.email}
+            </span>
+            ? This will remove their profile while preserving historical order analytics.
+          </>
+        }
+        confirmText="Okay, Clear"
+        isDeleting={isDeleting}
+        onConfirm={confirmClearUser}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
+

@@ -1,14 +1,5 @@
 [
   {
-    "id": 1,
-    "name": "Necklaces",
-    "models": [
-      "Back Beads"
-    ],
-    "image_url": "/images/necklace.png?v=lifestyle_bag_11",
-    "created_at": "2026-07-22T19:43:23.068Z"
-  },
-  {
     "id": 2,
     "name": "Earrings",
     "models": [],
@@ -42,20 +33,6 @@
     "models": [],
     "image_url": "/images/hair_accessories.png?v=lifestyle_bag_11",
     "created_at": "2026-07-22T19:43:35.000Z"
-  },
-  {
-    "id": 7,
-    "name": "Lifestyle Products",
-    "models": [],
-    "image_url": "/images/lifestyle.png?v=lifestyle_bag_11",
-    "created_at": "2026-07-22T19:43:36.000Z"
-  },
-  {
-    "id": 8,
-    "name": "Jewelry Sets",
-    "models": [],
-    "image_url": "/images/jewelry_sets.png?v=lifestyle_bag_11",
-    "created_at": "2026-07-22T19:43:34.348Z"
   },
   {
     "id": 9,

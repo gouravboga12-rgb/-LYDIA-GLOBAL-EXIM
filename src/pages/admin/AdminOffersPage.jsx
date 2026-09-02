@@ -5,12 +5,15 @@ import { motion } from "framer-motion";
 import defaultOffers from "../../data/offers.json";
 import { supabase } from "../../utils/supabase";
 import { useStoreData } from "../../store/useStoreData";
+import { DeleteConfirmModal } from "../../components/admin/DeleteConfirmModal";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function AdminOffersPage() {
   const [offers, setOffers] = useState(defaultOffers || []);
   const [loading, setLoading] = useState(true);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   // Edit/Create state
   const [editOffer, setEditOffer] = useState(null);
@@ -103,9 +106,11 @@ export function AdminOffersPage() {
     setIsNew(false);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete offer? This will update the database and website globally.")) return;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
     try {
+      const id = deleteTarget.id;
       // 1. Delete from Supabase
       const numId = Number(id);
       if (!isNaN(numId)) {
@@ -121,11 +126,15 @@ export function AdminOffersPage() {
       
       await fetchOffers();
       await useStoreData.getState().fetchData();
+      setDeleteTarget(null);
     } catch (err) {
       console.error(err);
       alert("Error deleting offer: " + err.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
+
 
   const handleSave = async () => {
     setSaving(true);
@@ -248,7 +257,7 @@ export function AdminOffersPage() {
                 </div>
                 <div className="flex gap-2">
                   <button onClick={() => handleEdit(offer)} className="text-[#45055B] hover:bg-[#45055B]/10 p-1.5 rounded transition-colors"><Edit2 className="w-4 h-4" /></button>
-                  <button onClick={() => handleDelete(offer.id)} className="text-red-500 hover:bg-red-50 p-1.5 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
+                  <button onClick={() => setDeleteTarget(offer)} className="text-red-500 hover:bg-red-50 p-1.5 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
                 </div>
               </div>
               
@@ -392,6 +401,17 @@ export function AdminOffersPage() {
           </div>
         </div>
       )}
+
+      {/* Sticky Deletion Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Offer"
+        itemName={deleteTarget?.title}
+        isDeleting={isDeleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
+

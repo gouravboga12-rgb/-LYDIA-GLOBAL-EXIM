@@ -7,6 +7,7 @@ import defaultOffers from "../../data/offers.json";
 import { uploadToCloudinary, deleteFromCloudinary } from "../../utils/cloudinary";
 import { supabase } from "../../utils/supabase";
 import { useStoreData } from "../../store/useStoreData";
+import { DeleteConfirmModal } from "../../components/admin/DeleteConfirmModal";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
@@ -16,6 +17,8 @@ export function AdminProductsPage() {
   const [offers, setOffers] = useState(defaultOffers || []);
   const [loading, setLoading] = useState(true);
   const [editProduct, setEditProduct] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   
   const initialFormData = { 
     name: "", description: "", product_code: "", instagram_reel_url: "", category: "", model: "", is_active: true, allow_reviews: true,
@@ -192,23 +195,23 @@ export function AdminProductsPage() {
     setIsNew(false);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this product? This will remove it from the store globally.")) return;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
     try {
-      const prodToDelete = products.find(p => String(p.id) === String(id));
-      if (prodToDelete) {
-        const toDeleteImages = [];
-        if (prodToDelete.image_url) toDeleteImages.push(prodToDelete.image_url);
-        if (Array.isArray(prodToDelete.images)) toDeleteImages.push(...prodToDelete.images);
-        if (Array.isArray(prodToDelete.variants)) {
-          prodToDelete.variants.forEach(v => {
-            if (Array.isArray(v.images)) toDeleteImages.push(...v.images);
-          });
-        }
-        for (const imgUrl of toDeleteImages) {
-          if (imgUrl && typeof imgUrl === 'string' && imgUrl.includes('cloudinary.com')) {
-            await deleteFromCloudinary(imgUrl).catch(() => null);
-          }
+      const prodToDelete = deleteTarget;
+      const id = prodToDelete.id;
+      const toDeleteImages = [];
+      if (prodToDelete.image_url) toDeleteImages.push(prodToDelete.image_url);
+      if (Array.isArray(prodToDelete.images)) toDeleteImages.push(...prodToDelete.images);
+      if (Array.isArray(prodToDelete.variants)) {
+        prodToDelete.variants.forEach(v => {
+          if (Array.isArray(v.images)) toDeleteImages.push(...v.images);
+        });
+      }
+      for (const imgUrl of toDeleteImages) {
+        if (imgUrl && typeof imgUrl === 'string' && imgUrl.includes('cloudinary.com')) {
+          await deleteFromCloudinary(imgUrl).catch(() => null);
         }
       }
 
@@ -228,11 +231,15 @@ export function AdminProductsPage() {
       // 3. Refresh local Admin view & Global Storefront Store
       await fetchData();
       await useStoreData.getState().fetchData();
+      setDeleteTarget(null);
     } catch (err) {
       console.error(err);
       alert("Error deleting product: " + err.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
+
 
   const handleSave = async () => {
     setSaving(true);
@@ -554,7 +561,7 @@ export function AdminProductsPage() {
                     <td className="px-4 py-3 text-right">
                       <div className="flex justify-end gap-2">
                         <button onClick={() => handleEdit(row.product)} className="p-1.5 text-[#45055B] hover:bg-[#45055B]/10 rounded"><Edit2 className="w-4 h-4" /></button>
-                        <button onClick={() => handleDelete(row.product.id)} className="p-1.5 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
+                        <button onClick={() => setDeleteTarget(row.product)} className="p-1.5 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
                       </div>
                     </td>
                   </tr>
@@ -871,6 +878,17 @@ export function AdminProductsPage() {
           </motion.div>
         </div>
       )}
+
+      {/* Sticky Deletion Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Product"
+        itemName={deleteTarget?.name}
+        isDeleting={isDeleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
+

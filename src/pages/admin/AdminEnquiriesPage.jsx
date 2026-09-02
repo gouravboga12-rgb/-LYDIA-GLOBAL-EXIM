@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MessageSquare, Mail, Phone, Calendar, Trash2, Search, CheckCircle, ExternalLink, RefreshCw } from "lucide-react";
 import { motion } from "framer-motion";
 import { supabase } from "../../utils/supabase";
+import { DeleteConfirmModal } from "../../components/admin/DeleteConfirmModal";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
@@ -10,6 +11,8 @@ export function AdminEnquiriesPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [selectedEnquiry, setSelectedEnquiry] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchEnquiries();
@@ -45,8 +48,10 @@ export function AdminEnquiriesPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this inquiry?")) return;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    const id = deleteTarget.id;
+    setIsDeleting(true);
     try {
       // 1. Delete from Supabase
       try {
@@ -58,16 +63,20 @@ export function AdminEnquiriesPage() {
       await fetch(`${BACKEND_URL}/admin/enquiries/${id}`, {
         method: "DELETE",
         headers: token ? { Authorization: `Bearer ${token}` } : {}
-      });
+      }).catch(() => null);
 
       setEnquiries(prev => prev.filter(e => String(e.id) !== String(id)));
       if (selectedEnquiry && String(selectedEnquiry.id) === String(id)) {
         setSelectedEnquiry(null);
       }
+      setDeleteTarget(null);
     } catch (err) {
-      alert("Failed to delete inquiry");
+      alert("Failed to delete inquiry: " + err.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
+
 
   const filtered = enquiries.filter(e =>
     !search ||
@@ -132,7 +141,7 @@ export function AdminEnquiriesPage() {
                     <p className="text-[#B38827] text-xs font-semibold">{item.subject || "General Inquiry"}</p>
                   </div>
                   <button
-                    onClick={() => handleDelete(item.id)}
+                    onClick={() => setDeleteTarget(item)}
                     title="Delete Inquiry"
                     className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                   >
@@ -194,6 +203,27 @@ export function AdminEnquiriesPage() {
           ))}
         </div>
       )}
+
+      {/* Sticky Deletion Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Customer Inquiry"
+        itemName={deleteTarget?.name ? `${deleteTarget.name} - ${deleteTarget.subject || 'Inquiry'}` : deleteTarget?.subject}
+        message={
+          <>
+            Are you sure you want to permanently delete the inquiry from{" "}
+            <span className="font-bold text-[#45055B] bg-[#FAF6F0] px-2 py-0.5 rounded-md border border-[#45055B]/10 mx-1 inline-block">
+              {deleteTarget?.name || deleteTarget?.email || "this customer"}
+            </span>
+            ? This action cannot be undone.
+          </>
+        }
+        confirmText="Okay, Delete"
+        isDeleting={isDeleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
+

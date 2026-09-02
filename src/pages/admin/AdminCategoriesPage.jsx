@@ -6,6 +6,7 @@ import defaultCategories from "../../data/categories.json";
 import { uploadToCloudinary, deleteFromCloudinary } from "../../utils/cloudinary";
 import { supabase } from "../../utils/supabase";
 import { useStoreData } from "../../store/useStoreData";
+import { DeleteConfirmModal } from "../../components/admin/DeleteConfirmModal";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
@@ -13,6 +14,8 @@ export function AdminCategoriesPage() {
   const [categories, setCategories] = useState(defaultCategories || []);
   const [loading, setLoading] = useState(true);
   const [editCategory, setEditCategory] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [formData, setFormData] = useState({ name: "", models: [], image_url: "" });
   const [newModel, setNewModel] = useState("");
   const [saving, setSaving] = useState(false);
@@ -80,12 +83,13 @@ export function AdminCategoriesPage() {
     setIsNew(false);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete this category? This will update the database and website globally.")) return;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
     try {
-      const catToDelete = categories.find(c => String(c.id) === String(id));
-      if (catToDelete && catToDelete.image_url && catToDelete.image_url.includes('cloudinary.com')) {
-        await deleteFromCloudinary(catToDelete.image_url);
+      const id = deleteTarget.id;
+      if (deleteTarget.image_url && deleteTarget.image_url.includes('cloudinary.com')) {
+        await deleteFromCloudinary(deleteTarget.image_url).catch(() => null);
       }
 
       // 1. Delete from Supabase
@@ -93,6 +97,8 @@ export function AdminCategoriesPage() {
       if (!isNaN(numId)) {
         const { error: sbErr } = await supabase.from('categories').delete().eq('id', numId);
         if (sbErr) console.warn("Supabase category delete note:", sbErr);
+      } else {
+        await supabase.from('categories').delete().eq('id', id).catch(() => null);
       }
 
       // 2. Delete from Backend REST
@@ -101,9 +107,12 @@ export function AdminCategoriesPage() {
 
       await fetchCategories();
       await useStoreData.getState().fetchData();
+      setDeleteTarget(null);
     } catch (err) {
       console.error(err);
       alert("Error deleting category: " + err.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -118,6 +127,23 @@ export function AdminCategoriesPage() {
     setFormData({ ...formData, models: formData.models.filter(m => m !== modelToRemove) });
   };
 
+  const handleImageUpload = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    try {
+      const url = await uploadToCloudinary(file);
+      if (url) {
+        setFormData({ ...formData, image_url: url });
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error uploading image");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -127,9 +153,10 @@ export function AdminCategoriesPage() {
         return;
       }
 
+      // Check if image was changed to delete the old one from Cloudinary
       if (!isNew && editCategory && editCategory.image_url && editCategory.image_url !== formData.image_url) {
         if (editCategory.image_url.includes('cloudinary.com')) {
-          await deleteFromCloudinary(editCategory.image_url);
+          await deleteFromCloudinary(editCategory.image_url).catch(() => null);
         }
       }
 
@@ -155,7 +182,7 @@ export function AdminCategoriesPage() {
       await fetch(url, {
         method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(formData),
       }).catch(() => null);
 
       setEditCategory(null);
@@ -179,10 +206,10 @@ export function AdminCategoriesPage() {
 
   return (
     <div className="w-full max-w-5xl mx-auto">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-[#45055B]">Categories & Models</h1>
-          <p className="text-[#45055B]/40 text-xs font-sans mt-0.5">Manage categories and their available models</p>
+          <h1 className="font-serif text-3xl font-bold text-[#45055B]">Categories</h1>
+          <p className="text-[#45055B]/40 text-xs font-sans mt-0.5">Manage jewelry categories and supported models</p>
         </div>
         <button onClick={handleAdd}
           className="flex items-center gap-2 bg-[#45055B] hover:bg-[#D4AF37] text-white px-4 py-2.5 rounded-xl font-semibold transition-colors">
@@ -209,7 +236,7 @@ export function AdminCategoriesPage() {
               </div>
               <div className="flex gap-2">
                 <button onClick={() => handleEdit(cat)} className="p-2 text-[#45055B] hover:bg-[#45055B]/10 rounded-full transition-colors"><Edit2 className="w-4 h-4" /></button>
-                <button onClick={() => handleDelete(cat.id)} className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"><Trash2 className="w-4 h-4" /></button>
+                <button onClick={() => setDeleteTarget(cat)} className="p-2 text-red-500 hover:bg-red-50 rounded-full transition-colors"><Trash2 className="w-4 h-4" /></button>
               </div>
             </div>
             
@@ -247,36 +274,32 @@ export function AdminCategoriesPage() {
               </button>
             </div>
             
-            <div className="p-6 space-y-5 overflow-y-auto">
+            <div className="p-6 space-y-4 overflow-y-auto">
               <div>
                 <label className="text-xs font-sans font-semibold text-[#45055B]/70 mb-1 block">Category Name</label>
-                <input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })} placeholder="e.g. Mobile Phones"
+                <input value={formData.name} onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-3 py-2 rounded-lg bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none focus:border-[#45055B]/40" />
               </div>
               
               <div>
-                <label className="text-xs font-sans font-semibold text-[#45055B]/70 mb-2 block">Category Image</label>
-                <div className="flex items-center gap-3">
-                  {formData.image_url ? (
-                    <div className="w-16 h-16 rounded-lg overflow-hidden border border-[#45055B]/20 flex-shrink-0">
+                <label className="text-xs font-sans font-semibold text-[#45055B]/70 mb-1 block">Category Image</label>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-xl bg-[#FAF6F0] border border-[#45055B]/10 overflow-hidden flex items-center justify-center text-[#45055B]">
+                    {formData.image_url ? (
                       <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
-                    </div>
-                  ) : (
-                    <div className="w-16 h-16 rounded-lg bg-[#FAF6F0] border border-[#45055B]/10 flex-shrink-0 flex items-center justify-center text-[#45055B]/20">
-                      <FolderTree className="w-6 h-6" />
-                    </div>
-                  )}
-                  <div className="flex-1">
-                    <input type="file" id="cat_image" accept="image/*" onChange={handleImageUpload} className="hidden" />
-                    <label htmlFor="cat_image" className="inline-flex items-center gap-2 bg-[#FAF6F0] hover:bg-[#FAF6F0]/70 text-[#45055B] border border-[#45055B]/20 px-3 py-1.5 rounded-lg text-sm font-semibold cursor-pointer transition-colors">
-                      <Upload className="w-4 h-4" /> {uploading ? "Uploading..." : "Upload Image"}
-                    </label>
+                    ) : (
+                      <Upload className="w-6 h-6 text-[#45055B]/30" />
+                    )}
                   </div>
+                  <label className="px-4 py-2 bg-[#FAF6F0] text-[#45055B] border border-[#45055B]/20 rounded-xl font-semibold cursor-pointer hover:bg-[#45055B]/10 transition-colors">
+                    {uploading ? "Uploading..." : "Upload Image"}
+                    <input type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
+                  </label>
                 </div>
               </div>
-
-              <div className="pt-2 border-t border-[#45055B]/10">
-                <label className="text-xs font-sans font-semibold text-[#45055B]/70 mb-1 block">Available Models</label>
+              
+              <div className="pt-2">
+                <label className="text-xs font-sans font-semibold text-[#45055B]/70 mb-1 block">Add Models / Subcategories</label>
                 <div className="flex gap-2 mb-3">
                   <input value={newModel} onChange={(e) => setNewModel(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && addModel()} placeholder="e.g. iPhone 15"
                     className="flex-1 px-3 py-2 rounded-lg bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none focus:border-[#45055B]/40" />
@@ -308,6 +331,16 @@ export function AdminCategoriesPage() {
           </motion.div>
         </div>
       )}
+
+      {/* Sticky Deletion Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Category"
+        itemName={deleteTarget?.name}
+        isDeleting={isDeleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }

@@ -48,6 +48,8 @@ export function AdminBannersPage() {
   const [banners, setBanners] = useState(defaultBanners || []);
   const [loading, setLoading] = useState(true);
   const [editBanner, setEditBanner] = useState(null);
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -116,12 +118,14 @@ export function AdminBannersPage() {
     setIsNew(false);
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm("Delete banner? This will update the database and website globally.")) return;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
     try {
-      const bannerToDelete = banners.find(b => String(b.id) === String(id));
-      if (bannerToDelete && bannerToDelete.image_url && bannerToDelete.image_url.includes('cloudinary.com')) {
-        await deleteFromCloudinary(bannerToDelete.image_url);
+      const bannerToDelete = deleteTarget;
+      const id = bannerToDelete.id;
+      if (bannerToDelete.image_url && bannerToDelete.image_url.includes('cloudinary.com')) {
+        await deleteFromCloudinary(bannerToDelete.image_url).catch(() => null);
       }
 
       // 1. Delete from Supabase
@@ -139,11 +143,15 @@ export function AdminBannersPage() {
 
       await fetchBanners();
       await useStoreData.getState().fetchData();
+      setDeleteTarget(null);
     } catch (err) {
       console.error(err);
       alert("Error deleting banner: " + err.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
+
 
   const handleSave = async () => {
     setSaving(true);
@@ -305,7 +313,7 @@ export function AdminBannersPage() {
 
                 {/* Edit & Delete Floating Buttons */}
                 <div className="absolute top-2.5 right-2.5 flex gap-1.5 z-20">
-                  <button onClick={() => handleDelete(banner.id)} className="bg-black/60 hover:bg-red-600 text-white p-2 rounded-full shadow-lg transition-colors cursor-pointer">
+                  <button onClick={() => setDeleteTarget(banner)} className="bg-black/60 hover:bg-red-600 text-white p-2 rounded-full shadow-lg transition-colors cursor-pointer">
                     <Trash2 className="w-3.5 h-3.5" />
                   </button>
                   <button onClick={() => handleEdit(banner)} className="bg-black/60 hover:bg-[#D4AF37] text-white p-2 rounded-full shadow-lg transition-colors cursor-pointer">
@@ -501,6 +509,17 @@ export function AdminBannersPage() {
           </div>
         </div>
       )}
+
+      {/* Sticky Deletion Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Banner"
+        itemName={deleteTarget?.title}
+        isDeleting={isDeleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
+

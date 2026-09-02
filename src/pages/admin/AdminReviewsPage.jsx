@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import defaultReviews from '../../data/reviews.json';
 import { uploadToCloudinary, deleteFromCloudinary } from '../../utils/cloudinary';
 import { supabase } from '../../utils/supabase';
+import { DeleteConfirmModal } from '../../components/admin/DeleteConfirmModal';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
 
@@ -14,6 +15,8 @@ export function AdminReviewsPage() {
   const [reviews, setReviews] = useState(defaultReviews || []);
   const [loading, setLoading] = useState(true);
   const [modal, setModal] = useState(null); // null | 'add' | review object
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -113,32 +116,41 @@ export function AdminReviewsPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (!confirm('Delete this review? This will also remove its media from Cloudinary.')) return;
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
     try {
-      const reviewToDelete = reviews.find(r => String(r.id) === String(id));
+      const reviewToDelete = deleteTarget;
+      const id = reviewToDelete.id;
       if (reviewToDelete && reviewToDelete.image_url && reviewToDelete.image_url.includes('cloudinary.com')) {
-        await deleteFromCloudinary(reviewToDelete.image_url);
+        await deleteFromCloudinary(reviewToDelete.image_url).catch(() => null);
       }
 
       // 1. Delete from Supabase
-      try {
-        await supabase.from('reviews').delete().eq('id', id);
-      } catch (sbErr) {
-        console.warn("Supabase review delete note:", sbErr);
+      const numId = Number(id);
+      if (!isNaN(numId)) {
+        await supabase.from('reviews').delete().eq('id', numId).catch(() => null);
+      } else {
+        await supabase.from('reviews').delete().eq('id', id).catch(() => null);
       }
 
-      // 2. Delete from Backend REST
+      // 2. Delete from Backend REST (if available)
       const token = localStorage.getItem('token');
       await fetch(`${BACKEND_URL}/admin/reviews/${id}`, {
         method: 'DELETE',
         headers: { Authorization: `Bearer ${token}` }
-      });
-      fetchReviews();
+      }).catch(() => null);
+
+      await fetchReviews();
+      setDeleteTarget(null);
     } catch (err) {
       console.error(err);
+      alert("Error deleting review: " + err.message);
+    } finally {
+      setIsDeleting(false);
     }
   };
+
 
   const StarPicker = ({ value, onChange }) => (
     <div className="flex gap-1">
@@ -225,7 +237,7 @@ export function AdminReviewsPage() {
                   <td className="px-4 py-3 text-right">
                     <div className="flex justify-end gap-2">
                       <button onClick={() => openEdit(r)} className="p-1.5 text-[#45055B] hover:bg-[#45055B]/10 rounded"><Edit2 className="w-4 h-4" /></button>
-                      <button onClick={() => handleDelete(r.id)} className="p-1.5 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
+                      <button onClick={() => setDeleteTarget(r)} className="p-1.5 text-red-500 hover:bg-red-50 rounded"><Trash2 className="w-4 h-4" /></button>
                     </div>
                   </td>
                 </tr>
@@ -325,6 +337,17 @@ export function AdminReviewsPage() {
           </motion.div>
         </div>
       )}
+
+      {/* Sticky Deletion Confirmation Modal */}
+      <DeleteConfirmModal
+        isOpen={!!deleteTarget}
+        title="Delete Review"
+        itemName={deleteTarget?.name || deleteTarget?.user_name}
+        isDeleting={isDeleting}
+        onConfirm={confirmDelete}
+        onCancel={() => setDeleteTarget(null)}
+      />
     </div>
   );
 }
+
