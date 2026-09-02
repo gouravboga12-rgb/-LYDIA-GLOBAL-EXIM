@@ -226,28 +226,28 @@ export const COUNTRIES = [
   { name: 'Zimbabwe', iso: 'ZW', code: '263' },
 ];
 
-// Stored format: "ISO:+dialCodenumber" e.g. "US:+11234567890"
+// Stored format: "ISO:+dialCodenumber" e.g. "IN:+919876543210"
 export function parsePhone(value = '') {
   if (value.includes(':')) {
     const [iso, rest] = value.split(':');
     const country = COUNTRIES.find(c => c.iso === iso);
     if (country) return { iso, dialCode: country.code, number: rest.slice(country.code.length + 1) };
   }
-  if (!value.startsWith('+')) return { iso: 'US', dialCode: '1', number: value };
+  if (!value.startsWith('+')) return { iso: 'IN', dialCode: '91', number: value };
   const sorted = [...COUNTRIES].sort((a, b) => b.code.length - a.code.length);
   const match = sorted.find(c => value.startsWith(`+${c.code}`));
   if (match) return { iso: match.iso, dialCode: match.code, number: value.slice(match.code.length + 1) };
-  return { iso: 'US', dialCode: '1', number: value.slice(1) };
+  return { iso: 'IN', dialCode: '91', number: value.slice(1) };
 }
 
-// Returns full value like "US:+11234567890"
+// Returns full value like "IN:+919876543210"
 export function formatPhone(dialCode, number, iso = '') {
   return `${iso}:+${dialCode}${number.replace(/\D/g, '')}`;
 }
 
 export function PhoneInput({ value = '', onChange, className = '', inputClassName = '', placeholder = 'Phone number', dark = false, allowedCountries = [] }) {
   const parsed = parsePhone(value);
-  const [isoCode, setIsoCode] = useState(parsed.iso);
+  const [isoCode, setIsoCode] = useState(parsed.iso || 'IN');
   const [number, setNumber] = useState(parsed.number);
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState('');
@@ -255,7 +255,7 @@ export function PhoneInput({ value = '', onChange, className = '', inputClassNam
 
   useEffect(() => {
     const p = parsePhone(value);
-    setIsoCode(p.iso);
+    setIsoCode(p.iso || 'IN');
     setNumber(p.number);
   }, [value]);
 
@@ -272,7 +272,7 @@ export function PhoneInput({ value = '', onChange, className = '', inputClassNam
     onChange(formatPhone(c.code, number, c.iso));
   };
 
-  const selected = COUNTRIES.find(c => c.iso === isoCode) || COUNTRIES.find(c => c.iso === 'US');
+  const selected = COUNTRIES.find(c => c.iso === isoCode) || COUNTRIES.find(c => c.iso === 'IN') || COUNTRIES[0];
   const dialCode = selected.code;
 
   const handleNumber = (e) => {

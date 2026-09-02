@@ -129,7 +129,7 @@ function AddressAutocomplete({ value, onChange, onSelect, mapsLoaded }) {
   );
 }
 
-const EMPTY_FORM = { name: '', line1: '', line2: '', city: '', state: '', pincode: '', country: '', mobile: '', is_default: false };
+const EMPTY_FORM = { name: '', line1: '', line2: '', city: '', state: '', pincode: '', country: 'India', mobile: '', is_default: false };
 
 function AddressForm({ onClose, onSave, saving, mapsLoaded, initial, shippingConfig }) {
   const [form, setForm] = useState(initial || EMPTY_FORM);
