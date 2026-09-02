@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useNavigate, useLocation, Link, useSearchParams } from 'react-router-dom';
-import { ShieldCheck, Truck, CheckCircle, MapPin, CreditCard, ChevronLeft, ShoppingCart, Store, Pencil, X, Check } from 'lucide-react';
+import { ShieldCheck, Truck, CheckCircle, MapPin, CreditCard, ChevronLeft, ShoppingCart, Store, Pencil, X, Check, Plus } from 'lucide-react';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Header } from '../components/Header';
