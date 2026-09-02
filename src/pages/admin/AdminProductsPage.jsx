@@ -16,6 +16,80 @@ const isVideoUrl = (url) => {
   return /\.(mp4|webm|mov|avi|mkv|3gp)($|\?)/i.test(url) || url.includes('/video/upload/');
 };
 
+function StockControlCell({ row, togglingSkuId, onUpdateStock }) {
+  const [stockVal, setStockVal] = React.useState(row.size.stock ?? 0);
+  const isAvailable = Number(stockVal) > 0;
+
+  React.useEffect(() => {
+    setStockVal(row.size.stock ?? 0);
+  }, [row.size.stock]);
+
+  const handleStatusSelect = (e) => {
+    const status = e.target.value;
+    if (status === 'out_of_stock') {
+      setStockVal(0);
+      onUpdateStock(row, 0);
+    } else {
+      const nextQty = Number(row.size._prevStock) > 0 ? Number(row.size._prevStock) : 10;
+      setStockVal(nextQty);
+      onUpdateStock(row, nextQty);
+    }
+  };
+
+  const handleCommitQty = () => {
+    const num = Math.max(0, parseInt(stockVal, 10) || 0);
+    setStockVal(num);
+    if (num !== row.size.stock) {
+      onUpdateStock(row, num);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.target.blur();
+    }
+  };
+
+  return (
+    <div className="w-[230px] min-w-[230px] max-w-[230px] flex items-center gap-2">
+      <select
+        value={isAvailable ? "available" : "out_of_stock"}
+        onChange={handleStatusSelect}
+        disabled={togglingSkuId === row.skuId}
+        className={`w-32 px-2 py-1.5 rounded-lg text-xs font-bold border cursor-pointer focus:outline-none transition-colors shrink-0 ${
+          isAvailable
+            ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+            : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100'
+        }`}
+      >
+        <option value="available">✓ Available</option>
+        <option value="out_of_stock">✗ Out of Stock</option>
+      </select>
+
+      <div className="flex items-center gap-1 shrink-0">
+        <input
+          type="number"
+          min="0"
+          value={stockVal}
+          onChange={(e) => setStockVal(e.target.value)}
+          onBlur={handleCommitQty}
+          onKeyDown={handleKeyDown}
+          disabled={togglingSkuId === row.skuId}
+          title="Stock Quantity (0 = Out of Stock)"
+          className={`w-16 px-1.5 py-1 bg-white border rounded-lg text-xs font-bold text-center focus:outline-none focus:ring-1 ${
+            isAvailable ? 'border-emerald-300 text-emerald-900 focus:ring-emerald-400' : 'border-red-300 text-red-700 focus:ring-red-400'
+          }`}
+        />
+        <span className="text-[10px] text-gray-400 font-semibold select-none">Qty</span>
+      </div>
+
+      {togglingSkuId === row.skuId && (
+        <div className="w-3.5 h-3.5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin shrink-0" />
+      )}
+    </div>
+  );
+}
+
 export function AdminProductsPage() {
   const [products, setProducts] = useState(defaultProducts || []);
   const [categories, setCategories] = useState(defaultCategories || []);
@@ -686,80 +760,6 @@ export function AdminProductsPage() {
       <div className="w-8 h-8 border-4 border-[#45055B]/20 border-t-[#45055B] rounded-full animate-spin" />
     </div>
   );
-
-function StockControlCell({ row, togglingSkuId, onUpdateStock }) {
-  const [stockVal, setStockVal] = React.useState(row.size.stock ?? 0);
-  const isAvailable = Number(stockVal) > 0;
-
-  React.useEffect(() => {
-    setStockVal(row.size.stock ?? 0);
-  }, [row.size.stock]);
-
-  const handleStatusSelect = (e) => {
-    const status = e.target.value;
-    if (status === 'out_of_stock') {
-      setStockVal(0);
-      onUpdateStock(row, 0);
-    } else {
-      const nextQty = Number(row.size._prevStock) > 0 ? Number(row.size._prevStock) : 10;
-      setStockVal(nextQty);
-      onUpdateStock(row, nextQty);
-    }
-  };
-
-  const handleCommitQty = () => {
-    const num = Math.max(0, parseInt(stockVal, 10) || 0);
-    setStockVal(num);
-    if (num !== row.size.stock) {
-      onUpdateStock(row, num);
-    }
-  };
-
-  const handleKeyDown = (e) => {
-    if (e.key === 'Enter') {
-      e.target.blur();
-    }
-  };
-
-  return (
-    <div className="w-[230px] min-w-[230px] max-w-[230px] flex items-center gap-2">
-      <select
-        value={isAvailable ? "available" : "out_of_stock"}
-        onChange={handleStatusSelect}
-        disabled={togglingSkuId === row.skuId}
-        className={`w-32 px-2 py-1.5 rounded-lg text-xs font-bold border cursor-pointer focus:outline-none transition-colors shrink-0 ${
-          isAvailable
-            ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
-            : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100'
-        }`}
-      >
-        <option value="available">✓ Available</option>
-        <option value="out_of_stock">✗ Out of Stock</option>
-      </select>
-
-      <div className="flex items-center gap-1 shrink-0">
-        <input
-          type="number"
-          min="0"
-          value={stockVal}
-          onChange={(e) => setStockVal(e.target.value)}
-          onBlur={handleCommitQty}
-          onKeyDown={handleKeyDown}
-          disabled={togglingSkuId === row.skuId}
-          title="Stock Quantity (0 = Out of Stock)"
-          className={`w-16 px-1.5 py-1 bg-white border rounded-lg text-xs font-bold text-center focus:outline-none focus:ring-1 ${
-            isAvailable ? 'border-emerald-300 text-emerald-900 focus:ring-emerald-400' : 'border-red-300 text-red-700 focus:ring-red-400'
-          }`}
-        />
-        <span className="text-[10px] text-gray-400 font-semibold select-none">Qty</span>
-      </div>
-
-      {togglingSkuId === row.skuId && (
-        <div className="w-3.5 h-3.5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin shrink-0" />
-      )}
-    </div>
-  );
-}
 
   return (
     <div className="space-y-6">
