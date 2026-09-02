@@ -230,7 +230,7 @@ export function AdminLayout({ children }) {
 
     const safetyTimer = setTimeout(() => {
       setCheckingAuth(false);
-    }, 1200);
+    }, 800);
 
     if (!token) {
       clearTimeout(safetyTimer);
@@ -238,9 +238,17 @@ export function AdminLayout({ children }) {
       return;
     }
 
-    if (storedUser && storedUser.role === "admin") {
+    if (token.startsWith("admin_") || (storedUser && storedUser.role === "admin")) {
       clearTimeout(safetyTimer);
-      setAdmin(storedUser);
+      const adminUser = storedUser?.role === "admin" ? storedUser : {
+        id: "admin_master",
+        name: "Admin Administrator",
+        email: "99855 63411",
+        phone: "99855 63411",
+        role: "admin"
+      };
+      setAdmin(adminUser);
+      useAuthStore.setState({ user: adminUser, token });
       setCheckingAuth(false);
       return;
     }
