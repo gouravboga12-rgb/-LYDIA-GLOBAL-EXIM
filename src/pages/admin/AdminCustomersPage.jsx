@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Users, Mail, Phone, Calendar, Search, Trash2, CheckCircle, XCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
-import defaultUsers from "../../data/users.json";
 import { supabase } from "../../utils/supabase";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
@@ -20,7 +19,7 @@ function VerifiedBadge({ verified, label }) {
 }
 
 export function AdminCustomersPage() {
-  const [customers, setCustomers] = useState(defaultUsers || []);
+  const [customers, setCustomers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [clearing, setClearing] = useState(null);
@@ -52,30 +51,42 @@ export function AdminCustomersPage() {
       } catch (e) {}
 
       // 2. Fetch from Backend API
-      const token = localStorage.getItem("token");
-      const h = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await fetch(`${BACKEND_URL}/admin/users`, { headers: h }).catch(() => null);
-      const data = res ? await res.json().catch(() => ({})) : {};
+      try {
+        const token = localStorage.getItem("token");
+        const h = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch(`${BACKEND_URL}/admin/users`, { headers: h }).catch(() => null);
+        const data = res ? await res.json().catch(() => ({})) : {};
 
-      if (data && data.users && data.users.length > 0) {
-        // Merge without duplicating emails
-        const existingEmails = new Set(combined.map(u => u.email.toLowerCase()));
-        for (const u of data.users) {
-          if (!existingEmails.has((u.email || '').toLowerCase())) {
-            combined.push(u);
+        if (data && data.users && data.users.length > 0) {
+          const existingEmails = new Set(combined.map(u => (u.email || '').toLowerCase()));
+          const existingIds = new Set(combined.map(u => String(u.id)));
+
+          for (const u of data.users) {
+            const emailKey = (u.email || '').toLowerCase();
+            const idKey = String(u.id || '');
+            if ((!emailKey || !existingEmails.has(emailKey)) && (!idKey || !existingIds.has(idKey))) {
+              combined.push({
+                id: u.id,
+                name: u.name || u.full_name || 'Customer',
+                email: u.email || '',
+                phone: u.phone || u.mobile || '',
+                country: u.country || 'India',
+                role: u.role || 'customer',
+                created_at: u.created_at,
+                is_email_verified: u.is_email_verified ?? true,
+                is_phone_verified: u.is_phone_verified ?? !!(u.phone || u.mobile)
+              });
+            }
           }
         }
-      }
+      } catch (e) {}
 
-      // 3. Fallback to default demo customers if database is still fresh
-      if (combined.length === 0) {
-        combined = defaultUsers || [];
-      }
-
-      setCustomers(combined);
+      // Filter out deleted / dummy users if any
+      const validCustomers = combined.filter(c => c && !c.email?.startsWith('deleted_') && !c.is_deleted);
+      setCustomers(validCustomers);
     } catch (err) {
-      console.error(err);
-      setCustomers(defaultUsers || []);
+      console.error("Failed to load customers:", err);
+      setCustomers([]);
     } finally {
       setLoading(false);
     }
@@ -88,16 +99,22 @@ export function AdminCustomersPage() {
     setClearing(customer.id);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${BACKEND_URL}/admin/users/${customer.id}`, {
+      await fetch(`${BACKEND_URL}/admin/users/${customer.id}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setCustomers(prev => prev.filter(c => c.id !== customer.id));
-      } else {
-        alert(data.error || "Failed to clear user");
-      }
+      }).catch(() => null);
+
+      // Also remove from Supabase profiles if exists
+      try {
+        if (customer.id) {
+          await supabase.from('profiles').delete().eq('id', customer.id);
+        }
+        if (customer.email) {
+          await supabase.from('profiles').delete().eq('email', customer.email);
+        }
+      } catch (e) {}
+
+      setCustomers(prev => prev.filter(c => c.id !== customer.id && c.email !== customer.email));
     } catch (err) {
       alert(err.message);
     } finally {
@@ -169,13 +186,13 @@ export function AdminCustomersPage() {
                       <div className="flex items-center gap-1.5 text-xs text-[#45055B]/70">
                         <Mail className="w-3.5 h-3.5 shrink-0" />
                         <span className="truncate max-w-[160px]">{customer.email}</span>
-                        <VerifiedBadge verified={customer.email_verified} label="" />
+                        <VerifiedBadge verified={customer.is_email_verified ?? customer.email_verified} label="" />
                       </div>
                       {customer.phone && (
                         <div className="flex items-center gap-1.5 text-xs text-[#45055B]/70">
                           <Phone className="w-3.5 h-3.5 shrink-0" />
                           <span>{customer.phone}</span>
-                          <VerifiedBadge verified={customer.phone_verified} label="" />
+                          <VerifiedBadge verified={customer.is_phone_verified ?? customer.phone_verified} label="" />
                         </div>
                       )}
                     </div>
@@ -191,7 +208,7 @@ export function AdminCustomersPage() {
                     <div className="flex flex-col gap-1.5">
                       <div className="flex items-center gap-1.5 text-xs text-[#45055B]/60">
                         <Calendar className="w-3.5 h-3.5" />
-                        {new Date(customer.created_at).toLocaleDateString("en-IN")}
+                        {customer.created_at ? new Date(customer.created_at).toLocaleDateString("en-IN") : "Recent"}
                       </div>
                       <div>
                         <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5 rounded uppercase tracking-wider ${
@@ -232,7 +249,7 @@ export function AdminCustomersPage() {
               {filtered.length === 0 && (
                 <tr>
                   <td colSpan={8} className="py-12 text-center text-[#45055B]/50">
-                    No customers found
+                    No registered customers found
                   </td>
                 </tr>
               )}

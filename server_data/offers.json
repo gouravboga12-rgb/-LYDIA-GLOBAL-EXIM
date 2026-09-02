@@ -7,13 +7,6 @@
     "created_at": "2026-08-13T08:22:05.828Z"
   },
   {
-    "id": 2,
-    "title": "test offer",
-    "discount_percentage": "10.00",
-    "is_active": true,
-    "created_at": "2026-07-28T18:05:36.329Z"
-  },
-  {
     "id": 1,
     "title": "Flat 25% Off",
     "discount_percentage": "23.00",

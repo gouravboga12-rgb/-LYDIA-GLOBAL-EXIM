@@ -92,7 +92,11 @@ export function AdminCategoriesPage() {
 
       // 2. Delete from Backend REST
       const token = localStorage.getItem("token");
-      await fetch(`${BACKEND_URL}/admin/categories/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      const delRes = await fetch(`${BACKEND_URL}/admin/categories/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      if (!delRes.ok) {
+        const errData = await delRes.json().catch(() => ({}));
+        throw new Error(errData.error || delRes.statusText);
+      }
 
       await fetchCategories();
       useStoreData.getState().fetchData();

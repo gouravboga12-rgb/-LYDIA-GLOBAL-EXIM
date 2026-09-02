@@ -185,7 +185,11 @@ export function AdminProductsPage() {
 
       // 2. Delete from Backend REST
       const token = localStorage.getItem("token");
-      await fetch(`${BACKEND_URL}/admin/products/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      const delRes = await fetch(`${BACKEND_URL}/admin/products/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      if (!delRes.ok) {
+        const errData = await delRes.json().catch(() => ({}));
+        throw new Error(errData.error || delRes.statusText);
+      }
 
       // 3. Refresh local Admin view & Global Storefront Store
       await fetchData();

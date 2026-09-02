@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import api from '../utils/api';
+import { supabase } from '../utils/supabase';
 import { useCartStore } from './useCartStore';
 import { useWishlistStore } from './useWishlistStore';
 
@@ -64,6 +65,19 @@ export const useAuthStore = create((set, get) => ({
       const { data } = await api.post('/auth/verify-otp', { email, otp });
       localStorage.setItem('token', data.token);
       set({ token: data.token, user: data.user, loading: false });
+
+      if (data.user?.id) {
+        try {
+          await supabase.from('profiles').upsert({
+            id: data.user.id,
+            email: data.user.email,
+            full_name: data.user.name,
+            mobile: data.user.phone,
+            role: data.user.role || 'customer'
+          });
+        } catch (e) {}
+      }
+
       return { success: true };
     } catch (err) {
       const error = err.response?.data?.error || 'OTP verification failed';
@@ -114,6 +128,19 @@ export const useAuthStore = create((set, get) => ({
       const { data } = await api.post('/auth/google', { idToken, phone, country });
       localStorage.setItem('token', data.token);
       set({ token: data.token, user: data.user, loading: false });
+
+      if (data.user?.id) {
+        try {
+          await supabase.from('profiles').upsert({
+            id: data.user.id,
+            email: data.user.email,
+            full_name: data.user.name,
+            mobile: data.user.phone || phone,
+            role: data.user.role || 'customer'
+          });
+        } catch (e) {}
+      }
+
       return { success: true, role: data.user.role };
     } catch (err) {
       const error = err.response?.data?.error || 'Google Login failed';
@@ -153,6 +180,20 @@ export const useAuthStore = create((set, get) => ({
     try {
       const { data } = await api.put('/auth/profile', { name, phone, country });
       set(state => ({ user: { ...state.user, ...data.user, name, phone, country }, loading: false }));
+
+      const current = get().user;
+      if (current?.id) {
+        try {
+          await supabase.from('profiles').upsert({
+            id: current.id,
+            email: current.email,
+            full_name: name || current.name,
+            mobile: phone || current.phone,
+            role: current.role || 'customer'
+          });
+        } catch (e) {}
+      }
+
       return { success: true };
     } catch (err) {
       const error = err.response?.data?.error || 'Update failed';

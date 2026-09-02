@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
 
@@ -16,6 +17,10 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'lydia_global_exim_771892348_purity_secure';
+
+const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || 'https://vcqvqlicendactenwtwy.supabase.co';
+const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjcXZxbGljZW5kYWN0ZW53dHd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5OTE0NzksImV4cCI6MjEwMzU2NzQ3OX0.sGlIuCzPc5z_bG_wuC08WKiSGNSjxyyy2yU7UD4ke88';
+const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
@@ -30,7 +35,9 @@ app.use((req, res, next) => {
 });
 
 // Persistent Local JSON Store (with Vercel /tmp support)
-const DB_DIR = process.env.VERCEL ? '/tmp' : path.join(__dirname, 'server_data');
+// Use a consistent data directory for both local development and production.
+// This ensures that user registrations are persisted where the admin page reads them.
+const DB_DIR = path.join(__dirname, 'server_data');
 
 try {
   if (!fs.existsSync(DB_DIR)) {
@@ -406,6 +413,30 @@ app.post('/api/auth/verify-otp', async (req, res) => {
   saveStoreData('users', users);
   otpStore.delete(email.toLowerCase());
 
+  // Attempt Supabase sync
+  try {
+    const suRes = await supabase.auth.signUp({
+      email: newUser.email,
+      password: 'LydiaJewelry2026!',
+      options: {
+        data: {
+          full_name: newUser.name,
+          phone: newUser.phone,
+          country: newUser.country
+        }
+      }
+    });
+    if (suRes.data?.user?.id) {
+      await supabase.from('profiles').upsert({
+        id: suRes.data.user.id,
+        email: newUser.email,
+        full_name: newUser.name,
+        mobile: newUser.phone,
+        role: newUser.role || 'customer'
+      });
+    }
+  } catch (e) {}
+
   const token = jwt.sign(
     { id: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role },
     JWT_SECRET,
@@ -473,6 +504,29 @@ app.post('/api/auth/google', async (req, res) => {
       };
       users.push(user);
       saveStoreData('users', users);
+
+      try {
+        const suRes = await supabase.auth.signUp({
+          email,
+          password: 'GoogleUser_' + Math.random().toString(36).substr(2, 8) + '!',
+          options: {
+            data: {
+              full_name: name,
+              phone: phone || '',
+              country: country || 'India'
+            }
+          }
+        });
+        if (suRes.data?.user?.id) {
+          await supabase.from('profiles').upsert({
+            id: suRes.data.user.id,
+            email,
+            full_name: name,
+            mobile: phone || '',
+            role: user.role || 'customer'
+          });
+        }
+      } catch (e) {}
     } else {
       if (phone && !user.phone) user.phone = phone;
       if (country && !user.country) user.country = country;
@@ -894,16 +948,55 @@ app.post('/api/admin/orders/:id/resend-invoice', (req, res) => {
 // ADMIN USERS / CUSTOMERS
 // ==========================================
 
-app.get('/api/admin/users', (req, res) => {
-  const users = loadStoreData('users', 'src/data/users.json');
-  return res.json({ users });
+app.get('/api/admin/users', async (req, res) => {
+  let combined = [];
+  try {
+    const { data: profiles, error } = await supabase.from('profiles').select('*');
+    if (!error && profiles && profiles.length > 0) {
+      combined = profiles.map(p => ({
+        id: p.id,
+        name: p.full_name || p.name || 'Customer',
+        email: p.email || '',
+        phone: p.phone || p.mobile || '',
+        country: p.country || 'India',
+        role: p.role || 'customer',
+        created_at: p.created_at,
+        is_email_verified: true,
+        is_phone_verified: !!(p.phone || p.mobile)
+      }));
+    }
+  } catch (e) {}
+
+  const localUsers = loadStoreData('users') || [];
+  const existingEmails = new Set(combined.map(u => (u.email || '').toLowerCase()));
+  const existingIds = new Set(combined.map(u => String(u.id)));
+
+  for (const u of localUsers) {
+    const emailKey = (u.email || '').toLowerCase();
+    const idKey = String(u.id || '');
+    if ((!emailKey || !existingEmails.has(emailKey)) && (!idKey || !existingIds.has(idKey))) {
+      combined.push(u);
+    }
+  }
+
+  const validUsers = combined.filter(u => u && !u.is_deleted && !u.email?.startsWith('deleted_'));
+  return res.json({ users: validUsers });
 });
 
-app.delete('/api/admin/users/:id', (req, res) => {
+app.delete('/api/admin/users/:id', async (req, res) => {
   const id = req.params.id;
   let users = loadStoreData('users', 'src/data/users.json');
+  const target = users.find(u => String(u.id) === String(id));
   users = users.filter(u => String(u.id) !== String(id));
   saveStoreData('users', users);
+
+  try {
+    await supabase.from('profiles').delete().eq('id', id);
+    if (target?.email) {
+      await supabase.from('profiles').delete().eq('email', target.email);
+    }
+  } catch (e) {}
+
   return res.json({ success: true });
 });
 

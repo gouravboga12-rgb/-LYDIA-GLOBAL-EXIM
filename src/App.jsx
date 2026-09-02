@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AppLayout } from './components/AppLayout';
 import { SplashScreen } from './components/SplashScreen';
 import { useStoreData } from './store/useStoreData';
@@ -49,14 +49,16 @@ import { SearchPage } from './pages/SearchPage';
 function App() {
   const [showSplash, setShowSplash] = useState(true);
   const { fetchData } = useStoreData();
+  const location = useLocation();
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
     <>
-      {showSplash && <SplashScreen onComplete={() => setShowSplash(false)} />}
+      {showSplash && !isAdminRoute && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <div className="w-full min-h-screen">
         <BrowserRouter>
           <Routes>
