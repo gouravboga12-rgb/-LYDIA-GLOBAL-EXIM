@@ -527,7 +527,7 @@ export function CheckoutPage() {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
-  const [saveAddress, setSaveAddress] = useState(false);
+  const [saveAddress, setSaveAddress] = useState(true);
   const [saveAsDefault, setSaveAsDefault] = useState(false);
   const [selectedSavedAddress, setSelectedSavedAddress] = useState(null); // id of selected saved address
   const [showNewAddressForm, setShowNewAddressForm] = useState(false);
@@ -1078,12 +1078,76 @@ export function CheckoutPage() {
 
             {step === 2.5 && orderType !== 'pickup' && (
           <div className="space-y-4 max-w-3xl mx-auto">
-            <h2 className="text-xl font-bold text-brand-dark-blue flex items-center gap-2 mb-4">
-              <div className="w-8 h-8 rounded-full bg-brand-gold/10 flex items-center justify-center">
-                <MapPin className="w-4 h-4 text-brand-gold" />
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+              <h2 className="text-xl font-bold text-brand-dark-blue flex items-center gap-2">
+                <div className="w-8 h-8 rounded-full bg-brand-gold/10 flex items-center justify-center">
+                  <MapPin className="w-4 h-4 text-brand-gold" />
+                </div>
+                Shipping Address
+              </h2>
+
+              <div className="flex items-center gap-2 flex-wrap">
+                {addresses.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setShowNewAddressForm(false);
+                      const def = addresses.find(a => a.is_default) || addresses[0];
+                      setSelectedSavedAddress(def.id);
+                      const c = COUNTRIES.find(c => c.name === def.country);
+                      if (c) setDialCountryCode(c.code);
+                      const dialPrefix = c?.dial || '';
+                      const rawMobile = def.mobile || '';
+                      const mobileDigits = rawMobile.startsWith(dialPrefix) ? rawMobile.slice(dialPrefix.length) : rawMobile;
+                      setAddress({
+                        name: def.name,
+                        line1: def.line1,
+                        line2: def.line2 || '',
+                        city: def.city,
+                        state: def.state || '',
+                        pincode: def.pincode,
+                        country: def.country || 'India',
+                        mobile: mobileDigits
+                      });
+                    }}
+                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                      !showNewAddressForm
+                        ? 'bg-brand-dark-blue text-brand-gold shadow-sm'
+                        : 'bg-white text-gray-700 border border-gray-200 hover:border-brand-gold/50'
+                    }`}
+                  >
+                    <MapPin className="w-3.5 h-3.5" />
+                    Saved Addresses ({addresses.length})
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedSavedAddress(null);
+                    setShowNewAddressForm(true);
+                    setAddress({
+                      name: user?.name || '',
+                      line1: '',
+                      line2: '',
+                      city: '',
+                      state: '',
+                      pincode: '',
+                      country: 'India',
+                      mobile: user?.phone ? getLocalPhone(user.phone) : ''
+                    });
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                    showNewAddressForm
+                      ? 'bg-brand-dark-blue text-brand-gold shadow-sm'
+                      : 'bg-white text-gray-700 border border-gray-200 hover:border-brand-gold/50'
+                  }`}
+                >
+                  <Plus className="w-3.5 h-3.5" />
+                  + Add New Address
+                </button>
               </div>
-              Shipping Address
-            </h2>
+            </div>
 
             {/* Saved addresses list */}
             {addresses.length > 0 && !showNewAddressForm && (
