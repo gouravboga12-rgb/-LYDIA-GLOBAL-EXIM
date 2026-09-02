@@ -53,28 +53,33 @@ export function AdminProductsPage() {
         supabase.from('offers').select('*').order('id', { ascending: true })
       ]);
 
-      if (sbProds.data && sbProds.data.length > 0) {
-        setProducts(sbProds.data);
-      } else {
-        setProducts(defaultProducts || []);
+      let liveProducts = (sbProds.data && sbProds.data.length > 0) ? sbProds.data : null;
+      let liveCategories = (sbCats.data && sbCats.data.length > 0) ? sbCats.data : null;
+      let liveOffers = (sbOffers.data && sbOffers.data.length > 0) ? sbOffers.data : null;
+
+      if (!liveOffers) {
+        const res = await fetch(`${BACKEND_URL}/general/offers`).then(r => r.ok ? r.json() : null).catch(() => null);
+        if (res?.offers?.length > 0) liveOffers = res.offers;
       }
 
-      if (sbCats.data && sbCats.data.length > 0) {
-        setCategories(sbCats.data);
-      } else {
-        setCategories(defaultCategories || []);
-      }
+      const normalizedOffers = (liveOffers || defaultOffers || []).map(o => ({
+        ...o,
+        active: o.active ?? o.is_active ?? true,
+        is_active: o.active ?? o.is_active ?? true
+      }));
 
-      if (sbOffers.data && sbOffers.data.length > 0) {
-        setOffers(sbOffers.data);
-      } else {
-        setOffers(defaultOffers || []);
-      }
+      setProducts(liveProducts || defaultProducts || []);
+      setCategories(liveCategories || defaultCategories || []);
+      setOffers(normalizedOffers);
     } catch (err) {
       console.error(err);
       setProducts(defaultProducts || []);
       setCategories(defaultCategories || []);
-      setOffers(defaultOffers || []);
+      setOffers((defaultOffers || []).map(o => ({
+        ...o,
+        active: o.active ?? o.is_active ?? true,
+        is_active: o.active ?? o.is_active ?? true
+      })));
     } finally {
       setLoading(false);
     }
@@ -661,17 +666,6 @@ export function AdminProductsPage() {
                   className="w-full px-3 py-2 rounded-lg bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none resize-none" />
               </div>
 
-              <div>
-                <label className="text-xs font-sans font-semibold text-[#45055B]/70 mb-1 block">Instagram Reel / Post Link</label>
-                <input 
-                  type="url"
-                  value={formData.instagram_reel_url || ""} 
-                  onChange={(e) => setFormData({ ...formData, instagram_reel_url: e.target.value })} 
-                  placeholder="https://www.instagram.com/reel/..."
-                  className="w-full px-3 py-2 rounded-lg bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none text-sm" 
-                />
-              </div>
-
               <div className="pt-3 border-t border-[#45055B]/10">
                 <div className="flex justify-between items-center mb-3">
                   <label className="text-sm font-serif font-bold text-[#45055B]">Variants (Colors & Sizes)</label>
@@ -683,17 +677,10 @@ export function AdminProductsPage() {
                     <div key={vIndex} className="bg-gray-50 border border-gray-200 p-4 rounded-xl relative">
                       <button onClick={() => removeVariant(vIndex)} className="absolute top-3 right-3 text-red-500 hover:bg-red-100 p-1.5 rounded"><Trash2 className="w-4 h-4"/></button>
                       
-                      <div className="grid grid-cols-2 gap-4 mb-4 pr-10">
-                        <div>
-                          <label className="text-xs font-sans font-semibold text-[#45055B]/70 mb-1 block">Color Name</label>
-                          <input value={variant.color} onChange={(e) => updateVariantField(vIndex, 'color', e.target.value)} placeholder="e.g. Gold, Rose Gold"
-                            className="w-full px-3 py-2 rounded-lg bg-white border border-[#45055B]/10 focus:outline-none" />
-                        </div>
-                        <div>
-                          <label className="text-xs font-sans font-semibold text-[#45055B]/70 mb-1 block">Instagram Reel Link</label>
-                          <input value={variant.instagram_link || ""} onChange={(e) => updateVariantField(vIndex, 'instagram_link', e.target.value)} placeholder="https://instagram.com/reel/..."
-                            className="w-full px-3 py-2 rounded-lg bg-white border border-[#45055B]/10 focus:outline-none text-blue-600" />
-                        </div>
+                      <div className="mb-4 pr-10 max-w-sm">
+                        <label className="text-xs font-sans font-semibold text-[#45055B]/70 mb-1 block">Color Name</label>
+                        <input value={variant.color} onChange={(e) => updateVariantField(vIndex, 'color', e.target.value)} placeholder="e.g. Gold, Rose Gold"
+                          className="w-full px-3 py-2 rounded-lg bg-white border border-[#45055B]/10 focus:outline-none" />
                       </div>
 
                       {/* Images for this variant */}
@@ -740,10 +727,12 @@ export function AdminProductsPage() {
                                 <div className="h-4 w-px bg-gray-300"></div>
                                 <input type="number" value={sizeObj.stock_delta || ""} onChange={e => updateSizeField(vIndex, sIndex, 'stock_delta', e.target.value)} placeholder="+/- Qty" className="flex-1 w-full bg-transparent text-sm focus:outline-none text-center" />
                               </div>
-                              <select value={sizeObj.offer_id || ""} onChange={e => updateSizeField(vIndex, sIndex, 'offer_id', e.target.value)} className="w-24 px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none">
+                              <select value={sizeObj.offer_id || ""} onChange={e => updateSizeField(vIndex, sIndex, 'offer_id', e.target.value)} className="min-w-[120px] max-w-[150px] px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none focus:border-[#45055B]">
                                 <option value="">No Offer</option>
-                                {offers.filter(o => o.is_active).map(o => (
-                                  <option key={o.id} value={o.id}>{o.discount_percentage}% OFF</option>
+                                {offers.filter(o => (o.active ?? o.is_active ?? true)).map(o => (
+                                  <option key={o.id} value={o.id}>
+                                    {o.title ? `${o.title} (${o.discount_percentage}%)` : `${o.discount_percentage}% OFF`}
+                                  </option>
                                 ))}
                               </select>
                               <input value={sizeObj.weight || ""} onChange={e => updateSizeField(vIndex, sIndex, 'weight', e.target.value)} placeholder="Weight (g)" className="w-24 px-2 py-1.5 bg-gray-50 border border-gray-200 rounded text-sm focus:outline-none" />

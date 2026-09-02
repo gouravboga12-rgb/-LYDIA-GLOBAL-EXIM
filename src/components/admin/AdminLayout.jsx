@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import {
   LayoutDashboard, ShoppingBag, Package, BarChart3, LogOut, Shield,
-  Users, Menu, X, ImageIcon, Tag, Layers, Truck, Settings, Store,
-  MessageSquare, PalmtreeIcon, Lock, Eye, EyeOff, ArrowRight, ExternalLink, Sparkles
+  Users, Menu, X, ImageIcon, Tag, Layers, Truck, Store, TrendingUp,
+  MessageSquare, Lock, Eye, EyeOff, ArrowRight, ExternalLink, Sparkles
 } from "lucide-react";
 import { motion } from "framer-motion";
 import image from '../../assets/logo.png';
@@ -14,6 +14,7 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const NAV = [
   { href: "/admin", label: "Dashboard", icon: <LayoutDashboard className="w-4 h-4" /> },
   { href: "/admin/orders", label: "Orders", icon: <ShoppingBag className="w-4 h-4" /> },
+  { href: "/admin/revenue", label: "Revenue", icon: <TrendingUp className="w-4 h-4" /> },
   { href: "/admin/customers", label: "Customers", icon: <Users className="w-4 h-4" /> },
   { href: "/admin/products", label: "Products", icon: <Package className="w-4 h-4" /> },
   { href: "/admin/categories", label: "Categories", icon: <Layers className="w-4 h-4" /> },
@@ -22,8 +23,6 @@ const NAV = [
   { href: "/admin/reviews", label: "Reviews", icon: <MessageSquare className="w-4 h-4" /> },
   { href: "/admin/enquiries", label: "Enquiries", icon: <MessageSquare className="w-4 h-4" /> },
   { href: "/admin/reports", label: "Reports", icon: <BarChart3 className="w-4 h-4" /> },
-  { href: "/admin/vacation", label: "Vacation", icon: <PalmtreeIcon className="w-4 h-4" /> },
-  { href: "/admin/settings", label: "Settings", icon: <Settings className="w-4 h-4" /> },
 ];
 
 function AdminAuthModal({ onAuthenticated }) {

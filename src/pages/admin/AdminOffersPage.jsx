@@ -43,7 +43,12 @@ export function AdminOffersPage() {
     try {
       const { data, error } = await supabase.from('offers').select('*').order('id', { ascending: true });
       if (!error && data && data.length > 0) {
-        setOffers(data);
+        const normalized = data.map(o => ({
+          ...o,
+          active: o.active ?? o.is_active ?? true,
+          is_active: o.active ?? o.is_active ?? true,
+        }));
+        setOffers(normalized);
         return;
       }
       const token = localStorage.getItem("token");
@@ -51,13 +56,27 @@ export function AdminOffersPage() {
       const res = await fetch(`${BACKEND_URL}/admin/offers`, { headers: h }).catch(() => null);
       const resData = res ? await res.json().catch(() => ({})) : {};
       if (resData && resData.offers && resData.offers.length > 0) {
-        setOffers(resData.offers);
+        const normalized = resData.offers.map(o => ({
+          ...o,
+          active: o.active ?? o.is_active ?? true,
+          is_active: o.active ?? o.is_active ?? true,
+        }));
+        setOffers(normalized);
       } else {
-        setOffers(defaultOffers || []);
+        const normalized = (defaultOffers || []).map(o => ({
+          ...o,
+          active: o.active ?? o.is_active ?? true,
+          is_active: o.active ?? o.is_active ?? true,
+        }));
+        setOffers(normalized);
       }
     } catch (err) {
       console.error(err);
-      setOffers(defaultOffers || []);
+      setOffers((defaultOffers || []).map(o => ({
+        ...o,
+        active: o.active ?? o.is_active ?? true,
+        is_active: o.active ?? o.is_active ?? true,
+      })));
     } finally {
       setLoading(false);
     }
@@ -92,18 +111,46 @@ export function AdminOffersPage() {
   };
 
   const handleAdd = () => {
-    setFormData({ title: "", code: "SAVE" + Math.floor(10 + Math.random() * 90), discount_percentage: 0, is_active: true });
+    setFormData({ title: "", code: "SAVE" + Math.floor(10 + Math.random() * 90), discount_percentage: 0, is_active: true, active: true });
     setEditOffer({});
     setIsNew(true);
   };
 
   const handleEdit = (offer) => {
+    const isActive = Boolean(offer.active ?? offer.is_active ?? true);
     setFormData({
       ...offer,
-      is_active: offer.active ?? offer.is_active ?? true
+      is_active: isActive,
+      active: isActive
     });
     setEditOffer(offer);
     setIsNew(false);
+  };
+
+  const handleToggleActive = async (offer, e) => {
+    e?.stopPropagation();
+    const currentActive = Boolean(offer.active ?? offer.is_active ?? true);
+    const newActive = !currentActive;
+    
+    // Immediate optimistic state update
+    setOffers(prev => prev.map(o => o.id === offer.id ? { ...o, active: newActive, is_active: newActive } : o));
+    
+    try {
+      const numId = Number(offer.id);
+      await supabase.from('offers').update({ active: newActive }).eq('id', !isNaN(numId) ? numId : offer.id);
+      
+      const token = localStorage.getItem("token");
+      await fetch(`${BACKEND_URL}/admin/offers/${offer.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ active: newActive, is_active: newActive }),
+      }).catch(() => null);
+      
+      await useStoreData.getState().fetchData();
+    } catch (err) {
+      console.error("Error toggling offer:", err);
+      fetchOffers();
+    }
   };
 
   const confirmDelete = async () => {
@@ -135,7 +182,6 @@ export function AdminOffersPage() {
     }
   };
 
-
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -145,11 +191,12 @@ export function AdminOffersPage() {
         return;
       }
 
+      const isActive = Boolean(formData.is_active ?? formData.active ?? true);
       const payload = {
         title: formData.title.trim(),
         code: (formData.code || "SAVE" + Math.floor(10 + Math.random() * 90)).toUpperCase().trim(),
         discount_percentage: Number(formData.discount_percentage || 0),
-        active: formData.is_active ?? true,
+        active: isActive,
         min_order_value: Number(formData.min_order_value || 0),
         min_qty: Number(formData.min_qty || 1)
       };
@@ -170,7 +217,7 @@ export function AdminOffersPage() {
       await fetch(url, {
         method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify({ ...payload, is_active: payload.active }),
+        body: JSON.stringify({ ...payload, is_active: isActive }),
       }).catch(() => null);
 
       setEditOffer(null);
@@ -183,7 +230,6 @@ export function AdminOffersPage() {
       setSaving(false);
     }
   };
-
 
   const handleApplyAction = async () => {
     if (!applyOfferId) return;
@@ -243,37 +289,60 @@ export function AdminOffersPage() {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {offers.map((offer, i) => (
-          <motion.div key={offer.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
-            className="bg-white rounded-2xl border border-[#45055B]/10 p-5 shadow-sm relative overflow-hidden flex flex-col justify-between">
-            {!offer.is_active && (
-              <div className="absolute top-0 right-0 bg-red-100 text-red-600 text-[10px] font-bold px-3 py-1 rounded-bl-xl">INACTIVE</div>
-            )}
-            <div>
-              <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg border border-blue-200">
-                  <Shield className="w-4 h-4" />
-                  <span className="font-bold tracking-wider">{offer.title}</span>
+        {offers.map((offer, i) => {
+          const isActive = Boolean(offer.active ?? offer.is_active ?? true);
+          return (
+            <motion.div key={offer.id} initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
+              className={`bg-white rounded-2xl border p-5 shadow-sm relative overflow-hidden flex flex-col justify-between transition-all ${
+                isActive ? 'border-[#45055B]/15' : 'border-gray-200 bg-gray-50/60 opacity-80'
+              }`}>
+              <div 
+                onClick={(e) => handleToggleActive(offer, e)}
+                className={`absolute top-0 right-0 text-[10px] font-bold px-3 py-1 rounded-bl-xl cursor-pointer select-none transition-all flex items-center gap-1.5 shadow-sm ${
+                  isActive 
+                    ? 'bg-emerald-100 text-emerald-700 hover:bg-emerald-200' 
+                    : 'bg-red-100 text-red-600 hover:bg-red-200'
+                }`}
+                title="Click to toggle status"
+              >
+                <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                {isActive ? 'ACTIVE' : 'INACTIVE'}
+              </div>
+
+              <div>
+                <div className="flex justify-between items-start mb-4 pr-16">
+                  <div className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg border border-blue-200">
+                    <Shield className="w-4 h-4" />
+                    <span className="font-bold tracking-wider">{offer.title}</span>
+                  </div>
+                  <div className="flex gap-1.5">
+                    <button onClick={() => handleEdit(offer)} className="text-[#45055B] hover:bg-[#45055B]/10 p-1.5 rounded transition-colors" title="Edit offer"><Edit2 className="w-4 h-4" /></button>
+                    <button onClick={() => setDeleteTarget(offer)} className="text-red-500 hover:bg-red-50 p-1.5 rounded transition-colors" title="Delete offer"><Trash2 className="w-4 h-4" /></button>
+                  </div>
                 </div>
-                <div className="flex gap-2">
-                  <button onClick={() => handleEdit(offer)} className="text-[#45055B] hover:bg-[#45055B]/10 p-1.5 rounded transition-colors"><Edit2 className="w-4 h-4" /></button>
-                  <button onClick={() => setDeleteTarget(offer)} className="text-red-500 hover:bg-red-50 p-1.5 rounded transition-colors"><Trash2 className="w-4 h-4" /></button>
+                
+                <div className="space-y-2">
+                  <p className="font-serif text-xl font-bold text-[#45055B]">
+                    {parseFloat(offer.discount_percentage)}% OFF
+                  </p>
                 </div>
               </div>
-              
-              <div className="space-y-2">
-                <p className="font-serif text-xl font-bold text-[#45055B]">
-                  {parseFloat(offer.discount_percentage)}% OFF
-                </p>
+              <div className="mt-4 pt-4 border-t border-[#45055B]/10 flex items-center gap-2">
+                 <button onClick={() => setApplyOfferId(offer.id)} className="flex-1 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 text-[#45055B] transition-colors">
+                   Apply Offer <ArrowRight className="w-4 h-4" />
+                 </button>
+                 <button 
+                   onClick={(e) => handleToggleActive(offer, e)}
+                   className={`px-3 py-2 rounded-lg text-xs font-bold transition-colors ${
+                     isActive ? 'bg-red-50 text-red-600 hover:bg-red-100 border border-red-200' : 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200'
+                   }`}
+                 >
+                   {isActive ? 'Deactivate' : 'Activate'}
+                 </button>
               </div>
-            </div>
-            <div className="mt-4 pt-4 border-t border-[#45055B]/10">
-               <button onClick={() => setApplyOfferId(offer.id)} className="w-full py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-semibold flex items-center justify-center gap-2 text-[#45055B] transition-colors">
-                 Apply Offer <ArrowRight className="w-4 h-4" />
-               </button>
-            </div>
-          </motion.div>
-        ))}
+            </motion.div>
+          );
+        })}
       </div>
 
       {editOffer && (
@@ -297,10 +366,21 @@ export function AdminOffersPage() {
                 <input type="number" value={formData.discount_percentage} onChange={(e) => setFormData({ ...formData, discount_percentage: Number(e.target.value) })}
                   className="w-full px-3 py-2 rounded-lg bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none" />
               </div>
-              <div className="flex items-center gap-2 mt-4">
-                <input type="checkbox" id="offer_active" checked={formData.is_active} onChange={(e) => setFormData({ ...formData, is_active: e.target.checked })}
-                  className="w-4 h-4 text-[#45055B]" />
-                <label htmlFor="offer_active" className="text-sm font-sans font-semibold text-[#45055B] cursor-pointer">Active</label>
+              <div className="flex items-center justify-between p-3.5 bg-gray-50 rounded-xl border border-[#45055B]/10 mt-4">
+                <div className="flex flex-col">
+                  <span className="text-sm font-sans font-semibold text-[#45055B]">Active Status</span>
+                  <span className="text-[11px] text-[#45055B]/60">Make this offer active across the store</span>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer select-none">
+                  <input 
+                    type="checkbox" 
+                    id="offer_active" 
+                    checked={Boolean(formData.is_active ?? formData.active ?? true)} 
+                    onChange={(e) => setFormData({ ...formData, is_active: e.target.checked, active: e.target.checked })}
+                    className="sr-only peer" 
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#45055B]"></div>
+                </label>
               </div>
             </div>
             <div className="border-t border-[#45055B]/10 px-6 py-4 flex gap-3">

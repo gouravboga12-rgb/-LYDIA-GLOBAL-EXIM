@@ -3,21 +3,30 @@
     "tax_mode": "pincode",
     "flat_rate": 10,
     "country_fees": {
-      "Algeria": {
-        "fee": "1"
+      "India": {
+        "fee": "0",
+        "threshold": "99999999"
       },
       "United States": {
         "fee": "6",
         "threshold": "1000000000000"
+      },
+      "Canada": {
+        "fee": "10",
+        "threshold": "1000000000000"
+      },
+      "Algeria": {
+        "fee": "1"
       }
     },
     "pickup_enabled": true,
     "tax_percentage": 8.25,
     "allowed_countries": [
-      "Algeria",
-      "Austria",
+      "India",
       "United States",
-      "Canada"
+      "Canada",
+      "Algeria",
+      "Austria"
     ],
     "free_shipping_threshold": 99999999
   },

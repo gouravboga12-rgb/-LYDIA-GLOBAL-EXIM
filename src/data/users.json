@@ -1,2 +1,14 @@
-[]
-
+[
+  {
+    "id": "usr_g_1788346936155",
+    "email": "bogagourav69@gmail.com",
+    "name": "Gourav Boga",
+    "phone": "IN:+917337401590",
+    "country": "India",
+    "password": "",
+    "role": "customer",
+    "addresses": [],
+    "orders": [],
+    "created_at": "2026-09-02T11:02:16.156Z"
+  }
+]

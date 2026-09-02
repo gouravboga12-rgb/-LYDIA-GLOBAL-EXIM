@@ -1,3 +1,42 @@
+export const IN_STATES = [
+  { name: 'Andhra Pradesh', code: 'AP' },
+  { name: 'Arunachal Pradesh', code: 'AR' },
+  { name: 'Assam', code: 'AS' },
+  { name: 'Bihar', code: 'BR' },
+  { name: 'Chhattisgarh', code: 'CG' },
+  { name: 'Goa', code: 'GA' },
+  { name: 'Gujarat', code: 'GJ' },
+  { name: 'Haryana', code: 'HR' },
+  { name: 'Himachal Pradesh', code: 'HP' },
+  { name: 'Jharkhand', code: 'JH' },
+  { name: 'Karnataka', code: 'KA' },
+  { name: 'Kerala', code: 'KL' },
+  { name: 'Madhya Pradesh', code: 'MP' },
+  { name: 'Maharashtra', code: 'MH' },
+  { name: 'Manipur', code: 'MN' },
+  { name: 'Meghalaya', code: 'ML' },
+  { name: 'Mizoram', code: 'MZ' },
+  { name: 'Nagaland', code: 'NL' },
+  { name: 'Odisha', code: 'OR' },
+  { name: 'Punjab', code: 'PB' },
+  { name: 'Rajasthan', code: 'RJ' },
+  { name: 'Sikkim', code: 'SK' },
+  { name: 'Tamil Nadu', code: 'TN' },
+  { name: 'Telangana', code: 'TS' },
+  { name: 'Tripura', code: 'TR' },
+  { name: 'Uttar Pradesh', code: 'UP' },
+  { name: 'Uttarakhand', code: 'UK' },
+  { name: 'West Bengal', code: 'WB' },
+  { name: 'Andaman and Nicobar Islands', code: 'AN' },
+  { name: 'Chandigarh', code: 'CH' },
+  { name: 'Dadra and Nagar Haveli and Daman and Diu', code: 'DN' },
+  { name: 'Delhi', code: 'DL' },
+  { name: 'Jammu and Kashmir', code: 'JK' },
+  { name: 'Ladakh', code: 'LA' },
+  { name: 'Lakshadweep', code: 'LD' },
+  { name: 'Puducherry', code: 'PY' }
+];
+
 export const US_STATES = [
   { name: 'Alabama', code: 'AL' }, { name: 'Alaska', code: 'AK' }, { name: 'Arizona', code: 'AZ' },
   { name: 'Arkansas', code: 'AR' }, { name: 'California', code: 'CA' }, { name: 'Colorado', code: 'CO' },
@@ -29,6 +68,7 @@ export const CA_PROVINCES = [
 ];
 
 export function getStatesForCountry(countryName) {
+  if (countryName === 'India') return IN_STATES;
   if (countryName === 'United States') return US_STATES;
   if (countryName === 'Canada') return CA_PROVINCES;
   return null;

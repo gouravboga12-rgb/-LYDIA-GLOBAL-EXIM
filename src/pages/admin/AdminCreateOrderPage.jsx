@@ -35,7 +35,7 @@ export function AdminCreateOrderPage() {
   // Address State
   const [useDefaultAddress, setUseDefaultAddress] = useState(true);
   const [manualCustomer, setManualCustomer] = useState({
-    name: "", email: "", mobile: "", line1: "", line2: "", city: "", state: "", pincode: "", country: "United States"
+    name: "", email: "", mobile: "", line1: "", line2: "", city: "", state: "", pincode: "", country: "India"
   });
 
   // Product Search State

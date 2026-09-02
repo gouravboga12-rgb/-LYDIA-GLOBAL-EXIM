@@ -34,15 +34,14 @@ import { AdminCustomersPage } from './pages/admin/AdminCustomersPage';
 import { AdminBannersPage } from './pages/admin/AdminBannersPage';
 import { AdminCouponsPage } from './pages/admin/AdminCouponsPage';
 import { AdminReportsPage } from './pages/admin/AdminReportsPage';
+import { AdminRevenuePage } from './pages/admin/AdminRevenuePage';
 import { AdminCreateOrderPage } from './pages/admin/AdminCreateOrderPage';
-import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 import { AdminCategoriesPage } from './pages/admin/AdminCategoriesPage';
 import { AdminOffersPage } from './pages/admin/AdminOffersPage';
 import { AdminShippingPage } from './pages/admin/AdminShippingPage';
 import { AdminPickupOrdersPage } from './pages/admin/AdminPickupOrdersPage';
 import { AdminReviewsPage } from './pages/admin/AdminReviewsPage';
 import { AdminEnquiriesPage } from './pages/admin/AdminEnquiriesPage';
-import { AdminVacationPage } from './pages/admin/AdminVacationPage';
 import { PickupPage } from './pages/PickupPage';
 import { SearchPage } from './pages/SearchPage';
 
@@ -80,16 +79,15 @@ function InnerApp() {
               <Routes>
                 <Route path="" element={<AdminDashboardPage />} />
                 <Route path="orders" element={<AdminOrdersPage />} />
+                <Route path="revenue" element={<AdminRevenuePage />} />
                 <Route path="customers" element={<AdminCustomersPage />} />
                 <Route path="products" element={<AdminProductsPage />} />
                 <Route path="categories" element={<AdminCategoriesPage />} />
                 <Route path="offers" element={<AdminOffersPage />} />
                 <Route path="reviews" element={<AdminReviewsPage />} />
                 <Route path="enquiries" element={<AdminEnquiriesPage />} />
-                <Route path="vacation" element={<AdminVacationPage />} />
                 <Route path="banners" element={<AdminBannersPage />} />
                 <Route path="reports" element={<AdminReportsPage />} />
-                <Route path="settings" element={<AdminSettingsPage />} />
                 <Route path="*" element={<AdminDashboardPage />} />
               </Routes>
             </AdminLayout>
@@ -109,11 +107,20 @@ function InnerApp() {
                 <Route path="/checkout" element={<CheckoutPage />} />
                 <Route path="/pickup" element={<PickupPage />} />
                 <Route path="/search" element={<SearchPage />} />
+                <Route path="/dashboard" element={<DashboardPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/my-orders" element={<MyOrdersPage />} />
+                <Route path="/my-addresses" element={<MyAddressesPage />} />
+                <Route path="/my-coupons" element={<MyCouponsPage />} />
+                <Route path="/wishlist" element={<WishlistPage />} />
+                <Route path="/account-settings" element={<AccountSettingsPage />} />
+                <Route path="/order-tracking" element={<OrderTrackingPage />} />
                 <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
                 <Route path="/returns-policy" element={<ReturnsPolicyPage />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
                 <Route path="/terms-of-service" element={<TermsOfServicePage />} />
                 <Route path="/jewelry-care" element={<CareTipsPage />} />
+                <Route path="*" element={<HomePage />} />
               </Routes>
             </AppLayout>
           } />

@@ -31,11 +31,11 @@ function getLocalPhone(phoneStr) {
 }
 
 function getDialCountryCode(phoneStr) {
-  if (!phoneStr) return 'US';
+  if (!phoneStr) return 'IN';
   const clean = phoneStr.startsWith('+') ? phoneStr : '+' + phoneStr;
   const sortedCountries = [...COUNTRIES].sort((a, b) => b.dial.length - a.dial.length);
   const country = sortedCountries.find(c => clean.startsWith(c.dial));
-  return country ? country.code : 'US';
+  return country ? country.code : 'IN';
 }
 
 function flag(code) {
@@ -462,11 +462,11 @@ export function CheckoutPage() {
     city: '',
     state: '',
     pincode: '',
-    country: 'United States',
+    country: 'India',
     mobile: user?.phone ? getLocalPhone(user.phone) : ''
   });
-  const [dialCountryCode, setDialCountryCode] = useState(user?.phone ? getDialCountryCode(user.phone) : 'US');
-  const dialCode = COUNTRIES.find(c => c.code === dialCountryCode)?.dial || '+1';
+  const [dialCountryCode, setDialCountryCode] = useState(user?.phone ? getDialCountryCode(user.phone) : 'IN');
+  const dialCode = COUNTRIES.find(c => c.code === dialCountryCode)?.dial || '+91';
   const [dialSearch, setDialSearch] = useState('');
   const [dialOpen, setDialOpen] = useState(false);
   const dialRef = useRef(null);
@@ -486,7 +486,7 @@ export function CheckoutPage() {
   }, []);
   const [editingAddr, setEditingAddr] = useState(null);
   const [editForm, setEditForm] = useState({});
-  const [editDialCode, setEditDialCode] = useState('US');
+  const [editDialCode, setEditDialCode] = useState('IN');
   const [editDialOpen, setEditDialOpen] = useState(false);
   const [editDialSearch, setEditDialSearch] = useState('');
   const editDialRef = useRef(null);
@@ -499,10 +499,10 @@ export function CheckoutPage() {
     const stored = addr.mobile || '';
     // Match by country name first (most reliable), then fall back to dial prefix
     const byCountry = COUNTRIES.find(c => c.name === addr.country);
-    const byDial = COUNTRIES.find(c => stored.startsWith(c.dial) && c.code === (byCountry?.code || 'US'));
+    const byDial = COUNTRIES.find(c => stored.startsWith(c.dial) && c.code === (byCountry?.code || 'IN'));
     const matched = byCountry || byDial || COUNTRIES.find(c => stored.startsWith(c.dial));
-    const dialPrefix = matched?.dial || '+1';
-    const countryCode = matched?.code || 'US';
+    const dialPrefix = matched?.dial || '+91';
+    const countryCode = matched?.code || 'IN';
     const digits = stored.startsWith(dialPrefix) ? stored.slice(dialPrefix.length) : stored;
     setEditDialCode(countryCode);
     setEditForm({ ...addr, mobile: digits });
@@ -510,13 +510,13 @@ export function CheckoutPage() {
   };
 
   const saveEdit = async () => {
-    const dial = COUNTRIES.find(c => c.code === editDialCode)?.dial || '+1';
+    const dial = COUNTRIES.find(c => c.code === editDialCode)?.dial || '+91';
     const fullMobile = `${dial}${editForm.mobile}`;
     const data = { ...editForm, mobile: fullMobile };
     setSavingEdit(true);
     await updateAddress(editingAddr, data);
     if (selectedSavedAddress === editingAddr) {
-      setAddress({ name: data.name, line1: data.line1, line2: data.line2 || '', city: data.city, state: data.state || '', pincode: data.pincode, country: data.country || 'United States', mobile: editForm.mobile });
+      setAddress({ name: data.name, line1: data.line1, line2: data.line2 || '', city: data.city, state: data.state || '', pincode: data.pincode, country: data.country || 'India', mobile: editForm.mobile });
     }
     setSavingEdit(false);
     setEditingAddr(null);
@@ -571,7 +571,7 @@ export function CheckoutPage() {
         setShippingConfig(d);
         const allowed = d?.settings?.allowed_countries || [];
         if (allowed.length > 0 && !allowed.includes(address.country)) {
-          const defaultCountryName = allowed[0];
+          const defaultCountryName = allowed.includes('India') ? 'India' : allowed[0];
           setAddress(a => ({ ...a, country: defaultCountryName }));
           const cObj = COUNTRIES.find(c => c.name === defaultCountryName);
           if (cObj) setDialCountryCode(cObj.code);
@@ -647,7 +647,7 @@ export function CheckoutPage() {
       const dialPrefix = c?.dial || '';
       const rawMobile = def.mobile || '';
       const mobileDigits = rawMobile.startsWith(dialPrefix) ? rawMobile.slice(dialPrefix.length) : rawMobile;
-      setAddress({ name: def.name, line1: def.line1, line2: def.line2 || '', city: def.city, state: def.state || '', pincode: def.pincode, country: def.country || 'United States', mobile: mobileDigits });
+      setAddress({ name: def.name, line1: def.line1, line2: def.line2 || '', city: def.city, state: def.state || '', pincode: def.pincode, country: def.country || 'India', mobile: mobileDigits });
       setShowNewAddressForm(false);
     } else {
       setShowNewAddressForm(true);
@@ -1175,7 +1175,7 @@ export function CheckoutPage() {
                           const dialPrefix = c?.dial || '';
                           const rawMobile = addr.mobile || '';
                           const mobileDigits = rawMobile.startsWith(dialPrefix) ? rawMobile.slice(dialPrefix.length) : rawMobile;
-                          setAddress({ name: addr.name, line1: addr.line1, line2: addr.line2 || '', city: addr.city, state: addr.state || '', pincode: addr.pincode, country: addr.country || 'United States', mobile: mobileDigits });
+                          setAddress({ name: addr.name, line1: addr.line1, line2: addr.line2 || '', city: addr.city, state: addr.state || '', pincode: addr.pincode, country: addr.country || 'India', mobile: mobileDigits });
                         }}
                         className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-3 ${
                           selectedSavedAddress === addr.id ? 'border-brand-gold bg-brand-gold/5' : 'border-gray-200 bg-white hover:border-brand-gold/40'
@@ -1207,7 +1207,7 @@ export function CheckoutPage() {
                 ))}
                 <button
                   type="button"
-                  onClick={() => { setSelectedSavedAddress(null); setShowNewAddressForm(true); setAddress({ name: user?.name || '', line1: '', line2: '', city: '', state: '', pincode: '', country: 'United States', mobile: '' }); }}
+                  onClick={() => { setSelectedSavedAddress(null); setShowNewAddressForm(true); setAddress({ name: user?.name || '', line1: '', line2: '', city: '', state: '', pincode: '', country: 'India', mobile: '' }); }}
                   className="w-full text-left p-4 rounded-2xl border-2 border-dashed border-gray-200 bg-white hover:border-brand-gold/40 transition-all flex items-center gap-3 text-brand-dark-blue/60 hover:text-brand-dark-blue"
                 >
                   <div className="w-5 h-5 rounded-full border-2 border-gray-300 shrink-0" />

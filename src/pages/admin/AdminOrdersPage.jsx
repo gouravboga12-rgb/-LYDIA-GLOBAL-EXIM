@@ -521,7 +521,7 @@ function EditOrderModal({ order, onClose, onSaved }) {
                       <AddressAutocomplete
                         value={address[field] || ''}
                         onChange={val => setAddress(a => ({ ...a, [field]: val }))}
-                        onSelect={place => setAddress(a => ({ ...a, line1: place.line1, city: place.city, state: place.state, pincode: place.pincode, country: place.country || 'United States' }))}
+                        onSelect={place => setAddress(a => ({ ...a, line1: place.line1, city: place.city, state: place.state, pincode: place.pincode, country: place.country || 'India' }))}
                       />
                     ) : (
                       <input value={address[field] || ''} onChange={e => setAddress(a => ({ ...a, [field]: e.target.value }))}
