@@ -147,15 +147,20 @@ export function AdminCategoriesPage() {
       const token = localStorage.getItem("token");
       const url = isNew ? `${BACKEND_URL}/admin/categories` : `${BACKEND_URL}/admin/categories/${editCategory.id}`;
       
-      await fetch(url, {
+      const res = await fetch(url, {
         method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(payload),
       });
 
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || `Server responded with ${res.status}`);
+      }
+
       setEditCategory(null);
       await fetchCategories();
-      useStoreData.getState().fetchData();
+      await useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
       alert("Error saving category: " + err.message);
@@ -163,6 +168,7 @@ export function AdminCategoriesPage() {
       setSaving(false);
     }
   };
+
 
   if (loading) return (
     <div className="flex items-center justify-center py-20">

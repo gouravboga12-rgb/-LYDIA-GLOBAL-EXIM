@@ -4,6 +4,8 @@ import defaultProducts from '../data/products.json';
 import defaultCategories from '../data/categories.json';
 import defaultOffers from '../data/offers.json';
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
+
 export const useStoreData = create((set) => ({
   products: defaultProducts || [],
   categories: defaultCategories || [],
@@ -11,28 +13,58 @@ export const useStoreData = create((set) => ({
   loading: false,
   fetchData: async () => {
     try {
-      const [prodsRes, catsRes, offersRes] = await Promise.all([
-        supabase.from('products').select('*').order('id', { ascending: false }),
-        supabase.from('categories').select('*').order('id', { ascending: true }),
-        supabase.from('offers').select('*').eq('active', true)
-      ]);
+      let liveProducts = null;
+      let liveCategories = null;
+      let liveOffers = null;
 
-      let liveProducts = prodsRes.data && prodsRes.data.length > 0 ? prodsRes.data : defaultProducts;
-      let liveCategories = catsRes.data && catsRes.data.length > 0 ? catsRes.data : defaultCategories;
-      let liveOffers = offersRes.data && offersRes.data.length > 0 ? offersRes.data : defaultOffers;
+      // 1. Fetch live updated data from Backend REST API
+      try {
+        const [catsRes, prodsRes, offersRes] = await Promise.all([
+          fetch(`${BACKEND_URL}/general/categories`).then(r => r.ok ? r.json() : null).catch(() => null),
+          fetch(`${BACKEND_URL}/general/products`).then(r => r.ok ? r.json() : null).catch(() => null),
+          fetch(`${BACKEND_URL}/general/offers`).then(r => r.ok ? r.json() : null).catch(() => null),
+        ]);
 
-      // If supabase didn't return products, attempt fallback to local backend API
-      if (!prodsRes.data || prodsRes.data.length === 0) {
-        try {
-          const apiRes = await fetch('/api/general/products');
-          if (apiRes.ok) {
-            const apiData = await apiRes.json();
-            if (apiData.products && apiData.products.length > 0) {
-              liveProducts = apiData.products;
-            }
-          }
-        } catch (e) {}
+        if (catsRes && catsRes.categories && catsRes.categories.length > 0) {
+          liveCategories = catsRes.categories;
+        }
+        if (prodsRes && prodsRes.products && prodsRes.products.length > 0) {
+          liveProducts = prodsRes.products;
+        }
+        if (offersRes && offersRes.offers && offersRes.offers.length > 0) {
+          liveOffers = offersRes.offers;
+        }
+      } catch (apiErr) {
+        console.warn("Backend REST fetch note:", apiErr);
       }
+
+      // 2. Query Supabase for any datasets not yet retrieved
+      if (!liveProducts || !liveCategories || !liveOffers) {
+        try {
+          const [sbProds, sbCats, sbOffers] = await Promise.all([
+            !liveProducts ? supabase.from('products').select('*').order('id', { ascending: false }) : Promise.resolve({ data: null }),
+            !liveCategories ? supabase.from('categories').select('*').order('id', { ascending: true }) : Promise.resolve({ data: null }),
+            !liveOffers ? supabase.from('offers').select('*').eq('active', true) : Promise.resolve({ data: null })
+          ]);
+
+          if (!liveProducts && sbProds.data && sbProds.data.length > 0) {
+            liveProducts = sbProds.data;
+          }
+          if (!liveCategories && sbCats.data && sbCats.data.length > 0) {
+            liveCategories = sbCats.data;
+          }
+          if (!liveOffers && sbOffers.data && sbOffers.data.length > 0) {
+            liveOffers = sbOffers.data;
+          }
+        } catch (sbErr) {
+          console.warn("Supabase fetch note:", sbErr);
+        }
+      }
+
+      // 3. Fallback to bundled defaults
+      liveProducts = liveProducts || defaultProducts || [];
+      liveCategories = liveCategories || defaultCategories || [];
+      liveOffers = liveOffers || defaultOffers || [];
 
       const normalizedCategories = (liveCategories || []).map(c => ({
         ...c,
@@ -58,3 +90,4 @@ export const useStoreData = create((set) => ({
     }
   }
 }));
+

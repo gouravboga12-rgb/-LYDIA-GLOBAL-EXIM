@@ -94,10 +94,17 @@ function saveStoreData(key, data) {
     }
     const filePath = path.join(DB_DIR, `${key}.json`);
     fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+
+    // Also sync to src/data for local dev & static fallback consistency
+    const srcDataPath = path.join(__dirname, 'src', 'data', `${key}.json`);
+    if (fs.existsSync(path.dirname(srcDataPath))) {
+      fs.writeFileSync(srcDataPath, JSON.stringify(data, null, 2), 'utf8');
+    }
   } catch (e) {
     console.error(`Error saving ${key}.json:`, e.message);
   }
 }
+
 
 // Nodemailer SMTP Transporter
 const transporter = nodemailer.createTransport({
@@ -1199,9 +1206,13 @@ app.get('/api/health', (req, res) => {
 });
 
 if (!process.env.VERCEL) {
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`🚀 Lydia Global Exim Backend API running on http://localhost:${PORT}`);
   });
+  server.on('error', (err) => {
+    console.error('Server error:', err);
+  });
 }
+
 
 export default app;
