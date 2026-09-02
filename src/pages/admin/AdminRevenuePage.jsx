@@ -28,6 +28,7 @@ export function AdminRevenuePage() {
 
   const fetchOrders = async () => {
     setLoading(true);
+    let allOrders = [];
     try {
       // 1. Try Supabase
       const { data: sbData, error } = await supabase
@@ -36,27 +37,65 @@ export function AdminRevenuePage() {
         .order("id", { ascending: false });
 
       if (!error && sbData && sbData.length > 0) {
-        setOrders(sbData);
-        return;
+        allOrders = sbData;
       }
+    } catch (e) {
+      console.warn("Supabase load note:", e);
+    }
 
+    try {
       // 2. Try Backend REST API
       const token = localStorage.getItem("token");
       const headers = token ? { Authorization: `Bearer ${token}` } : {};
       const res = await fetch(`${BACKEND_URL}/admin/orders`, { headers }).catch(() => null);
       const data = res ? await res.json().catch(() => ({})) : {};
 
-      if (data && data.orders) {
-        setOrders(data.orders);
-      } else {
-        setOrders([]);
+      if (data && data.orders && data.orders.length > 0) {
+        const existingNos = new Set(allOrders.map(o => String(o.order_number || o.id)));
+        for (const o of data.orders) {
+          if (!existingNos.has(String(o.order_number || o.id))) {
+            allOrders.push(o);
+          }
+        }
       }
     } catch (err) {
       console.error("Error loading orders for revenue calculation:", err);
-      setOrders([]);
-    } finally {
-      setLoading(false);
     }
+
+    const normalized = allOrders.map(o => {
+      let address = {};
+      if (o.shipping_address) {
+        try { address = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address; } catch {}
+      } else if (o.address) {
+        try { address = typeof o.address === 'string' ? JSON.parse(o.address) : o.address; } catch {}
+      }
+      let items = [];
+      try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
+      return {
+        ...o,
+        id: o.id || o.order_number,
+        order_number: o.order_number || String(o.id),
+        customer_name: o.customer_name || o.user_name || address?.name || 'Customer',
+        customer_email: o.customer_email || o.user_email || address?.email || '',
+        customer_phone: o.customer_phone || o.user_phone || address?.mobile || address?.phone || '',
+        address,
+        shipping_address: address,
+        items,
+        total: Number(o.total || 0),
+        subtotal: Number(o.subtotal || o.total || 0),
+        discount_amount: Number(o.discount ?? o.discount_amount ?? 0),
+        shipping_fee: Number(o.shipping ?? o.shipping_fee ?? 0),
+        tax_amount: Number(o.tax ?? o.tax_amount ?? 0),
+        status: o.status || 'paid',
+        payment_status: o.payment_status || 'paid',
+        payment_method: o.payment_method || 'direct_booking',
+        order_type: o.order_type || 'shipping',
+        created_at: o.created_at || new Date().toISOString()
+      };
+    });
+
+    setOrders(normalized);
+    setLoading(false);
   };
 
   // Helper function to safely parse nested JSON / addresses

@@ -729,21 +729,20 @@ export function CheckoutPage() {
     // Direct Supabase sync for redundancy
     try {
       await supabase.from('orders').insert([{
-        id: Date.now(),
         order_number: backendResult?.order?.order_number || orderNumber,
         user_id: user?.id || null,
-        user_name: finalAddress.name || user?.name || 'Customer',
-        user_email: finalAddress.email || user?.email || '',
-        user_phone: finalAddress.mobile || user?.phone || '',
+        customer_name: finalAddress.name || user?.name || 'Customer',
+        customer_email: finalAddress.email || user?.email || '',
+        customer_phone: finalAddress.mobile || user?.phone || '',
         items: JSON.stringify(items),
-        address: JSON.stringify(finalAddress),
+        shipping_address: JSON.stringify(finalAddress),
         total: Number(finalTotal),
-        discount_amount: Number(discount || 0),
-        coupon_code: couponCode || '',
-        shipping_fee: Number(shippingFee || 0),
-        tax_amount: Number(taxAmount || 0),
-        payment_method: pMethod,
-        order_type: orderType,
+        subtotal: Number(subtotal || finalTotal),
+        discount: Number(discount || 0),
+        shipping: Number(shippingFee || 0),
+        tax: Number(taxAmount || 0),
+        payment_method: pMethod || 'direct_booking',
+        payment_status: 'paid',
         status: 'paid',
         created_at: new Date().toISOString()
       }]);

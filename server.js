@@ -950,25 +950,37 @@ const handleOrderCreation = async (req, res) => {
     orders.unshift(newOrder);
     saveStoreData('orders', orders);
 
-    // 2. Save to Supabase orders table
+    // Also link to user orders if user is authenticated
+    if (req.user?.id || req.user?.email) {
+      try {
+        const users = loadStoreData('users', 'src/data/users.json');
+        const userObj = users.find(u => u.id === req.user.id || (u.email && u.email.toLowerCase() === req.user.email?.toLowerCase()));
+        if (userObj) {
+          userObj.orders = userObj.orders || [];
+          userObj.orders.unshift(newOrder);
+          saveStoreData('users', users);
+        }
+      } catch (e) {}
+    }
+
+    // 2. Save to Supabase orders table with exact schema columns
     try {
       await supabase.from('orders').insert([{
-        id: Date.now(),
         order_number: orderNumber,
         user_id: req.user?.id || null,
-        user_name: newOrder.user_name,
-        user_email: newOrder.user_email,
-        user_phone: newOrder.user_phone,
+        customer_name: newOrder.user_name,
+        customer_email: newOrder.user_email,
+        customer_phone: newOrder.user_phone,
         items: JSON.stringify(items),
-        address: JSON.stringify(address),
+        shipping_address: JSON.stringify(address),
         total: Number(total),
-        discount_amount: Number(discount_amount || 0),
-        coupon_code: coupon_code || '',
-        shipping_fee: Number(shipping_fee || 0),
-        tax_amount: Number(tax_amount || 0),
-        payment_method,
-        order_type,
-        status,
+        subtotal: Number(subtotal || total),
+        discount: Number(discount_amount || 0),
+        shipping: Number(shipping_fee || 0),
+        tax: Number(tax_amount || 0),
+        status: status || 'paid',
+        payment_status: payment_status || 'paid',
+        payment_method: payment_method || 'direct_booking',
         created_at: createdAt
       }]);
     } catch (sbErr) {

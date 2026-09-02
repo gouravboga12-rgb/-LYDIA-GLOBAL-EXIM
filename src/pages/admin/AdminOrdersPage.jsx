@@ -986,9 +986,46 @@ export function AdminOrdersPage() {
       console.warn("Backend orders load note:", e);
     }
 
-    setOrders(allOrders);
+    const normalized = allOrders.map(o => {
+      let address = {};
+      if (o.shipping_address) {
+        try { address = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address; } catch {}
+      } else if (o.address) {
+        try { address = typeof o.address === 'string' ? JSON.parse(o.address) : o.address; } catch {}
+      }
+
+      let items = [];
+      try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
+
+      return {
+        ...o,
+        id: o.id || o.order_number,
+        order_number: o.order_number || String(o.id),
+        user_name: o.customer_name || o.user_name || address?.name || 'Customer',
+        user_email: o.customer_email || o.user_email || address?.email || '',
+        user_phone: o.customer_phone || o.user_phone || address?.mobile || address?.phone || '',
+        customer_name: o.customer_name || o.user_name || address?.name || 'Customer',
+        customer_email: o.customer_email || o.user_email || address?.email || '',
+        customer_phone: o.customer_phone || o.user_phone || address?.mobile || address?.phone || '',
+        address,
+        shipping_address: address,
+        items,
+        total: Number(o.total || 0),
+        subtotal: Number(o.subtotal || o.total || 0),
+        discount_amount: Number(o.discount ?? o.discount_amount ?? 0),
+        shipping_fee: Number(o.shipping ?? o.shipping_fee ?? 0),
+        tax_amount: Number(o.tax ?? o.tax_amount ?? 0),
+        status: o.status || 'paid',
+        payment_status: o.payment_status || 'paid',
+        payment_method: o.payment_method || 'direct_booking',
+        order_type: o.order_type || 'shipping',
+        created_at: o.created_at || new Date().toISOString()
+      };
+    });
+
+    setOrders(normalized);
     const t = {};
-    allOrders.forEach(o => { t[o.id] = { id: o.tracking_id || "", link: o.tracking_link || "" }; });
+    normalized.forEach(o => { t[o.id] = { id: o.tracking_id || "", link: o.tracking_link || "" }; });
     setTracking(t);
     setLoading(false);
   }, []);

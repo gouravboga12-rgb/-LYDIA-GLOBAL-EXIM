@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Package, ShoppingBag, FileText, RefreshCw, Store, Truck, MapPin, MessageCircle, CreditCard, ExternalLink, Tag } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
 import { Header } from '../components/Header';
+import { supabase } from '../utils/supabase';
 import logoUrl from '../assets/logo.png';
 
 const STATUS_COLORS = {
@@ -21,13 +22,96 @@ const PICKUP_STEPS = ['pending', 'processing', 'ready for pickup', 'pickup compl
 
 export function MyOrdersPage() {
   const navigate = useNavigate();
-  const { token, orders, fetchProfile, user } = useAuthStore();
+  const { token, orders: storeOrders, fetchProfile, user } = useAuthStore();
   const addToCart = useCartStore(state => state.addToCart);
+  const [userOrders, setUserOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const loadOrders = useCallback(async () => {
+    setLoading(true);
+    let list = [];
+    try {
+      const { data, error } = await supabase.from('orders').select('*').order('id', { ascending: false });
+      if (!error && data) {
+        list = data;
+      }
+    } catch (e) {
+      console.warn('Supabase orders load note:', e);
+    }
+
+    if (storeOrders && storeOrders.length > 0) {
+      const existingNos = new Set(list.map(o => String(o.order_number || o.id)));
+      for (const o of storeOrders) {
+        if (!existingNos.has(String(o.order_number || o.id))) {
+          list.push(o);
+        }
+      }
+    }
+
+    const cleanUserEmail = (user?.email || '').toLowerCase().trim();
+    const cleanUserPhone = (user?.phone || '').replace(/\D/g, '').slice(-10);
+
+    let myOrders = list;
+    if (user?.role !== 'admin' && (cleanUserEmail || cleanUserPhone)) {
+      const filtered = list.filter(o => {
+        const oEmail = (o.customer_email || o.user_email || '').toLowerCase().trim();
+        const oPhone = (o.customer_phone || o.user_phone || '').replace(/\D/g, '').slice(-10);
+        let addrEmail = '', addrPhone = '';
+        try {
+          const addr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || o.address || {});
+          addrEmail = (addr.email || '').toLowerCase().trim();
+          addrPhone = (addr.mobile || addr.phone || '').replace(/\D/g, '').slice(-10);
+        } catch {}
+        return (cleanUserEmail && (oEmail === cleanUserEmail || addrEmail === cleanUserEmail)) ||
+               (cleanUserPhone && (oPhone === cleanUserPhone || addrPhone === cleanUserPhone)) ||
+               (o.user_id && o.user_id === user?.id);
+      });
+      if (filtered.length > 0) {
+        myOrders = filtered;
+      }
+    }
+
+    const normalized = myOrders.map(o => {
+      let address = {};
+      if (o.shipping_address) {
+        try { address = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address; } catch {}
+      } else if (o.address) {
+        try { address = typeof o.address === 'string' ? JSON.parse(o.address) : o.address; } catch {}
+      }
+      let items = [];
+      try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
+      return {
+        ...o,
+        id: o.id || o.order_number,
+        order_number: o.order_number || String(o.id),
+        user_name: o.customer_name || o.user_name || address?.name || 'Customer',
+        user_email: o.customer_email || o.user_email || address?.email || '',
+        user_phone: o.customer_phone || o.user_phone || address?.mobile || address?.phone || '',
+        address,
+        shipping_address: address,
+        items,
+        total: Number(o.total || 0),
+        subtotal: Number(o.subtotal || o.total || 0),
+        discount_amount: Number(o.discount ?? o.discount_amount ?? 0),
+        shipping_fee: Number(o.shipping ?? o.shipping_fee ?? 0),
+        tax_amount: Number(o.tax ?? o.tax_amount ?? 0),
+        status: o.status || 'paid',
+        payment_status: o.payment_status || 'paid',
+        payment_method: o.payment_method || 'direct_booking',
+        order_type: o.order_type || 'shipping',
+        created_at: o.created_at || new Date().toISOString()
+      };
+    });
+
+    setUserOrders(normalized);
+    setLoading(false);
+  }, [storeOrders, user]);
 
   useEffect(() => {
     if (!token) { navigate('/login'); return; }
     fetchProfile();
-  }, [token]);
+    loadOrders();
+  }, [token, fetchProfile, loadOrders]);
 
   const escapeHtml = (value) =>
     String(value ?? "")
@@ -242,10 +326,14 @@ export function MyOrdersPage() {
       <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
         <div className="flex items-center justify-between mb-2">
           <h2 className="text-2xl font-serif font-bold text-[#45055B]">Order History</h2>
-          <span className="text-sm font-semibold text-[#45055B]/60 bg-[#45055B]/10 px-3 py-1 rounded-full">{orders.length} Orders</span>
+          <span className="text-sm font-semibold text-[#45055B]/60 bg-[#45055B]/10 px-3 py-1 rounded-full">{userOrders.length} Orders</span>
         </div>
 
-        {orders.length === 0 ? (
+        {loading ? (
+          <div className="flex items-center justify-center py-20">
+            <div className="w-8 h-8 border-4 border-[#45055B]/20 border-t-[#45055B] rounded-full animate-spin" />
+          </div>
+        ) : userOrders.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 gap-4 bg-white rounded-3xl border border-gray-100 shadow-sm">
             <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center">
               <ShoppingBag className="w-12 h-12 text-[#45055B]" />
@@ -257,7 +345,7 @@ export function MyOrdersPage() {
             </Link>
           </div>
         ) : (
-          orders.map((order) => {
+          userOrders.map((order) => {
             const STATUS_STEPS = order.order_type === 'pickup' ? PICKUP_STEPS : SHIPPING_STEPS;
             const stepIdx = STATUS_STEPS.indexOf(order.status);
             return (
