@@ -47,77 +47,76 @@ import { PickupPage } from './pages/PickupPage';
 import { SearchPage } from './pages/SearchPage';
 
 function App() {
-  const [showSplash, setShowSplash] = useState(true);
   const { fetchData } = useStoreData();
-  const location = useLocation();
 
   useEffect(() => {
     fetchData();
   }, [fetchData]);
+
+  return (
+    <BrowserRouter>
+      <InnerApp />
+    </BrowserRouter>
+  );
+}
+
+function InnerApp() {
+  const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const [showSplash, setShowSplash] = useState(false);
 
   return (
     <>
       {showSplash && !isAdminRoute && <SplashScreen onComplete={() => setShowSplash(false)} />}
       <div className="w-full min-h-screen">
-        <BrowserRouter>
-          <Routes>
-            {/* Auth pages — no layout */}
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<SignupPage />} />
+        <Routes>
+          {/* Auth pages */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignupPage />} />
 
-            {/* Admin — using AdminLayout */}
-            <Route path="/admin/*" element={
-              <AdminLayout>
-                <Routes>
-                  <Route path="/" element={<AdminDashboardPage />} />
-                  <Route path="/orders" element={<AdminOrdersPage />} />
-                  <Route path="customers" element={<AdminCustomersPage />} />
-                  <Route path="products" element={<AdminProductsPage />} />
-                  <Route path="categories" element={<AdminCategoriesPage />} />
-                  <Route path="offers" element={<AdminOffersPage />} />
-                  <Route path="reviews" element={<AdminReviewsPage />} />
-                  <Route path="enquiries" element={<AdminEnquiriesPage />} />
-                  <Route path="vacation" element={<AdminVacationPage />} />
-                  <Route path="banners" element={<AdminBannersPage />} />
-                  <Route path="/reports" element={<AdminReportsPage />} />
-                  <Route path="/settings" element={<AdminSettingsPage />} />
-                </Routes>
-              </AdminLayout>
-            } />
+          {/* Admin routes */}
+          <Route path="/admin/*" element={
+            <AdminLayout>
+              <Routes>
+                <Route path="/" element={<AdminDashboardPage />} />
+                <Route path="/orders" element={<AdminOrdersPage />} />
+                <Route path="customers" element={<AdminCustomersPage />} />
+                <Route path="products" element={<AdminProductsPage />} />
+                <Route path="categories" element={<AdminCategoriesPage />} />
+                <Route path="offers" element={<AdminOffersPage />} />
+                <Route path="reviews" element={<AdminReviewsPage />} />
+                <Route path="enquiries" element={<AdminEnquiriesPage />} />
+                <Route path="vacation" element={<AdminVacationPage />} />
+                <Route path="banners" element={<AdminBannersPage />} />
+                <Route path="reports" element={<AdminReportsPage />} />
+                <Route path="settings" element={<AdminSettingsPage />} />
+              </Routes>
+            </AdminLayout>
+          } />
 
-            {/* App pages — with AppLayout */}
-            <Route path="/*" element={
-              <AppLayout>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/about" element={<AboutPage />} />
-                  <Route path="/contact" element={<ContactPage />} />
-                  <Route path="/category/:categoryId" element={<CategoryListingPage />} />
-                  <Route path="/offer/:id" element={<OfferPage />} />
-                  <Route path="/product/:id" element={<ProductDetailPage />} />
-                  <Route path="/cart" element={<CartPage />} />
-                  <Route path="/checkout" element={<CheckoutPage />} />
-                  <Route path="/pickup" element={<PickupPage />} />
-                  <Route path="/search" element={<SearchPage />} />
-                  <Route path="/order-tracking/:orderId" element={<OrderTrackingPage />} />
-                  <Route path="/wishlist" element={<WishlistPage />} />
-                  <Route path="/profile" element={<ProfilePage />} />
-                  <Route path="/dashboard" element={<DashboardPage />} />
-                  <Route path="/my-orders" element={<MyOrdersPage />} />
-                  <Route path="/my-coupons" element={<MyCouponsPage />} />
-                  <Route path="/my-addresses" element={<MyAddressesPage />} />
-                  <Route path="/account-settings" element={<AccountSettingsPage />} />
-                  <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
-                  <Route path="/returns-policy" element={<ReturnsPolicyPage />} />
-                  <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
-                  <Route path="/terms-of-service" element={<TermsOfServicePage />} />
-                  <Route path="/jewelry-care" element={<CareTipsPage />} />
-                </Routes>
-              </AppLayout>
-            } />
-          </Routes>
-        </BrowserRouter>
+          {/* Main app routes */}
+          <Route path="/*" element={
+            <AppLayout>
+              <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/category/:categoryId" element={<CategoryListingPage />} />
+                <Route path="/offer/:id" element={<OfferPage />} />
+                <Route path="/product/:id" element={<ProductDetailPage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/checkout" element={<CheckoutPage />} />
+                <Route path="/pickup" element={<PickupPage />} />
+                <Route path="/search" element={<SearchPage />} />
+                <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
+                <Route path="/returns-policy" element={<ReturnsPolicyPage />} />
+                <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+                <Route path="/terms-of-service" element={<TermsOfServicePage />} />
+                <Route path="/jewelry-care" element={<CareTipsPage />} />
+              </Routes>
+            </AppLayout>
+          } />
+        </Routes>
       </div>
     </>
   );
