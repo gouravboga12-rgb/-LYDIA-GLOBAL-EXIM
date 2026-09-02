@@ -75,12 +75,16 @@ export function MyOrdersPage() {
     const normalized = myOrders.map(o => {
       let address = {};
       if (o.shipping_address) {
-        try { address = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address; } catch {}
+        try { address = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || {}); } catch {}
       } else if (o.address) {
-        try { address = typeof o.address === 'string' ? JSON.parse(o.address) : o.address; } catch {}
+        try { address = typeof o.address === 'string' ? JSON.parse(o.address) : (o.address || {}); } catch {}
       }
       let items = [];
       try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
+
+      const tracking_id = o.tracking_number || address.tracking_id || address.tracking_number || o.tracking_id || '';
+      const tracking_link = address.tracking_link || address.tracking_url || o.tracking_link || o.tracking_url || '';
+
       return {
         ...o,
         id: o.id || o.order_number,
@@ -100,8 +104,10 @@ export function MyOrdersPage() {
         payment_status: o.payment_status || 'paid',
         payment_method: o.payment_method || 'direct_booking',
         order_type: o.order_type || 'shipping',
-        tracking_id: o.tracking_id || o.tracking_number || address?.tracking_id || address?.tracking_number || '',
-        tracking_link: o.tracking_link || o.tracking_url || address?.tracking_link || address?.tracking_url || '',
+        tracking_id,
+        tracking_number: tracking_id,
+        tracking_link,
+        tracking_url: tracking_link,
         created_at: o.created_at || new Date().toISOString()
       };
     });

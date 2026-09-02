@@ -123,8 +123,8 @@ export function AdminOrdersPage() {
         shipping_fee: Number(o.shipping ?? o.shipping_fee ?? 0),
         tax_amount: Number(o.tax ?? o.tax_amount ?? 0),
         status: currentStatus,
-        tracking_id: o.tracking_id || o.tracking_number || '',
-        tracking_link: o.tracking_link || o.tracking_url || '',
+        tracking_id: o.tracking_number || address?.tracking_id || address?.tracking_number || o.tracking_id || '',
+        tracking_link: address?.tracking_link || address?.tracking_url || o.tracking_link || o.tracking_url || '',
         created_at: o.created_at || new Date().toISOString()
       };
     });
@@ -139,7 +139,10 @@ export function AdminOrdersPage() {
 
     try {
       const numId = Number(orderId);
-      await supabase.from("orders").update({ status: newStatus }).eq("id", !isNaN(numId) ? numId : orderId);
+      if (!isNaN(numId)) {
+        await supabase.from("orders").update({ status: newStatus }).eq("id", numId);
+      }
+      await supabase.from("orders").update({ status: newStatus }).eq("order_number", orderId);
 
       const token = localStorage.getItem("token");
       await fetch(`${BACKEND_URL}/admin/orders/${orderId}/status`, {
@@ -178,32 +181,18 @@ export function AdminOrdersPage() {
       cleanAddress.tracking_number = tracking_id;
       cleanAddress.tracking_url = tracking_link;
 
-      const updateData = {
-        tracking_id,
+      // 1. Update in Supabase with valid columns: tracking_number and JSON stringified shipping_address
+      const numId = Number(order?.id);
+      const sbPayload = {
         tracking_number: tracking_id,
-        tracking_link,
-        tracking_url: tracking_link,
-        shipping_address: cleanAddress,
-        address: cleanAddress
+        shipping_address: JSON.stringify(cleanAddress)
       };
 
-      // 1. Update in Supabase
-      try {
-        const { error: sbErr } = await supabase.from("orders").update(updateData).or(`id.eq.${order?.id || orderId},order_number.eq.${order?.order_number || orderId}`);
-        if (sbErr) {
-          // If schema columns tracking_id don't exist, update JSON fields
-          await supabase.from("orders").update({
-            shipping_address: cleanAddress,
-            address: cleanAddress
-          }).or(`id.eq.${order?.id || orderId},order_number.eq.${order?.order_number || orderId}`);
-        }
-      } catch (sbE) {
-        try {
-          await supabase.from("orders").update({
-            shipping_address: cleanAddress,
-            address: cleanAddress
-          }).or(`id.eq.${order?.id || orderId},order_number.eq.${order?.order_number || orderId}`);
-        } catch {}
+      if (!isNaN(numId)) {
+        await supabase.from("orders").update(sbPayload).eq("id", numId);
+      }
+      if (order?.order_number) {
+        await supabase.from("orders").update(sbPayload).eq("order_number", order.order_number);
       }
 
       // 2. Update Backend REST API
