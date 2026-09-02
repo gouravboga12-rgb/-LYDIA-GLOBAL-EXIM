@@ -19,7 +19,7 @@
         "fee": "1"
       }
     },
-    "pickup_enabled": true,
+    "pickup_enabled": false,
     "tax_percentage": 8.25,
     "allowed_countries": [
       "India",
@@ -52,5 +52,5 @@
   ],
   "shipping_rate": 10,
   "tax_percentage": 8.25,
-  "pickup_enabled": true
+  "pickup_enabled": false
 }

@@ -17,7 +17,6 @@ export function AdminRevenuePage() {
   const [customStart, setCustomStart] = useState("");
   const [customEnd, setCustomEnd] = useState("");
   const [statusFilter, setStatusFilter] = useState("valid"); // valid (paid+shipped+delivered+processing), all, delivered, paid, pending, cancelled
-  const [orderTypeFilter, setOrderTypeFilter] = useState("all"); // all, shipping, pickup
   const [searchQuery, setSearchQuery] = useState("");
   const [sortField, setSortField] = useState("date"); // date, total, items
   const [sortOrder, setSortOrder] = useState("desc");
@@ -146,16 +145,11 @@ export function AdminRevenuePage() {
       const st = (order.status || "").toLowerCase();
       if (statusFilter === "valid" && st === "cancelled") return false;
       if (statusFilter === "paid" && st !== "paid" && st !== "delivered" && st !== "shipped") return false;
-      if (statusFilter === "delivered" && st !== "delivered" && st !== "pickup completed") return false;
+      if (statusFilter === "delivered" && st !== "delivered") return false;
       if (statusFilter === "pending" && st !== "pending" && st !== "processing") return false;
       if (statusFilter === "cancelled" && st !== "cancelled") return false;
 
-      // 3. Order Type Filter
-      const oType = (order.order_type || "shipping").toLowerCase();
-      if (orderTypeFilter === "shipping" && oType === "pickup") return false;
-      if (orderTypeFilter === "pickup" && oType !== "pickup") return false;
-
-      // 4. Search Query
+      // 3. Search Query
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase();
         const addr = safeParse(order.address || order.shipping_address);
@@ -407,24 +401,10 @@ export function AdminRevenuePage() {
             >
               <option value="valid">Active / Non-Cancelled</option>
               <option value="all">All Orders</option>
-              <option value="delivered">Delivered / Picked Up</option>
+              <option value="delivered">Delivered</option>
               <option value="paid">Paid / Shipped</option>
               <option value="pending">Pending Processing</option>
               <option value="cancelled">Cancelled Orders</option>
-            </select>
-          </div>
-
-          {/* Type Filter */}
-          <div className="flex items-center gap-1.5">
-            <span className="text-xs font-semibold text-gray-500">Type:</span>
-            <select
-              value={orderTypeFilter}
-              onChange={(e) => setOrderTypeFilter(e.target.value)}
-              className="px-2.5 py-1 text-xs border border-gray-200 rounded-lg bg-gray-50 text-[#45055B] font-semibold"
-            >
-              <option value="all">All Channels</option>
-              <option value="shipping">Delivery Shipping</option>
-              <option value="pickup">Store Pickup</option>
             </select>
           </div>
 
@@ -664,7 +644,6 @@ export function AdminRevenuePage() {
                   <th className="px-4 py-3.5">Order</th>
                   <th className="px-4 py-3.5">Date</th>
                   <th className="px-4 py-3.5">Customer</th>
-                  <th className="px-4 py-3.5">Channel</th>
                   <th className="px-4 py-3.5">Status</th>
                   <th className="px-4 py-3.5">Items</th>
                   <th className="px-4 py-3.5">Discount</th>
@@ -698,16 +677,8 @@ export function AdminRevenuePage() {
                         <p className="text-[10px] text-gray-400">{addr.city || addr.state || ""}</p>
                       </td>
                       <td className="px-4 py-3.5">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold ${
-                          order.order_type === "pickup" ? "bg-amber-50 text-amber-700 border border-amber-200" : "bg-purple-50 text-[#45055B] border border-purple-100"
-                        }`}>
-                          {order.order_type === "pickup" ? <Store className="w-3 h-3" /> : <Truck className="w-3 h-3" />}
-                          {order.order_type === "pickup" ? "Store Pickup" : "Delivery"}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3.5">
                         <span className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider ${
-                          st === "delivered" || st === "pickup completed" ? "bg-green-100 text-green-700" :
+                          st === "delivered" ? "bg-green-100 text-green-700" :
                           st === "paid" || st === "shipped" ? "bg-blue-100 text-blue-700" :
                           st === "cancelled" ? "bg-red-100 text-red-600" : "bg-yellow-100 text-yellow-700"
                         }`}>

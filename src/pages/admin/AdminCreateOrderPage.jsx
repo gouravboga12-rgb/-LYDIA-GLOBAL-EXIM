@@ -602,15 +602,9 @@ export function AdminCreateOrderPage() {
               {/* Order Type */}
               <div>
                 <label className="text-sm font-bold text-[#45055B] mb-3 block">Fulfillment Method</label>
-                <div className="flex gap-2">
-                  <button onClick={() => setOrderType('shipping')} className={`flex-1 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-1 border transition-all ${orderType === 'shipping' ? 'border-[#45055B] bg-[#45055B]/5 text-[#45055B]' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
-                    <Truck className="w-5 h-5" />
-                    <span className="text-xs font-bold">Shipping</span>
-                  </button>
-                  <button onClick={() => setOrderType('pickup')} className={`flex-1 py-3 px-4 rounded-xl flex flex-col items-center justify-center gap-1 border transition-all ${orderType === 'pickup' ? 'border-[#45055B] bg-[#45055B]/5 text-[#45055B]' : 'border-gray-200 text-gray-500 hover:border-gray-300'}`}>
-                    <Store className="w-5 h-5" />
-                    <span className="text-xs font-bold">Pickup</span>
-                  </button>
+                <div className="py-3 px-4 rounded-xl flex items-center gap-2 border border-[#45055B] bg-[#45055B]/5 text-[#45055B]">
+                  <Truck className="w-5 h-5" />
+                  <span className="text-xs font-bold">Delivery Shipping (Direct Delivery)</span>
                 </div>
               </div>
 

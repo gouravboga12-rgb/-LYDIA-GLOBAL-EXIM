@@ -153,35 +153,7 @@ export function AdminShippingPage() {
         </div>
       )}
 
-      {/* Store Pickup Toggle */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-brand-gold/10 rounded-xl flex items-center justify-center">
-              <Store className="w-5 h-5 text-brand-dark-blue" />
-            </div>
-            <div>
-              <h2 className="text-lg font-bold text-gray-900">Store Pickup</h2>
-              <p className="text-sm text-gray-500">
-                {pickupEnabled
-                  ? 'Customers can choose between pickup or home delivery at checkout'
-                  : 'Customers will only see home delivery at checkout'}
-              </p>
-            </div>
-          </div>
-          <button
-            onClick={() => handleTogglePickup(!pickupEnabled)}
-            disabled={savingPickup}
-            className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none disabled:opacity-60 ${pickupEnabled ? 'bg-brand-dark-blue' : 'bg-gray-200'}`}
-          >
-            <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-md transition-transform duration-300 ${pickupEnabled ? 'translate-x-8' : 'translate-x-1'}`} />
-          </button>
-        </div>
-        <div className={`mt-4 px-4 py-3 rounded-xl text-sm font-semibold flex items-center gap-2 ${pickupEnabled ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-gray-50 text-gray-500 border border-gray-100'}`}>
-          <span className={`w-2 h-2 rounded-full ${pickupEnabled ? 'bg-green-500' : 'bg-gray-400'}`} />
-          {pickupEnabled ? 'Pickup is ON — customers will see "Store Pickup" and "Home Delivery" options' : 'Pickup is OFF — customers go directly to home delivery checkout'}
-        </div>
-      </div>
+
 
       {/* Shipping Flat Rate */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
