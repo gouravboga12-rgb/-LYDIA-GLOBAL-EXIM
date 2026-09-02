@@ -19,15 +19,23 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 import { COUNTRIES } from '../data/countries';
 import { getStatesForCountry } from '../data/states';
 
+function extractPhone10Digits(raw) {
+  if (!raw) return '';
+  const digits = String(raw).replace(/\D/g, '');
+  if (digits.length >= 10) return digits.slice(-10);
+  return digits;
+}
+
+function formatDisplayPhone(raw) {
+  if (!raw) return '';
+  const digits = extractPhone10Digits(raw);
+  if (digits.length === 10) return `+91 ${digits}`;
+  return String(raw).replace(/^[A-Z]{2}:/i, '').trim();
+}
+
 function getLocalPhone(phoneStr) {
   if (!phoneStr) return '';
-  const clean = phoneStr.startsWith('+') ? phoneStr : '+' + phoneStr;
-  const sortedCountries = [...COUNTRIES].sort((a, b) => b.dial.length - a.dial.length);
-  const country = sortedCountries.find(c => clean.startsWith(c.dial));
-  if (country) {
-    return clean.slice(country.dial.length).replace(/\D/g, '');
-  }
-  return phoneStr.replace(/\D/g, '');
+  return extractPhone10Digits(phoneStr);
 }
 
 function getDialCountryCode(phoneStr) {
@@ -643,10 +651,7 @@ export function CheckoutPage() {
       setSelectedSavedAddress(def.id);
       const c = COUNTRIES.find(c => c.name === def.country);
       if (c) setDialCountryCode(c.code);
-      // Strip dial code prefix from stored mobile if present
-      const dialPrefix = c?.dial || '';
-      const rawMobile = def.mobile || '';
-      const mobileDigits = rawMobile.startsWith(dialPrefix) ? rawMobile.slice(dialPrefix.length) : rawMobile;
+      const mobileDigits = extractPhone10Digits(def.mobile);
       setAddress({ name: def.name, line1: def.line1, line2: def.line2 || '', city: def.city, state: def.state || '', pincode: def.pincode, country: def.country || 'India', mobile: mobileDigits });
       setShowNewAddressForm(false);
     } else {
@@ -783,8 +788,8 @@ export function CheckoutPage() {
           </span>
         );
       }
-      const mobileDigits = address.mobile.replace(/\D/g, '');
-      if (!address.mobile.trim()) {
+      const mobileDigits = extractPhone10Digits(address.mobile);
+      if (!address.mobile || !address.mobile.trim()) {
         errs.mobile = 'Phone number is required';
       } else if (['US', 'CA', 'IN'].includes(dialCountryCode) && mobileDigits.length !== 10) {
         errs.mobile = `Enter a valid 10-digit number`;
@@ -1096,9 +1101,7 @@ export function CheckoutPage() {
                       setSelectedSavedAddress(def.id);
                       const c = COUNTRIES.find(c => c.name === def.country);
                       if (c) setDialCountryCode(c.code);
-                      const dialPrefix = c?.dial || '';
-                      const rawMobile = def.mobile || '';
-                      const mobileDigits = rawMobile.startsWith(dialPrefix) ? rawMobile.slice(dialPrefix.length) : rawMobile;
+                      const mobileDigits = extractPhone10Digits(def.mobile);
                       setAddress({
                         name: def.name,
                         line1: def.line1,
@@ -1311,9 +1314,7 @@ export function CheckoutPage() {
                           setSelectedSavedAddress(addr.id);
                           const c = COUNTRIES.find(c => c.name === addr.country);
                           if (c) setDialCountryCode(c.code);
-                          const dialPrefix = c?.dial || '';
-                          const rawMobile = addr.mobile || '';
-                          const mobileDigits = rawMobile.startsWith(dialPrefix) ? rawMobile.slice(dialPrefix.length) : rawMobile;
+                          const mobileDigits = extractPhone10Digits(addr.mobile);
                           setAddress({ name: addr.name, line1: addr.line1, line2: addr.line2 || '', city: addr.city, state: addr.state || '', pincode: addr.pincode, country: addr.country || 'India', mobile: mobileDigits });
                         }}
                         className={`w-full text-left p-4 rounded-2xl border-2 transition-all flex items-start gap-3 ${
@@ -1331,7 +1332,7 @@ export function CheckoutPage() {
                             {addr.is_default && <span className="text-[10px] bg-green-100 text-green-700 font-bold px-2 py-0.5 rounded-full">Default</span>}
                           </div>
                           <p className="text-xs text-gray-500 mt-0.5">{addr.line1}{addr.line2 ? `, ${addr.line2}` : ''}, {addr.city}{addr.state ? `, ${addr.state}` : ''} {addr.pincode}</p>
-                          <p className="text-xs text-gray-400 mt-0.5">📞 {addr.mobile}</p>
+                          <p className="text-xs text-gray-400 mt-0.5">📞 {formatDisplayPhone(addr.mobile)}</p>
                         </div>
                         <button
                           type="button"
