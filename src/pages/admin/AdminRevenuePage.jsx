@@ -178,7 +178,7 @@ export function AdminRevenuePage() {
       const dateB = new Date(b.created_at || b.date || 0).getTime();
       return sortOrder === "desc" ? dateB - dateA : dateA - dateB;
     });
-  }, [orders, timeRange, customStart, customEnd, statusFilter, orderTypeFilter, searchQuery, sortField, sortOrder]);
+  }, [orders, timeRange, customStart, customEnd, statusFilter, searchQuery, sortField, sortOrder]);
 
   // Financial Calculations
   const metrics = useMemo(() => {
@@ -203,7 +203,7 @@ export function AdminRevenuePage() {
       const tax = Number(o.tax || o.tax_amount || 0);
       const items = parseItems(o.items);
       const st = (o.status || "").toLowerCase();
-      const method = o.payment_method || (o.order_type === "pickup" ? "Store Pickup" : "Online Gateway");
+      const method = o.payment_method || "Online Payment";
 
       paymentMethods[method] = (paymentMethods[method] || 0) + total;
 
@@ -228,10 +228,10 @@ export function AdminRevenuePage() {
         totalShipping += shipping;
         totalTax += tax;
 
-        if (st === "delivered" || st === "paid" || st === "pickup completed" || st === "shipped") {
+        if (st === "delivered" || st === "paid" || st === "shipped") {
           netRevenue += total;
           paidCount++;
-        } else if (st === "pending" || st === "processing" || st === "ready for pickup") {
+        } else if (st === "pending" || st === "processing" || st === "under processing" || st === "received") {
           pendingRevenue += total;
         }
       }
