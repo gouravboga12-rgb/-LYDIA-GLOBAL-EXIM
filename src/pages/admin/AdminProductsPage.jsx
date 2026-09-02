@@ -687,6 +687,80 @@ export function AdminProductsPage() {
     </div>
   );
 
+function StockControlCell({ row, togglingSkuId, onUpdateStock }) {
+  const [stockVal, setStockVal] = React.useState(row.size.stock ?? 0);
+  const isAvailable = Number(stockVal) > 0;
+
+  React.useEffect(() => {
+    setStockVal(row.size.stock ?? 0);
+  }, [row.size.stock]);
+
+  const handleStatusSelect = (e) => {
+    const status = e.target.value;
+    if (status === 'out_of_stock') {
+      setStockVal(0);
+      onUpdateStock(row, 0);
+    } else {
+      const nextQty = Number(row.size._prevStock) > 0 ? Number(row.size._prevStock) : 10;
+      setStockVal(nextQty);
+      onUpdateStock(row, nextQty);
+    }
+  };
+
+  const handleCommitQty = () => {
+    const num = Math.max(0, parseInt(stockVal, 10) || 0);
+    setStockVal(num);
+    if (num !== row.size.stock) {
+      onUpdateStock(row, num);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.target.blur();
+    }
+  };
+
+  return (
+    <div className="w-[230px] min-w-[230px] max-w-[230px] flex items-center gap-2">
+      <select
+        value={isAvailable ? "available" : "out_of_stock"}
+        onChange={handleStatusSelect}
+        disabled={togglingSkuId === row.skuId}
+        className={`w-32 px-2 py-1.5 rounded-lg text-xs font-bold border cursor-pointer focus:outline-none transition-colors shrink-0 ${
+          isAvailable
+            ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+            : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100'
+        }`}
+      >
+        <option value="available">✓ Available</option>
+        <option value="out_of_stock">✗ Out of Stock</option>
+      </select>
+
+      <div className="flex items-center gap-1 shrink-0">
+        <input
+          type="number"
+          min="0"
+          value={stockVal}
+          onChange={(e) => setStockVal(e.target.value)}
+          onBlur={handleCommitQty}
+          onKeyDown={handleKeyDown}
+          disabled={togglingSkuId === row.skuId}
+          title="Stock Quantity (0 = Out of Stock)"
+          className={`w-16 px-1.5 py-1 bg-white border rounded-lg text-xs font-bold text-center focus:outline-none focus:ring-1 ${
+            isAvailable ? 'border-emerald-300 text-emerald-900 focus:ring-emerald-400' : 'border-red-300 text-red-700 focus:ring-red-400'
+          }`}
+        />
+        <span className="text-[10px] text-gray-400 font-semibold select-none">Qty</span>
+      </div>
+
+      {togglingSkuId === row.skuId && (
+        <div className="w-3.5 h-3.5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin shrink-0" />
+      )}
+    </div>
+  );
+}
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 bg-white p-6 rounded-2xl border border-[#45055B]/10 shadow-sm">
@@ -696,21 +770,22 @@ export function AdminProductsPage() {
         </div>
         <button
           onClick={handleAdd}
-          className="flex items-center gap-2 bg-[#45055B] text-white px-5 py-2.5 rounded-xl font-semibold shadow-md hover:bg-[#D4AF37] transition-all hover:-translate-y-0.5"
+          className="flex items-center gap-2 bg-[#45055B] text-white px-5 py-2.5 rounded-xl font-semibold shadow-md hover:bg-[#D4AF37] transition-all hover:-translate-y-0.5 cursor-pointer"
         >
           <Plus className="w-5 h-5" /> Add Product
         </button>
       </div>
 
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-[#45055B]/10">
-        <div className="relative w-full md:w-80">
+      {/* Filters & Search */}
+      <div className="flex flex-col md:flex-row gap-4 justify-between items-center bg-white p-4 rounded-2xl border border-[#45055B]/10">
+        <div className="relative w-full md:w-96">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[#45055B]/40" />
           <input
             type="text"
-            placeholder="Search by Title, Category, SKU or Color..."
+            placeholder="Search by Title, Category, SKU or Color"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-9 pr-4 py-2 text-sm rounded-xl bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none focus:border-[#45055B]"
+            className="w-full pl-9 pr-4 py-2 text-sm rounded-xl bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none focus:border-[#45055B]/30"
           />
         </div>
 
@@ -721,7 +796,7 @@ export function AdminProductsPage() {
             className="px-3 py-2 text-sm rounded-xl bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none text-[#45055B]"
           >
             <option value="all">All Categories</option>
-            {categories.map((c) => (
+            {categories.map(c => (
               <option key={c.id} value={c.name}>{c.name}</option>
             ))}
           </select>
@@ -732,8 +807,8 @@ export function AdminProductsPage() {
             className="px-3 py-2 text-sm rounded-xl bg-[#FAF6F0] border border-[#45055B]/10 focus:outline-none text-[#45055B]"
           >
             <option value="all">All Offers</option>
-            <option value="has_offer">With Offers</option>
-            <option value="no_offer">Without Offers</option>
+            <option value="has_offer">Discounted Items</option>
+            <option value="no_offer">Standard Items</option>
           </select>
 
           <select
@@ -750,19 +825,19 @@ export function AdminProductsPage() {
 
       <div className="bg-white rounded-2xl border border-[#45055B]/10 overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse">
+          <table className="w-full text-left border-collapse table-fixed min-w-[1100px]">
             <thead>
               <tr className="bg-[#FAF6F0] text-[11px] font-bold font-sans text-[#45055B]/70 uppercase tracking-wider border-b border-[#45055B]/10">
-                <th className="px-4 py-3">Product / Media</th>
-                <th className="px-4 py-3">Category</th>
-                <th className="px-4 py-3">Color</th>
-                <th className="px-4 py-3">Size & Code</th>
-                <th className="px-4 py-3">MRP / Price</th>
-                <th className="px-4 py-3">Stock</th>
-                <th className="px-4 py-3">Notes</th>
-                <th className="px-4 py-3">Offer</th>
-                <th className="px-4 py-3">Status</th>
-                <th className="px-4 py-3 text-right">Actions</th>
+                <th className="px-4 py-3 w-[280px]">Product / Media</th>
+                <th className="px-4 py-3 w-[110px]">Category</th>
+                <th className="px-4 py-3 w-[90px]">Color</th>
+                <th className="px-4 py-3 w-[110px]">Size & Code</th>
+                <th className="px-4 py-3 w-[110px]">MRP / Price</th>
+                <th className="px-4 py-3 w-[240px]">Stock Availability & Qty</th>
+                <th className="px-4 py-3 w-[120px]">Notes</th>
+                <th className="px-4 py-3 w-[90px]">Offer</th>
+                <th className="px-4 py-3 w-[90px]">Status</th>
+                <th className="px-4 py-3 w-[90px] text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[#45055B]/10 text-sm">
@@ -772,7 +847,7 @@ export function AdminProductsPage() {
                 const isVid = isVideoUrl(mediaUrl);
                 return (
                   <tr key={row.skuId} className="hover:bg-[#FAF6F0]/40 transition-colors">
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 truncate">
                       <div className="flex items-center gap-3">
                         <div className="w-12 h-12 rounded-xl bg-[#FAF6F0] border border-[#45055B]/10 overflow-hidden shrink-0 relative flex items-center justify-center">
                           {mediaUrl ? (
@@ -788,17 +863,17 @@ export function AdminProductsPage() {
                             <Package className="w-5 h-5 text-gray-400" />
                           )}
                         </div>
-                        <div>
-                          <p className="font-bold text-[#45055B]">{row.product.name}</p>
-                          <p className="text-xs text-[#45055B]/50">{row.product.model || row.product.sku || 'Standard'}</p>
+                        <div className="truncate">
+                          <p className="font-bold text-[#45055B] truncate">{row.product.name}</p>
+                          <p className="text-xs text-[#45055B]/50 truncate">{row.product.model || row.product.sku || 'Standard'}</p>
                         </div>
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-xs font-semibold text-[#45055B]">{row.product.category}</td>
-                    <td className="px-4 py-3 text-xs text-[#45055B]">{row.variant.color || "Default"}</td>
-                    <td className="px-4 py-3">
-                      <p className="font-bold text-xs text-[#45055B]">{row.size.size || "Standard"}</p>
-                      <p className="text-[10px] text-[#45055B]/50 font-mono">#{row.size.code || row.product.product_code || '—'}</p>
+                    <td className="px-4 py-3 text-xs font-semibold text-[#45055B] truncate">{row.product.category}</td>
+                    <td className="px-4 py-3 text-xs text-[#45055B] truncate">{row.variant.color || "Default"}</td>
+                    <td className="px-4 py-3 truncate">
+                      <p className="font-bold text-xs text-[#45055B] truncate">{row.size.size || "Standard"}</p>
+                      <p className="text-[10px] text-[#45055B]/50 font-mono truncate">#{row.size.code || row.product.product_code || '—'}</p>
                     </td>
                     <td className="px-4 py-3">
                       <div className="flex flex-col">
@@ -809,43 +884,15 @@ export function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center gap-1.5">
-                        <select
-                          value={Number(row.size.stock || 0) > 0 ? "available" : "out_of_stock"}
-                          onChange={(e) => handleStockStatusChange(row, e.target.value)}
-                          disabled={togglingSkuId === row.skuId}
-                          className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border cursor-pointer focus:outline-none transition-colors shadow-2xs ${
-                            Number(row.size.stock || 0) > 0
-                              ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
-                              : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100'
-                          }`}
-                        >
-                          <option value="available">✓ Available</option>
-                          <option value="out_of_stock">✗ Out of Stock</option>
-                        </select>
-
-                        {Number(row.size.stock || 0) > 0 && (
-                          <div className="flex items-center gap-1">
-                            <input
-                              type="number"
-                              min="1"
-                              value={row.size.stock || 1}
-                              onChange={(e) => handleStockQtyChange(row, e.target.value)}
-                              disabled={togglingSkuId === row.skuId}
-                              title="Set Available Stock Quantity"
-                              className="w-14 px-1.5 py-1 bg-white border border-emerald-300 rounded-lg text-xs font-bold text-emerald-900 text-center focus:outline-none focus:ring-1 focus:ring-emerald-400"
-                            />
-                            <span className="text-[10px] text-gray-500 font-semibold">Qty</span>
-                          </div>
-                        )}
-                        {togglingSkuId === row.skuId && (
-                          <div className="w-3.5 h-3.5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin shrink-0" />
-                        )}
-                      </div>
+                      <StockControlCell 
+                        row={row} 
+                        togglingSkuId={togglingSkuId} 
+                        onUpdateStock={updateProductStock} 
+                      />
                     </td>
                     <td className="px-4 py-3">
                       {row.size.notes ? (
-                        <span className="text-[11px] text-[#45055B] bg-[#FAF6F0] border border-[#45055B]/15 px-2.5 py-1 rounded-lg max-w-[140px] truncate block font-medium">
+                        <span className="text-[11px] text-[#45055B] bg-[#FAF6F0] border border-[#45055B]/15 px-2.5 py-1 rounded-lg max-w-[120px] truncate block font-medium">
                           {row.size.notes}
                         </span>
                       ) : (

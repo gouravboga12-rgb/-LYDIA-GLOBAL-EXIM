@@ -756,6 +756,60 @@ export function CheckoutPage() {
         status: 'new',
         created_at: new Date().toISOString()
       }]).catch(() => {});
+
+      // Deduct inventory stock for each purchased item
+      for (const item of items) {
+        const prodId = item.id || item.product_id;
+        const purchaseQty = Number(item.quantity || 1);
+        if (!prodId) continue;
+
+        const numId = Number(prodId);
+        const supabaseId = !isNaN(numId) ? numId : prodId;
+
+        const { data: pData } = await supabase.from('products').select('*').eq('id', supabaseId).single();
+        if (pData) {
+          let variants = Array.isArray(pData.variants) && pData.variants.length > 0 ? pData.variants : [{
+            color: pData.color || "Gold",
+            images: Array.isArray(pData.images) ? pData.images : (pData.image_url ? [pData.image_url] : []),
+            sizes: Array.isArray(pData.sizes) && pData.sizes.length > 0 ? pData.sizes : [{ size: "Standard", mrp: 0, our_price: 0, stock: 10, code: "" }]
+          }];
+
+          let matched = false;
+          variants = variants.map(v => {
+            if (Array.isArray(v.sizes)) {
+              return {
+                ...v,
+                sizes: v.sizes.map(s => {
+                  const isSizeMatch = (item.size && s.size && s.size.toLowerCase() === item.size.toLowerCase()) ||
+                                      (item.code && s.code && s.code.toLowerCase() === item.code.toLowerCase()) ||
+                                      (!matched && variants.length === 1 && v.sizes.length === 1);
+                  if (isSizeMatch && !matched) {
+                    matched = true;
+                    const curStock = Number(s.stock !== undefined ? s.stock : 10);
+                    const newStock = Math.max(0, curStock - purchaseQty);
+                    return { ...s, stock: newStock };
+                  }
+                  return s;
+                })
+              };
+            }
+            return v;
+          });
+
+          if (!matched && variants[0]?.sizes?.[0]) {
+            const curStock = Number(variants[0].sizes[0].stock !== undefined ? variants[0].sizes[0].stock : 10);
+            variants[0].sizes[0].stock = Math.max(0, curStock - purchaseQty);
+          }
+
+          await supabase.from('products').update({
+            variants: variants,
+            sizes: variants[0]?.sizes || []
+          }).eq('id', supabaseId);
+        }
+      }
+
+      // Synchronize global store with latest deducted stock
+      await useStoreData.getState().fetchData().catch(() => null);
     } catch (sbErr) {
       console.warn("Supabase direct order note:", sbErr);
     }
