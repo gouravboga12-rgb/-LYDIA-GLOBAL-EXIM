@@ -4,6 +4,7 @@ import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind,
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
 import { useStoreData } from '../store/useStoreData';
+import { supabase } from '../utils/supabase';
 
 import gsap from 'gsap';
 import { useGSAP } from '@gsap/react';
@@ -160,25 +161,39 @@ export function HomePage() {
   const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || import.meta.env.VITE_API_URL || '';
 
   React.useEffect(() => {
-    if (!BACKEND_URL) return;
-
-    fetch(`${BACKEND_URL}/general/banners`)
-      .then(r => r.json())
-      .then(d => { if (d && d.banners && d.banners.length > 0) setBanners(d.banners); })
-      .catch(e => console.warn('Banners load error:', e.message));
-
-    fetch(`${BACKEND_URL}/general/reviews`)
-      .then(r => r.json())
-      .then(d => {
-        if (d && d.reviews && d.reviews.length > 0) {
-          const valid = d.reviews.filter(r => r.is_active !== false && r.review && r.review.trim().length > 15 && !r.review.toLowerCase().includes('hello'));
-          if (valid.length > 0) {
-            setReviews(valid);
-          }
+    supabase.from('banners').select('*').order('id', { ascending: true })
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) {
+          setBanners(data);
+        } else if (BACKEND_URL) {
+          fetch(`${BACKEND_URL}/general/banners`)
+            .then(r => r.json())
+            .then(d => { if (d && d.banners && d.banners.length > 0) setBanners(d.banners); })
+            .catch(e => console.warn('Banners load error:', e.message));
         }
       })
-      .catch(e => console.warn('Reviews load error:', e.message));
+      .catch(() => {});
+
+    supabase.from('reviews').select('*').order('id', { ascending: false })
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) {
+          const valid = data.filter(r => r.is_active !== false && (r.comment || r.review) && (r.comment || r.review).trim().length > 5);
+          if (valid.length > 0) setReviews(valid);
+        } else if (BACKEND_URL) {
+          fetch(`${BACKEND_URL}/general/reviews`)
+            .then(r => r.json())
+            .then(d => {
+              if (d && d.reviews && d.reviews.length > 0) {
+                const valid = d.reviews.filter(r => r.is_active !== false && r.review && r.review.trim().length > 5);
+                if (valid.length > 0) setReviews(valid);
+              }
+            })
+            .catch(() => {});
+        }
+      })
+      .catch(() => {});
   }, []);
+
 
   // Auto-scroll reviews
   React.useEffect(() => {

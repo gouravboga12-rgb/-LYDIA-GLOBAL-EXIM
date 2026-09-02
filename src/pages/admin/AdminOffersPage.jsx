@@ -38,12 +38,17 @@ export function AdminOffersPage() {
 
   const fetchOffers = async () => {
     try {
+      const { data, error } = await supabase.from('offers').select('*').order('id', { ascending: true });
+      if (!error && data && data.length > 0) {
+        setOffers(data);
+        return;
+      }
       const token = localStorage.getItem("token");
       const h = token ? { Authorization: `Bearer ${token}` } : {};
       const res = await fetch(`${BACKEND_URL}/admin/offers`, { headers: h }).catch(() => null);
-      const data = res ? await res.json().catch(() => ({})) : {};
-      if (data && data.offers && data.offers.length > 0) {
-        setOffers(data.offers);
+      const resData = res ? await res.json().catch(() => ({})) : {};
+      if (resData && resData.offers && resData.offers.length > 0) {
+        setOffers(resData.offers);
       } else {
         setOffers(defaultOffers || []);
       }
@@ -57,19 +62,29 @@ export function AdminOffersPage() {
 
   const fetchCategories = async () => {
     try {
+      const { data, error } = await supabase.from('categories').select('*').order('id', { ascending: true });
+      if (!error && data) {
+        setCategories(data);
+        return;
+      }
       const token = localStorage.getItem("token");
       const h = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await fetch(`${BACKEND_URL}/admin/categories`, { headers: h });
-      const data = await res.json();
-      if (data.categories) setCategories(data.categories);
+      const res = await fetch(`${BACKEND_URL}/admin/categories`, { headers: h }).catch(() => null);
+      const resData = res ? await res.json().catch(() => ({})) : {};
+      if (resData.categories) setCategories(resData.categories);
     } catch (err) {}
   };
 
   const fetchProducts = async () => {
     try {
-      const res = await fetch(`${BACKEND_URL}/general/products`);
-      const data = await res.json();
-      if (data.products) setProducts(data.products);
+      const { data, error } = await supabase.from('products').select('*').order('id', { ascending: false });
+      if (!error && data) {
+        setProducts(data);
+        return;
+      }
+      const res = await fetch(`${BACKEND_URL}/general/products`).catch(() => null);
+      const resData = res ? await res.json().catch(() => ({})) : {};
+      if (resData.products) setProducts(resData.products);
     } catch (err) {}
   };
 
@@ -80,64 +95,78 @@ export function AdminOffersPage() {
   };
 
   const handleEdit = (offer) => {
-    setFormData(offer);
+    setFormData({
+      ...offer,
+      is_active: offer.active ?? offer.is_active ?? true
+    });
     setEditOffer(offer);
     setIsNew(false);
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete offer? This will also remove the offer from all associated products.")) return;
+    if (!confirm("Delete offer? This will update the database and website globally.")) return;
     try {
       // 1. Delete from Supabase
-      try {
-        await supabase.from('offers').delete().eq('id', id);
-      } catch (sbErr) {
-        console.warn("Supabase offer delete note:", sbErr);
+      const numId = Number(id);
+      if (!isNaN(numId)) {
+        const { error: sbErr } = await supabase.from('offers').delete().eq('id', numId);
+        if (sbErr) console.warn("Supabase offer delete note:", sbErr);
+      } else {
+        await supabase.from('offers').delete().eq('id', id).catch(() => null);
       }
 
-      // 2. Delete from Backend REST
+      // 2. Delete from Backend REST (if available)
       const token = localStorage.getItem("token");
-      await fetch(`${BACKEND_URL}/admin/offers/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      await fetch(`${BACKEND_URL}/admin/offers/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
       
       await fetchOffers();
-      useStoreData.getState().fetchData();
+      await useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
+      alert("Error deleting offer: " + err.message);
     }
   };
 
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload = {
-        title: formData.title,
-        code: formData.code || "SAVE" + Math.floor(10 + Math.random() * 90),
-        discount_percentage: Number(formData.discount_percentage || 0),
-        active: formData.is_active ?? true
-      };
-
-      // 1. Sync with Supabase
-      try {
-        await supabase.from('offers').upsert({
-          ...(isNew ? {} : { id: editOffer.id }),
-          ...payload
-        });
-      } catch (sbErr) {
-        console.warn("Supabase offer save note:", sbErr);
+      if (!formData.title?.trim()) {
+        alert("Please enter an offer title");
+        setSaving(false);
+        return;
       }
 
-      // 2. Save via Backend REST
+      const payload = {
+        title: formData.title.trim(),
+        code: (formData.code || "SAVE" + Math.floor(10 + Math.random() * 90)).toUpperCase().trim(),
+        discount_percentage: Number(formData.discount_percentage || 0),
+        active: formData.is_active ?? true,
+        min_order_value: Number(formData.min_order_value || 0),
+        min_qty: Number(formData.min_qty || 1)
+      };
+
+      // 1. Sync with Supabase Cloud DB
+      if (isNew) {
+        const { error: sbErr } = await supabase.from('offers').insert([payload]);
+        if (sbErr) console.warn("Supabase offer insert note:", sbErr);
+      } else {
+        const numId = Number(editOffer.id);
+        const { error: sbErr } = await supabase.from('offers').update(payload).eq('id', !isNaN(numId) ? numId : editOffer.id);
+        if (sbErr) console.warn("Supabase offer update note:", sbErr);
+      }
+
+      // 2. Save via Backend REST (if available)
       const token = localStorage.getItem("token");
       const url = isNew ? `${BACKEND_URL}/admin/offers` : `${BACKEND_URL}/admin/offers/${editOffer.id}`;
       await fetch(url, {
         method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(formData),
-      });
+        body: JSON.stringify({ ...payload, is_active: payload.active }),
+      }).catch(() => null);
 
       setEditOffer(null);
       await fetchOffers();
-      useStoreData.getState().fetchData();
+      await useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
       alert("Error saving offer: " + err.message);
@@ -145,6 +174,7 @@ export function AdminOffersPage() {
       setSaving(false);
     }
   };
+
 
   const handleApplyAction = async () => {
     if (!applyOfferId) return;

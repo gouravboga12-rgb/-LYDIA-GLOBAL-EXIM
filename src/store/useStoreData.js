@@ -17,47 +17,47 @@ export const useStoreData = create((set) => ({
       let liveCategories = null;
       let liveOffers = null;
 
-      // 1. Fetch live updated data from Backend REST API
+      // 1. Fetch live updated data from Supabase Cloud PostgreSQL
       try {
-        const [catsRes, prodsRes, offersRes] = await Promise.all([
-          fetch(`${BACKEND_URL}/general/categories`).then(r => r.ok ? r.json() : null).catch(() => null),
-          fetch(`${BACKEND_URL}/general/products`).then(r => r.ok ? r.json() : null).catch(() => null),
-          fetch(`${BACKEND_URL}/general/offers`).then(r => r.ok ? r.json() : null).catch(() => null),
+        const [sbProds, sbCats, sbOffers] = await Promise.all([
+          supabase.from('products').select('*').order('id', { ascending: false }),
+          supabase.from('categories').select('*').order('id', { ascending: true }),
+          supabase.from('offers').select('*').eq('active', true)
         ]);
 
-        if (catsRes && catsRes.categories && catsRes.categories.length > 0) {
-          liveCategories = catsRes.categories;
+        if (sbProds.data && sbProds.data.length > 0) {
+          liveProducts = sbProds.data;
         }
-        if (prodsRes && prodsRes.products && prodsRes.products.length > 0) {
-          liveProducts = prodsRes.products;
+        if (sbCats.data && sbCats.data.length > 0) {
+          liveCategories = sbCats.data;
         }
-        if (offersRes && offersRes.offers && offersRes.offers.length > 0) {
-          liveOffers = offersRes.offers;
+        if (sbOffers.data && sbOffers.data.length > 0) {
+          liveOffers = sbOffers.data;
         }
-      } catch (apiErr) {
-        console.warn("Backend REST fetch note:", apiErr);
+      } catch (sbErr) {
+        console.warn("Supabase fetch note:", sbErr);
       }
 
-      // 2. Query Supabase for any datasets not yet retrieved
+      // 2. If any data wasn't available from Supabase, query Backend REST API
       if (!liveProducts || !liveCategories || !liveOffers) {
         try {
-          const [sbProds, sbCats, sbOffers] = await Promise.all([
-            !liveProducts ? supabase.from('products').select('*').order('id', { ascending: false }) : Promise.resolve({ data: null }),
-            !liveCategories ? supabase.from('categories').select('*').order('id', { ascending: true }) : Promise.resolve({ data: null }),
-            !liveOffers ? supabase.from('offers').select('*').eq('active', true) : Promise.resolve({ data: null })
+          const [catsRes, prodsRes, offersRes] = await Promise.all([
+            !liveCategories ? fetch(`${BACKEND_URL}/general/categories`).then(r => r.ok ? r.json() : null).catch(() => null) : Promise.resolve(null),
+            !liveProducts ? fetch(`${BACKEND_URL}/general/products`).then(r => r.ok ? r.json() : null).catch(() => null) : Promise.resolve(null),
+            !liveOffers ? fetch(`${BACKEND_URL}/general/offers`).then(r => r.ok ? r.json() : null).catch(() => null) : Promise.resolve(null),
           ]);
 
-          if (!liveProducts && sbProds.data && sbProds.data.length > 0) {
-            liveProducts = sbProds.data;
+          if (!liveCategories && catsRes?.categories?.length > 0) {
+            liveCategories = catsRes.categories;
           }
-          if (!liveCategories && sbCats.data && sbCats.data.length > 0) {
-            liveCategories = sbCats.data;
+          if (!liveProducts && prodsRes?.products?.length > 0) {
+            liveProducts = prodsRes.products;
           }
-          if (!liveOffers && sbOffers.data && sbOffers.data.length > 0) {
-            liveOffers = sbOffers.data;
+          if (!liveOffers && offersRes?.offers?.length > 0) {
+            liveOffers = offersRes.offers;
           }
-        } catch (sbErr) {
-          console.warn("Supabase fetch note:", sbErr);
+        } catch (apiErr) {
+          console.warn("Backend REST fetch note:", apiErr);
         }
       }
 
@@ -90,4 +90,5 @@ export const useStoreData = create((set) => ({
     }
   }
 }));
+
 

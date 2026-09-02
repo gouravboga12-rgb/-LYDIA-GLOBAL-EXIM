@@ -1,5 +1,73 @@
 [
   {
+    "id": 1788334590753,
+    "created_at": "2026-09-02T07:36:30.754Z",
+    "name": "Temp Verification Item",
+    "category": "Necklaces",
+    "model": "",
+    "description": "",
+    "product_code": "",
+    "instagram_reel_url": "",
+    "is_active": true,
+    "allow_reviews": true,
+    "variants": [
+      {
+        "color": "Gold",
+        "instagram_link": "",
+        "images": [],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": "999",
+            "our_price": "499",
+            "stock": 10,
+            "stock_delta": "",
+            "code": "TEMP-99",
+            "weight": "",
+            "offer_id": "",
+            "notes": ""
+          }
+        ]
+      }
+    ],
+    "details": [],
+    "reviews": []
+  },
+  {
+    "id": 1788334194310,
+    "created_at": "2026-09-02T07:29:54.310Z",
+    "name": "Lydia Royal Ruby Choker",
+    "description": "",
+    "product_code": "",
+    "instagram_reel_url": "",
+    "category": "Necklaces",
+    "model": "",
+    "is_active": true,
+    "allow_reviews": true,
+    "variants": [
+      {
+        "color": "",
+        "instagram_link": "",
+        "images": [],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": "4999",
+            "our_price": "2499",
+            "stock": 0,
+            "stock_delta": "",
+            "code": "LRC-001",
+            "weight": "",
+            "offer_id": "",
+            "notes": ""
+          }
+        ]
+      }
+    ],
+    "details": [],
+    "reviews": []
+  },
+  {
     "id": 101,
     "name": "Kundan Necklace Set",
     "category": "Necklaces",
@@ -158,201 +226,6 @@
         ]
       }
     ]
-  },
-  {
-    "id": 90,
-    "name": "Royal Kundan & Pearl Bridal Choker Set with Maang Tikka",
-    "description": "Exquisitely handcrafted Royal Kundan & Pearl Bridal Choker Set with Maang Tikka by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
-    "sizes": [
-      {
-        "size": "Standard",
-        "price": 2499
-      }
-    ],
-    "color": "Kundan",
-    "images": [
-      "/images/jewelry_sets.png"
-    ],
-    "image_url": "/images/jewelry_sets.png",
-    "category": "Jewelry Sets",
-    "model": null,
-    "is_active": true,
-    "is_bestseller": false,
-    "is_trending": false,
-    "is_offer": false,
-    "created_at": "2026-07-22T19:44:27.273Z",
-    "is_festive": false,
-    "offer_id": null,
-    "product_code": "RING-001",
-    "variants": [
-      {
-        "code": "RING02",
-        "color": "Gold",
-        "sizes": [
-          {
-            "mrp": 3499,
-            "code": "1",
-            "size": "3.2",
-            "stock": 30,
-            "our_price": 2499
-          },
-          {
-            "mrp": 3499,
-            "code": "2",
-            "size": "3.3",
-            "notes": "hello",
-            "stock": 27,
-            "our_price": 2499
-          }
-        ],
-        "images": [
-          "/images/jewelry_sets.png"
-        ],
-        "instagram_link": "https://www.instagram.com/p/Db4YZ1Lt07H/"
-      },
-      {
-        "code": "RING01",
-        "color": "Silver",
-        "sizes": [
-          {
-            "mrp": 3499,
-            "code": "3",
-            "size": "2.23",
-            "stock": 27,
-            "our_price": 2499
-          },
-          {
-            "mrp": 3499,
-            "code": "4",
-            "size": "3.23",
-            "stock": 28,
-            "our_price": 2499
-          }
-        ],
-        "images": [
-          "/images/jewelry_sets.png"
-        ]
-      }
-    ],
-    "reviews": [],
-    "details": [
-      {
-        "label": "Category",
-        "value": "Complete Imitation Bridal/Festive Set"
-      },
-      {
-        "label": "Base Metal",
-        "value": "Jeweler-Grade Brass & Copper Alloy"
-      },
-      {
-        "label": "Plating",
-        "value": "22k Gold & Antique Matte Micro Polish"
-      },
-      {
-        "label": "Stone Type",
-        "value": "Hand-Set Kundan, Pearls & CZ Crystals"
-      },
-      {
-        "label": "Lock / Closure",
-        "value": "Adjustable Silk Dori & Secure Ear Posts"
-      },
-      {
-        "label": "Skin Friendly",
-        "value": "100% Lead-Free, Nickel-Free & Hypoallergenic"
-      },
-      {
-        "label": "Finish",
-        "value": "Anti-Tarnish & Sweat Resistant"
-      },
-      {
-        "label": "Care Instructions",
-        "value": "Store in dry airtight pouch. Keep away from direct water, alcohol sprays & perfumes."
-      }
-    ],
-    "allow_reviews": true,
-    "instagram_reel_url": null
-  },
-  {
-    "id": 89,
-    "name": "Antique Matte Gold Temple Jewelry Bridal Full Set",
-    "description": "Exquisitely handcrafted Antique Matte Gold Temple Jewelry Bridal Full Set by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
-    "sizes": [
-      {
-        "size": "Standard",
-        "price": 2699
-      }
-    ],
-    "color": "Diamond",
-    "images": [
-      "/images/jewelry_sets.png"
-    ],
-    "image_url": "/images/jewelry_sets.png",
-    "category": "Jewelry Sets",
-    "model": null,
-    "is_active": true,
-    "is_bestseller": false,
-    "is_trending": false,
-    "is_offer": false,
-    "created_at": "2026-07-22T19:44:27.013Z",
-    "is_festive": false,
-    "offer_id": null,
-    "product_code": null,
-    "variants": [
-      {
-        "color": "Diamond",
-        "sizes": [
-          {
-            "mrp": 3699,
-            "code": "RING02",
-            "size": "Standard",
-            "stock": 1,
-            "our_price": 2699
-          }
-        ],
-        "images": [
-          "/images/jewelry_sets.png"
-        ]
-      }
-    ],
-    "reviews": [],
-    "details": [
-      {
-        "label": "Category",
-        "value": "Complete Imitation Bridal/Festive Set"
-      },
-      {
-        "label": "Base Metal",
-        "value": "Jeweler-Grade Brass & Copper Alloy"
-      },
-      {
-        "label": "Plating",
-        "value": "22k Gold & Antique Matte Micro Polish"
-      },
-      {
-        "label": "Stone Type",
-        "value": "Hand-Set Kundan, Pearls & CZ Crystals"
-      },
-      {
-        "label": "Lock / Closure",
-        "value": "Adjustable Silk Dori & Secure Ear Posts"
-      },
-      {
-        "label": "Skin Friendly",
-        "value": "100% Lead-Free, Nickel-Free & Hypoallergenic"
-      },
-      {
-        "label": "Finish",
-        "value": "Anti-Tarnish & Sweat Resistant"
-      },
-      {
-        "label": "Care Instructions",
-        "value": "Store in dry airtight pouch. Keep away from direct water, alcohol sprays & perfumes."
-      }
-    ],
-    "allow_reviews": true,
-    "instagram_reel_url": null
   },
   {
     "id": 88,

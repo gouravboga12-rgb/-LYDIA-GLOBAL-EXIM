@@ -44,32 +44,26 @@ export function AdminProductsPage() {
 
   const fetchData = async () => {
     try {
-      const token = localStorage.getItem("token");
-      const h = token ? { Authorization: `Bearer ${token}` } : {};
-      const [prodRes, catRes, offerRes] = await Promise.all([
-        fetch(`${BACKEND_URL}/admin/products`, { headers: h }).catch(() => null),
-        fetch(`${BACKEND_URL}/admin/categories`, { headers: h }).catch(() => null),
-        fetch(`${BACKEND_URL}/admin/offers`, { headers: h }).catch(() => null)
+      const [sbProds, sbCats, sbOffers] = await Promise.all([
+        supabase.from('products').select('*').order('id', { ascending: false }),
+        supabase.from('categories').select('*').order('id', { ascending: true }),
+        supabase.from('offers').select('*').order('id', { ascending: true })
       ]);
-      
-      const prodData = prodRes ? await prodRes.json().catch(() => ({})) : {};
-      const catData = catRes ? await catRes.json().catch(() => ({})) : {};
-      const offerData = offerRes ? await offerRes.json().catch(() => ({})) : {};
-      
-      if (prodData && prodData.products && prodData.products.length > 0) {
-        setProducts(prodData.products);
+
+      if (sbProds.data && sbProds.data.length > 0) {
+        setProducts(sbProds.data);
       } else {
         setProducts(defaultProducts || []);
       }
 
-      if (catData && catData.categories && catData.categories.length > 0) {
-        setCategories(catData.categories);
+      if (sbCats.data && sbCats.data.length > 0) {
+        setCategories(sbCats.data);
       } else {
         setCategories(defaultCategories || []);
       }
 
-      if (offerData && offerData.offers && offerData.offers.length > 0) {
-        setOffers(offerData.offers);
+      if (sbOffers.data && sbOffers.data.length > 0) {
+        setOffers(sbOffers.data);
       } else {
         setOffers(defaultOffers || []);
       }
@@ -102,7 +96,7 @@ export function AdminProductsPage() {
       }
     } catch (err) {
       console.error(err);
-      alert("Cloudinary upload error");
+      alert("Image upload error: " + err.message);
     } finally {
       setUploading(false);
     }
@@ -115,85 +109,125 @@ export function AdminProductsPage() {
   };
 
   const handleAdd = () => {
-    setFormData(initialFormData);
+    setFormData({
+      name: "",
+      category: categories[0]?.name || "Necklaces",
+      model: "",
+      description: "",
+      product_code: "",
+      instagram_reel_url: "",
+      is_active: true,
+      allow_reviews: true,
+      variants: [
+        {
+          color: "Gold",
+          instagram_link: "",
+          images: [],
+          sizes: [{ size: "Standard", mrp: "", our_price: "", stock: 10, stock_delta: "", code: "", weight: "", offer_id: "", notes: "" }]
+        }
+      ],
+      details: [],
+      reviews: []
+    });
     setEditProduct({});
     setIsNew(true);
   };
 
   const handleEdit = (product) => {
-    // Handle backwards compatibility for old products
     let variants = product.variants;
     if (!variants || variants.length === 0) {
       const images = Array.isArray(product.images) && product.images.length > 0 
         ? product.images 
         : (product.image_url ? [product.image_url] : []);
-      // migrate old size format
       const sizes = product.sizes ? product.sizes.map(s => ({
-         size: s.size,
-         mrp: s.price, 
-         our_price: s.price,
-         stock: s.stock || 0
-      })) : [];
+         size: s.size || "Standard",
+         mrp: s.mrp || s.price || 0, 
+         our_price: s.our_price || s.price || 0,
+         stock: s.stock || 0,
+         code: s.sku || s.code || product.sku || product.product_code || "",
+         weight: s.weight || "",
+         offer_id: s.offer_id || "",
+         notes: s.notes || ""
+      })) : [{ size: "Standard", mrp: product.mrp || product.price || 0, our_price: product.price || 0, stock: product.stock || 10, code: product.sku || product.product_code || "" }];
       
       variants = [{
-        color: product.color || "",
+        color: product.color || "Gold",
+        instagram_link: product.instagram_reel_url || "",
         images: images,
         sizes: sizes
       }];
+    } else {
+      variants = variants.map(v => ({
+        color: v.color || "Gold",
+        instagram_link: v.instagram_link || "",
+        images: Array.isArray(v.images) ? v.images : (v.image_url ? [v.image_url] : []),
+        sizes: Array.isArray(v.sizes) && v.sizes.length > 0 ? v.sizes.map(s => ({
+          size: s.size || "Standard",
+          mrp: s.mrp ?? s.price ?? 0,
+          our_price: s.our_price ?? s.price ?? 0,
+          stock: s.stock ?? 0,
+          code: s.code || s.sku || product.sku || product.product_code || "",
+          weight: s.weight || "",
+          offer_id: s.offer_id || "",
+          notes: s.notes || ""
+        })) : [{ size: "Standard", mrp: 0, our_price: 0, stock: 10, code: product.sku || product.product_code || "" }]
+      }));
     }
 
     setFormData({ 
-      ...product, 
-      model: product.model || "", 
+      name: product.name || "",
+      category: product.category || (categories[0]?.name || "Necklaces"),
+      model: product.model || "",
+      description: product.description || "",
+      product_code: product.sku || product.product_code || "",
       instagram_reel_url: product.instagram_reel_url || "",
+      is_active: product.is_active !== false,
+      allow_reviews: product.allow_reviews ?? true,
       variants: variants,
       details: product.details || [],
-      reviews: product.reviews || [],
-      allow_reviews: product.allow_reviews ?? true
+      reviews: product.reviews || []
     });
+
     setEditProduct(product);
     setIsNew(false);
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete product? This will also remove its media from Cloudinary and database.")) return;
+    if (!confirm("Delete this product? This will remove it from the store globally.")) return;
     try {
-      const productToDelete = products.find(p => String(p.id) === String(id));
-      if (productToDelete) {
-        // Collect all image URLs for storage cleanup in Cloudinary
-        const imagesToPurge = [];
-        if (productToDelete.image_url) imagesToPurge.push(productToDelete.image_url);
-        if (Array.isArray(productToDelete.images)) imagesToPurge.push(...productToDelete.images);
-        if (Array.isArray(productToDelete.variants)) {
-          productToDelete.variants.forEach(v => {
-            if (Array.isArray(v.images)) imagesToPurge.push(...v.images);
+      const prodToDelete = products.find(p => String(p.id) === String(id));
+      if (prodToDelete) {
+        const toDeleteImages = [];
+        if (prodToDelete.image_url) toDeleteImages.push(prodToDelete.image_url);
+        if (Array.isArray(prodToDelete.images)) toDeleteImages.push(...prodToDelete.images);
+        if (Array.isArray(prodToDelete.variants)) {
+          prodToDelete.variants.forEach(v => {
+            if (Array.isArray(v.images)) toDeleteImages.push(...v.images);
           });
         }
-        for (const imgUrl of imagesToPurge) {
+        for (const imgUrl of toDeleteImages) {
           if (imgUrl && typeof imgUrl === 'string' && imgUrl.includes('cloudinary.com')) {
-            await deleteFromCloudinary(imgUrl);
+            await deleteFromCloudinary(imgUrl).catch(() => null);
           }
         }
       }
 
       // 1. Delete from Supabase
-      try {
-        await supabase.from('products').delete().eq('id', id);
-      } catch (sbErr) {
-        console.warn("Supabase direct delete note:", sbErr);
+      const numId = Number(id);
+      if (!isNaN(numId)) {
+        const { error: sbErr } = await supabase.from('products').delete().eq('id', numId);
+        if (sbErr) console.warn("Supabase direct delete note:", sbErr);
+      } else {
+        await supabase.from('products').delete().eq('id', id).catch(() => null);
       }
 
-      // 2. Delete from Backend REST
+      // 2. Delete from Backend REST (if available)
       const token = localStorage.getItem("token");
-      const delRes = await fetch(`${BACKEND_URL}/admin/products/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
-      if (!delRes.ok) {
-        const errData = await delRes.json().catch(() => ({}));
-        throw new Error(errData.error || delRes.statusText);
-      }
+      await fetch(`${BACKEND_URL}/admin/products/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
 
       // 3. Refresh local Admin view & Global Storefront Store
       await fetchData();
-      useStoreData.getState().fetchData();
+      await useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
       alert("Error deleting product: " + err.message);
@@ -203,9 +237,17 @@ export function AdminProductsPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const token = localStorage.getItem("token");
-      const url = isNew ? `${BACKEND_URL}/admin/products` : `${BACKEND_URL}/admin/products/${editProduct.id}`;
-      
+      if (!formData.name.trim()) {
+        alert("Please enter a product name");
+        setSaving(false);
+        return;
+      }
+      if (!formData.category) {
+        alert("Please select a category");
+        setSaving(false);
+        return;
+      }
+
       const payload = { ...formData };
 
       // Check if any old images were removed during editing to purge from Cloudinary
@@ -230,45 +272,51 @@ export function AdminProductsPage() {
 
         for (const oldImg of oldImages) {
           if (oldImg && typeof oldImg === 'string' && oldImg.includes('cloudinary.com') && !newImages.has(oldImg)) {
-            await deleteFromCloudinary(oldImg);
+            await deleteFromCloudinary(oldImg).catch(() => null);
           }
         }
       }
 
-      // 1. Sync directly to Supabase
-      try {
-        const supabasePayload = {
-          ...(isNew ? {} : { id: editProduct.id }),
-          name: payload.name,
-          category: payload.category,
-          description: payload.description || '',
-          image_url: (payload.variants && payload.variants[0]?.images?.[0]) || payload.image_url || '',
-          images: (payload.variants && payload.variants[0]?.images) || payload.images || [],
-          variants: payload.variants || [],
-          sizes: payload.variants?.[0]?.sizes || payload.sizes || [],
-          model: payload.model || '',
-          sku: payload.product_code || payload.sku || '',
-          rating: payload.rating || 4.8
-        };
-        await supabase.from('products').upsert(supabasePayload);
-      } catch (sbErr) {
-        console.warn("Supabase direct save note:", sbErr);
+      const primaryImage = (payload.variants && payload.variants[0]?.images?.[0]) || payload.image_url || '';
+      const allImages = (payload.variants && payload.variants[0]?.images) || payload.images || [];
+
+      // 1. Sync directly to Supabase Cloud DB
+      const supabasePayload = {
+        name: payload.name.trim(),
+        category: payload.category,
+        description: payload.description || '',
+        image_url: primaryImage,
+        images: allImages,
+        variants: payload.variants || [],
+        sizes: payload.variants?.[0]?.sizes || payload.sizes || [],
+        model: payload.model || '',
+        sku: payload.product_code || payload.sku || '',
+        rating: payload.rating || 4.8
+      };
+
+      if (isNew) {
+        const { error: sbErr } = await supabase.from('products').insert([supabasePayload]);
+        if (sbErr) console.warn("Supabase product insert note:", sbErr);
+      } else {
+        const numId = Number(editProduct.id);
+        const { error: sbErr } = await supabase.from('products').update(supabasePayload).eq('id', !isNaN(numId) ? numId : editProduct.id);
+        if (sbErr) console.warn("Supabase product update note:", sbErr);
       }
 
-      // 2. Save via Backend REST API
-      const res = await fetch(url, {
+      // 2. Save via Backend REST API (if available)
+      const token = localStorage.getItem("token");
+      const url = isNew ? `${BACKEND_URL}/admin/products` : `${BACKEND_URL}/admin/products/${editProduct.id}`;
+      await fetch(url, {
         method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify(payload),
-      });
-      const data = await res.json();
-      if (!res.ok) { alert('Save failed: ' + (data.error || res.status)); return; }
+      }).catch(() => null);
 
       setEditProduct(null);
       await fetchData();
 
       // 3. Update global website storefront store in real time
-      useStoreData.getState().fetchData();
+      await useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
       alert("Error saving product: " + err.message);
@@ -276,6 +324,7 @@ export function AdminProductsPage() {
       setSaving(false);
     }
   };
+
 
   const addVariant = () => {
     setFormData({ ...formData, variants: [...formData.variants, { color: "", instagram_link: "", images: [], sizes: [{ size: "", mrp: "", our_price: "", stock: 0, stock_delta: "", code: "", weight: "", offer_id: "", notes: "" }] }] });

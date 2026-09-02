@@ -117,7 +117,7 @@ export function AdminBannersPage() {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete banner? This will also remove the image from Cloudinary.")) return;
+    if (!confirm("Delete banner? This will update the database and website globally.")) return;
     try {
       const bannerToDelete = banners.find(b => String(b.id) === String(id));
       if (bannerToDelete && bannerToDelete.image_url && bannerToDelete.image_url.includes('cloudinary.com')) {
@@ -125,18 +125,20 @@ export function AdminBannersPage() {
       }
 
       // 1. Delete from Supabase
-      try {
-        await supabase.from('banners').delete().eq('id', id);
-      } catch (sbErr) {
-        console.warn("Supabase banner delete note:", sbErr);
+      const numId = Number(id);
+      if (!isNaN(numId)) {
+        const { error: sbErr } = await supabase.from('banners').delete().eq('id', numId);
+        if (sbErr) console.warn("Supabase banner delete note:", sbErr);
+      } else {
+        await supabase.from('banners').delete().eq('id', id).catch(() => null);
       }
 
-      // 2. Delete from Backend REST
+      // 2. Delete from Backend REST (if available)
       const token = localStorage.getItem("token");
-      await fetch(`${BACKEND_URL}/admin/banners/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } });
+      await fetch(`${BACKEND_URL}/admin/banners/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
 
       await fetchBanners();
-      useStoreData.getState().fetchData();
+      await useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
       alert("Error deleting banner: " + err.message);
@@ -146,6 +148,12 @@ export function AdminBannersPage() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      if (!formData.image_url) {
+        alert("Please upload or provide a banner image");
+        setSaving(false);
+        return;
+      }
+
       // Check if image was replaced to purge old image from Cloudinary
       if (!isNew && editBanner && editBanner.image_url && editBanner.image_url !== formData.image_url) {
         if (editBanner.image_url.includes('cloudinary.com')) {
@@ -167,32 +175,32 @@ export function AdminBannersPage() {
         active: formData.is_active ?? true
       };
 
-      // 1. Sync with Supabase
-      try {
-        await supabase.from('banners').upsert({
-          ...(isNew ? {} : { id: editBanner.id }),
-          ...payload
-        });
-      } catch (sbErr) {
-        console.warn("Supabase banner save note:", sbErr);
+      // 1. Sync with Supabase Cloud DB
+      if (isNew) {
+        const { error: sbErr } = await supabase.from('banners').insert([payload]);
+        if (sbErr) console.warn("Supabase banner insert note:", sbErr);
+      } else {
+        const numId = Number(editBanner.id);
+        const { error: sbErr } = await supabase.from('banners').update(payload).eq('id', !isNaN(numId) ? numId : editBanner.id);
+        if (sbErr) console.warn("Supabase banner update note:", sbErr);
       }
 
-      // 2. Save via Backend REST
+      // 2. Save via Backend REST (if available)
       const token = localStorage.getItem("token");
-      const url = `${BACKEND_URL}/admin/banners`;
+      const url = isNew ? `${BACKEND_URL}/admin/banners` : `${BACKEND_URL}/admin/banners/${editBanner.id}`;
       await fetch(url, {
-        method: "POST",
+        method: isNew ? "POST" : "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({
           ...(isNew ? {} : { id: editBanner.id }),
           ...payload,
           is_active: payload.active
         }),
-      });
+      }).catch(() => null);
 
       setEditBanner(null);
       await fetchBanners();
-      useStoreData.getState().fetchData();
+      await useStoreData.getState().fetchData();
     } catch (err) {
       console.error(err);
       alert("Error saving banner: " + err.message);
@@ -200,6 +208,7 @@ export function AdminBannersPage() {
       setSaving(false);
     }
   };
+
 
   const handleImageUpload = async (e) => {
     const file = e.target.files[0];
