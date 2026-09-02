@@ -50,5 +50,18 @@
     "link_url": "/category/all",
     "active": true,
     "is_active": true
+  },
+  {
+    "id": 1788387980955,
+    "active": true,
+    "tag": "Exclusive Collection",
+    "titleLine1": "TEST",
+    "titleLine2": "",
+    "title": "TEST",
+    "subtitle": "TEST",
+    "btn_text": "SHOP NOW",
+    "image_url": "https://res.cloudinary.com/n5l3h5gf/image/upload/v1788387959/upolfmkmfbxlubxnocgd.jpg",
+    "link_url": "/category/7",
+    "is_active": true
   }
 ]

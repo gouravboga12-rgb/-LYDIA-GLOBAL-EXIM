@@ -131,19 +131,8 @@ export function CartPage() {
       return;
     }
 
-    // If pickup is disabled by admin, go directly to checkout with shipping
-    if (!pickupEnabled) {
-      navigate('/checkout', { state: { couponCode, orderType: 'shipping' } });
-      return;
-    }
-
-    // Show popup modal for choosing delivery method
-    setShowDeliveryModal(true);
-  };
-
-  const handleDeliveryChoice = (type) => {
-    setShowDeliveryModal(false);
-    navigate('/checkout', { state: { couponCode, orderType: type } });
+    // Navigate directly to checkout with shipping
+    navigate('/checkout', { state: { couponCode, orderType: 'shipping' } });
   };
 
   const subtotal = getSubtotal();
@@ -311,42 +300,6 @@ export function CartPage() {
               <span className="w-1 h-1 bg-brand-gold rounded-full mx-1 opacity-50" />
               
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Delivery Method Modal */}
-      {showDeliveryModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-[70] p-4">
-          <div className="bg-white rounded-2xl w-full max-w-sm shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-              <h2 className="font-serif text-lg font-bold text-brand-dark-blue">How would you like to receive your order?</h2>
-              <button onClick={() => setShowDeliveryModal(false)} className="text-gray-400 hover:text-gray-700">
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-            <div className="p-5 space-y-3">
-              <button onClick={() => handleDeliveryChoice('pickup')}
-                className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-brand-dark-blue/10 hover:border-brand-dark-blue hover:bg-brand-dark-blue/5 transition-all text-left group">
-                <div className="w-12 h-12 bg-brand-gold/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-brand-gold/20 transition-colors">
-                  <Store className="w-6 h-6 text-brand-dark-blue" />
-                </div>
-                <div>
-                  <p className="font-bold text-brand-dark-blue">Store Pickup</p>
-                  <p className="text-xs text-brand-dark-blue/60 mt-0.5">2965 FM1385, Aubrey, TX 76227 • No shipping fee</p>
-                </div>
-              </button>
-              <button onClick={() => handleDeliveryChoice('shipping')}
-                className="w-full flex items-center gap-4 p-4 rounded-xl border-2 border-brand-dark-blue/10 hover:border-brand-dark-blue hover:bg-brand-dark-blue/5 transition-all text-left group">
-                <div className="w-12 h-12 bg-brand-gold/10 rounded-xl flex items-center justify-center shrink-0 group-hover:bg-brand-gold/20 transition-colors">
-                  <Truck className="w-6 h-6 text-brand-dark-blue" />
-                </div>
-                <div>
-                  <p className="font-bold text-brand-dark-blue">Shipping</p>
-                  <p className="text-xs text-brand-dark-blue/60 mt-0.5">Shipped to your address • Shipping fee applies</p>
-                </div>
-              </button>
-            </div>
           </div>
         </div>
       )}

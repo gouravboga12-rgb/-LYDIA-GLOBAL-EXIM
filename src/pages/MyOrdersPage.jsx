@@ -8,17 +8,18 @@ import { supabase } from '../utils/supabase';
 import logoUrl from '../assets/logo.png';
 
 const STATUS_COLORS = {
-  pending: 'bg-yellow-100 text-yellow-700 border-yellow-200',
-  processing: 'bg-blue-100 text-blue-700 border-blue-200',
-  shipped: 'bg-purple-100 text-purple-700 border-purple-200',
-  delivered: 'bg-green-100 text-green-700 border-green-200',
-  'ready for pickup': 'bg-orange-100 text-orange-700 border-orange-200',
-  'pickup completed': 'bg-green-100 text-green-700 border-green-200',
-  cancelled: 'bg-red-100 text-red-700 border-red-200',
+  received: 'bg-amber-100 text-amber-800 border-amber-200',
+  pending: 'bg-amber-100 text-amber-800 border-amber-200',
+  'under processing': 'bg-blue-100 text-blue-800 border-blue-200',
+  processing: 'bg-blue-100 text-blue-800 border-blue-200',
+  dispatched: 'bg-purple-100 text-purple-800 border-purple-200',
+  shipped: 'bg-purple-100 text-purple-800 border-purple-200',
+  'out for delivery': 'bg-indigo-100 text-indigo-800 border-indigo-200',
+  delivered: 'bg-emerald-100 text-emerald-800 border-emerald-200',
+  cancelled: 'bg-red-100 text-red-800 border-red-200',
 };
 
-const SHIPPING_STEPS = ['pending', 'processing', 'shipped', 'delivered'];
-const PICKUP_STEPS = ['pending', 'processing', 'ready for pickup', 'pickup completed'];
+const STATUS_STEPS = ['Received', 'Under Processing', 'Dispatched', 'Out for Delivery', 'Delivered'];
 
 export function MyOrdersPage() {
   const navigate = useNavigate();
@@ -377,78 +378,91 @@ export function MyOrdersPage() {
                       {order.order_type === 'pickup' ? <Store className="w-3 h-3" /> : <Truck className="w-3 h-3" />}
                       {order.order_type === 'pickup' ? 'Pickup' : 'Delivery'}
                     </span>
-                    <span className={`text-xs font-bold px-4 py-1.5 rounded-full border capitalize shadow-sm ${STATUS_COLORS[order.status] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
+                    <span className={`text-xs font-bold px-4 py-1.5 rounded-full border capitalize shadow-sm ${STATUS_COLORS[order.status.toLowerCase()] || 'bg-gray-100 text-gray-600 border-gray-200'}`}>
                       {order.status}
                     </span>
                     {order.payment_method === 'cod' && !order.stripe_payment_intent_id && (
                       <span className="text-xs font-bold px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm">
-                        Balance (${order.total - (order.advance_paid || 0)} pending)
+                        Balance (₹{Number(order.total - (order.advance_paid || 0)).toLocaleString('en-IN', { minimumFractionDigits: 2 })} pending)
                       </span>
                     )}
-                    <p className="text-lg font-bold text-[#D4AF37]">${Number(order.total).toLocaleString('en-IN')}</p>
+                    <p className="text-lg font-bold text-[#45055B]">₹{Number(order.total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
                   </div>
                 </div>
 
                 {/* Progress Bar */}
-                {order.status !== 'cancelled' && (
+                {order.status.toLowerCase() !== 'cancelled' && (
                   <div className="px-6 py-6 border-b border-gray-100 bg-white">
                     <div className="max-w-2xl mx-auto">
                       <div className="flex items-center justify-between mb-2">
-                        {STATUS_STEPS.map((step, i) => (
-                          <div key={step} className="flex flex-col items-center flex-1 relative">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all z-10 ${
-                              i <= stepIdx ? 'bg-[#45055B] border-[#45055B] text-white shadow-md' : 'bg-white border-gray-200 text-gray-400'
-                            }`}>
-                              {i < stepIdx ? '✓' : i + 1}
+                        {STATUS_STEPS.map((step, i) => {
+                          const normalizedStatus = (order.status || '').toLowerCase();
+                          const stepNormalized = step.toLowerCase();
+                          let stepIdx = 0;
+                          if (normalizedStatus.includes('processing')) stepIdx = 1;
+                          else if (normalizedStatus.includes('dispatch') || normalizedStatus.includes('shipped')) stepIdx = 2;
+                          else if (normalizedStatus.includes('out for delivery') || normalizedStatus.includes('near')) stepIdx = 3;
+                          else if (normalizedStatus.includes('deliver')) stepIdx = 4;
+
+                          return (
+                            <div key={step} className="flex flex-col items-center flex-1 relative">
+                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all z-10 ${
+                                i <= stepIdx ? 'bg-[#45055B] border-[#45055B] text-white shadow-md' : 'bg-white border-gray-200 text-gray-400'
+                              }`}>
+                                {i < stepIdx ? '✓' : i + 1}
+                              </div>
+                              {i < STATUS_STEPS.length - 1 && (
+                                <div className={`absolute top-4 left-1/2 w-full h-0.5 -z-0 ${i < stepIdx ? 'bg-[#45055B]' : 'bg-gray-200'}`} />
+                              )}
                             </div>
-                            {i < STATUS_STEPS.length - 1 && (
-                              <div className={`absolute top-4 left-1/2 w-full h-0.5 -z-0 ${i < stepIdx ? 'bg-[#45055B]' : 'bg-gray-200'}`} />
-                            )}
-                          </div>
-                        ))}
+                          );
+                        })}
                       </div>
                       <div className="flex items-center mt-2">
-                        {STATUS_STEPS.map((step, i) => (
-                          <span key={step} className={`text-[10px] sm:text-xs font-bold capitalize flex-1 text-center ${i <= stepIdx ? 'text-[#45055B]' : 'text-gray-400'}`}>
-                            {step}
-                          </span>
-                        ))}
+                        {STATUS_STEPS.map((step, i) => {
+                          const normalizedStatus = (order.status || '').toLowerCase();
+                          let stepIdx = 0;
+                          if (normalizedStatus.includes('processing')) stepIdx = 1;
+                          else if (normalizedStatus.includes('dispatch') || normalizedStatus.includes('shipped')) stepIdx = 2;
+                          else if (normalizedStatus.includes('out for delivery') || normalizedStatus.includes('near')) stepIdx = 3;
+                          else if (normalizedStatus.includes('deliver')) stepIdx = 4;
+
+                          return (
+                            <span key={step} className={`text-[10px] sm:text-xs font-bold capitalize flex-1 text-center ${i <= stepIdx ? 'text-[#45055B]' : 'text-gray-400'}`}>
+                              {step}
+                            </span>
+                          );
+                        })}
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Pickup Info Banner */}
-                {order.order_type === 'pickup' && (
-                  <div className="mx-6 mb-4 space-y-3">
-                    {/* Notification */}
-                    <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 space-y-3">
-                      <div className="flex items-start gap-3">
-                        <MessageCircle className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                        <p className="text-xs text-blue-700 leading-relaxed">
-                          Once your order is ready, our team will message you for pickup via <strong>WhatsApp/Text</strong> from <strong>+91 9014863411</strong>
+                {/* Courier Tracking Details Banner */}
+                {(order.tracking_id || order.tracking_link || order.tracking_number || order.tracking_url) && (
+                  <div className="mx-6 my-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                    <div className="flex items-start sm:items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#45055B] text-[#D4AF37] flex items-center justify-center shrink-0 shadow-xs">
+                        <Truck className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="text-xs font-bold text-[#45055B]">Shipment Tracking Active</p>
+                        <p className="text-xs text-purple-900 mt-0.5">
+                          AWB / Tracking Number: <strong className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-purple-200 text-[#45055B]">{order.tracking_id || order.tracking_number || 'N/A'}</strong>
                         </p>
                       </div>
-                      <div className="flex items-start gap-3 border-t border-blue-200 pt-3">
-                        <MapPin className="w-4 h-4 text-blue-600 shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-xs font-bold text-blue-800">Pickup Location</p>
-                          <p className="text-xs text-blue-700">2965 FM1385, Aubrey, TX 76227</p>
-                          <a href="https://maps.google.com/?q=2965+FM1385,+Aubrey,+TX+76227" target="_blank" rel="noopener noreferrer"
-                            className="text-xs text-blue-600 font-bold underline hover:text-blue-800">View on Google Maps →</a>
-                        </div>
-                      </div>
                     </div>
-                    {/* Pickup T&C */}
-                    <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
-                      <p className="text-[10px] font-bold text-amber-700 uppercase tracking-wider mb-2">⚠️ Pickup Terms & Conditions</p>
-                      <ul className="space-y-1.5 text-xs text-amber-800 leading-relaxed list-none">
-                        <li className="flex items-start gap-2"><span className="shrink-0 mt-0.5">•</span><span>Please inspect your item(s) carefully at the time of pickup before leaving the store.</span></li>
-                        <li className="flex items-start gap-2"><span className="shrink-0 mt-0.5">•</span><span><strong>Any damage must be reported within 1–2 business days</strong> of pickup. Claims made after this window cannot be accepted.</span></li>
-                        <li className="flex items-start gap-2"><span className="shrink-0 mt-0.5">•</span><span>Bring a valid photo ID and your order confirmation when picking up.</span></li>
-                        <li className="flex items-start gap-2"><span className="shrink-0 mt-0.5">•</span><span>Orders not picked up within 7 days of the ready notification may be subject to restocking.</span></li>
-                      </ul>
-                    </div>
+                    {(order.tracking_link || order.tracking_url) && (
+                      <a
+                        href={order.tracking_link || order.tracking_url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 bg-[#45055B] hover:bg-[#5A0E72] text-[#D4AF37] text-xs font-bold px-4 py-2 rounded-xl transition-colors shrink-0 shadow-xs"
+                      >
+                        <span>Track Live Shipment</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    )}
                   </div>
                 )}
 
@@ -459,7 +473,7 @@ export function MyOrdersPage() {
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-4">
                       <div>
                         <p className="text-[10px] font-semibold text-red-500 uppercase">Refunded Amount</p>
-                        <p className="font-bold text-red-700 text-lg">${parseFloat(order.refund_amount || 0).toFixed(2)}</p>
+                        <p className="font-bold text-red-700 text-lg">₹{parseFloat(order.refund_amount || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
                       </div>
                       <div>
                         <p className="text-[10px] font-semibold text-red-500 uppercase">Transaction ID</p>
@@ -510,7 +524,7 @@ export function MyOrdersPage() {
                                 {item.size || item.variantSize || 'Standard'} • Cancelled Qty: {item.cancelQty || item.qty}
                               </p>
                               <div className="flex items-center gap-1.5 mt-1.5 line-through">
-                                <span className="text-xs font-bold text-gray-400">-${parseFloat(item.price || 0).toFixed(2)}</span>
+                                <span className="text-xs font-bold text-gray-400">-₹{parseFloat(item.price || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                               </div>
                             </div>
                           </div>
@@ -522,7 +536,7 @@ export function MyOrdersPage() {
                     {(() => {
                       let parsedItems = [];
                       try { parsedItems = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []); } catch(e) {}
-                      if (order.status === 'cancelled' && parsedItems.length > 0) return null; // If full cancel, active items are hidden
+                      if (order.status === 'cancelled' && parsedItems.length > 0) return null;
                       return parsedItems.map((item, i) => {
                         const variantColor = (item.variant?.color || '').toLowerCase().trim();
                         const matchedVariant = item.product?.variants?.find(v => (v.color || '').toLowerCase().trim() === variantColor);
@@ -557,10 +571,10 @@ export function MyOrdersPage() {
                                 <span className="text-xs text-[#D4AF37] font-bold bg-[#D4AF37]/10 px-2 py-0.5 rounded-md border border-[#D4AF37]/20">#{variantCode}</span>
                               )}
                             </div>
-                            <div className="flex items-center gap-1.5 mt-1.5">
-                              <span className="text-xs text-[#45055B]/50">${unitPrice.toFixed(2)} × {qty}</span>
+                            <div className="flex items-center gap-1.5 mt-1.5 font-sans">
+                              <span className="text-xs text-[#45055B]/50">₹{unitPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })} × {qty}</span>
                               <span className="text-xs text-[#45055B]/30">=</span>
-                              <span className="text-xs font-bold text-[#45055B]">${(unitPrice * qty).toFixed(2)}</span>
+                              <span className="text-xs font-bold text-[#45055B]">₹{(unitPrice * qty).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                             </div>
                           </div>
                         </div>
@@ -584,7 +598,7 @@ export function MyOrdersPage() {
                       <div className="px-4 py-2 bg-[#45055B]/5 border-b border-gray-100">
                         <p className="text-[10px] font-bold text-[#45055B]/50 uppercase tracking-wider">Price Summary</p>
                       </div>
-                      <div className="px-4 py-3 space-y-2 bg-white">
+                      <div className="px-4 py-3 space-y-2 bg-white font-sans">
                         {/* Per-item breakdown */}
                         {parsedItems.map((item, i) => {
                           const unitPrice = Number(item.variant?.price || item.product?.price || item.price || 0);
@@ -594,8 +608,8 @@ export function MyOrdersPage() {
                             <div key={i} className="flex justify-between text-xs text-[#45055B]/70">
                               <span className="truncate max-w-[60%]">{name}{qty > 1 ? ` ×${qty}` : ''}</span>
                               <span className="font-semibold shrink-0">
-                                {qty > 1 ? <span className="text-[#45055B]/40 mr-1">${unitPrice.toFixed(2)} ea</span> : null}
-                                ${(unitPrice * qty).toFixed(2)}
+                                {qty > 1 ? <span className="text-[#45055B]/40 mr-1">₹{unitPrice.toLocaleString('en-IN', { minimumFractionDigits: 2 })} ea</span> : null}
+                                ₹{(unitPrice * qty).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                               </span>
                             </div>
                           );
@@ -603,50 +617,30 @@ export function MyOrdersPage() {
                         <div className="border-t border-dashed border-gray-100 pt-2 mt-1 space-y-1.5">
                           <div className="flex justify-between text-xs text-[#45055B]/70">
                             <span>Item Total</span>
-                            <span className="font-semibold">${subtotal.toFixed(2)}</span>
+                            <span className="font-semibold">₹{subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                           </div>
                           {discount > 0 && (
                             <div className="flex justify-between text-xs text-green-600">
                               <span className="flex items-center gap-1"><Tag className="w-3 h-3" />{order.coupon_code ? `Discount (${order.coupon_code})` : 'Discount'}</span>
-                              <span className="font-semibold">-${discount.toFixed(2)}</span>
+                              <span className="font-semibold">-₹{discount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                             </div>
                           )}
                           {shipping > 0 && (
                             <div className="flex justify-between text-xs text-[#45055B]/70">
                               <span>Shipping Fee</span>
-                              <span className="font-semibold">${shipping.toFixed(2)}</span>
+                              <span className="font-semibold">₹{shipping.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                             </div>
                           )}
-                          {(() => {
-                            let addr = {};
-                            try { addr = typeof order.address === 'string' ? JSON.parse(order.address) : (order.address || {}); } catch(e) {}
-                            return (
-                              <>
-                                {addr.signature_fee > 0 && (
-                                  <div className="flex justify-between text-xs text-[#45055B]/70">
-                                    <span>Signature Confirmation</span>
-                                    <span className="font-semibold">${parseFloat(addr.signature_fee).toFixed(2)}</span>
-                                  </div>
-                                )}
-                                {addr.insurance_fee > 0 && (
-                                  <div className="flex justify-between text-xs text-[#45055B]/70">
-                                    <span>Shipping Insurance</span>
-                                    <span className="font-semibold">${parseFloat(addr.insurance_fee).toFixed(2)}</span>
-                                  </div>
-                                )}
-                              </>
-                            );
-                          })()}
                           {tax > 0 && (
                             <div className="flex justify-between text-xs text-[#45055B]/70">
                               <span>Tax{taxRate ? ` (${taxRate}%)` : ''}</span>
-                              <span className="font-semibold">${tax.toFixed(2)}</span>
+                              <span className="font-semibold">₹{tax.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                             </div>
                           )}
                         </div>
                         <div className="flex justify-between text-sm font-bold text-[#45055B] border-t border-gray-200 pt-2 mt-1">
                           <span>Grand Total</span>
-                          <span className="text-[#D4AF37]">${Number(order.total).toFixed(2)}</span>
+                          <span className="font-bold text-base text-[#45055B]">₹{Number(order.total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                         </div>
                         <p className="text-center text-[10px] text-[#45055B]/40 pt-1">🔒 100% Secure Transaction</p>
                       </div>
