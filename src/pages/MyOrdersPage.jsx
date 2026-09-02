@@ -27,8 +27,8 @@ export function MyOrdersPage() {
   const [userOrders, setUserOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const loadOrders = useCallback(async () => {
-    setLoading(true);
+  const loadOrders = useCallback(async (showSpinner = true) => {
+    if (showSpinner) setLoading(true);
     let list = [];
     try {
       const { data, error } = await supabase.from('orders').select('*').order('id', { ascending: false });
@@ -105,13 +105,22 @@ export function MyOrdersPage() {
 
     setUserOrders(normalized);
     setLoading(false);
-  }, [storeOrders, user]);
+  }, [storeOrders, user?.id, user?.email, user?.phone, user?.role]);
 
   useEffect(() => {
-    if (!token) { navigate('/login'); return; }
-    fetchProfile();
-    loadOrders();
-  }, [token, fetchProfile, loadOrders]);
+    if (!token) {
+      navigate('/login');
+      return;
+    }
+    fetchProfile().catch(() => null);
+    loadOrders(true);
+  }, [token]);
+
+  useEffect(() => {
+    if (token) {
+      loadOrders(false);
+    }
+  }, [user?.id, user?.email, user?.phone, storeOrders]);
 
   const escapeHtml = (value) =>
     String(value ?? "")
