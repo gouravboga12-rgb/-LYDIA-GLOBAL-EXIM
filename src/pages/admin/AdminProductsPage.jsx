@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Package, Plus, Trash2, Edit2, X, Save, Upload, Search, Film, Video, Image, Play, Sparkles, Tag, Layers } from "lucide-react";
+import { Package, Plus, Trash2, Edit2, X, Save, Upload, Search, Film, Video, Image, Play, Sparkles, Tag, Layers, Star, CheckCircle, AlertCircle } from "lucide-react";
 import { motion } from "framer-motion";
 import defaultProducts from "../../data/products.json";
 import defaultCategories from "../../data/categories.json";
