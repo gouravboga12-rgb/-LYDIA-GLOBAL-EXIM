@@ -3,6 +3,7 @@ import { ImageIcon, Plus, Trash2, Edit2, X, Save, Upload, Sparkles, ExternalLink
 import { motion } from "framer-motion";
 
 import defaultBanners from "../../data/banners.json";
+import defaultCategories from "../../data/categories.json";
 import { uploadToCloudinary, deleteFromCloudinary } from "../../utils/cloudinary";
 import { supabase } from "../../utils/supabase";
 import { useStoreData } from "../../store/useStoreData";
@@ -46,6 +47,8 @@ const EMPTY_FORM = {
 };
 
 export function AdminBannersPage() {
+  const { categories } = useStoreData();
+  const [categoriesList, setCategoriesList] = useState(categories && categories.length > 0 ? categories : defaultCategories || []);
   const [banners, setBanners] = useState(defaultBanners || []);
   const [loading, setLoading] = useState(true);
   const [editBanner, setEditBanner] = useState(null);
@@ -58,7 +61,37 @@ export function AdminBannersPage() {
 
   useEffect(() => {
     fetchBanners();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const { data, error } = await supabase.from('categories').select('*').order('id', { ascending: true });
+      if (!error && data && data.length > 0) {
+        setCategoriesList(data);
+        return;
+      }
+      if (categories && categories.length > 0) {
+        setCategoriesList(categories);
+      }
+    } catch (e) {
+      if (categories && categories.length > 0) {
+        setCategoriesList(categories);
+      }
+    }
+  };
+
+  const getCategoryLabel = (linkUrl) => {
+    if (!linkUrl || linkUrl === '/category/all') return 'All Categories';
+    if (linkUrl === '/sale' || linkUrl === '/offers') return 'Sale & Offers';
+    const match = String(linkUrl).match(/\/category\/([^/?#]+)/);
+    if (match) {
+      const catId = match[1];
+      const found = categoriesList.find(c => String(c.id) === String(catId) || c.name?.toLowerCase() === catId.toLowerCase());
+      if (found) return found.name;
+    }
+    return linkUrl;
+  };
 
   const fetchBanners = async () => {
     try {
@@ -340,7 +373,7 @@ export function AdminBannersPage() {
               {/* Banner Details Footer */}
               <div className="p-4 bg-[#FAF6F0]/30 border-t border-[#45055B]/10 flex items-center justify-between text-xs text-[#45055B]/70">
                 <span className="truncate max-w-[60%]">
-                  <span className="font-bold text-[#45055B]">Link:</span> {banner.link_url || "/category/all"}
+                  <span className="font-bold text-[#45055B]">Category:</span> {getCategoryLabel(banner.link_url)}
                 </span>
                 <span className={`font-semibold px-2 py-0.5 rounded-md ${isInactive ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-700'}`}>
                   {isInactive ? 'Hidden' : 'Live on Homepage'}
@@ -415,7 +448,7 @@ export function AdminBannersPage() {
                 />
               </div>
 
-              {/* Button Text & Target Link */}
+              {/* Button Text & Category Type */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="text-xs font-sans font-bold text-[#45055B] mb-1 block">Button Text</label>
@@ -428,14 +461,30 @@ export function AdminBannersPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs font-sans font-bold text-[#45055B] mb-1 block">Target Link URL</label>
-                  <input
-                    type="text"
+                  <label className="text-xs font-sans font-bold text-[#45055B] mb-1 block">Category Type</label>
+                  <select
                     value={formData.link_url}
                     onChange={(e) => setFormData({ ...formData, link_url: e.target.value })}
-                    placeholder="e.g. /category/all"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#45055B]/10 text-xs text-[#45055B] focus:outline-none focus:ring-2 focus:ring-[#45055B]/20"
-                  />
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#FAF6F0] border border-[#45055B]/10 text-xs text-[#45055B] font-semibold focus:outline-none focus:ring-2 focus:ring-[#45055B]/20 cursor-pointer"
+                  >
+                    <option value="/category/all">✨ All Categories (/category/all)</option>
+                    <optgroup label="Specific Categories">
+                      {categoriesList.map((cat) => (
+                        <option key={cat.id} value={`/category/${cat.id}`}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </optgroup>
+                    <optgroup label="Promotions & Sale">
+                      <option value="/sale">🏷️ Special Offers & Sale (/sale)</option>
+                    </optgroup>
+                    {formData.link_url && 
+                      formData.link_url !== '/category/all' && 
+                      formData.link_url !== '/sale' && 
+                      !categoriesList.some(c => `/category/${c.id}` === formData.link_url || `/category/${c.name?.toLowerCase()}` === formData.link_url) && (
+                        <option value={formData.link_url}>Custom Link: {formData.link_url}</option>
+                    )}
+                  </select>
                 </div>
               </div>
 
