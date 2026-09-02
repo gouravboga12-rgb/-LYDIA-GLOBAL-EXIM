@@ -378,43 +378,53 @@ export function AdminProductsPage() {
 
   const [togglingSkuId, setTogglingSkuId] = React.useState(null);
 
-  const handleQuickStockToggle = async (row) => {
+  const updateProductStock = async (row, newStock) => {
     setTogglingSkuId(row.skuId);
-    try {
-      const isCurrentlyInStock = Number(row.size.stock || 0) > 0;
-      const newStock = isCurrentlyInStock ? 0 : 10;
-      const targetProductId = row.product.id;
+    const targetProductId = row.product.id;
 
-      // 1. Calculate updated variants for this product
-      let variants = Array.isArray(row.product.variants) && row.product.variants.length > 0
-        ? JSON.parse(JSON.stringify(row.product.variants))
-        : [{
-            color: row.product.color || "Gold",
-            images: Array.isArray(row.product.images) ? row.product.images : (row.product.image_url ? [row.product.image_url] : []),
-            sizes: [{ size: "Standard", mrp: row.product.mrp || row.product.price || 0, our_price: row.product.price || 0, stock: newStock, code: row.product.sku || row.product.product_code || "" }]
-          }];
+    let variants = Array.isArray(row.product.variants) && row.product.variants.length > 0
+      ? JSON.parse(JSON.stringify(row.product.variants))
+      : [{
+          color: row.product.color || "Gold",
+          images: Array.isArray(row.product.images) ? row.product.images : (row.product.image_url ? [row.product.image_url] : []),
+          sizes: [{ size: "Standard", mrp: row.product.mrp || row.product.price || 0, our_price: row.product.price || 0, stock: newStock, code: row.product.sku || row.product.product_code || "" }]
+        }];
 
-      const vIdx = row.vIndex ?? 0;
-      const sIdx = row.sIndex ?? 0;
+    const vIdx = row.vIndex ?? 0;
+    const sIdx = row.sIndex ?? 0;
 
-      if (!variants[vIdx]) {
-        variants[vIdx] = {
-          color: row.variant?.color || "Gold",
-          images: [],
-          sizes: [{ size: "Standard", mrp: 0, our_price: 0, stock: newStock, code: "" }]
+    if (!variants[vIdx]) {
+      variants[vIdx] = {
+        color: row.variant?.color || "Gold",
+        images: [],
+        sizes: [{ size: "Standard", mrp: 0, our_price: 0, stock: newStock, code: "" }]
+      };
+    }
+
+    if (!Array.isArray(variants[vIdx].sizes) || variants[vIdx].sizes.length === 0) {
+      variants[vIdx].sizes = [{ size: "Standard", mrp: 0, our_price: 0, stock: newStock, code: "" }];
+    } else if (variants[vIdx].sizes[sIdx]) {
+      variants[vIdx].sizes[sIdx].stock = newStock;
+    } else {
+      variants[vIdx].sizes[0].stock = newStock;
+    }
+
+    // 1. Optimistically update local component state immediately
+    setProducts(prev => prev.map(p => {
+      if (p.id === targetProductId) {
+        return {
+          ...p,
+          variants: variants,
+          sizes: variants[0]?.sizes || [],
+          stock: newStock
         };
       }
+      return p;
+    }));
 
-      if (!Array.isArray(variants[vIdx].sizes) || variants[vIdx].sizes.length === 0) {
-        variants[vIdx].sizes = [{ size: "Standard", mrp: 0, our_price: 0, stock: newStock, code: "" }];
-      } else if (variants[vIdx].sizes[sIdx]) {
-        variants[vIdx].sizes[sIdx].stock = newStock;
-      } else {
-        variants[vIdx].sizes[0].stock = newStock;
-      }
-
-      // 2. Optimistically update local component state immediately
-      setProducts(prev => prev.map(p => {
+    // 2. Optimistically update global Zustand store
+    useStoreData.setState(state => ({
+      products: state.products.map(p => {
         if (p.id === targetProductId) {
           return {
             ...p,
@@ -424,24 +434,11 @@ export function AdminProductsPage() {
           };
         }
         return p;
-      }));
+      })
+    }));
 
-      // 3. Update global Zustand store optimistically
-      useStoreData.setState(state => ({
-        products: state.products.map(p => {
-          if (p.id === targetProductId) {
-            return {
-              ...p,
-              variants: variants,
-              sizes: variants[0]?.sizes || [],
-              stock: newStock
-            };
-          }
-          return p;
-        })
-      }));
-
-      // 4. Update Supabase
+    try {
+      // 3. Update Supabase
       const numId = Number(targetProductId);
       const supabaseId = !isNaN(numId) ? numId : targetProductId;
 
@@ -451,21 +448,40 @@ export function AdminProductsPage() {
         stock: newStock
       }).eq('id', supabaseId);
 
-      // 5. Update Backend REST API
+      // 4. Update Backend REST API
       const token = localStorage.getItem("token");
       await fetch(`${BACKEND_URL}/admin/products/${targetProductId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
         body: JSON.stringify({ ...row.product, variants, sizes: variants[0]?.sizes || [], stock: newStock })
       }).catch(() => null);
-
     } catch (err) {
-      console.error('Failed to toggle stock:', err);
+      console.error('Failed to update stock:', err);
       alert('Error updating stock: ' + err.message);
       await fetchData();
     } finally {
       setTogglingSkuId(null);
     }
+  };
+
+  const handleStockStatusChange = async (row, status) => {
+    const isCurrentlyInStock = Number(row.size.stock || 0) > 0;
+    if (status === 'out_of_stock') {
+      await updateProductStock(row, 0);
+    } else {
+      const prevQty = Number(row.size._prevStock || row.size.stock || 10);
+      await updateProductStock(row, prevQty > 0 ? prevQty : 10);
+    }
+  };
+
+  const handleStockQtyChange = async (row, qty) => {
+    const numQty = Math.max(0, parseInt(qty, 10) || 0);
+    await updateProductStock(row, numQty);
+  };
+
+  const handleQuickStockToggle = async (row) => {
+    const isCurrentlyInStock = Number(row.size.stock || 0) > 0;
+    await updateProductStock(row, isCurrentlyInStock ? 0 : 10);
   };
 
   const addVariant = () => {
@@ -746,27 +762,39 @@ export function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <button
-                        type="button"
-                        onClick={() => handleQuickStockToggle(row)}
-                        disabled={togglingSkuId === row.skuId}
-                        title="Click to toggle Available / Out of Stock"
-                        className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-2xs hover:scale-105 cursor-pointer border ${
-                          Number(row.size.stock || 0) > 0 
-                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100' 
-                            : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100'
-                        }`}
-                      >
-                        {togglingSkuId === row.skuId ? (
-                          <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
-                        ) : (
-                          <span className={`w-2 h-2 rounded-full ${Number(row.size.stock || 0) > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
+                      <div className="flex items-center gap-1.5">
+                        <select
+                          value={Number(row.size.stock || 0) > 0 ? "available" : "out_of_stock"}
+                          onChange={(e) => handleStockStatusChange(row, e.target.value)}
+                          disabled={togglingSkuId === row.skuId}
+                          className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border cursor-pointer focus:outline-none transition-colors shadow-2xs ${
+                            Number(row.size.stock || 0) > 0
+                              ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100'
+                              : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100'
+                          }`}
+                        >
+                          <option value="available">✓ Available</option>
+                          <option value="out_of_stock">✗ Out of Stock</option>
+                        </select>
+
+                        {Number(row.size.stock || 0) > 0 && (
+                          <div className="flex items-center gap-1">
+                            <input
+                              type="number"
+                              min="1"
+                              value={row.size.stock || 1}
+                              onChange={(e) => handleStockQtyChange(row, e.target.value)}
+                              disabled={togglingSkuId === row.skuId}
+                              title="Set Available Stock Quantity"
+                              className="w-14 px-1.5 py-1 bg-white border border-emerald-300 rounded-lg text-xs font-bold text-emerald-900 text-center focus:outline-none focus:ring-1 focus:ring-emerald-400"
+                            />
+                            <span className="text-[10px] text-gray-500 font-semibold">Qty</span>
+                          </div>
                         )}
-                        <span>{Number(row.size.stock || 0) > 0 ? `✓ Available (${row.size.stock})` : '✗ Out of Stock'}</span>
-                        <span className="text-[10px] text-gray-400 group-hover:text-gray-700 underline ml-1">
-                          {Number(row.size.stock || 0) > 0 ? 'Set OOS' : 'Set In Stock'}
-                        </span>
-                      </button>
+                        {togglingSkuId === row.skuId && (
+                          <div className="w-3.5 h-3.5 border-2 border-emerald-600 border-t-transparent rounded-full animate-spin shrink-0" />
+                        )}
+                      </div>
                     </td>
                     <td className="px-4 py-3">
                       {row.size.notes ? (

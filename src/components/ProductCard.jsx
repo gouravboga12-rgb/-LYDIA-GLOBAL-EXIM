@@ -54,11 +54,15 @@ export function ProductCard({ product, layout = 'grid', searchQuery = '' }) {
   }
 
   // Compute total stock across all variants/sizes
-  const totalStock = variants.reduce((sum, v) => {
-    const sizes = v.sizes && v.sizes.length > 0 ? v.sizes : [];
-    return sum + sizes.reduce((s2, sz) => s2 + (Number(sz.stock) || 0), 0);
-  }, product.stock !== undefined ? Number(product.stock) : 0);
-  const isOutOfStock = totalStock <= 0 || (defaultSize.stock !== undefined && Number(defaultSize.stock) <= 0 && variants.length === 1 && (!firstVariant.sizes || firstVariant.sizes.length <= 1));
+  const hasVariantsWithSizes = variants.some(v => v.sizes && v.sizes.length > 0);
+  const totalStock = hasVariantsWithSizes
+    ? variants.reduce((sum, v) => {
+        const sizes = v.sizes && v.sizes.length > 0 ? v.sizes : [];
+        return sum + sizes.reduce((s2, sz) => s2 + (Number(sz.stock) || 0), 0);
+      }, 0)
+    : Number(product.stock || 0);
+
+  const isOutOfStock = totalStock <= 0;
 
   const handleWishlist = (e) => {
     e.preventDefault();
