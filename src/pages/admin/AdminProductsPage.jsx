@@ -59,20 +59,22 @@ export function AdminProductsPage() {
       ]);
 
       let liveProducts = (sbProds.data && sbProds.data.length > 0) ? sbProds.data.map(p => {
-        let variants = Array.isArray(p.variants) && p.variants.length > 0 ? p.variants : null;
-        if (!variants) {
-          const match = (defaultProducts || []).find(dp => dp.id === p.id || dp.name === p.name);
-          variants = match?.variants || [{
-            color: p.color || "Gold",
-            images: Array.isArray(p.images) ? p.images : (p.image_url ? [p.image_url] : []),
-            sizes: [{ size: "Standard", mrp: p.mrp || p.price || 0, our_price: p.price || 0, stock: p.stock !== undefined ? p.stock : 10, code: p.sku || p.product_code || "" }]
-          }];
-        }
+        const specs = (typeof p.specifications === 'object' && p.specifications !== null) ? p.specifications : {};
+        const variants = (Array.isArray(p.variants) && p.variants.length > 0) ? p.variants : [{
+          color: p.color || "Gold",
+          images: Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image_url ? [p.image_url] : []),
+          sizes: Array.isArray(p.sizes) && p.sizes.length > 0 ? p.sizes : [{ size: "Standard", mrp: 0, our_price: 0, stock: 10, code: p.sku || "" }]
+        }];
         return {
           ...p,
+          is_active: specs.is_active ?? p.is_active ?? true,
+          is_bestseller: specs.is_bestseller ?? p.is_bestseller ?? false,
+          is_trending: specs.is_trending ?? p.is_trending ?? false,
+          is_offer: specs.is_offer ?? p.is_offer ?? false,
+          allow_reviews: specs.allow_reviews ?? p.allow_reviews ?? true,
+          details: specs.details || p.details || [],
           variants: variants,
-          sizes: variants[0]?.sizes || [],
-          stock: p.stock !== undefined ? p.stock : 10
+          sizes: variants[0]?.sizes || []
         };
       }) : null;
       let liveCategories = (sbCats.data && sbCats.data.length > 0) ? sbCats.data : null;
@@ -195,12 +197,12 @@ export function AdminProductsPage() {
          size: s.size || "Standard",
          mrp: s.mrp || s.price || 0, 
          our_price: s.our_price || s.price || 0,
-         stock: s.stock || 0,
+         stock: s.stock !== undefined ? s.stock : 10,
          code: s.sku || s.code || product.sku || product.product_code || "",
          weight: s.weight || "",
          offer_id: s.offer_id || "",
          notes: s.notes || ""
-      })) : [{ size: "Standard", mrp: product.mrp || product.price || 0, our_price: product.price || 0, stock: product.stock || 10, code: product.sku || product.product_code || "" }];
+      })) : [{ size: "Standard", mrp: product.mrp || product.price || 0, our_price: product.price || 0, stock: product.stock !== undefined ? product.stock : 10, code: product.sku || product.product_code || "" }];
       
       variants = [{
         color: product.color || "Gold",
@@ -217,7 +219,7 @@ export function AdminProductsPage() {
           size: s.size || "Standard",
           mrp: s.mrp ?? s.price ?? 0,
           our_price: s.our_price ?? s.price ?? 0,
-          stock: s.stock ?? 0,
+          stock: s.stock !== undefined ? s.stock : 10,
           code: s.code || s.sku || product.sku || product.product_code || "",
           weight: s.weight || "",
           offer_id: s.offer_id || "",
@@ -237,10 +239,10 @@ export function AdminProductsPage() {
       is_bestseller: product.is_bestseller || false,
       is_trending: product.is_trending || false,
       is_offer: product.is_offer || false,
-      allow_reviews: product.allow_reviews ?? true,
+      allow_reviews: product.allow_reviews !== false,
       variants: variants,
-      details: product.details || [],
-      reviews: product.reviews || []
+      details: Array.isArray(product.details) ? product.details : [],
+      reviews: Array.isArray(product.reviews) ? product.reviews : []
     });
 
     setEditProduct(product);
@@ -251,31 +253,14 @@ export function AdminProductsPage() {
     if (!deleteTarget) return;
     setIsDeleting(true);
     try {
-      const prodToDelete = deleteTarget;
-      const id = prodToDelete.id;
-      const toDeleteImages = [];
-      if (prodToDelete.image_url) toDeleteImages.push(prodToDelete.image_url);
-      if (Array.isArray(prodToDelete.images)) toDeleteImages.push(...prodToDelete.images);
-      if (Array.isArray(prodToDelete.variants)) {
-        prodToDelete.variants.forEach(v => {
-          if (Array.isArray(v.images)) toDeleteImages.push(...v.images);
-        });
-      }
-      for (const imgUrl of toDeleteImages) {
-        if (imgUrl && typeof imgUrl === 'string' && imgUrl.includes('cloudinary.com')) {
-          await deleteFromCloudinary(imgUrl).catch(() => null);
-        }
-      }
-
-      const numId = Number(id);
-      if (!isNaN(numId)) {
-        await supabase.from('products').delete().eq('id', numId);
-      } else {
-        await supabase.from('products').delete().eq('id', id).catch(() => null);
-      }
+      const numId = Number(deleteTarget.id);
+      await supabase.from('products').delete().eq('id', !isNaN(numId) ? numId : deleteTarget.id);
 
       const token = localStorage.getItem("token");
-      await fetch(`${BACKEND_URL}/admin/products/${id}`, { method: "DELETE", headers: { Authorization: `Bearer ${token}` } }).catch(() => null);
+      await fetch(`${BACKEND_URL}/admin/products/${deleteTarget.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      }).catch(() => null);
 
       await fetchData();
       await useStoreData.getState().fetchData();
@@ -343,18 +328,23 @@ export function AdminProductsPage() {
         model: payload.model || '',
         sku: payload.product_code || '',
         rating: payload.rating || 4.8,
-        is_active: payload.is_active,
-        is_bestseller: payload.is_bestseller,
-        is_trending: payload.is_trending,
-        is_offer: payload.is_offer,
-        allow_reviews: payload.allow_reviews
+        specifications: {
+          is_active: payload.is_active !== false,
+          is_bestseller: payload.is_bestseller || false,
+          is_trending: payload.is_trending || false,
+          is_offer: payload.is_offer || false,
+          allow_reviews: payload.allow_reviews !== false,
+          details: payload.details || []
+        }
       };
 
       if (isNew) {
-        await supabase.from('products').insert([supabasePayload]);
+        const { error: insErr } = await supabase.from('products').insert([supabasePayload]);
+        if (insErr) throw insErr;
       } else {
         const numId = Number(editProduct.id);
-        await supabase.from('products').update(supabasePayload).eq('id', !isNaN(numId) ? numId : editProduct.id);
+        const { error: updErr } = await supabase.from('products').update(supabasePayload).eq('id', !isNaN(numId) ? numId : editProduct.id);
+        if (updErr) throw updErr;
       }
 
       const token = localStorage.getItem("token");
@@ -442,11 +432,12 @@ export function AdminProductsPage() {
       const numId = Number(targetProductId);
       const supabaseId = !isNaN(numId) ? numId : targetProductId;
 
-      await supabase.from('products').update({
+      const { error: sbErr } = await supabase.from('products').update({
         variants: variants,
-        sizes: variants[0]?.sizes || [],
-        stock: newStock
+        sizes: variants[0]?.sizes || []
       }).eq('id', supabaseId);
+
+      if (sbErr) console.error('Supabase stock update error:', sbErr);
 
       // 4. Update Backend REST API
       const token = localStorage.getItem("token");

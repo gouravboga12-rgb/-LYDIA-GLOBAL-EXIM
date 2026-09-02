@@ -27,20 +27,22 @@ export const useStoreData = create((set) => ({
 
         if (sbProds.data && sbProds.data.length > 0) {
           liveProducts = sbProds.data.map(p => {
-            let variants = Array.isArray(p.variants) && p.variants.length > 0 ? p.variants : null;
-            if (!variants) {
-              const match = (defaultProducts || []).find(dp => dp.id === p.id || dp.name === p.name);
-              variants = match?.variants || [{
-                color: p.color || "Gold",
-                images: Array.isArray(p.images) ? p.images : (p.image_url ? [p.image_url] : []),
-                sizes: [{ size: "Standard", mrp: p.mrp || p.price || 0, our_price: p.price || 0, stock: p.stock !== undefined ? p.stock : 10, code: p.sku || p.product_code || "" }]
-              }];
-            }
+            const specs = (typeof p.specifications === 'object' && p.specifications !== null) ? p.specifications : {};
+            const variants = (Array.isArray(p.variants) && p.variants.length > 0) ? p.variants : [{
+              color: p.color || "Gold",
+              images: Array.isArray(p.images) && p.images.length > 0 ? p.images : (p.image_url ? [p.image_url] : []),
+              sizes: Array.isArray(p.sizes) && p.sizes.length > 0 ? p.sizes : [{ size: "Standard", mrp: 0, our_price: 0, stock: 10, code: p.sku || "" }]
+            }];
             return {
               ...p,
+              is_active: specs.is_active ?? p.is_active ?? true,
+              is_bestseller: specs.is_bestseller ?? p.is_bestseller ?? false,
+              is_trending: specs.is_trending ?? p.is_trending ?? false,
+              is_offer: specs.is_offer ?? p.is_offer ?? false,
+              allow_reviews: specs.allow_reviews ?? p.allow_reviews ?? true,
+              details: specs.details || p.details || [],
               variants: variants,
-              sizes: variants[0]?.sizes || [],
-              stock: p.stock !== undefined ? p.stock : 10
+              sizes: variants[0]?.sizes || []
             };
           });
         }
