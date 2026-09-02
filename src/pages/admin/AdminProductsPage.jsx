@@ -588,19 +588,21 @@ export function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${
-                        (row.size.stock || 0) <= 0 
-                          ? 'bg-red-100 text-red-700' 
-                          : (row.size.stock || 0) <= 5 
-                            ? 'bg-amber-100 text-amber-800' 
-                            : 'bg-emerald-100 text-emerald-800'
-                      }`}>
-                        {row.size.stock || 0} in stock
-                      </span>
+                      {Number(row.size.stock || 0) > 0 ? (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                          Available ({row.size.stock})
+                        </span>
+                      ) : (
+                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200">
+                          <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                          Out of Stock
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3">
                       {row.size.notes ? (
-                        <span className="text-[11px] text-amber-800 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded max-w-[120px] truncate block">
+                        <span className="text-[11px] text-[#45055B] bg-[#FAF6F0] border border-[#45055B]/15 px-2.5 py-1 rounded-lg max-w-[140px] truncate block font-medium">
                           {row.size.notes}
                         </span>
                       ) : (
@@ -909,115 +911,150 @@ export function AdminProductsPage() {
                           <div className="col-span-2">Item Code / SKU *</div>
                           <div className="col-span-2">MRP Price (₹)</div>
                           <div className="col-span-2">Selling Price (₹)</div>
-                          <div className="col-span-1">Stock</div>
-                          <div className="col-span-2">Special Offer</div>
+                          <div className="col-span-2">Stock Availability</div>
+                          <div className="col-span-1">Offer</div>
                           <div className="col-span-1 text-right">Delete</div>
                         </div>
 
                         <div className="space-y-3">
-                          {variant.sizes.map((sizeObj, sIndex) => (
-                            <div key={sIndex} className="bg-white p-3.5 rounded-xl border border-[#45055B]/15 shadow-sm space-y-2">
-                              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 items-center">
-                                <div className="lg:col-span-2">
-                                  <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Size Name</label>
-                                  <input 
-                                    value={sizeObj.size} 
-                                    onChange={e => updateSizeField(vIndex, sIndex, 'size', e.target.value)} 
-                                    placeholder="Size (e.g. Standard, 16 inch)" 
-                                    className="w-full px-3 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none" 
-                                  />
-                                </div>
-                                <div className="lg:col-span-2">
-                                  <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Item Code / SKU *</label>
-                                  <input 
-                                    value={sizeObj.code || ""} 
-                                    onChange={e => updateSizeField(vIndex, sIndex, 'code', e.target.value)} 
-                                    placeholder="SKU Code (e.g. NK-01)" 
-                                    className="w-full px-3 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none" 
-                                  />
-                                </div>
-                                <div className="lg:col-span-2">
-                                  <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">MRP Price (₹)</label>
-                                  <div className="relative">
-                                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-bold">₹</span>
+                          {variant.sizes.map((sizeObj, sIndex) => {
+                            const isStockAvailable = Number(sizeObj.stock || 0) > 0;
+                            return (
+                              <div key={sIndex} className="bg-white p-3.5 rounded-xl border border-[#45055B]/15 shadow-sm space-y-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 items-center">
+                                  <div className="lg:col-span-2">
+                                    <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Size Name</label>
                                     <input 
-                                      type="number" 
-                                      value={sizeObj.mrp} 
-                                      onChange={e => updateSizeField(vIndex, sIndex, 'mrp', e.target.value)} 
-                                      placeholder="MRP Price" 
-                                      className="w-full pl-6 pr-2 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none" 
+                                      value={sizeObj.size} 
+                                      onChange={e => updateSizeField(vIndex, sIndex, 'size', e.target.value)} 
+                                      placeholder="Size (e.g. Standard, 16 inch)" 
+                                      className="w-full px-3 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none" 
+                                    />
+                                  </div>
+                                  <div className="lg:col-span-2">
+                                    <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Item Code / SKU *</label>
+                                    <input 
+                                      value={sizeObj.code || ""} 
+                                      onChange={e => updateSizeField(vIndex, sIndex, 'code', e.target.value)} 
+                                      placeholder="SKU Code (e.g. NK-01)" 
+                                      className="w-full px-3 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none" 
+                                    />
+                                  </div>
+                                  <div className="lg:col-span-2">
+                                    <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">MRP Price (₹)</label>
+                                    <div className="relative">
+                                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-gray-400 font-bold">₹</span>
+                                      <input 
+                                        type="number" 
+                                        value={sizeObj.mrp} 
+                                        onChange={e => updateSizeField(vIndex, sIndex, 'mrp', e.target.value)} 
+                                        placeholder="MRP Price" 
+                                        className="w-full pl-6 pr-2 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none" 
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="lg:col-span-2">
+                                    <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Selling Price (₹) *</label>
+                                    <div className="relative">
+                                      <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-yellow-600 font-bold">₹</span>
+                                      <input 
+                                        type="number" 
+                                        value={sizeObj.our_price} 
+                                        onChange={e => updateSizeField(vIndex, sIndex, 'our_price', e.target.value)} 
+                                        placeholder="Selling Price" 
+                                        className="w-full pl-6 pr-2 py-1.5 bg-[#FAF6F0] border border-[#45055B]/30 rounded-lg text-xs font-bold text-[#45055B] focus:outline-none" 
+                                      />
+                                    </div>
+                                  </div>
+                                  <div className="lg:col-span-2">
+                                    <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Stock Status & Qty</label>
+                                    <div className="flex items-center gap-1.5">
+                                      <select
+                                        value={isStockAvailable ? "in_stock" : "out_of_stock"}
+                                        onChange={(e) => {
+                                          if (e.target.value === "out_of_stock") {
+                                            updateSizeField(vIndex, sIndex, 'stock', 0);
+                                          } else {
+                                            updateSizeField(vIndex, sIndex, 'stock', sizeObj._prevStock || 10);
+                                          }
+                                        }}
+                                        className={`px-2 py-1.5 rounded-lg text-[11px] font-bold border focus:outline-none shrink-0 ${
+                                          isStockAvailable 
+                                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300' 
+                                            : 'bg-red-50 text-red-700 border-red-300'
+                                        }`}
+                                      >
+                                        <option value="in_stock">✓ Available</option>
+                                        <option value="out_of_stock">✗ Out of Stock</option>
+                                      </select>
+                                      {isStockAvailable ? (
+                                        <input 
+                                          type="number" 
+                                          min="1"
+                                          value={sizeObj.stock} 
+                                          onChange={e => {
+                                            const val = Math.max(0, parseInt(e.target.value, 10) || 0);
+                                            updateSizeField(vIndex, sIndex, 'stock', val);
+                                            if (val > 0) updateSizeField(vIndex, sIndex, '_prevStock', val);
+                                          }} 
+                                          placeholder="Qty" 
+                                          title="Available stock quantity"
+                                          className="w-14 px-1.5 py-1.5 bg-[#FAF6F0] border border-emerald-300 rounded-lg text-xs font-bold text-emerald-900 text-center focus:outline-none" 
+                                        />
+                                      ) : (
+                                        <span className="text-[10px] font-bold text-red-600 bg-red-100/60 px-2 py-1.5 rounded-lg text-center flex-1">
+                                          0 Qty
+                                        </span>
+                                      )}
+                                    </div>
+                                  </div>
+                                  <div className="lg:col-span-1">
+                                    <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Offer</label>
+                                    <select 
+                                      value={sizeObj.offer_id || ""} 
+                                      onChange={e => updateSizeField(vIndex, sIndex, 'offer_id', e.target.value)} 
+                                      className="w-full px-2 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none"
+                                    >
+                                      <option value="">None</option>
+                                      {offers.filter(o => (o.active ?? o.is_active ?? true)).map(o => (
+                                        <option key={o.id} value={o.id}>
+                                          {o.title ? `${o.discount_percentage}%` : `${o.discount_percentage}%`}
+                                        </option>
+                                      ))}
+                                    </select>
+                                  </div>
+                                  <div className="lg:col-span-1 flex justify-end">
+                                    <button 
+                                      type="button"
+                                      onClick={() => removeSizeFromVariant(vIndex, sIndex)} 
+                                      className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                      title="Delete Size"
+                                    >
+                                      <Trash2 className="w-4 h-4" />
+                                    </button>
+                                  </div>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 pt-1 border-t border-gray-100">
+                                  <div>
+                                    <input 
+                                      value={sizeObj.weight || ""} 
+                                      onChange={e => updateSizeField(vIndex, sIndex, 'weight', e.target.value)} 
+                                      placeholder="Weight (e.g. 35g)" 
+                                      className="w-full px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-lg text-xs focus:outline-none" 
+                                    />
+                                  </div>
+                                  <div className="sm:col-span-3">
+                                    <input 
+                                      value={sizeObj.notes || ""} 
+                                      onChange={e => updateSizeField(vIndex, sIndex, 'notes', e.target.value)} 
+                                      placeholder="Special Notes / Tagline (e.g. 22k Gold Micron Plating, Includes matching earrings)" 
+                                      className="w-full px-2.5 py-1 bg-amber-50/70 border border-amber-200 rounded-lg text-xs text-amber-900 placeholder-amber-400 focus:outline-none" 
                                     />
                                   </div>
                                 </div>
-                                <div className="lg:col-span-2">
-                                  <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Selling Price (₹) *</label>
-                                  <div className="relative">
-                                    <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-yellow-600 font-bold">₹</span>
-                                    <input 
-                                      type="number" 
-                                      value={sizeObj.our_price} 
-                                      onChange={e => updateSizeField(vIndex, sIndex, 'our_price', e.target.value)} 
-                                      placeholder="Selling Price" 
-                                      className="w-full pl-6 pr-2 py-1.5 bg-[#FAF6F0] border border-[#45055B]/30 rounded-lg text-xs font-bold text-[#45055B] focus:outline-none" 
-                                    />
-                                  </div>
-                                </div>
-                                <div className="lg:col-span-1">
-                                  <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Stock</label>
-                                  <input 
-                                    type="number" 
-                                    value={sizeObj.stock || 0} 
-                                    onChange={e => updateSizeField(vIndex, sIndex, 'stock', Number(e.target.value))} 
-                                    placeholder="Qty" 
-                                    className="w-full px-2 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-bold text-center focus:outline-none" 
-                                  />
-                                </div>
-                                <div className="lg:col-span-2">
-                                  <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Special Offer</label>
-                                  <select 
-                                    value={sizeObj.offer_id || ""} 
-                                    onChange={e => updateSizeField(vIndex, sIndex, 'offer_id', e.target.value)} 
-                                    className="w-full px-2 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none"
-                                  >
-                                    <option value="">No Offer</option>
-                                    {offers.filter(o => (o.active ?? o.is_active ?? true)).map(o => (
-                                      <option key={o.id} value={o.id}>
-                                        {o.title ? `${o.title} (${o.discount_percentage}%)` : `${o.discount_percentage}% OFF`}
-                                      </option>
-                                    ))}
-                                  </select>
-                                </div>
-                                <div className="lg:col-span-1 flex justify-end">
-                                  <button 
-                                    type="button"
-                                    onClick={() => removeSizeFromVariant(vIndex, sIndex)} 
-                                    className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                    title="Delete Size"
-                                  >
-                                    <Trash2 className="w-4 h-4" />
-                                  </button>
-                                </div>
                               </div>
-                              <div className="grid grid-cols-1 sm:grid-cols-4 gap-2 pt-1 border-t border-gray-100">
-                                <div>
-                                  <input 
-                                    value={sizeObj.weight || ""} 
-                                    onChange={e => updateSizeField(vIndex, sIndex, 'weight', e.target.value)} 
-                                    placeholder="Weight (e.g. 35g)" 
-                                    className="w-full px-2.5 py-1 bg-gray-50 border border-gray-200 rounded-lg text-xs focus:outline-none" 
-                                  />
-                                </div>
-                                <div className="sm:col-span-3">
-                                  <input
-                                    value={sizeObj.notes || ""}
-                                    onChange={e => updateSizeField(vIndex, sIndex, 'notes', e.target.value)}
-                                    placeholder="Special Notes / Tagline (e.g. 22k Gold Micron Plating, Includes matching earrings)"
-                                    className="w-full px-2.5 py-1 bg-amber-50/70 border border-amber-200 rounded-lg text-xs text-amber-900 placeholder-amber-400 focus:outline-none"
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
