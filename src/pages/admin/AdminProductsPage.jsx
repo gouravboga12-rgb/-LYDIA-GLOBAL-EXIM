@@ -187,7 +187,7 @@ export function AdminProductsPage() {
     setIsNew(true);
   };
 
-  const handleEdit = (product) => {
+  const handleEdit = async (product) => {
     let variants = product.variants;
     if (!variants || variants.length === 0) {
       const images = Array.isArray(product.images) && product.images.length > 0 
@@ -228,6 +228,28 @@ export function AdminProductsPage() {
       }));
     }
 
+    let productReviews = [];
+    try {
+      const numId = Number(product.id);
+      if (!isNaN(numId)) {
+        const { data: revData } = await supabase.from('reviews').select('*').eq('product_id', numId).order('id', { ascending: false });
+        if (revData && revData.length > 0) {
+          productReviews = revData.map(r => ({
+            id: r.id,
+            user_name: r.user_name || r.name || 'Customer',
+            rating: Number(r.rating || 5),
+            comment: r.comment || r.review || '',
+            location: r.location || 'India',
+            verified: r.verified !== false
+          }));
+        }
+      }
+    } catch (e) {}
+
+    if (productReviews.length === 0 && Array.isArray(product.reviews)) {
+      productReviews = product.reviews;
+    }
+
     setFormData({ 
       name: product.name || "",
       category: product.category || (categories[0]?.name || "Necklaces"),
@@ -242,11 +264,38 @@ export function AdminProductsPage() {
       allow_reviews: product.allow_reviews !== false,
       variants: variants,
       details: Array.isArray(product.details) ? product.details : [],
-      reviews: Array.isArray(product.reviews) ? product.reviews : []
+      reviews: productReviews
     });
 
     setEditProduct(product);
     setIsNew(false);
+  };
+
+  const addReview = () => {
+    setFormData(prev => ({
+      ...prev,
+      reviews: [
+        ...(prev.reviews || []),
+        { user_name: "Customer", location: "India", rating: 5, comment: "Exquisite craftsmanship and lovely shine!", verified: true }
+      ]
+    }));
+  };
+
+  const updateReviewField = (rIndex, field, value) => {
+    setFormData(prev => {
+      const updated = [...(prev.reviews || [])];
+      if (updated[rIndex]) {
+        updated[rIndex] = { ...updated[rIndex], [field]: value };
+      }
+      return { ...prev, reviews: updated };
+    });
+  };
+
+  const removeReview = (rIndex) => {
+    setFormData(prev => ({
+      ...prev,
+      reviews: (prev.reviews || []).filter((_, idx) => idx !== rIndex)
+    }));
   };
 
   const confirmDelete = async () => {
@@ -338,13 +387,36 @@ export function AdminProductsPage() {
         }
       };
 
+      let savedProductId = !isNew ? editProduct.id : null;
+
       if (isNew) {
-        const { error: insErr } = await supabase.from('products').insert([supabasePayload]);
+        const { data: insData, error: insErr } = await supabase.from('products').insert([supabasePayload]).select('id');
         if (insErr) throw insErr;
+        if (insData && insData[0]) savedProductId = insData[0].id;
       } else {
         const numId = Number(editProduct.id);
         const { error: updErr } = await supabase.from('products').update(supabasePayload).eq('id', !isNaN(numId) ? numId : editProduct.id);
         if (updErr) throw updErr;
+      }
+
+      // Sync reviews for this product to Supabase reviews table
+      if (savedProductId && Array.isArray(payload.reviews)) {
+        const numPid = Number(savedProductId);
+        if (!isNaN(numPid)) {
+          await supabase.from('reviews').delete().eq('product_id', numPid).catch(() => null);
+          const reviewsToInsert = payload.reviews.map(r => ({
+            product_id: numPid,
+            user_name: (r.user_name || r.name || 'Customer').trim(),
+            rating: Number(r.rating || 5),
+            comment: (r.comment || r.review || '').trim(),
+            location: (r.location || 'India').trim(),
+            verified: r.verified !== false
+          })).filter(r => r.comment.length > 0);
+
+          if (reviewsToInsert.length > 0) {
+            await supabase.from('reviews').insert(reviewsToInsert).catch(e => console.warn('Supabase reviews sync note:', e));
+          }
+        }
       }
 
       const token = localStorage.getItem("token");
@@ -560,22 +632,6 @@ export function AdminProductsPage() {
     const updated = [...formData.details];
     updated[index][field] = value;
     setFormData({ ...formData, details: updated });
-  };
-
-  const addReview = () => {
-    setFormData({ ...formData, reviews: [...formData.reviews, { name: "", rating: 5, comment: "", color: "", size: "", date: new Date().toISOString() }] });
-  };
-
-  const removeReview = (index) => {
-    const updated = [...formData.reviews];
-    updated.splice(index, 1);
-    setFormData({ ...formData, reviews: updated });
-  };
-
-  const updateReviewField = (index, field, value) => {
-    const updated = [...formData.reviews];
-    updated[index][field] = value;
-    setFormData({ ...formData, reviews: updated });
   };
   
   const selectedCatObj = categories.find(c => c.name === formData.category);
@@ -1296,6 +1352,108 @@ export function AdminProductsPage() {
                   ))}
                   {(!formData.details || formData.details.length === 0) && (
                     <p className="text-xs text-gray-400 italic">No extra specifications added yet.</p>
+                  )}
+                </div>
+              </div>
+
+              {/* Section 4: Product Customer Reviews (Admin-Only Management) */}
+              <div className="bg-white p-5 rounded-2xl border border-gray-200 shadow-sm space-y-3">
+                <div className="flex justify-between items-center pb-2 border-b border-gray-100">
+                  <div className="flex items-center gap-2">
+                    <div className="w-7 h-7 rounded-lg bg-amber-100 flex items-center justify-center text-amber-700">
+                      <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-serif font-bold text-base text-[#45055B]">4. Product Customer Reviews</h3>
+                      <p className="text-[11px] text-gray-500">Add, edit, or delete genuine customer reviews displayed on this product's page</p>
+                    </div>
+                  </div>
+                  <button 
+                    type="button"
+                    onClick={addReview} 
+                    className="text-xs bg-[#FAF6F0] border border-amber-300 text-amber-900 font-bold px-3 py-1.5 rounded-lg flex items-center gap-1 hover:bg-amber-100 shadow-sm cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5"/> + Add Review
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {(formData.reviews || []).map((rev, rIndex) => (
+                    <div key={rIndex} className="bg-[#FAF6F0]/70 p-4 rounded-xl border border-amber-200 space-y-2.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 items-center">
+                        <div className="sm:col-span-4">
+                          <label className="text-[10px] font-bold text-gray-600 block mb-0.5">Reviewer Name</label>
+                          <input
+                            value={rev.user_name || rev.name || ""}
+                            onChange={e => updateReviewField(rIndex, 'user_name', e.target.value)}
+                            placeholder="e.g. Priya Sharma"
+                            className="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none"
+                          />
+                        </div>
+                        <div className="sm:col-span-3">
+                          <label className="text-[10px] font-bold text-gray-600 block mb-0.5">Location / City</label>
+                          <input
+                            value={rev.location || ""}
+                            onChange={e => updateReviewField(rIndex, 'location', e.target.value)}
+                            placeholder="e.g. Mumbai, India"
+                            className="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none"
+                          />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label className="text-[10px] font-bold text-gray-600 block mb-0.5">Rating</label>
+                          <select
+                            value={rev.rating || 5}
+                            onChange={e => updateReviewField(rIndex, 'rating', Number(e.target.value))}
+                            className="w-full px-2 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-bold text-amber-700 focus:outline-none"
+                          >
+                            <option value={5}>⭐⭐⭐⭐⭐ (5)</option>
+                            <option value={4}>⭐⭐⭐⭐ (4)</option>
+                            <option value={3}>⭐⭐⭐ (3)</option>
+                            <option value={2}>⭐⭐ (2)</option>
+                            <option value={1}>⭐ (1)</option>
+                          </select>
+                        </div>
+                        <div className="sm:col-span-2 flex items-center pt-4">
+                          <label className="flex items-center gap-1.5 text-xs font-bold text-emerald-800 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={rev.verified !== false}
+                              onChange={e => updateReviewField(rIndex, 'verified', e.target.checked)}
+                              className="rounded text-emerald-600 focus:ring-0"
+                            />
+                            <span>Verified</span>
+                          </label>
+                        </div>
+                        <div className="sm:col-span-1 flex justify-end pt-3">
+                          <button 
+                            type="button"
+                            onClick={() => removeReview(rIndex)} 
+                            className="p-1.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
+                            title="Delete Review"
+                          >
+                            <Trash2 className="w-4 h-4"/>
+                          </button>
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-gray-600 block mb-0.5">Review Comment</label>
+                        <textarea
+                          rows={2}
+                          value={rev.comment || rev.review || ""}
+                          onChange={e => {
+                            updateReviewField(rIndex, 'comment', e.target.value);
+                            updateReviewField(rIndex, 'review', e.target.value);
+                          }}
+                          placeholder="Customer experience, luster, polish, packaging details..."
+                          className="w-full px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs focus:outline-none resize-none font-medium"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  {(!formData.reviews || formData.reviews.length === 0) && (
+                    <div className="p-4 bg-amber-50/50 rounded-xl border border-dashed border-amber-200 text-center text-xs text-gray-500">
+                      No custom reviews added yet. Click <strong>"+ Add Review"</strong> above to add customer feedback for this product.
+                    </div>
                   )}
                 </div>
               </div>

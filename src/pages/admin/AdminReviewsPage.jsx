@@ -153,8 +153,7 @@ export function AdminReviewsPage() {
           rating: Number(form.rating),
           comment: form.review.trim(),
           location: form.location?.trim() || 'India',
-          verified: form.verified,
-          image_url: form.image_url || ''
+          verified: form.verified !== false
         };
         if (numPid && !isNaN(numPid)) {
           supabaseReview.product_id = numPid;

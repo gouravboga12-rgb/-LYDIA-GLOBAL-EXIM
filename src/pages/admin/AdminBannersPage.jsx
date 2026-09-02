@@ -184,13 +184,21 @@ export function AdminBannersPage() {
         active: formData.is_active ?? true
       };
 
+      const supabasePayload = {
+        title: fullTitle,
+        subtitle: formData.subtitle || "",
+        image_url: formData.image_url,
+        link_url: formData.link_url || "/category/all",
+        active: formData.is_active ?? true
+      };
+
       // 1. Sync with Supabase Cloud DB
       if (isNew) {
-        const { error: sbErr } = await supabase.from('banners').insert([payload]);
+        const { error: sbErr } = await supabase.from('banners').insert([supabasePayload]);
         if (sbErr) console.warn("Supabase banner insert note:", sbErr);
       } else {
         const numId = Number(editBanner.id);
-        const { error: sbErr } = await supabase.from('banners').update(payload).eq('id', !isNaN(numId) ? numId : editBanner.id);
+        const { error: sbErr } = await supabase.from('banners').update(supabasePayload).eq('id', !isNaN(numId) ? numId : editBanner.id);
         if (sbErr) console.warn("Supabase banner update note:", sbErr);
       }
 

@@ -490,7 +490,26 @@ export function ProductDetailPage() {
 
 
 
-  const productImages = selectedVariant?.images || [];
+  const productImages = React.useMemo(() => {
+    const list = [];
+    if (selectedVariant?.images && Array.isArray(selectedVariant.images)) {
+      selectedVariant.images.forEach(m => { if (m && !list.includes(m)) list.push(m); });
+    }
+    if (product?.images && Array.isArray(product.images)) {
+      product.images.forEach(m => { if (m && !list.includes(m)) list.push(m); });
+    }
+    if (product?.image_url && !list.includes(product.image_url)) {
+      list.push(product.image_url);
+    }
+    if (Array.isArray(variants)) {
+      variants.forEach(v => {
+        if (Array.isArray(v.images)) {
+          v.images.forEach(m => { if (m && !list.includes(m)) list.push(m); });
+        }
+      });
+    }
+    return list.filter(Boolean);
+  }, [selectedVariant, product, variants]);
   const productSizes = selectedVariant?.sizes || [];
   
   const currentMrp = selectedSize ? (Number(selectedSize.mrp) || Number(selectedSize.our_price)) : 0;
@@ -949,301 +968,50 @@ export function ProductDetailPage() {
               {/* Reviews List */}
               <div className="p-6 space-y-5 divide-y divide-gray-100">
                 {productReviews.length > 0 ? (
-                  productReviews.map((rev) => {
-                    const isMyRev = user && (
-                      (rev.user_id && String(rev.user_id) === String(user.id)) ||
-                      (rev.user_email && rev.user_email.toLowerCase() === user.email?.toLowerCase()) ||
-                      (rev.name && user.name && rev.name.toLowerCase() === user.name.toLowerCase() && rev.verified)
-                    );
-
-                    return (
-                      <div key={rev.id} className="pt-4 first:pt-0 space-y-2">
-                        <div className="flex flex-wrap items-start justify-between gap-2">
-                          <div className="flex items-center gap-3">
-                            <div className="w-9 h-9 rounded-full bg-brand-dark-blue text-brand-gold font-bold flex items-center justify-center text-sm shadow-sm">
-                              {(rev.name || 'C').charAt(0).toUpperCase()}
-                            </div>
-                            <div>
-                              <div className="flex items-center gap-2 flex-wrap">
-                                <span className="font-bold text-brand-dark-blue text-sm">{rev.name || rev.user_name}</span>
-                                
-                                {rev.verified !== false && (
-                                  <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2 py-0.5 rounded-full">
-                                    <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Verified Buyer
-                                  </span>
-                                )}
-
-                                {isMyRev && (
-                                  <span className="text-[10px] bg-amber-100 text-amber-900 font-bold px-2 py-0.5 rounded-full">
-                                    Your Review
-                                  </span>
-                                )}
-
-                                {isAdmin && (
-                                  <span className="text-[10px] bg-purple-100 text-purple-800 font-bold px-2 py-0.5 rounded-full">
-                                    Admin View
-                                  </span>
-                                )}
-
-                                {rev.is_active === false && (
-                                  <span className="text-[10px] bg-red-100 text-red-700 font-bold px-2 py-0.5 rounded-full">
-                                    Hidden
-                                  </span>
-                                )}
-                              </div>
-                              <p className="text-[11px] text-gray-400">
-                                {rev.location ? `${rev.location} • ` : ''}
-                                {rev.date ? new Date(rev.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Verified Order'}
-                              </p>
-                            </div>
+                  productReviews.map((rev) => (
+                    <div key={rev.id} className="pt-4 first:pt-0 space-y-2">
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-brand-dark-blue text-brand-gold font-bold flex items-center justify-center text-sm shadow-sm">
+                            {(rev.name || rev.user_name || 'C').charAt(0).toUpperCase()}
                           </div>
-
-                          {/* Star Rating & Action Buttons */}
-                          <div className="flex items-center gap-3">
-                            <div className="flex text-amber-400">
-                              {[...Array(5)].map((_, i) => (
-                                <Star key={i} className={`w-3.5 h-3.5 ${i < Number(rev.rating) ? 'fill-amber-400' : 'text-gray-200'}`} />
-                              ))}
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <span className="font-bold text-brand-dark-blue text-sm">{rev.name || rev.user_name}</span>
+                              
+                              {rev.verified !== false && (
+                                <span className="inline-flex items-center gap-1 text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold px-2 py-0.5 rounded-full">
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Verified Buyer
+                                </span>
+                              )}
                             </div>
-
-                            {/* Customer Controls (Own Review) or Admin Controls (Global) */}
-                            {(isMyRev || isAdmin) && (
-                              <div className="flex items-center gap-1 bg-gray-50 border border-gray-200 p-1 rounded-lg">
-                                <button
-                                  type="button"
-                                  onClick={() => startEditingReview(rev)}
-                                  className="p-1 text-gray-600 hover:text-brand-dark-blue hover:bg-white rounded transition"
-                                  title="Edit Review"
-                                >
-                                  <Edit2 className="w-3.5 h-3.5" />
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setDeleteReviewTarget(rev)}
-                                  className="p-1 text-red-500 hover:text-red-700 hover:bg-red-50 rounded transition"
-                                  title="Delete Review"
-                                >
-                                  <Trash2 className="w-3.5 h-3.5" />
-                                </button>
-
-                                {isAdmin && (
-                                  <button
-                                    type="button"
-                                    onClick={() => toggleReviewVisibility(rev)}
-                                    className="p-1 text-purple-600 hover:bg-purple-50 rounded transition"
-                                    title={rev.is_active === false ? "Unhide Review" : "Hide Review"}
-                                  >
-                                    {rev.is_active === false ? <Eye className="w-3.5 h-3.5" /> : <EyeOff className="w-3.5 h-3.5" />}
-                                  </button>
-                                )}
-                              </div>
-                            )}
+                            <p className="text-[11px] text-gray-400">
+                              {rev.location ? `${rev.location} • ` : ''}
+                              {rev.date ? new Date(rev.date).toLocaleDateString('en-IN', { month: 'short', day: 'numeric', year: 'numeric' }) : 'Verified Order'}
+                            </p>
                           </div>
                         </div>
 
-                        <p className="text-sm text-gray-700 font-normal leading-relaxed pl-12">
-                          "{rev.comment || rev.review}"
-                        </p>
+                        {/* Star Rating */}
+                        <div className="flex text-amber-400">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className={`w-3.5 h-3.5 ${i < Number(rev.rating) ? 'fill-amber-400' : 'text-gray-200'}`} />
+                          ))}
+                        </div>
                       </div>
-                    );
-                  })
+
+                      <p className="text-sm text-gray-700 font-normal leading-relaxed pl-12">
+                        "{rev.comment || rev.review}"
+                      </p>
+                    </div>
+                  ))
                 ) : (
-                  <div className="text-center py-6 text-gray-400 space-y-1">
-                    <p className="text-sm italic">No reviews yet for this product.</p>
-                    <p className="text-xs">Be the first verified customer to share your thoughts!</p>
+                  <div className="text-center py-8 text-gray-400 space-y-1">
+                    <p className="text-sm italic">Authentic customer reviews will appear here.</p>
                   </div>
                 )}
               </div>
-
-              {/* Review Submission Zone */}
-              {(product.allow_reviews ?? true) && (
-                <div className="px-6 pb-6 border-t border-gray-100 pt-5 bg-slate-50/50">
-                  
-                  {/* Case 1: Not Logged In */}
-                  {!user ? (
-                    <div className="text-center py-6 bg-white rounded-2xl border border-brand-gold/20 p-5 shadow-sm space-y-3">
-                      <div className="w-10 h-10 rounded-full bg-brand-gold/10 text-brand-dark-blue flex items-center justify-center mx-auto">
-                        <Lock className="w-5 h-5 text-brand-gold" />
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-brand-dark-blue text-sm">Verified Customer Reviews</h4>
-                        <p className="text-xs text-gray-500 mt-1 max-w-md mx-auto">
-                          Only verified customers who have purchased and received this product can write a review. Please sign in to verify your purchase.
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => navigate('/login')}
-                        className="px-6 py-2.5 bg-brand-dark-blue text-brand-gold font-bold rounded-xl text-xs hover:bg-brand-dark-blue/90 transition shadow-sm"
-                      >
-                        Sign In to Review
-                      </button>
-                    </div>
-                  ) : !verifiedPurchase && !isAdmin ? (
-                    /* Case 2: Logged In, but Not Verified or Not Delivered */
-                    <div className="bg-white rounded-2xl border border-amber-200 p-5 shadow-sm">
-                      {orderStatus ? (
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-full bg-amber-100 flex items-center justify-center text-amber-700 shrink-0 mt-0.5">
-                            <Truck className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-amber-900 text-sm">Review Available After Delivery</h4>
-                            <p className="text-xs text-amber-800 mt-1 leading-relaxed">
-                              You ordered this item! Your current order status is <strong className="uppercase bg-amber-100 px-1.5 py-0.5 rounded">{orderStatus}</strong>.
-                              To ensure 100% genuine feedback, the review form will automatically unlock once your order is marked as <strong>Delivered</strong>.
-                            </p>
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="flex items-start gap-3">
-                          <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 shrink-0 mt-0.5">
-                            <ShieldCheck className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <h4 className="font-bold text-brand-dark-blue text-sm">Verified Buyers Only</h4>
-                            <p className="text-xs text-gray-600 mt-1 leading-relaxed">
-                              Only customers who have purchased and received this product can submit a review. If you have purchased this item, reviews will unlock once delivered to your address.
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ) : (
-                    /* Case 3: Verified Purchase (Delivered) or Admin */
-                    <div className="bg-white rounded-2xl border border-brand-gold/20 p-5 shadow-sm space-y-4">
-                      <div className="flex items-center justify-between pb-2 border-b border-gray-100">
-                        <div className="flex items-center gap-2">
-                          <div className="w-7 h-7 rounded-lg bg-emerald-100 flex items-center justify-center text-emerald-700">
-                            <CheckCircle2 className="w-4 h-4" />
-                          </div>
-                          <div>
-                            <h4 className="font-serif font-bold text-brand-dark-blue text-sm">
-                              {editingReview ? "Edit Your Review" : "Write a Verified Review"}
-                            </h4>
-                            <p className="text-[11px] text-emerald-700 font-semibold">
-                              {isAdmin ? "Logged in as Administrator (Global Access)" : "✓ Verified Purchaser (Delivered)"}
-                            </p>
-                          </div>
-                        </div>
-
-                        {editingReview && (
-                          <button
-                            type="button"
-                            onClick={cancelEditingReview}
-                            className="text-xs font-bold text-gray-500 hover:text-gray-700 flex items-center gap-1 bg-gray-100 px-2.5 py-1 rounded-lg"
-                          >
-                            <X className="w-3.5 h-3.5" /> Cancel Edit
-                          </button>
-                        )}
-                      </div>
-
-                      {reviewSuccess && (
-                        <div className="p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs font-bold flex items-center gap-2">
-                          <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                          {reviewSuccess}
-                        </div>
-                      )}
-
-                      {reviewError && (
-                        <div className="p-3 bg-red-50 border border-red-200 rounded-xl text-red-800 text-xs font-bold flex items-center gap-2">
-                          <AlertCircle className="w-4 h-4 text-red-600" />
-                          {reviewError}
-                        </div>
-                      )}
-
-                      <form onSubmit={handleReviewSubmit} className="space-y-4">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div>
-                            <label className="text-xs font-bold text-gray-700 mb-1 block">Your Name *</label>
-                            <input
-                              required
-                              placeholder="e.g. Priya Sharma"
-                              value={reviewForm.name}
-                              onChange={e => setReviewForm({ ...reviewForm, name: e.target.value })}
-                              className="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl bg-[#FAF6F0] focus:outline-none focus:border-brand-gold font-medium"
-                            />
-                          </div>
-
-                          <div>
-                            <label className="text-xs font-bold text-gray-700 mb-1 block">Location / City</label>
-                            <input
-                              placeholder="e.g. Hyderabad, India"
-                              value={reviewForm.location || ''}
-                              onChange={e => setReviewForm({ ...reviewForm, location: e.target.value })}
-                              className="w-full px-3.5 py-2 text-xs border border-gray-200 rounded-xl bg-[#FAF6F0] focus:outline-none focus:border-brand-gold font-medium"
-                            />
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="text-xs font-bold text-gray-700 mb-1.5 block">Overall Rating *</label>
-                          <div className="flex items-center gap-1.5">
-                            {[1, 2, 3, 4, 5].map(star => (
-                              <button
-                                type="button"
-                                key={star}
-                                onClick={() => setReviewForm({ ...reviewForm, rating: star })}
-                                className="p-1 hover:scale-110 transition-transform"
-                              >
-                                <Star
-                                  className={`w-6 h-6 transition-colors ${
-                                    star <= reviewForm.rating ? 'fill-amber-400 text-amber-400' : 'text-gray-200'
-                                  }`}
-                                />
-                              </button>
-                            ))}
-                            <span className="text-xs font-bold text-brand-dark-blue ml-2">
-                              {reviewForm.rating === 5 ? "⭐⭐⭐⭐⭐ Outstanding" : 
-                               reviewForm.rating === 4 ? "⭐⭐⭐⭐ Great Quality" : 
-                               reviewForm.rating === 3 ? "⭐⭐⭐ Good" : 
-                               reviewForm.rating === 2 ? "⭐⭐ Fair" : "⭐ Needs Improvement"}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div>
-                          <label className="text-xs font-bold text-gray-700 mb-1 block">Your Feedback & Experience *</label>
-                          <textarea
-                            required
-                            rows={3}
-                            placeholder="Share your experience with the craftsmanship, polish, luster, wearability, packaging..."
-                            value={reviewForm.comment}
-                            onChange={e => setReviewForm({ ...reviewForm, comment: e.target.value })}
-                            className="w-full px-3.5 py-2.5 text-xs border border-gray-200 rounded-xl bg-[#FAF6F0] focus:outline-none focus:border-brand-gold resize-none font-medium"
-                          />
-                        </div>
-
-                        <div className="flex gap-3">
-                          <button
-                            type="submit"
-                            disabled={reviewSubmitting}
-                            className="flex-1 py-3 bg-brand-dark-blue text-brand-gold font-bold rounded-xl hover:bg-brand-dark-blue/90 transition text-xs shadow-md shadow-brand-dark-blue/20 disabled:opacity-60 flex items-center justify-center gap-2"
-                          >
-                            {reviewSubmitting ? (
-                              <><div className="w-4 h-4 border-2 border-brand-gold border-t-transparent rounded-full animate-spin" /> Saving...</>
-                            ) : editingReview ? (
-                              <><Check className="w-4 h-4" /> Update My Review</>
-                            ) : (
-                              <><Sparkles className="w-4 h-4" /> Submit Verified Review</>
-                            )}
-                          </button>
-                        </div>
-                      </form>
-                    </div>
-                  )}
-                </div>
-              )}
             </div>
-
-            {/* Review Deletion Confirmation Modal */}
-            <DeleteConfirmModal
-              isOpen={!!deleteReviewTarget}
-              title="Delete Review"
-              itemName={`review by "${deleteReviewTarget?.name || deleteReviewTarget?.user_name}"`}
-              isDeleting={isDeletingReview}
-              onConfirm={confirmDeleteReview}
-              onCancel={() => setDeleteReviewTarget(null)}
-            />
 
           </div>
         </div>
