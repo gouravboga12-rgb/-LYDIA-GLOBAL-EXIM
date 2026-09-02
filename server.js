@@ -1344,10 +1344,203 @@ app.post('/api/admin/cloudinary/delete', async (req, res) => {
   return res.json({ success: true, message: 'Cloudinary storage purge logged successfully' });
 });
 
-// Image Upload Handler
-app.post('/api/admin/upload', (req, res) => {
-  const imgUrl = req.body?.image_url || req.body?.image || '/assets/image.png';
-  return res.json({ url: imgUrl });
+// ==========================================
+// PRODUCT REVIEWS & VERIFIED PURCHASE SYSTEM
+// ==========================================
+
+const getMergedReviews = async () => {
+  let reviews = loadStoreData('reviews', 'src/data/reviews.json') || [];
+  try {
+    const { data: sbReviews, error } = await supabase.from('reviews').select('*').order('id', { ascending: false });
+    if (!error && sbReviews && sbReviews.length > 0) {
+      const existingIds = new Set(reviews.map(r => String(r.id)));
+      for (const sb of sbReviews) {
+        if (!existingIds.has(String(sb.id))) {
+          reviews.push({
+            id: sb.id,
+            product_id: sb.product_id,
+            user_name: sb.user_name,
+            rating: sb.rating,
+            comment: sb.comment,
+            location: sb.location,
+            verified: sb.verified,
+            created_at: sb.created_at,
+            is_active: true
+          });
+        }
+      }
+    }
+  } catch (e) {}
+  return reviews;
+};
+
+// 1. Get reviews for a product
+app.get('/api/general/products/:id/reviews', async (req, res) => {
+  const productId = req.params.id;
+  const allReviews = await getMergedReviews();
+  const productReviews = allReviews.filter(r => String(r.product_id) === String(productId) && (r.is_active !== false));
+  return res.json({ reviews: productReviews });
+});
+
+// 2. Customer or Admin submits a new review (Enforces Verified Delivered Purchase for Customers)
+app.post('/api/general/products/:id/reviews', async (req, res) => {
+  const productId = req.params.id;
+  const { name, rating, comment, location, user_id, user_email, is_admin } = req.body;
+  
+  if (!name || !rating || !comment) {
+    return res.status(400).json({ error: 'Name, rating, and review comment are required.' });
+  }
+
+  // Check verified purchase for regular customer
+  let verified = true;
+  if (!is_admin) {
+    const orders = loadStoreData('orders', 'src/data/orders.json') || [];
+    let dbOrders = [];
+    try {
+      const { data: sbOrders } = await supabase.from('orders').select('*');
+      if (sbOrders) dbOrders = sbOrders;
+    } catch (e) {}
+
+    const allOrders = [...orders, ...dbOrders];
+    const hasDeliveredOrder = allOrders.some(o => {
+      const isDelivered = (o.status === 'delivered' || o.status === 'pickup completed' || o.status === 'received');
+      if (!isDelivered) return false;
+      const matchesUser = (user_id && o.user_id === user_id) || 
+                          (user_email && (o.user_email?.toLowerCase() === user_email.toLowerCase() || o.customer_email?.toLowerCase() === user_email.toLowerCase()));
+      if (!matchesUser) return false;
+      let items = [];
+      try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
+      return items.some(i => String(i.product?.id || i.product_id || i.id) === String(productId));
+    });
+
+    if (!hasDeliveredOrder) {
+      return res.status(403).json({ error: 'Reviews are available exclusively to verified buyers who have received their order.' });
+    }
+    verified = true;
+  }
+
+  const reviews = loadStoreData('reviews', 'src/data/reviews.json') || [];
+  const reviewId = 'rev_' + Date.now();
+  const newReview = {
+    id: reviewId,
+    product_id: productId,
+    user_id: user_id || null,
+    user_name: name,
+    user_email: user_email || '',
+    rating: Number(rating),
+    comment: comment.trim(),
+    location: location || 'India',
+    verified: verified,
+    is_active: true,
+    created_at: new Date().toISOString()
+  };
+
+  reviews.unshift(newReview);
+  saveStoreData('reviews', reviews);
+
+  // Sync to Supabase reviews table if productId is valid integer
+  const numPid = Number(productId);
+  if (!isNaN(numPid)) {
+    try {
+      await supabase.from('reviews').insert([{
+        product_id: numPid,
+        user_name: newReview.user_name,
+        rating: newReview.rating,
+        comment: newReview.comment,
+        location: newReview.location,
+        verified: newReview.verified
+      }]);
+    } catch (sbErr) {}
+  }
+
+  return res.json({ success: true, review: newReview });
+});
+
+// 3. Customer or Admin updates a review
+app.put('/api/general/products/:id/reviews/:reviewId', async (req, res) => {
+  const { reviewId } = req.params;
+  const { name, rating, comment, user_id, user_email, is_admin } = req.body;
+
+  const reviews = loadStoreData('reviews', 'src/data/reviews.json') || [];
+  const index = reviews.findIndex(r => String(r.id) === String(reviewId));
+  if (index === -1) return res.status(404).json({ error: 'Review not found.' });
+
+  const existing = reviews[index];
+  if (!is_admin) {
+    const isOwner = (user_id && existing.user_id === user_id) || (user_email && existing.user_email?.toLowerCase() === user_email.toLowerCase());
+    if (!isOwner) {
+      return res.status(403).json({ error: 'Unauthorized: You can only edit your own review.' });
+    }
+  }
+
+  reviews[index] = {
+    ...existing,
+    user_name: name || existing.user_name,
+    rating: rating ? Number(rating) : existing.rating,
+    comment: comment ? comment.trim() : existing.comment,
+    updated_at: new Date().toISOString()
+  };
+  saveStoreData('reviews', reviews);
+
+  const numRevId = Number(reviewId);
+  if (!isNaN(numRevId)) {
+    try {
+      await supabase.from('reviews').update({
+        user_name: reviews[index].user_name,
+        rating: reviews[index].rating,
+        comment: reviews[index].comment
+      }).eq('id', numRevId);
+    } catch (e) {}
+  }
+
+  return res.json({ success: true, review: reviews[index] });
+});
+
+// 4. Customer or Admin deletes a review
+app.delete('/api/general/products/:id/reviews/:reviewId', async (req, res) => {
+  const { reviewId } = req.params;
+  const { user_id, user_email, is_admin } = req.body || {};
+
+  let reviews = loadStoreData('reviews', 'src/data/reviews.json') || [];
+  const existing = reviews.find(r => String(r.id) === String(reviewId));
+  if (!existing) return res.json({ success: true });
+
+  if (!is_admin) {
+    const isOwner = (user_id && existing.user_id === user_id) || (user_email && existing.user_email?.toLowerCase() === user_email.toLowerCase());
+    if (!isOwner) {
+      return res.status(403).json({ error: 'Unauthorized: You can only delete your own review.' });
+    }
+  }
+
+  reviews = reviews.filter(r => String(r.id) !== String(reviewId));
+  saveStoreData('reviews', reviews);
+
+  const numRevId = Number(reviewId);
+  if (!isNaN(numRevId)) {
+    try {
+      await supabase.from('reviews').delete().eq('id', numRevId);
+    } catch (e) {}
+  }
+
+  return res.json({ success: true });
+});
+
+// 5. Admin API to get all reviews
+app.get('/api/admin/reviews', async (req, res) => {
+  const reviews = await getMergedReviews();
+  return res.json({ reviews });
+});
+
+// 6. Admin API to toggle review visibility (approve/hide)
+app.put('/api/admin/reviews/:id/toggle', (req, res) => {
+  const { id } = req.params;
+  const reviews = loadStoreData('reviews', 'src/data/reviews.json') || [];
+  const r = reviews.find(rev => String(rev.id) === String(id));
+  if (r) {
+    r.is_active = r.is_active === false ? true : false;
+    saveStoreData('reviews', reviews);
+  }
+  return res.json({ success: true, review: r });
 });
 
 // Health check
