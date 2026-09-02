@@ -1015,11 +1015,6 @@ export function AdminProductsPage() {
                       className="w-4 h-4 accent-[#45055B] rounded" />
                     <span className="text-xs font-bold text-[#45055B]">Trending</span>
                   </label>
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input type="checkbox" checked={formData.allow_reviews ?? true} onChange={(e) => setFormData({ ...formData, allow_reviews: e.target.checked })}
-                      className="w-4 h-4 accent-[#45055B] rounded" />
-                    <span className="text-xs font-bold text-[#45055B]">Allow Customer Reviews</span>
-                  </label>
                 </div>
               </div>
 
@@ -1176,10 +1171,9 @@ export function AdminProductsPage() {
                         </div>
 
                         <div className="hidden lg:grid grid-cols-12 gap-2 px-3 py-1.5 bg-[#45055B]/5 rounded-lg text-[11px] font-bold text-[#45055B]/80 uppercase">
-                          <div className="col-span-2">Size / Dimension</div>
-                          <div className="col-span-2">Item Code / SKU *</div>
+                          <div className="col-span-3">Size / Dimension</div>
                           <div className="col-span-2">MRP Price (₹)</div>
-                          <div className="col-span-2">Selling Price (₹)</div>
+                          <div className="col-span-3">Selling Price (₹)</div>
                           <div className="col-span-2">Stock Availability</div>
                           <div className="col-span-1">Offer</div>
                           <div className="col-span-1 text-right">Delete</div>
@@ -1191,21 +1185,12 @@ export function AdminProductsPage() {
                             return (
                               <div key={sIndex} className="bg-white p-3.5 rounded-xl border border-[#45055B]/15 shadow-sm space-y-2">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-2 items-center">
-                                  <div className="lg:col-span-2">
+                                  <div className="lg:col-span-3">
                                     <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Size Name</label>
                                     <input 
                                       value={sizeObj.size} 
                                       onChange={e => updateSizeField(vIndex, sIndex, 'size', e.target.value)} 
                                       placeholder="Size (e.g. Standard, 16 inch)" 
-                                      className="w-full px-3 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none" 
-                                    />
-                                  </div>
-                                  <div className="lg:col-span-2">
-                                    <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Item Code / SKU *</label>
-                                    <input 
-                                      value={sizeObj.code || ""} 
-                                      onChange={e => updateSizeField(vIndex, sIndex, 'code', e.target.value)} 
-                                      placeholder="SKU Code (e.g. NK-01)" 
                                       className="w-full px-3 py-1.5 bg-[#FAF6F0] border border-gray-200 rounded-lg text-xs font-semibold focus:outline-none" 
                                     />
                                   </div>
@@ -1222,7 +1207,7 @@ export function AdminProductsPage() {
                                       />
                                     </div>
                                   </div>
-                                  <div className="lg:col-span-2">
+                                  <div className="lg:col-span-3">
                                     <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Selling Price (₹) *</label>
                                     <div className="relative">
                                       <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-yellow-600 font-bold">₹</span>
