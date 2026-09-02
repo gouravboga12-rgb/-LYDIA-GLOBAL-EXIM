@@ -734,7 +734,7 @@
     "id": 86,
     "name": "Victorian Dual-Tone Emerald Choker & Earrings Set",
     "description": "Exquisitely handcrafted Victorian Dual-Tone Emerald Choker & Earrings Set by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 50,
+    "stock": 10,
     "sizes": [
       {
         "size": "Standard",
@@ -747,40 +747,39 @@
     ],
     "image_url": "/images/jewelry_sets.png",
     "category": "Jewelry Sets",
-    "model": "",
+    "model": null,
     "is_active": true,
     "is_bestseller": false,
     "is_trending": false,
     "is_offer": false,
-    "created_at": "2026-07-22T19:44:26.268Z",
+    "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": false,
     "offer_id": null,
     "product_code": "",
     "variants": [
       {
         "color": "18k Rose Gold",
-        "instagram_link": "",
-        "images": [
-          "/images/jewelry_sets.png"
-        ],
         "sizes": [
           {
-            "size": "Standard",
             "mrp": 4299,
-            "our_price": 3299,
-            "stock": 10,
             "code": "345",
-            "weight": "",
-            "offer_id": "",
-            "notes": ""
+            "size": "Standard",
+            "stock": 10,
+            "our_price": 3299
           }
+        ],
+        "images": [
+          "/images/jewelry_sets.png"
         ]
       }
     ],
     "reviews": [],
     "details": [],
     "allow_reviews": true,
-    "instagram_reel_url": ""
+    "instagram_reel_url": "",
+    "sku": null,
+    "specifications": {},
+    "rating": 4.8
   },
   {
     "id": 80,

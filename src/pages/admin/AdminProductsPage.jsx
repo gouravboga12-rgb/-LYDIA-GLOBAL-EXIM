@@ -336,11 +336,64 @@ export function AdminProductsPage() {
     }
   };
 
+  const [togglingSkuId, setTogglingSkuId] = React.useState(null);
+
+  const handleQuickStockToggle = async (row) => {
+    setTogglingSkuId(row.skuId);
+    try {
+      const isCurrentlyInStock = Number(row.size.stock || 0) > 0;
+      const newStock = isCurrentlyInStock ? 0 : 10;
+      const product = row.product;
+      const variants = Array.isArray(product.variants) ? JSON.parse(JSON.stringify(product.variants)) : [];
+
+      let updated = false;
+      for (let v of variants) {
+        if (v.color === row.variant.color) {
+          for (let s of (v.sizes || [])) {
+            if ((s.code && s.code === row.size.code) || (s.size === row.size.size)) {
+              s.stock = newStock;
+              updated = true;
+              break;
+            }
+          }
+        }
+      }
+
+      if (!updated && variants.length > 0 && variants[0].sizes && variants[0].sizes.length > 0) {
+        variants[0].sizes[0].stock = newStock;
+      }
+
+      const numId = Number(product.id);
+      const supabaseId = !isNaN(numId) ? numId : product.id;
+
+      await supabase.from('products').update({
+        variants: variants,
+        sizes: variants[0]?.sizes || [],
+        stock: newStock
+      }).eq('id', supabaseId);
+
+      const token = localStorage.getItem("token");
+      await fetch(`${BACKEND_URL}/admin/products/${product.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ ...product, variants, stock: newStock })
+      }).catch(() => null);
+
+      await fetchData();
+      await useStoreData.getState().fetchData();
+    } catch (err) {
+      console.error('Failed to toggle stock:', err);
+      alert('Error updating stock: ' + err.message);
+    } finally {
+      setTogglingSkuId(null);
+    }
+  };
+
   const addVariant = () => {
-    setFormData({ 
-      ...formData, 
+    setFormData(prev => ({ 
+      ...prev, 
       variants: [
-        ...formData.variants, 
+        ...prev.variants, 
         { 
           color: "", 
           instagram_link: "", 
@@ -348,37 +401,63 @@ export function AdminProductsPage() {
           sizes: [{ size: "Standard", mrp: "", our_price: "", stock: 10, stock_delta: "", code: "", weight: "", offer_id: "", notes: "" }] 
         }
       ] 
-    });
+    }));
   };
   
   const removeVariant = (index) => {
-    const updated = [...formData.variants];
-    updated.splice(index, 1);
-    setFormData({ ...formData, variants: updated });
+    setFormData(prev => ({
+      ...prev,
+      variants: prev.variants.filter((_, i) => i !== index)
+    }));
   };
 
   const addSizeToVariant = (vIndex) => {
-    const updated = [...formData.variants];
-    updated[vIndex].sizes.push({ size: "Standard", mrp: "", our_price: "", stock: 10, stock_delta: "", code: "", weight: "", offer_id: "", notes: "" });
-    setFormData({ ...formData, variants: updated });
+    setFormData(prev => ({
+      ...prev,
+      variants: prev.variants.map((v, vi) => {
+        if (vi !== vIndex) return v;
+        return {
+          ...v,
+          sizes: [...v.sizes, { size: "Standard", mrp: "", our_price: "", stock: 10, stock_delta: "", code: "", weight: "", offer_id: "", notes: "" }]
+        };
+      })
+    }));
   };
   
   const removeSizeFromVariant = (vIndex, sIndex) => {
-    const updated = [...formData.variants];
-    updated[vIndex].sizes.splice(sIndex, 1);
-    setFormData({ ...formData, variants: updated });
+    setFormData(prev => ({
+      ...prev,
+      variants: prev.variants.map((v, vi) => {
+        if (vi !== vIndex) return v;
+        return {
+          ...v,
+          sizes: v.sizes.filter((_, si) => si !== sIndex)
+        };
+      })
+    }));
   };
   
   const updateSizeField = (vIndex, sIndex, field, value) => {
-    const updated = [...formData.variants];
-    updated[vIndex].sizes[sIndex][field] = value;
-    setFormData({ ...formData, variants: updated });
+    setFormData(prev => ({
+      ...prev,
+      variants: prev.variants.map((v, vi) => {
+        if (vi !== vIndex) return v;
+        return {
+          ...v,
+          sizes: v.sizes.map((s, si) => {
+            if (si !== sIndex) return s;
+            return { ...s, [field]: value };
+          })
+        };
+      })
+    }));
   };
 
   const updateVariantField = (vIndex, field, value) => {
-    const updated = [...formData.variants];
-    updated[vIndex][field] = value;
-    setFormData({ ...formData, variants: updated });
+    setFormData(prev => ({
+      ...prev,
+      variants: prev.variants.map((v, vi) => (vi === vIndex ? { ...v, [field]: value } : v))
+    }));
   };
 
   const addDetail = () => {
@@ -588,17 +667,27 @@ export function AdminProductsPage() {
                       </div>
                     </td>
                     <td className="px-4 py-3">
-                      {Number(row.size.stock || 0) > 0 ? (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-200">
-                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                          Available ({row.size.stock})
+                      <button
+                        type="button"
+                        onClick={() => handleQuickStockToggle(row)}
+                        disabled={togglingSkuId === row.skuId}
+                        title="Click to toggle Available / Out of Stock"
+                        className={`group inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all shadow-2xs hover:scale-105 cursor-pointer border ${
+                          Number(row.size.stock || 0) > 0 
+                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300 hover:bg-emerald-100' 
+                            : 'bg-red-50 text-red-700 border-red-300 hover:bg-red-100'
+                        }`}
+                      >
+                        {togglingSkuId === row.skuId ? (
+                          <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin" />
+                        ) : (
+                          <span className={`w-2 h-2 rounded-full ${Number(row.size.stock || 0) > 0 ? 'bg-emerald-500 animate-pulse' : 'bg-red-500'}`}></span>
+                        )}
+                        <span>{Number(row.size.stock || 0) > 0 ? `✓ Available (${row.size.stock})` : '✗ Out of Stock'}</span>
+                        <span className="text-[10px] text-gray-400 group-hover:text-gray-700 underline ml-1">
+                          {Number(row.size.stock || 0) > 0 ? 'Set OOS' : 'Set In Stock'}
                         </span>
-                      ) : (
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold bg-red-50 text-red-700 border border-red-200">
-                          <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                          Out of Stock
-                        </span>
-                      )}
+                      </button>
                     </td>
                     <td className="px-4 py-3">
                       {row.size.notes ? (
@@ -967,44 +1056,35 @@ export function AdminProductsPage() {
                                     </div>
                                   </div>
                                   <div className="lg:col-span-2">
-                                    <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Stock Status & Qty</label>
+                                    <label className="block lg:hidden text-[10px] font-bold text-gray-500 uppercase mb-0.5">Stock Availability</label>
                                     <div className="flex items-center gap-1.5">
-                                      <select
-                                        value={isStockAvailable ? "in_stock" : "out_of_stock"}
-                                        onChange={(e) => {
-                                          if (e.target.value === "out_of_stock") {
-                                            updateSizeField(vIndex, sIndex, 'stock', 0);
-                                          } else {
-                                            updateSizeField(vIndex, sIndex, 'stock', sizeObj._prevStock || 10);
-                                          }
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          updateSizeField(vIndex, sIndex, 'stock', isStockAvailable ? 0 : 10);
                                         }}
-                                        className={`px-2 py-1.5 rounded-lg text-[11px] font-bold border focus:outline-none shrink-0 ${
+                                        className={`px-2.5 py-1.5 rounded-lg text-xs font-bold border transition-all cursor-pointer shrink-0 flex items-center gap-1.5 shadow-2xs ${
                                           isStockAvailable 
-                                            ? 'bg-emerald-50 text-emerald-800 border-emerald-300' 
-                                            : 'bg-red-50 text-red-700 border-red-300'
+                                            ? 'bg-emerald-100 text-emerald-900 border-emerald-300 hover:bg-emerald-200' 
+                                            : 'bg-red-100 text-red-800 border-red-300 hover:bg-red-200'
                                         }`}
                                       >
-                                        <option value="in_stock">✓ Available</option>
-                                        <option value="out_of_stock">✗ Out of Stock</option>
-                                      </select>
-                                      {isStockAvailable ? (
+                                        <span className={`w-2 h-2 rounded-full ${isStockAvailable ? 'bg-emerald-500' : 'bg-red-500'}`} />
+                                        {isStockAvailable ? '✓ Available' : '✗ Out of Stock'}
+                                      </button>
+                                      {isStockAvailable && (
                                         <input 
                                           type="number" 
                                           min="1"
-                                          value={sizeObj.stock} 
+                                          value={sizeObj.stock || 1} 
                                           onChange={e => {
                                             const val = Math.max(0, parseInt(e.target.value, 10) || 0);
                                             updateSizeField(vIndex, sIndex, 'stock', val);
-                                            if (val > 0) updateSizeField(vIndex, sIndex, '_prevStock', val);
                                           }} 
                                           placeholder="Qty" 
                                           title="Available stock quantity"
-                                          className="w-14 px-1.5 py-1.5 bg-[#FAF6F0] border border-emerald-300 rounded-lg text-xs font-bold text-emerald-900 text-center focus:outline-none" 
+                                          className="w-16 px-1.5 py-1.5 bg-[#FAF6F0] border border-emerald-300 rounded-lg text-xs font-bold text-emerald-900 text-center focus:outline-none" 
                                         />
-                                      ) : (
-                                        <span className="text-[10px] font-bold text-red-600 bg-red-100/60 px-2 py-1.5 rounded-lg text-center flex-1">
-                                          0 Qty
-                                        </span>
                                       )}
                                     </div>
                                   </div>
