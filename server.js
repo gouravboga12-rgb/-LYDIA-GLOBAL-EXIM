@@ -878,35 +878,155 @@ app.delete('/api/admin/coupons/:id', (req, res) => {
 // ADMIN ORDERS CRUD
 // ==========================================
 
-app.get('/api/admin/orders', (req, res) => {
-  const orders = loadStoreData('orders', 'src/data/orders.js');
+// ==========================================
+// ORDERS & ENQUIRIES API (CUSTOMER + ADMIN)
+// ==========================================
+
+const handleOrderCreation = async (req, res) => {
+  try {
+    const orders = loadStoreData('orders', 'src/data/orders.json');
+    const {
+      items = [],
+      address = {},
+      total = 0,
+      subtotal = 0,
+      discount_amount = 0,
+      coupon_code = '',
+      shipping_fee = 0,
+      tax_amount = 0,
+      payment_method = 'stripe',
+      order_type = 'shipping',
+      stripe_payment_intent_id = null,
+      status = 'paid',
+      payment_status = 'paid'
+    } = req.body;
+
+    const orderNumber = 'LGE-' + Math.floor(100000 + Math.random() * 900000);
+    const orderId = Date.now().toString();
+    const createdAt = new Date().toISOString();
+
+    const newOrder = {
+      id: orderId,
+      order_number: orderNumber,
+      user_id: req.user?.id || null,
+      user_name: address.name || req.user?.name || 'Customer',
+      user_email: address.email || req.user?.email || '',
+      user_phone: address.mobile || address.phone || '',
+      items,
+      address,
+      total: Number(total),
+      subtotal: Number(subtotal || total),
+      discount_amount: Number(discount_amount || 0),
+      coupon_code: coupon_code || '',
+      shipping_fee: Number(shipping_fee || 0),
+      tax_amount: Number(tax_amount || 0),
+      payment_method,
+      order_type,
+      stripe_payment_intent_id,
+      status,
+      payment_status,
+      created_at: createdAt
+    };
+
+    // 1. Save to local JSON store
+    orders.unshift(newOrder);
+    saveStoreData('orders', orders);
+
+    // 2. Save to Supabase orders table
+    try {
+      await supabase.from('orders').insert([{
+        id: Date.now(),
+        order_number: orderNumber,
+        user_id: req.user?.id || null,
+        user_name: newOrder.user_name,
+        user_email: newOrder.user_email,
+        user_phone: newOrder.user_phone,
+        items: JSON.stringify(items),
+        address: JSON.stringify(address),
+        total: Number(total),
+        discount_amount: Number(discount_amount || 0),
+        coupon_code: coupon_code || '',
+        shipping_fee: Number(shipping_fee || 0),
+        tax_amount: Number(tax_amount || 0),
+        payment_method,
+        order_type,
+        status,
+        created_at: createdAt
+      }]);
+    } catch (sbErr) {
+      console.warn('Supabase order insert note:', sbErr.message);
+    }
+
+    // 3. Create enquiry entry so it appears on Enquiries page
+    try {
+      const enquiries = loadStoreData('enquiries', 'src/data/enquiries.json');
+      const orderEnquiry = {
+        id: 'enq_' + Date.now().toString(),
+        name: newOrder.user_name,
+        email: newOrder.user_email,
+        phone: newOrder.user_phone,
+        subject: `New Order Placed: #${orderNumber}`,
+        message: `Order #${orderNumber} for ₹${Number(total).toLocaleString('en-IN')} placed by ${newOrder.user_name} (${items.length} item${items.length !== 1 ? 's' : ''}). Channel: ${order_type === 'pickup' ? 'Store Pickup' : 'Delivery Shipping'}. Status: ${status}.`,
+        status: 'new',
+        type: 'order_notification',
+        order_number: orderNumber,
+        created_at: createdAt
+      };
+      enquiries.unshift(orderEnquiry);
+      saveStoreData('enquiries', enquiries);
+
+      await supabase.from('enquiries').insert([{
+        name: orderEnquiry.name,
+        email: orderEnquiry.email,
+        phone: orderEnquiry.phone,
+        subject: orderEnquiry.subject,
+        message: orderEnquiry.message,
+        status: 'new',
+        created_at: createdAt
+      }]).catch(() => {});
+    } catch (enqErr) {
+      console.warn('Enquiry creation note:', enqErr.message);
+    }
+
+    return res.json({ success: true, order: newOrder });
+  } catch (err) {
+    console.error('Order creation error:', err);
+    return res.status(500).json({ error: 'Failed to create order', details: err.message });
+  }
+};
+
+app.post(['/api/general/orders', '/api/auth/orders', '/api/admin/orders'], handleOrderCreation);
+
+app.get(['/api/admin/orders', '/api/general/orders'], async (req, res) => {
+  let orders = [];
+  try {
+    const { data: sbOrders, error } = await supabase.from('orders').select('*').order('id', { ascending: false });
+    if (!error && sbOrders && sbOrders.length > 0) {
+      orders = sbOrders;
+    }
+  } catch (e) {}
+
+  if (orders.length === 0) {
+    orders = loadStoreData('orders', 'src/data/orders.json');
+  }
   return res.json({ orders });
 });
 
-app.post('/api/admin/orders', (req, res) => {
-  const orders = loadStoreData('orders', 'src/data/orders.js');
-  const newOrder = {
-    id: Date.now().toString(),
-    order_number: 'LGE-' + Math.floor(100000 + Math.random() * 900000),
-    status: 'pending',
-    created_at: new Date().toISOString(),
-    ...req.body
-  };
-  orders.unshift(newOrder);
-  saveStoreData('orders', orders);
-  return res.json({ success: true, order: newOrder });
-});
-
-app.put('/api/admin/orders/:id/status', (req, res) => {
+app.put('/api/admin/orders/:id/status', async (req, res) => {
   const id = req.params.id;
   const { status } = req.body;
-  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const orders = loadStoreData('orders', 'src/data/orders.json');
   const order = orders.find(o => String(o.id) === String(id) || String(o.order_number) === String(id));
-  if (!order) return res.status(404).json({ error: 'Order not found' });
+  if (order) {
+    order.status = status;
+    saveStoreData('orders', orders);
+  }
 
-  order.status = status;
-  saveStoreData('orders', orders);
-  return res.json({ success: true, order });
+  try {
+    await supabase.from('orders').update({ status }).or(`id.eq.${id},order_number.eq.${id}`);
+  } catch (e) {}
+
+  return res.json({ success: true, order: order || { id, status } });
 });
 
 app.post('/api/admin/orders/:id/resend-payment-link', (req, res) => {
@@ -915,7 +1035,7 @@ app.post('/api/admin/orders/:id/resend-payment-link', (req, res) => {
 
 app.post('/api/admin/orders/:id/mark-balance-paid', (req, res) => {
   const id = req.params.id;
-  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const orders = loadStoreData('orders', 'src/data/orders.json');
   const order = orders.find(o => String(o.id) === String(id));
   if (order) {
     order.payment_status = 'paid';
@@ -926,7 +1046,7 @@ app.post('/api/admin/orders/:id/mark-balance-paid', (req, res) => {
 
 app.post('/api/admin/orders/:id/refund', (req, res) => {
   const id = req.params.id;
-  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const orders = loadStoreData('orders', 'src/data/orders.json');
   const order = orders.find(o => String(o.id) === String(id));
   if (order) {
     order.status = 'cancelled';
@@ -938,7 +1058,7 @@ app.post('/api/admin/orders/:id/refund', (req, res) => {
 
 app.post('/api/admin/orders/:id/edit', (req, res) => {
   const id = req.params.id;
-  const orders = loadStoreData('orders', 'src/data/orders.js');
+  const orders = loadStoreData('orders', 'src/data/orders.json');
   const index = orders.findIndex(o => String(o.id) === String(id));
   if (index === -1) return res.status(404).json({ error: 'Order not found' });
 

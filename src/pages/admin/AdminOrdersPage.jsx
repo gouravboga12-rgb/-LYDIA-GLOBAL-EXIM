@@ -955,25 +955,47 @@ export function AdminOrdersPage() {
   const [editModal, setEditModal] = useState(null); // order object
   const [sendingInvoice, setSendingInvoice] = useState({}); // tracking email sending state
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setLoading(false);
-      return;
+  const fetchOrders = useCallback(async () => {
+    setLoading(true);
+    let allOrders = [];
+    try {
+      // 1. Fetch from Supabase
+      const { data: sbOrders, error } = await supabase.from('orders').select('*').order('id', { ascending: false });
+      if (!error && sbOrders && sbOrders.length > 0) {
+        allOrders = sbOrders;
+      }
+    } catch (e) {
+      console.warn("Supabase orders load note:", e);
     }
-    fetch(`${BACKEND_URL}/admin/orders`, { headers: { Authorization: `Bearer ${token}` } })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.orders) {
-          setOrders(d.orders);
-          const t = {};
-          d.orders.forEach(o => { t[o.id] = { id: o.tracking_id || "", link: o.tracking_link || "" }; });
-          setTracking(t);
+
+    try {
+      // 2. Fetch from Backend REST API
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BACKEND_URL}/admin/orders`, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+      const d = await res.json();
+      if (d.orders && d.orders.length > 0) {
+        const existingIds = new Set(allOrders.map(o => String(o.id)));
+        const existingOrderNos = new Set(allOrders.map(o => String(o.order_number)));
+        for (const o of d.orders) {
+          if (!existingIds.has(String(o.id)) && !existingOrderNos.has(String(o.order_number))) {
+            allOrders.push(o);
+          }
         }
-      })
-      .catch(() => { })
-      .finally(() => setLoading(false));
+      }
+    } catch (e) {
+      console.warn("Backend orders load note:", e);
+    }
+
+    setOrders(allOrders);
+    const t = {};
+    allOrders.forEach(o => { t[o.id] = { id: o.tracking_id || "", link: o.tracking_link || "" }; });
+    setTracking(t);
+    setLoading(false);
   }, []);
+
+  useEffect(() => {
+    fetchOrders();
+  }, [fetchOrders]);
 
   useEffect(() => { setCurrentPage(1); }, [search, statusFilter]);
 
