@@ -879,7 +879,10 @@
         "mrp": 3899,
         "code": "123",
         "size": "Standard",
+        "notes": "",
         "stock": 10,
+        "weight": "",
+        "offer_id": "",
         "our_price": 2899
       }
     ],
@@ -889,7 +892,7 @@
     ],
     "image_url": "/images/jewelry_sets.png",
     "category": "Jewelry Sets",
-    "model": null,
+    "model": "",
     "is_active": true,
     "is_bestseller": true,
     "is_trending": false,
@@ -906,13 +909,17 @@
             "mrp": 3899,
             "code": "123",
             "size": "Standard",
+            "notes": "",
             "stock": 10,
+            "weight": "",
+            "offer_id": "",
             "our_price": 2899
           }
         ],
         "images": [
           "/images/jewelry_sets.png"
-        ]
+        ],
+        "instagram_link": ""
       }
     ],
     "reviews": [],
@@ -952,8 +959,48 @@
     ],
     "allow_reviews": true,
     "instagram_reel_url": null,
-    "sku": null,
-    "specifications": {},
+    "sku": "",
+    "specifications": {
+      "details": [
+        {
+          "label": "Category",
+          "value": "Complete Imitation Bridal/Festive Set"
+        },
+        {
+          "label": "Base Metal",
+          "value": "Jeweler-Grade Brass & Copper Alloy"
+        },
+        {
+          "label": "Plating",
+          "value": "22k Gold & Antique Matte Micro Polish"
+        },
+        {
+          "label": "Stone Type",
+          "value": "Hand-Set Kundan, Pearls & CZ Crystals"
+        },
+        {
+          "label": "Lock / Closure",
+          "value": "Adjustable Silk Dori & Secure Ear Posts"
+        },
+        {
+          "label": "Skin Friendly",
+          "value": "100% Lead-Free, Nickel-Free & Hypoallergenic"
+        },
+        {
+          "label": "Finish",
+          "value": "Anti-Tarnish & Sweat Resistant"
+        },
+        {
+          "label": "Care Instructions",
+          "value": "Store in dry airtight pouch. Keep away from direct water, alcohol sprays & perfumes."
+        }
+      ],
+      "is_offer": false,
+      "is_active": true,
+      "is_trending": false,
+      "allow_reviews": true,
+      "is_bestseller": true
+    },
     "rating": 4.8
   },
   {
@@ -1014,14 +1061,14 @@
     "id": 80,
     "name": "Classic 22k Gold Micro Plated Rope Chain (24 inch)",
     "description": "Exquisitely handcrafted Classic 22k Gold Micro Plated Rope Chain (24 inch) by Lydia Global Exim. Made from jeweler-grade base alloy with advanced anti-tarnish micro-plating and radiant stone embellishments. Designed to replicate the timeless opulence of fine luxury jewelry with lightweight comfort, hypoallergenic safety, and all-day wearability.",
-    "stock": 10,
+    "stock": 0,
     "sizes": [
       {
-        "size": "Standard",
         "mrp": 0,
-        "our_price": 0,
-        "stock": 10,
-        "code": ""
+        "code": "",
+        "size": "Standard",
+        "stock": 0,
+        "our_price": 0
       }
     ],
     "color": "22k Gold",
@@ -1042,17 +1089,17 @@
     "variants": [
       {
         "color": "Gold",
-        "images": [
-          "/images/chains.png"
-        ],
         "sizes": [
           {
-            "size": "Standard",
             "mrp": 0,
-            "our_price": 0,
-            "stock": 10,
-            "code": ""
+            "code": "",
+            "size": "Standard",
+            "stock": 0,
+            "our_price": 0
           }
+        ],
+        "images": [
+          "/images/chains.png"
         ]
       }
     ],
@@ -1094,7 +1141,47 @@
     "allow_reviews": true,
     "instagram_reel_url": null,
     "sku": null,
-    "specifications": {},
+    "specifications": {
+      "details": [
+        {
+          "label": "Category",
+          "value": "Daily Wear Imitation Chain"
+        },
+        {
+          "label": "Base Metal",
+          "value": "Hypoallergenic Solid Brass Alloy"
+        },
+        {
+          "label": "Plating",
+          "value": "22k Classic Gold Micro Electroplating"
+        },
+        {
+          "label": "Stone Type",
+          "value": "Smooth Polished Link Finish"
+        },
+        {
+          "label": "Lock / Closure",
+          "value": "Reinforced Lobster / S-Hook Clasp"
+        },
+        {
+          "label": "Skin Friendly",
+          "value": "100% Lead-Free, Nickel-Free & Hypoallergenic"
+        },
+        {
+          "label": "Finish",
+          "value": "Anti-Tarnish & Sweat Resistant"
+        },
+        {
+          "label": "Care Instructions",
+          "value": "Store in dry airtight pouch. Keep away from direct water, alcohol sprays & perfumes."
+        }
+      ],
+      "is_offer": false,
+      "is_active": true,
+      "is_trending": false,
+      "allow_reviews": true,
+      "is_bestseller": true
+    },
     "rating": 4.8
   },
   {
