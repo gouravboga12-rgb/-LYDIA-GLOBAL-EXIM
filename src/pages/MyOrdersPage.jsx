@@ -686,7 +686,7 @@ export function MyOrdersPage() {
                     {order.payment_method === 'cod' && !order.stripe_payment_intent_id && (
                       <div className="flex items-center justify-between">
                         <span className="text-xs text-[#45055B]/60">Amount Pending</span>
-                        <span className="text-xs font-bold text-amber-600">${(Number(order.total) - Number(order.advance_paid || 0)).toFixed(2)}</span>
+                        <span className="text-xs font-bold font-sans text-amber-600">₹{(Number(order.total) - Number(order.advance_paid || 0)).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                       </div>
                     )}
                     {order.stripe_payment_intent_id && (
@@ -697,31 +697,6 @@ export function MyOrdersPage() {
                     )}
                   </div>
                 </div>
-
-                {/* Tracking Section — shipping orders only */}
-                {order.order_type !== 'pickup' && (order.tracking_id || order.tracking_link) && (
-                  <div className="mx-6 mb-4 rounded-xl border border-purple-100 overflow-hidden">
-                    <div className="px-4 py-2 bg-purple-50 border-b border-purple-100 flex items-center gap-2">
-                      <Truck className="w-3.5 h-3.5 text-purple-600" />
-                      <p className="text-[10px] font-bold text-purple-700 uppercase tracking-wider">Shipment Tracking</p>
-                    </div>
-                    <div className="px-4 py-3 bg-white space-y-2">
-                      {order.tracking_id && (
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-[#45055B]/60">Tracking ID</span>
-                          <span className="text-xs font-mono font-bold text-[#45055B]">{order.tracking_id}</span>
-                        </div>
-                      )}
-                      {order.tracking_link && (
-                        <a href={order.tracking_link} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center justify-between w-full mt-1 px-3 py-2 bg-purple-50 hover:bg-purple-100 rounded-lg transition-colors">
-                          <span className="text-xs font-bold text-purple-700">Track Package</span>
-                          <ExternalLink className="w-3.5 h-3.5 text-purple-600" />
-                        </a>
-                      )}
-                    </div>
-                  </div>
-                )}
 
                 {/* Footer Actions */}
                 <div className="flex flex-col sm:flex-row items-center justify-end gap-3 px-6 py-4 bg-[#FAF6F0] border-t border-[#45055B]/10">
