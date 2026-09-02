@@ -2,9 +2,7 @@
   {
     "id": 1,
     "name": "Necklaces",
-    "models": [
-      "Back Beads"
-    ],
+    "models": [],
     "image_url": "/images/necklace.png?v=lifestyle_bag_11",
     "created_at": "2026-07-22T19:43:23.068Z"
   },
@@ -77,5 +75,11 @@
     "models": [],
     "image_url": "/images/chains.png?v=lifestyle_bag_11",
     "created_at": "2026-07-22T19:43:34.063Z"
+  },
+  {
+    "id": 1788384866929,
+    "models": [],
+    "name": "TEST",
+    "image_url": "https://res.cloudinary.com/n5l3h5gf/image/upload/v1788384858/wbsmr5onpj0jmkrmabgh.jpg"
   }
 ]
