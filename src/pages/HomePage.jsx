@@ -554,10 +554,12 @@ const HERO_ASSET_MAP = {
                 style={{ width: 'max-content' }}
               >
                 {/* Duplicate for seamless continuous carousel loop */}
-                {[...reviews, ...reviews].map((rev, idx) => {
-                  const initials = rev.name
-                    ? rev.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+                {[...(reviews.length > 0 ? reviews : defaultReviews), ...(reviews.length > 0 ? reviews : defaultReviews)].map((rev, idx) => {
+                  const customerName = rev.name || rev.user_name || 'Valued Customer';
+                  const initials = customerName
+                    ? customerName.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
                     : 'VIP';
+                  const revText = rev.review || rev.comment || 'The intricate craftsmanship and anti-tarnish micro-gold plating has a rich, regal sheen. Truly premium export quality.';
 
                   return (
                     <div
@@ -571,7 +573,7 @@ const HERO_ASSET_MAP = {
                             {[...Array(5)].map((_, sIdx) => (
                               <Star
                                 key={sIdx}
-                                className={`w-4 h-4 ${sIdx < (rev.rating || 5) ? 'fill-[#D4AF37] text-[#D4AF37]' : 'text-gray-200'}`}
+                                className={`w-4 h-4 ${sIdx < (Number(rev.rating) || 5) ? 'fill-[#D4AF37] text-[#D4AF37]' : 'text-gray-200'}`}
                               />
                             ))}
                           </div>
@@ -584,8 +586,8 @@ const HERO_ASSET_MAP = {
                         {/* Review Quote */}
                         <div className="relative my-3">
                           <Quote className="w-6 h-6 text-brand-gold/20 absolute -top-2 -left-1 pointer-events-none" />
-                          <p className="text-gray-700 text-sm leading-relaxed italic relative z-10 pl-2">
-                            "{rev.review}"
+                          <p className="text-gray-700 text-sm leading-relaxed italic relative z-10 pl-2 line-clamp-3">
+                            "{revText}"
                           </p>
                         </div>
                       </div>
@@ -597,14 +599,14 @@ const HERO_ASSET_MAP = {
                             {initials}
                           </div>
                           <div>
-                            <h4 className="font-bold text-gray-900 text-sm leading-tight">{rev.name}</h4>
+                            <h4 className="font-bold text-gray-900 text-sm leading-tight">{customerName}</h4>
                             <p className="text-[11px] text-gray-500 font-medium">{rev.location || 'Verified Buyer'}</p>
                           </div>
                         </div>
 
-                        {rev.product_name && (
+                        {(rev.product_name || rev.product?.name) && (
                           <span className="text-[10px] font-semibold text-brand-dark-blue/80 bg-[#FAF6F0] px-2.5 py-1 rounded-lg border border-brand-gold/20 truncate max-w-[120px]">
-                            {rev.product_name}
+                            {rev.product_name || rev.product?.name}
                           </span>
                         )}
                       </div>
