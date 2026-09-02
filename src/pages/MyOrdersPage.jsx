@@ -359,6 +359,9 @@ export function MyOrdersPage() {
         ) : (
           userOrders.map((order) => {
             const currentStatus = (order.status || 'Received').toLowerCase();
+            const address = order.address || order.shipping_address || {};
+            const rawTrackId = order.tracking_id || order.tracking_number || address.tracking_id || address.tracking_number || '';
+            const rawTrackLink = order.tracking_link || order.tracking_url || address.tracking_link || address.tracking_url || '';
             return (
               <div key={order.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition-shadow">
                 {/* Order Header */}
@@ -386,13 +389,12 @@ export function MyOrdersPage() {
                 </div>
 
                 {/* Progress Bar */}
-                {order.status.toLowerCase() !== 'cancelled' && (
+                {currentStatus !== 'cancelled' && (
                   <div className="px-6 py-6 border-b border-gray-100 bg-white">
                     <div className="max-w-2xl mx-auto">
                       <div className="flex items-center justify-between mb-2">
                         {STATUS_STEPS.map((step, i) => {
                           const normalizedStatus = (order.status || '').toLowerCase();
-                          const stepNormalized = step.toLowerCase();
                           let stepIdx = 0;
                           if (normalizedStatus.includes('processing')) stepIdx = 1;
                           else if (normalizedStatus.includes('dispatch') || normalizedStatus.includes('shipped')) stepIdx = 2;
@@ -434,46 +436,36 @@ export function MyOrdersPage() {
                 )}
 
                 {/* Courier Tracking Details Banner */}
-                {(() => {
-                  const rawTrackId = order.tracking_id || order.tracking_number || address.tracking_id || address.tracking_number || '';
-                  const rawTrackLink = order.tracking_link || order.tracking_url || address.tracking_link || address.tracking_url || '';
-                  if (!rawTrackId && !rawTrackLink) return null;
-
-                  const trackHref = rawTrackLink.startsWith('http://') || rawTrackLink.startsWith('https://')
-                    ? rawTrackLink
-                    : `https://${rawTrackLink}`;
-
-                  return (
-                    <div className="mx-6 my-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
-                      <div className="flex items-start sm:items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#45055B] text-[#D4AF37] flex items-center justify-center shrink-0 shadow-xs">
-                          <Truck className="w-5 h-5" />
-                        </div>
-                        <div>
-                          <p className="text-xs font-bold text-[#45055B]">Shipment Tracking Active</p>
-                          <p className="text-xs text-purple-900 mt-0.5">
-                            {rawTrackId ? (
-                              <>AWB / Tracking Number: <strong className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-purple-200 text-[#45055B]">{rawTrackId}</strong></>
-                            ) : (
-                              <span className="text-purple-700 font-medium">Direct Live Courier Tracking Available</span>
-                            )}
-                          </p>
-                        </div>
+                {(rawTrackId || rawTrackLink) && (
+                  <div className="mx-6 my-4 bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+                    <div className="flex items-start sm:items-center gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-[#45055B] text-[#D4AF37] flex items-center justify-center shrink-0 shadow-xs">
+                        <Truck className="w-5 h-5" />
                       </div>
-                      {rawTrackLink && (
-                        <a
-                          href={trackHref}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 bg-[#45055B] hover:bg-[#5A0E72] text-[#D4AF37] text-xs font-bold px-4 py-2 rounded-xl transition-colors shrink-0 shadow-xs"
-                        >
-                          <span>Track Live Shipment</span>
-                          <ExternalLink className="w-3.5 h-3.5" />
-                        </a>
-                      )}
+                      <div>
+                        <p className="text-xs font-bold text-[#45055B]">Shipment Tracking Active</p>
+                        <p className="text-xs text-purple-900 mt-0.5">
+                          {rawTrackId ? (
+                            <>AWB / Tracking Number: <strong className="font-mono font-bold bg-white px-1.5 py-0.5 rounded border border-purple-200 text-[#45055B]">{rawTrackId}</strong></>
+                          ) : (
+                            <span className="text-purple-700 font-medium">Direct Live Courier Tracking Available</span>
+                          )}
+                        </p>
+                      </div>
                     </div>
-                  );
-                })()}
+                    {rawTrackLink && (
+                      <a
+                        href={rawTrackLink.startsWith('http://') || rawTrackLink.startsWith('https://') ? rawTrackLink : `https://${rawTrackLink}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 bg-[#45055B] hover:bg-[#5A0E72] text-[#D4AF37] text-xs font-bold px-4 py-2 rounded-xl transition-colors shrink-0 shadow-xs"
+                      >
+                        <span>Track Live Shipment</span>
+                        <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    )}
+                  </div>
+                )}
 
                 {/* Refund Information */}
                 {(order.status === 'cancelled' || parseFloat(order.refund_amount) > 0) && (
