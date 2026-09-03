@@ -614,25 +614,11 @@ export function CheckoutPage() {
     setShippingFee(threshold > 0 && (subtotal - discount) >= threshold ? 0 : flat);
   }, [shippingConfig, subtotal, discount, orderType, address.country]);
 
-  // Recompute tax whenever subtotal, discount, address pincode, or config changes
+  // Tax is disabled
   useEffect(() => {
-    if (!shippingConfig?.settings) return;
-    const { tax_mode, tax_percentage } = shippingConfig.settings;
-    const taxable = subtotal - discount;
-
-    if (tax_mode === 'pincode') {
-      const pin = address.pincode?.trim();
-      const rule = pin ? (shippingConfig.pincodes || []).find(p => p.pincode === pin) : null;
-      const defaultPct = parseFloat(tax_percentage) || 0;
-      const pct = rule ? parseFloat(rule.percentage) : defaultPct;
-      setTaxAmount(taxable * (pct / 100));
-      setTaxLabel(rule ? `Tax (${pct}% — pincode ${pin})` : `Tax (${pct}% — flat rate used)`);
-    } else {
-      const pct = parseFloat(tax_percentage) || 0;
-      setTaxAmount(taxable * (pct / 100));
-      setTaxLabel(`Tax (${pct}%)`);
-    }
-  }, [shippingConfig, subtotal, discount, address.pincode]);
+    setTaxAmount(0);
+    setTaxLabel('');
+  }, []);
 
   const couponCode = appliedCoupon?.code || location.state?.couponCode || '';
 
@@ -1075,11 +1061,7 @@ export function CheckoutPage() {
                   <span className="font-medium">{shippingFee === 0 && (parseFloat(shippingConfig?.settings?.free_shipping_threshold) || 0) > 0 ? <span className="text-green-600 font-bold">FREE</span> : `₹${shippingFee.toFixed(2)}`}</span>
                 </div>
                 )}
-                {(taxAmount > 0 || shippingConfig?.settings?.tax_mode === 'pincode') && (
-                  <div className="flex justify-between text-sm text-brand-dark-blue/70">
-                    <span>{taxLabel || 'Tax'}</span><span className="font-medium">₹{taxAmount.toFixed(2)}</span>
-                  </div>
-                )}
+
                 {signatureFee > 0 && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/70">
                     <span>Signature Confirmation</span><span className="font-medium">₹{signatureFee.toFixed(2)}</span>
@@ -1833,7 +1815,7 @@ export function CheckoutPage() {
                 {appliedCoupon && (
                   <div className="flex justify-between text-sm text-brand-gold mb-2">
                     <span>Coupon ({appliedCoupon.code})</span>
-                    <span className="font-medium">- ${discount.toFixed(2)}</span>
+                    <span className="font-medium">- ₹{discount.toFixed(2)}</span>
                   </div>
                 )}
 {orderType !== 'pickup' && (
@@ -1841,12 +1823,6 @@ export function CheckoutPage() {
                   <span>Shipping Fee</span>
                   <span className="font-medium text-brand-dark-blue">{shippingFee === 0 && (parseFloat(shippingConfig?.settings?.free_shipping_threshold) || 0) > 0 ? <span className="text-green-600 font-bold">FREE</span> : `₹${shippingFee.toFixed(2)}`}</span>
                 </div>
-                )}
-                {(taxAmount > 0 || shippingConfig?.settings?.tax_mode === 'pincode') && (
-                  <div className="flex justify-between text-sm text-brand-dark-blue/80 mb-2">
-                    <span>{taxLabel || 'Tax'}</span>
-                    <span className="font-medium text-brand-dark-blue">₹{taxAmount.toFixed(2)}</span>
-                  </div>
                 )}
                 {signatureFee > 0 && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/80 mb-2">

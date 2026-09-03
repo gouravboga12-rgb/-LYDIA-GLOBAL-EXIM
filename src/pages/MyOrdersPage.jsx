@@ -288,7 +288,6 @@ export function MyOrdersPage() {
         ${shippingCost > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Shipping</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">₹${shippingCost.toFixed(2)}</td></tr>` : ''}
         ${signatureFee > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Signature Confirmation</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">₹${signatureFee.toFixed(2)}</td></tr>` : ''}
         ${insuranceFee > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Shipping Insurance</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">₹${insuranceFee.toFixed(2)}</td></tr>` : ''}
-        ${taxAmt > 0 ? `<tr><td style="padding:7px 12px;text-align:right;color:#555;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">Tax</td><td style="padding:7px 12px;text-align:right;font-weight:600;font-size:9.5pt;border-bottom:1px solid #F6EFEF;">₹${taxAmt.toFixed(2)}</td></tr>` : ''}
         <tr style="background:#FAF6F0;"><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#45055B;border-top:2px solid #45055B;">TOTAL</td><td style="padding:10px 12px;text-align:right;font-weight:700;font-size:11pt;color:#D4AF37;border-top:2px solid #45055B;">₹${Number(order.total).toFixed(2)}</td></tr>${parseFloat(order.refund_amount) > 0 ? `
         <tr><td colspan="2" style="padding:12px;text-align:right;border-bottom:1px solid #F6EFEF;">
           <div style="background:#FEF2F2;border:1px solid #FCA5A5;border-radius:4px;padding:8px;display:inline-block;text-align:right;min-width:200px;">
@@ -636,12 +635,6 @@ export function MyOrdersPage() {
                             <div className="flex justify-between text-xs text-[#45055B]/70">
                               <span>Shipping Fee</span>
                               <span className="font-semibold">₹{shipping.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
-                            </div>
-                          )}
-                          {tax > 0 && (
-                            <div className="flex justify-between text-xs text-[#45055B]/70">
-                              <span>Tax{taxRate ? ` (${taxRate}%)` : ''}</span>
-                              <span className="font-semibold">₹{tax.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                             </div>
                           )}
                         </div>

@@ -226,8 +226,7 @@ export function AdminOrdersPage() {
     const subtotal = items.reduce((sum, item) => sum + ((item.variant?.price || item.product?.price || item.price || 0) * (item.qty || 1)), 0);
     const discountAmt = parseFloat(order.discount_amount) || 0;
     const shippingCost = parseFloat(order.shipping_fee) || 0;
-    const taxAmt = parseFloat(order.tax_amount) || 0;
-    const grandTotal = Number(order.total || subtotal);
+    const grandTotal = Math.max(0, subtotal - discountAmt + shippingCost);
 
     const rows = items.map((item, idx) => {
       const unitPrice = Number(item.variant?.price || item.product?.price || item.price || 0);
@@ -277,7 +276,7 @@ export function AdminOrdersPage() {
             <div style="font-size: 11px; color: #666;">Phone: +91 9014863411 | Email: lydiaglobalexim@gmail.com</div>
           </div>
           <div>
-            <div class="invoice-title">TAX INVOICE</div>
+            <div class="invoice-title">INVOICE</div>
             <div style="font-size: 12px; color: #444; margin-top: 4px;"><strong>Order #:</strong> #${escapeHtml(order.order_number || order.id)}</div>
             <div style="font-size: 12px; color: #444;"><strong>Date:</strong> ${new Date(order.created_at).toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' })}</div>
             <div style="font-size: 12px; color: #444;"><strong>Status:</strong> ${escapeHtml(order.status)}</div>
@@ -322,7 +321,6 @@ export function AdminOrdersPage() {
           <div class="summary-row"><span>Subtotal:</span><span>₹${subtotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>
           ${discountAmt > 0 ? `<div class="summary-row" style="color: #059669;"><span>Discount:</span><span>-₹${discountAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>` : ''}
           ${shippingCost > 0 ? `<div class="summary-row"><span>Shipping Fee:</span><span>₹${shippingCost.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>` : ''}
-          ${taxAmt > 0 ? `<div class="summary-row"><span>Tax:</span><span>₹${taxAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>` : ''}
           <div class="summary-row summary-total"><span>Grand Total:</span><span>₹${grandTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span></div>
         </div>
 

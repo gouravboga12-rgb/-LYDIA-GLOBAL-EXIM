@@ -1,7 +1,7 @@
 {
   "settings": {
-    "tax_mode": "pincode",
-    "flat_rate": 10,
+    "tax_mode": "none",
+    "flat_rate": 0,
     "country_fees": {
       "India": {
         "fee": "0",
@@ -19,8 +19,8 @@
         "fee": "1"
       }
     },
-    "pickup_enabled": true,
-    "tax_percentage": 8.25,
+    "pickup_enabled": false,
+    "tax_percentage": 0,
     "allowed_countries": [
       "India",
       "United States",
