@@ -274,7 +274,7 @@ export function CartPage() {
                   
                   <button 
                     onClick={handleCheckout}
-                    className="hidden lg:flex w-full mt-6 bg-brand-dark-blue text-brand-gold font-bold text-base rounded-xl py-4 shadow-lg shadow-brand-dark-blue/20 hover:shadow-xl hover:-translate-y-0.5 transition-all items-center justify-center gap-2"
+                    className="w-full mt-6 bg-[#45055B] text-[#D4AF37] font-bold text-base rounded-xl py-4 shadow-lg shadow-[#45055B]/20 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer"
                   >
                     Proceed to Checkout
                   </button>

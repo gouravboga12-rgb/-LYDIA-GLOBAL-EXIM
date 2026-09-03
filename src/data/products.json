@@ -1,5 +1,50 @@
 [
   {
+    "id": 1788429372055,
+    "created_at": "2026-09-03T09:56:12.055Z",
+    "name": "test",
+    "category": "Necklaces",
+    "model": "test",
+    "description": "test",
+    "product_code": "",
+    "instagram_reel_url": "",
+    "is_active": true,
+    "allow_reviews": true,
+    "variants": [
+      {
+        "color": "test",
+        "instagram_link": "https://lydiaglobalexim.vercel.app/",
+        "images": [
+          "https://res.cloudinary.com/n5l3h5gf/image/upload/v1788429306/ult11wa1sjpe38xilfx2.jpg",
+          "https://res.cloudinary.com/n5l3h5gf/video/upload/v1788429323/tt0czssmyqecbniu9ash.mp4"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": "499",
+            "our_price": "459",
+            "stock": 10,
+            "stock_delta": "",
+            "code": "",
+            "weight": "60g",
+            "offer_id": "4",
+            "notes": ""
+          }
+        ]
+      }
+    ],
+    "details": [],
+    "reviews": [
+      {
+        "user_name": "Customer",
+        "location": "India",
+        "rating": 5,
+        "comment": "Exquisite craftsmanship and lovely shine!",
+        "verified": true
+      }
+    ]
+  },
+  {
     "id": 1788385296202,
     "created_at": "2026-09-02T21:41:36.202Z",
     "name": "test",
@@ -949,26 +994,67 @@
     "created_at": "2026-09-02T10:24:15.263889+00:00",
     "is_festive": true,
     "offer_id": null,
-    "product_code": null,
+    "product_code": "",
     "variants": [
       {
         "color": "18k Rose Gold",
-        "sizes": [
-          {
-            "mrp": 3899,
-            "code": "123",
-            "size": "Standard",
-            "notes": "",
-            "stock": 10,
-            "weight": "",
-            "offer_id": "",
-            "our_price": 2899
-          }
-        ],
+        "instagram_link": "",
         "images": [
           "/images/jewelry_sets.png"
         ],
-        "instagram_link": ""
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": 3899,
+            "our_price": 2899,
+            "stock": 10,
+            "code": "123",
+            "weight": "",
+            "offer_id": "",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "color": "blue",
+        "instagram_link": "",
+        "images": [
+          "https://res.cloudinary.com/n5l3h5gf/image/upload/v1788429466/wwjl5mmbi06nl59d5lph.jpg"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": "499",
+            "our_price": "450",
+            "stock": 10,
+            "stock_delta": "",
+            "code": "",
+            "weight": "",
+            "offer_id": "",
+            "notes": ""
+          }
+        ]
+      },
+      {
+        "color": "green",
+        "instagram_link": "",
+        "images": [
+          "https://res.cloudinary.com/n5l3h5gf/image/upload/v1788429497/tflri0kde4em5gq0fz05.jpg",
+          "https://res.cloudinary.com/n5l3h5gf/video/upload/v1788429508/fapjf6rsmcnplg6wzysy.mp4"
+        ],
+        "sizes": [
+          {
+            "size": "Standard",
+            "mrp": "499",
+            "our_price": "450",
+            "stock": 10,
+            "stock_delta": "",
+            "code": "",
+            "weight": "60g",
+            "offer_id": "",
+            "notes": ""
+          }
+        ]
       }
     ],
     "reviews": [],
@@ -1007,7 +1093,7 @@
       }
     ],
     "allow_reviews": true,
-    "instagram_reel_url": null,
+    "instagram_reel_url": "",
     "sku": "",
     "specifications": {
       "details": [
