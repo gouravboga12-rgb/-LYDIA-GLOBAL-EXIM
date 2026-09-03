@@ -441,26 +441,26 @@ export function AdminRevenuePage() {
         </div>
       </div>
 
-      {/* KPI Stats Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* KPI Stats Cards Grid - 3 Focused Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Total Gross Revenue */}
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-[#45055B] to-[#2E023D] text-white p-5 rounded-2xl shadow-sm relative overflow-hidden"
+          className="bg-gradient-to-br from-[#45055B] to-[#2E023D] text-white p-6 rounded-2xl shadow-sm relative overflow-hidden"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-sans text-white/70 font-semibold uppercase tracking-wider">Gross Total Sales</span>
-            <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center text-[#D4AF37]">
-              <IndianRupee className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center text-[#D4AF37]">
+              <IndianRupee className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-4">
             <h2 className="font-sans text-3xl font-bold text-[#D4AF37] tracking-tight">
               ₹{Number(metrics.grossTotal).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h2>
-            <p className="text-[11px] text-white/70 mt-1 flex items-center gap-1">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <p className="text-xs text-white/70 mt-2 flex items-center gap-1.5">
+              <CheckCircle2 className="w-4 h-4 text-emerald-400" />
               From {filteredOrders.length} calculated orders
             </p>
           </div>
@@ -471,20 +471,20 @@ export function AdminRevenuePage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.05 }}
-          className="bg-white border border-[#45055B]/10 p-5 rounded-2xl shadow-sm"
+          className="bg-white border border-[#45055B]/10 p-6 rounded-2xl shadow-sm"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-sans text-gray-500 font-semibold uppercase tracking-wider">Realized Revenue</span>
-            <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
-              <TrendingUp className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-4">
             <h2 className="font-sans text-3xl font-bold text-emerald-600 tracking-tight">
               ₹{Number(metrics.netRevenue).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h2>
-            <p className="text-[11px] text-gray-500 mt-1 flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 inline-block" />
+            <p className="text-xs text-gray-500 mt-2 flex items-center gap-1.5">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block" />
               {metrics.paidCount} fulfilled / paid orders
             </p>
           </div>
@@ -495,123 +495,23 @@ export function AdminRevenuePage() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="bg-white border border-[#45055B]/10 p-5 rounded-2xl shadow-sm"
+          className="bg-white border border-[#45055B]/10 p-6 rounded-2xl shadow-sm"
         >
           <div className="flex items-center justify-between">
             <span className="text-xs font-sans text-gray-500 font-semibold uppercase tracking-wider">Avg Order Value (AOV)</span>
-            <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
-              <ShoppingBag className="w-4 h-4" />
+            <div className="w-9 h-9 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+              <ShoppingBag className="w-5 h-5" />
             </div>
           </div>
-          <div className="mt-3">
+          <div className="mt-4">
             <h2 className="font-sans text-3xl font-bold text-[#45055B] tracking-tight">
               ₹{Number(metrics.averageOrderValue).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </h2>
-            <p className="text-[11px] text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 mt-2">
               {metrics.totalItemsSold} total jewelry units sold
             </p>
           </div>
         </motion.div>
-
-        {/* Discounts & Pending Pipeline */}
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.15 }}
-          className="bg-white border border-[#45055B]/10 p-5 rounded-2xl shadow-sm flex flex-col justify-between"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-sans text-gray-500 font-semibold uppercase tracking-wider">Discounts & Pipeline</span>
-            <div className="w-8 h-8 rounded-full bg-amber-50 text-amber-600 flex items-center justify-center">
-              <Percent className="w-4 h-4" />
-            </div>
-          </div>
-          <div className="mt-2 space-y-1">
-            <div className="flex justify-between text-xs font-semibold">
-              <span className="text-gray-500">Discounts Given:</span>
-              <span className="font-sans font-bold text-red-600">-₹{Number(metrics.totalDiscount).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
-            </div>
-            <div className="flex justify-between text-xs font-semibold">
-              <span className="text-gray-500">Shipping Collected:</span>
-              <span className="font-sans font-bold text-[#45055B]">₹{Number(metrics.totalShipping).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
-            </div>
-            <div className="flex justify-between text-xs font-semibold">
-              <span className="text-gray-500">Pending Pipeline:</span>
-              <span className="font-sans font-bold text-amber-600">₹{Number(metrics.pendingRevenue).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Category Revenue Breakdown & Payment Distribution */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        {/* Category Contribution */}
-        <div className="lg:col-span-2 bg-white p-5 rounded-2xl border border-[#45055B]/10 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-            <div className="flex items-center gap-2">
-              <Layers className="w-4 h-4 text-[#D4AF37]" />
-              <h3 className="font-serif text-base font-bold text-[#45055B]">Revenue by Category</h3>
-            </div>
-            <span className="text-xs text-gray-400">Share of total sales</span>
-          </div>
-
-          <div className="space-y-3">
-            {Object.entries(metrics.categoryBreakdown).length === 0 ? (
-              <p className="text-xs text-gray-400 text-center py-6">No category data recorded in selected range.</p>
-            ) : (
-              Object.entries(metrics.categoryBreakdown)
-                .sort((a, b) => b[1] - a[1])
-                .map(([cat, amount]) => {
-                  const pct = metrics.grossTotal > 0 ? ((amount / metrics.grossTotal) * 100).toFixed(1) : 0;
-                  return (
-                    <div key={cat} className="space-y-1">
-                      <div className="flex justify-between text-xs font-bold text-[#45055B]">
-                        <span>{cat}</span>
-                        <span className="font-mono">₹{amount.toLocaleString("en-IN")} ({pct}%)</span>
-                      </div>
-                      <div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
-                        <div
-                          className="bg-gradient-to-r from-[#45055B] to-[#D4AF37] h-2 rounded-full"
-                          style={{ width: `${Math.min(100, Math.max(5, pct))}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })
-            )}
-          </div>
-        </div>
-
-        {/* Payment Channels Breakdown */}
-        <div className="bg-white p-5 rounded-2xl border border-[#45055B]/10 shadow-sm space-y-4">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-            <div className="flex items-center gap-2">
-              <PieChart className="w-4 h-4 text-[#D4AF37]" />
-              <h3 className="font-serif text-base font-bold text-[#45055B]">Payment Modes</h3>
-            </div>
-          </div>
-
-          <div className="space-y-3">
-            {Object.entries(metrics.paymentMethods).length === 0 ? (
-              <p className="text-xs text-gray-400 text-center py-6">No payment data recorded.</p>
-            ) : (
-              Object.entries(metrics.paymentMethods).map(([mode, amt]) => {
-                const pct = metrics.grossTotal > 0 ? ((amt / metrics.grossTotal) * 100).toFixed(1) : 0;
-                return (
-                  <div key={mode} className="p-3 bg-gray-50 rounded-xl border border-gray-100 flex items-center justify-between">
-                    <div>
-                      <p className="text-xs font-bold text-[#45055B] capitalize">{mode}</p>
-                      <p className="text-[10px] text-gray-400">{pct}% of gross</p>
-                    </div>
-                    <span className="text-sm font-sans font-bold text-[#45055B]">
-                      ₹{amt.toLocaleString("en-IN")}
-                    </span>
-                  </div>
-                );
-              })
-            )}
-          </div>
-        </div>
       </div>
 
       {/* Detailed Orders Revenue Breakdown Table */}
