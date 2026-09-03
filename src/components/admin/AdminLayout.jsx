@@ -22,7 +22,6 @@ const NAV = [
   { href: "/admin/banners", label: "Banners", icon: <ImageIcon className="w-4 h-4" /> },
   { href: "/admin/reviews", label: "Reviews", icon: <MessageSquare className="w-4 h-4" /> },
   { href: "/admin/enquiries", label: "Enquiries", icon: <MessageSquare className="w-4 h-4" /> },
-  { href: "/admin/reports", label: "Reports", icon: <BarChart3 className="w-4 h-4" /> },
 ];
 
 function AdminAuthModal({ onAuthenticated }) {

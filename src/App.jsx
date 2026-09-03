@@ -33,7 +33,6 @@ import { AdminOrdersPage } from './pages/admin/AdminOrdersPage';
 import { AdminCustomersPage } from './pages/admin/AdminCustomersPage';
 import { AdminBannersPage } from './pages/admin/AdminBannersPage';
 import { AdminCouponsPage } from './pages/admin/AdminCouponsPage';
-import { AdminReportsPage } from './pages/admin/AdminReportsPage';
 import { AdminRevenuePage } from './pages/admin/AdminRevenuePage';
 import { AdminCreateOrderPage } from './pages/admin/AdminCreateOrderPage';
 import { AdminCategoriesPage } from './pages/admin/AdminCategoriesPage';
@@ -87,7 +86,6 @@ function InnerApp() {
                 <Route path="reviews" element={<AdminReviewsPage />} />
                 <Route path="enquiries" element={<AdminEnquiriesPage />} />
                 <Route path="banners" element={<AdminBannersPage />} />
-                <Route path="reports" element={<AdminReportsPage />} />
                 <Route path="*" element={<AdminDashboardPage />} />
               </Routes>
             </AdminLayout>
