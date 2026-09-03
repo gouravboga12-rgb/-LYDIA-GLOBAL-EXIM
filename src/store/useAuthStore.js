@@ -164,7 +164,44 @@ export const useAuthStore = create((set, get) => ({
         get().logout();
         return;
       }
-      set({ user: data.user, addresses: data.addresses, orders: data.orders, loading: false });
+      
+      let customerOrders = data.orders || [];
+
+      // Also pull directly from Supabase to guarantee active orders are synchronized
+      try {
+        const u = data.user || get().user;
+        const cleanEmail = (u?.email || '').toLowerCase().trim();
+        const cleanPhone = (u?.phone || '').replace(/\D/g, '').slice(-10);
+
+        const { data: sbOrders } = await supabase
+          .from('orders')
+          .select('*')
+          .order('id', { ascending: false });
+
+        if (sbOrders && sbOrders.length > 0) {
+          const matched = sbOrders.filter(o => {
+            const oEmail = (o.customer_email || o.user_email || '').toLowerCase().trim();
+            const oPhone = (o.customer_phone || o.user_phone || '').replace(/\D/g, '').slice(-10);
+            let addrEmail = '', addrPhone = '';
+            try {
+              const addr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || o.address || {});
+              addrEmail = (addr.email || '').toLowerCase().trim();
+              addrPhone = (addr.mobile || addr.phone || '').replace(/\D/g, '').slice(-10);
+            } catch {}
+            return (cleanEmail && (oEmail === cleanEmail || addrEmail === cleanEmail)) ||
+                   (cleanPhone && (oPhone === cleanPhone || addrPhone === cleanPhone)) ||
+                   (o.user_id && o.user_id === u?.id);
+          });
+
+          if (matched.length > 0) {
+            customerOrders = matched;
+          }
+        }
+      } catch (sbErr) {
+        console.warn('Supabase profile orders note:', sbErr);
+      }
+
+      set({ user: data.user, addresses: data.addresses, orders: customerOrders, loading: false });
     } catch (err) {
       set({ loading: false });
       // 401 = token expired or invalid on server side

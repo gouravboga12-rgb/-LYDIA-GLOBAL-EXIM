@@ -35,12 +35,15 @@ function CountUp({ end, suffix = '', duration = 1800 }) {
   return <span ref={ref}>{count}{suffix}</span>;
 }
 
+import { supabase } from '../utils/supabase';
+
 const WHATSAPP_NUMBER = '919014863411';
 
 function ContactForm() {
-  const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', subject: '', message: '' });
   const [errors, setErrors] = useState({});
   const [sent, setSent] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
 
   const validate = () => {
     const e = {};
@@ -51,11 +54,44 @@ function ContactForm() {
     return Object.keys(e).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-    const text = `*New Message from LYDIA GLOBAL EXIM Website*%0A%0A*Name:* ${encodeURIComponent(form.name)}%0A*Email:* ${encodeURIComponent(form.email || 'Not provided')}%0A*Subject:* ${encodeURIComponent(form.subject)}%0A%0A*Message:*%0A${encodeURIComponent(form.message)}`;
+    setSubmitting(true);
+
+    const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
+
+    // 1. Save to Supabase
+    try {
+      await supabase.from('enquiries').insert([{
+        name: form.name.trim(),
+        email: form.email?.trim() || '',
+        phone: form.phone?.trim() || '',
+        subject: form.subject.trim(),
+        message: form.message.trim(),
+        status: 'new',
+        created_at: new Date().toISOString()
+      }]);
+    } catch (sbErr) {
+      console.warn('Supabase enquiry save note:', sbErr);
+    }
+
+    // 2. Save to Backend REST API (persists in admin panel JSON)
+    try {
+      await fetch(`${BACKEND_URL}/general/contact`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form)
+      }).catch(() => null);
+    } catch (apiErr) {
+      console.warn('API enquiry save note:', apiErr);
+    }
+
+    // 3. Open WhatsApp with pre-filled enquiry
+    const text = `*New Inquiry from LYDIA GLOBAL EXIM Website*%0A%0A*Name:* ${encodeURIComponent(form.name)}%0A*Phone:* ${encodeURIComponent(form.phone || 'Not provided')}%0A*Email:* ${encodeURIComponent(form.email || 'Not provided')}%0A*Subject:* ${encodeURIComponent(form.subject)}%0A%0A*Message:*%0A${encodeURIComponent(form.message)}`;
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
+
+    setSubmitting(false);
     setSent(true);
   };
 
@@ -69,9 +105,9 @@ function ContactForm() {
       <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center">
         <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" /></svg>
       </div>
-      <h3 className="text-xl font-bold text-brand-dark-blue">WhatsApp Opened!</h3>
-      <p className="text-brand-dark-blue/60 text-sm">Your message has been pre-filled in WhatsApp. Just hit send!</p>
-      <button onClick={() => { setSent(false); setForm({ name: '', email: '', subject: '', message: '' }); }}
+      <h3 className="text-xl font-bold text-brand-dark-blue">Enquiry Received & WhatsApp Opened!</h3>
+      <p className="text-brand-dark-blue/60 text-sm">Your enquiry has been logged into our system and pre-filled in WhatsApp. Just hit send!</p>
+      <button onClick={() => { setSent(false); setForm({ name: '', email: '', phone: '', subject: '', message: '' }); }}
         className="text-sm font-bold text-brand-gold underline mt-2">Send another message</button>
     </div>
   );
@@ -84,10 +120,17 @@ function ContactForm() {
           className={inputClass('name')} placeholder="Your Name" />
         {errors.name && <p className="text-xs text-red-500 mt-1">Name is required</p>}
       </div>
-      <div>
-        <label className="block text-sm font-semibold text-brand-dark-blue mb-1.5">Email Address <span className="text-brand-dark-blue/40 font-normal">(optional)</span></label>
-        <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
-          className={inputClass('email')} placeholder="your@email.com" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-semibold text-brand-dark-blue mb-1.5">Phone Number <span className="text-brand-dark-blue/40 font-normal">(optional)</span></label>
+          <input type="tel" value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))}
+            className={inputClass('phone')} placeholder="+91 9876543210" />
+        </div>
+        <div>
+          <label className="block text-sm font-semibold text-brand-dark-blue mb-1.5">Email Address <span className="text-brand-dark-blue/40 font-normal">(optional)</span></label>
+          <input type="email" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))}
+            className={inputClass('email')} placeholder="your@email.com" />
+        </div>
       </div>
       <div>
         <label className="block text-sm font-semibold text-brand-dark-blue mb-1.5">Subject *</label>
@@ -102,11 +145,12 @@ function ContactForm() {
         {errors.message && <p className="text-xs text-red-500 mt-1">Message is required</p>}
       </div>
       <motion.button type="submit"
+        disabled={submitting}
         whileHover={{ scale: 1.02 }}
         whileTap={{ scale: 0.98 }}
-        className="w-full bg-brand-dark-blue text-brand-gold font-bold py-4 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all mt-2"
+        className="w-full bg-brand-dark-blue text-brand-gold font-bold py-4 px-4 rounded-xl flex items-center justify-center gap-2 shadow-lg hover:shadow-xl transition-all mt-2 disabled:opacity-50 cursor-pointer"
       >
-        Send via WhatsApp
+        {submitting ? 'Submitting Enquiry...' : 'Submit & Connect on WhatsApp'}
         <Send className="w-5 h-5" />
       </motion.button>
     </form>

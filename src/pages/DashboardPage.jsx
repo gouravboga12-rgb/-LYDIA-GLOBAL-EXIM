@@ -254,23 +254,28 @@ export function DashboardPage() {
                 <Link to="/" className="mt-3 inline-block text-xs text-brand-gold font-bold">Start Shopping →</Link>
               </div>
             ) : (
-              orders.map((order) => (
-                <div key={order.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-                  <div className="flex justify-between items-start mb-2">
-                    <div>
-                      <p className="text-xs font-bold text-gray-900">#{order.order_number}</p>
-                      <p className="text-[10px] text-gray-500 mt-0.5">{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+              orders.map((order) => {
+                let items = [];
+                try { items = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []); } catch {}
+                const itemsCount = items.reduce((sum, it) => sum + (it.qty || 1), 0) || items.length || 1;
+                return (
+                  <div key={order.id} onClick={() => navigate('/my-orders')} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 cursor-pointer hover:border-brand-gold/40 transition-all">
+                    <div className="flex justify-between items-start mb-2">
+                      <div>
+                        <p className="text-xs font-bold text-gray-900">#{order.order_number || order.id}</p>
+                        <p className="text-[10px] text-gray-500 mt-0.5">{new Date(order.created_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full capitalize ${STATUS_COLORS[(order.status || '').toLowerCase()] || 'bg-purple-100 text-purple-700'}`}>
+                        {order.status || 'Received'}
+                      </span>
                     </div>
-                    <span className={`text-[10px] font-bold px-2 py-1 rounded-full capitalize ${STATUS_COLORS[order.status] || 'bg-gray-100 text-gray-600'}`}>
-                      {order.status}
-                    </span>
+                    <div className="flex justify-between items-center border-t border-gray-100 pt-2.5 mt-2">
+                      <p className="text-xs text-gray-600">{itemsCount} item{itemsCount > 1 ? 's' : ''}</p>
+                      <p className="text-sm font-bold text-[#45055B] font-sans">₹{Number(order.total || 0).toLocaleString('en-IN', { minimumFractionDigits: 2 })}</p>
+                    </div>
                   </div>
-                  <div className="flex justify-between items-center border-t border-gray-100 pt-2 mt-2">
-                    <p className="text-xs text-gray-600">{Array.isArray(order.items) ? order.items.length : 0} item(s)</p>
-                    <p className="text-sm font-bold text-gray-900">${Number(order.total).toLocaleString('en-IN')}</p>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         )}

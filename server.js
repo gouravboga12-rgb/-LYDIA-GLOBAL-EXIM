@@ -1345,7 +1345,7 @@ app.get('/api/admin/enquiries', (req, res) => {
   return res.json({ enquiries });
 });
 
-app.post(['/api/general/contact', '/api/admin/enquiries'], (req, res) => {
+app.post(['/api/general/contact', '/api/admin/enquiries', '/api/general/enquiries'], async (req, res) => {
   const enquiries = loadStoreData('enquiries', 'src/data/enquiries.json');
   const newEnquiry = {
     id: Date.now().toString(),
@@ -1359,6 +1359,21 @@ app.post(['/api/general/contact', '/api/admin/enquiries'], (req, res) => {
   };
   enquiries.unshift(newEnquiry);
   saveStoreData('enquiries', enquiries);
+
+  try {
+    await supabase.from('enquiries').insert([{
+      name: newEnquiry.name,
+      email: newEnquiry.email,
+      phone: newEnquiry.phone,
+      subject: newEnquiry.subject,
+      message: newEnquiry.message,
+      status: 'new',
+      created_at: newEnquiry.created_at
+    }]);
+  } catch (err) {
+    console.warn('Supabase enquiry insert note:', err);
+  }
+
   return res.json({ success: true, enquiry: newEnquiry });
 });
 
