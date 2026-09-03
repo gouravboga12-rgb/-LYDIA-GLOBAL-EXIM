@@ -88,50 +88,64 @@ export function AdminOrdersPage() {
       console.error("Error loading orders:", err);
     }
 
-    const normalized = allOrders.map(o => {
-      let address = {};
-      if (o.shipping_address) {
-        try { address = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : o.shipping_address; } catch {}
-      } else if (o.address) {
-        try { address = typeof o.address === 'string' ? JSON.parse(o.address) : o.address; } catch {}
-      }
-      let items = [];
-      try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
+    try {
+      const normalized = allOrders.map(o => {
+        let address = {};
+        if (o.shipping_address) {
+          try { address = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || {}); } catch {}
+        } else if (o.address) {
+          try { address = typeof o.address === 'string' ? JSON.parse(o.address) : (o.address || {}); } catch {}
+        }
+        let items = [];
+        try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
 
-      const calcSubtotal = items.reduce((sum, item) => {
-        const p = Number(item.variant?.price || item.product?.price || item.price || 0);
-        const q = Number(item.qty || 1);
-        return sum + (p * q);
-      }, 0);
-      const subtotal = calcSubtotal > 0 ? calcSubtotal : Number(o.subtotal || o.total || 0);
-      const discount_amount = Number(o.discount ?? o.discount_amount ?? 0);
-      const shipping_fee = Number(o.shipping ?? o.shipping_fee ?? 0);
-      const total = Math.max(0, subtotal - discount_amount + shipping_fee);
+        const calcSubtotal = items.reduce((sum, item) => {
+          const p = Number(item.variant?.price || item.product?.price || item.price || 0);
+          const q = Number(item.qty || 1);
+          return sum + (p * q);
+        }, 0);
+        const subtotal = calcSubtotal > 0 ? calcSubtotal : Number(o.subtotal || o.total || 0);
+        const discount_amount = Number(o.discount ?? o.discount_amount ?? 0);
+        const shipping_fee = Number(o.shipping ?? o.shipping_fee ?? 0);
+        const total = Math.max(0, subtotal - discount_amount + shipping_fee);
 
-      return {
-        ...o,
-        id: o.id || o.order_number,
-        order_number: o.order_number || String(o.id),
-        user_name: o.customer_name || o.user_name || address?.name || 'Customer',
-        user_email: o.customer_email || o.user_email || address?.email || '',
-        user_phone: o.customer_phone || o.user_phone || address?.mobile || address?.phone || '',
-        address,
-        shipping_address: address,
-        items,
-        total,
-        subtotal,
-        discount_amount,
-        shipping_fee,
-        tax_amount: 0,
-        status: currentStatus,
-        tracking_id: o.tracking_number || address?.tracking_id || address?.tracking_number || o.tracking_id || '',
-        tracking_link: address?.tracking_link || address?.tracking_url || o.tracking_link || o.tracking_url || '',
-        created_at: o.created_at || new Date().toISOString()
-      };
-    });
+        // Normalize status display
+        let currentStatus = o.status || 'Received';
+        const stLow = currentStatus.toLowerCase();
+        if (stLow === 'pending' || stLow === 'paid') currentStatus = 'Received';
+        else if (stLow === 'processing') currentStatus = 'Under Processing';
+        else if (stLow === 'shipped') currentStatus = 'Dispatched';
+        else if (stLow === 'delivered') currentStatus = 'Delivered';
+        else if (stLow === 'cancelled') currentStatus = 'Cancelled';
 
-    setOrders(normalized);
-    setLoading(false);
+        return {
+          ...o,
+          id: o.id || o.order_number,
+          order_number: o.order_number || String(o.id),
+          user_name: o.customer_name || o.user_name || address?.name || 'Customer',
+          user_email: o.customer_email || o.user_email || address?.email || '',
+          user_phone: o.customer_phone || o.user_phone || address?.mobile || address?.phone || '',
+          address,
+          shipping_address: address,
+          items,
+          total,
+          subtotal,
+          discount_amount,
+          shipping_fee,
+          tax_amount: 0,
+          status: currentStatus,
+          tracking_id: o.tracking_number || address?.tracking_id || address?.tracking_number || o.tracking_id || '',
+          tracking_link: address?.tracking_link || address?.tracking_url || o.tracking_link || o.tracking_url || '',
+          created_at: o.created_at || new Date().toISOString()
+        };
+      });
+
+      setOrders(normalized);
+    } catch (normErr) {
+      console.error("Error normalizing orders:", normErr);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleDeleteOrder = async (order) => {
