@@ -614,7 +614,7 @@ export function CheckoutPage() {
     setShippingFee(threshold > 0 && (subtotal - discount) >= threshold ? 0 : flat);
   }, [shippingConfig, subtotal, discount, orderType, address.country]);
 
-  // Tax is disabled
+  // Tax is disabled - 0 tax
   useEffect(() => {
     setTaxAmount(0);
     setTaxLabel('');
@@ -1061,7 +1061,6 @@ export function CheckoutPage() {
                   <span className="font-medium">{shippingFee === 0 && (parseFloat(shippingConfig?.settings?.free_shipping_threshold) || 0) > 0 ? <span className="text-green-600 font-bold">FREE</span> : `₹${shippingFee.toFixed(2)}`}</span>
                 </div>
                 )}
-
                 {signatureFee > 0 && (
                   <div className="flex justify-between text-sm text-brand-dark-blue/70">
                     <span>Signature Confirmation</span><span className="font-medium">₹{signatureFee.toFixed(2)}</span>
@@ -1815,7 +1814,7 @@ export function CheckoutPage() {
                 {appliedCoupon && (
                   <div className="flex justify-between text-sm text-brand-gold mb-2">
                     <span>Coupon ({appliedCoupon.code})</span>
-                    <span className="font-medium">- ₹{discount.toFixed(2)}</span>
+                    <span className="font-medium">- ${discount.toFixed(2)}</span>
                   </div>
                 )}
 {orderType !== 'pickup' && (

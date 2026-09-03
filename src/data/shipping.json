@@ -1,11 +1,11 @@
 {
   "settings": {
-    "tax_mode": "none",
+    "tax_mode": "flat",
     "flat_rate": 0,
     "country_fees": {
       "India": {
         "fee": "0",
-        "threshold": "99999999"
+        "threshold": "0"
       },
       "United States": {
         "fee": "6",
@@ -28,29 +28,11 @@
       "Algeria",
       "Austria"
     ],
-    "free_shipping_threshold": 99999999
+    "free_shipping_threshold": 0
   },
-  "zipCodes": [
-    {
-      "pincode": "523113",
-      "percentage": "20.00"
-    },
-    {
-      "pincode": "560068",
-      "percentage": "25.00"
-    }
-  ],
-  "pincodes": [
-    {
-      "pincode": "523113",
-      "percentage": "20.00"
-    },
-    {
-      "pincode": "560068",
-      "percentage": "25.00"
-    }
-  ],
-  "shipping_rate": 10,
-  "tax_percentage": 8.25,
+  "zipCodes": [],
+  "pincodes": [],
+  "shipping_rate": 0,
+  "tax_percentage": 0,
   "pickup_enabled": false
 }
