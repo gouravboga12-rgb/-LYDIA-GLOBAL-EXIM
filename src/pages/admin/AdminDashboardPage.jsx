@@ -70,7 +70,28 @@ export function AdminDashboardPage() {
       console.warn("Backend API fetch note:", err);
     }
 
-    setOrders(allOrders);
+    const normalizedOrders = allOrders.map(o => {
+      let items = [];
+      try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
+      const calcSubtotal = items.reduce((sum, item) => {
+        const p = Number(item.variant?.price || item.product?.price || item.price || 0);
+        const q = Number(item.qty || 1);
+        return sum + (p * q);
+      }, 0);
+      const subtotal = calcSubtotal > 0 ? calcSubtotal : Number(o.subtotal || o.total || 0);
+      const discount = Number(o.discount ?? o.discount_amount ?? 0);
+      const shipping = Number(o.shipping ?? o.shipping_fee ?? 0);
+      const total = Math.max(0, subtotal - discount + shipping);
+
+      return {
+        ...o,
+        items,
+        subtotal,
+        total
+      };
+    });
+
+    setOrders(normalizedOrders);
     setUsers(allUsers);
   };
 

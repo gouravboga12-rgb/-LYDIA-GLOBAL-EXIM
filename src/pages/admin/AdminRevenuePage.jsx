@@ -70,6 +70,16 @@ export function AdminRevenuePage() {
       }
       let items = [];
       try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
+      const calcSubtotal = items.reduce((sum, item) => {
+        const p = Number(item.variant?.price || item.product?.price || item.price || 0);
+        const q = Number(item.qty || 1);
+        return sum + (p * q);
+      }, 0);
+      const subtotal = calcSubtotal > 0 ? calcSubtotal : Number(o.subtotal || o.total || 0);
+      const discount_amount = Number(o.discount ?? o.discount_amount ?? 0);
+      const shipping_fee = Number(o.shipping ?? o.shipping_fee ?? 0);
+      const total = Math.max(0, subtotal - discount_amount + shipping_fee);
+
       return {
         ...o,
         id: o.id || o.order_number,
@@ -80,11 +90,11 @@ export function AdminRevenuePage() {
         address,
         shipping_address: address,
         items,
-        total: Number(o.total || 0),
-        subtotal: Number(o.subtotal || o.total || 0),
-        discount_amount: Number(o.discount ?? o.discount_amount ?? 0),
-        shipping_fee: Number(o.shipping ?? o.shipping_fee ?? 0),
-        tax_amount: Number(o.tax ?? o.tax_amount ?? 0),
+        total,
+        subtotal,
+        discount_amount,
+        shipping_fee,
+        tax_amount: 0,
         status: o.status || 'paid',
         payment_status: o.payment_status || 'paid',
         payment_method: o.payment_method || 'direct_booking',

@@ -3,7 +3,7 @@ import {
   Package, Search, ChevronDown, Check, X, FileText,
   Printer, MessageCircle, ExternalLink, Pencil, RefreshCw,
   Truck, MapPin, Phone, Mail, User, Tag, Clock, CheckCircle2,
-  AlertCircle, ArrowRight, Save, Link as LinkIcon
+  AlertCircle, ArrowRight, Save, Trash2, Link as LinkIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
@@ -98,13 +98,15 @@ export function AdminOrdersPage() {
       let items = [];
       try { items = typeof o.items === 'string' ? JSON.parse(o.items) : (o.items || []); } catch {}
 
-      // Normalize status display
-      let currentStatus = o.status || 'Received';
-      if (currentStatus.toLowerCase() === 'pending' || currentStatus.toLowerCase() === 'paid') currentStatus = 'Received';
-      else if (currentStatus.toLowerCase() === 'processing') currentStatus = 'Under Processing';
-      else if (currentStatus.toLowerCase() === 'shipped') currentStatus = 'Dispatched';
-      else if (currentStatus.toLowerCase() === 'delivered') currentStatus = 'Delivered';
-      else if (currentStatus.toLowerCase() === 'cancelled') currentStatus = 'Cancelled';
+      const calcSubtotal = items.reduce((sum, item) => {
+        const p = Number(item.variant?.price || item.product?.price || item.price || 0);
+        const q = Number(item.qty || 1);
+        return sum + (p * q);
+      }, 0);
+      const subtotal = calcSubtotal > 0 ? calcSubtotal : Number(o.subtotal || o.total || 0);
+      const discount_amount = Number(o.discount ?? o.discount_amount ?? 0);
+      const shipping_fee = Number(o.shipping ?? o.shipping_fee ?? 0);
+      const total = Math.max(0, subtotal - discount_amount + shipping_fee);
 
       return {
         ...o,
@@ -116,11 +118,11 @@ export function AdminOrdersPage() {
         address,
         shipping_address: address,
         items,
-        total: Number(o.total || 0),
-        subtotal: Number(o.subtotal || o.total || 0),
-        discount_amount: Number(o.discount ?? o.discount_amount ?? 0),
-        shipping_fee: Number(o.shipping ?? o.shipping_fee ?? 0),
-        tax_amount: Number(o.tax ?? o.tax_amount ?? 0),
+        total,
+        subtotal,
+        discount_amount,
+        shipping_fee,
+        tax_amount: 0,
         status: currentStatus,
         tracking_id: o.tracking_number || address?.tracking_id || address?.tracking_number || o.tracking_id || '',
         tracking_link: address?.tracking_link || address?.tracking_url || o.tracking_link || o.tracking_url || '',
@@ -130,6 +132,40 @@ export function AdminOrdersPage() {
 
     setOrders(normalized);
     setLoading(false);
+  };
+
+  const handleDeleteOrder = async (order) => {
+    const orderNum = order.order_number || order.id;
+    if (!window.confirm(`Are you sure you want to delete Order #${orderNum}?\n\nThis will permanently remove the order and clear its payment record from the Revenue page.`)) {
+      return;
+    }
+
+    // Optimistic delete
+    setOrders(prev => prev.filter(o => o.id !== order.id && o.order_number !== order.order_number));
+
+    try {
+      // 1. Delete from Supabase
+      const numId = Number(order.id);
+      if (!isNaN(numId)) {
+        await supabase.from("orders").delete().eq("id", numId);
+      }
+      if (order.order_number) {
+        await supabase.from("orders").delete().eq("order_number", order.order_number);
+      }
+
+      // 2. Delete from Backend REST API
+      const token = localStorage.getItem("token");
+      await fetch(`${BACKEND_URL}/admin/orders/${orderNum}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      }).catch(() => null);
+
+      alert(`Order #${orderNum} deleted successfully!`);
+    } catch (err) {
+      console.error("Delete order error:", err);
+      alert("Failed to delete order");
+      fetchOrders();
+    }
   };
 
   const updateStatus = async (orderId, newStatus) => {
@@ -675,6 +711,14 @@ export function AdminOrdersPage() {
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
                             WA Update
+                          </button>
+                          <button
+                            onClick={() => handleDeleteOrder(order)}
+                            className="bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 px-4 py-2 rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                            title="Delete this order"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            Delete Order
                           </button>
                         </div>
 

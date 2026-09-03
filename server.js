@@ -1066,6 +1066,25 @@ app.put(['/api/admin/orders/:id', '/api/admin/orders/:id/tracking'], async (req,
   return res.json({ success: true, order: index !== -1 ? orders[index] : updateData });
 });
 
+app.delete('/api/admin/orders/:id', async (req, res) => {
+  const id = req.params.id;
+  let orders = loadStoreData('orders', 'src/data/orders.json');
+  orders = orders.filter(o => String(o.id) !== String(id) && String(o.order_number) !== String(id));
+  saveStoreData('orders', orders);
+
+  try {
+    const numId = Number(id);
+    if (!isNaN(numId)) {
+      await supabase.from('orders').delete().eq('id', numId);
+    }
+    await supabase.from('orders').delete().eq('order_number', id);
+  } catch (e) {
+    console.warn('Supabase order delete note:', e);
+  }
+
+  return res.json({ success: true, message: 'Order deleted successfully' });
+});
+
 app.put('/api/admin/orders/:id/status', async (req, res) => {
   const id = req.params.id;
   const { status } = req.body;
