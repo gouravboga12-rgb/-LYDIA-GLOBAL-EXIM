@@ -45,7 +45,6 @@ export function AdminOrdersPage() {
   const [editModal, setEditModal] = useState(null);
   const [savingTracking, setSavingTracking] = useState({});
   const [trackingInputs, setTrackingInputs] = useState({});
-  const [sendingInvoice, setSendingInvoice] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
@@ -342,27 +341,6 @@ export function AdminOrdersPage() {
     }
   };
 
-  const sendEmailInvoice = async (order) => {
-    setSendingInvoice(p => ({ ...p, [order.id]: true }));
-    try {
-      const token = localStorage.getItem('token');
-      const res = await fetch(`${BACKEND_URL}/admin/orders/${order.id}/resend-invoice`, {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const data = await res.json().catch(() => ({}));
-      if (res.ok) {
-        alert("Email invoice sent successfully!");
-      } else {
-        alert("Invoice notification sent!");
-      }
-    } catch (err) {
-      alert("Invoice notification sent!");
-    } finally {
-      setSendingInvoice(p => ({ ...p, [order.id]: false }));
-    }
-  };
-
   const notifyWhatsApp = (order) => {
     const address = order.address || {};
     let phone = (order.user_phone || address.mobile || "").replace(/\D/g, "");
@@ -370,25 +348,6 @@ export function AdminOrdersPage() {
 
     const trackMsg = order.tracking_id ? ` Tracking ID: ${order.tracking_id}.${order.tracking_link ? ` Track URL: ${order.tracking_link}` : ""}` : "";
     const msg = encodeURIComponent(`Hello ${order.user_name || "Customer"}! Your order #${order.order_number || order.id} status is: *${order.status}*.${trackMsg} Thank you for shopping with LYDIA GLOBAL EXIM!`);
-    window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
-  };
-
-  const sendInvoiceWhatsApp = (order) => {
-    const address = order.address || {};
-    let phone = (order.user_phone || address.mobile || "").replace(/\D/g, "");
-    if (phone.length === 10) phone = '91' + phone;
-
-    const items = order.items || [];
-    const itemsText = items.map(i => `• ${i.product?.name || i.name} ×${i.qty} — ₹${Number((i.variant?.price || i.product?.price || i.price || 0) * i.qty).toLocaleString('en-IN')}`).join('\n');
-    const msg = encodeURIComponent(
-      `Hello ${order.user_name || "Customer"}! 🙏\n\n` +
-      `Here is the invoice for Order *#${order.order_number || order.id}*:\n\n` +
-      `*Items:*\n${itemsText}\n\n` +
-      `*Total: ₹${Number(order.total).toLocaleString('en-IN', { minimumFractionDigits: 2 })}*\n` +
-      (order.tracking_id ? `*Tracking ID:* ${order.tracking_id}\n` : '') +
-      (order.tracking_link ? `*Track Link:* ${order.tracking_link}\n` : '') +
-      `\nThank you for choosing LYDIA GLOBAL EXIM!`
-    );
     window.open(`https://wa.me/${phone}?text=${msg}`, "_blank");
   };
 
@@ -707,32 +666,17 @@ export function AdminOrdersPage() {
                         <div className="flex items-center gap-2 flex-wrap">
                           <button
                             onClick={() => openInvoice(order)}
-                            className="bg-[#45055B] hover:bg-[#5A0E72] text-[#D4AF37] px-3.5 py-2 rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                            className="bg-[#45055B] hover:bg-[#5A0E72] text-[#D4AF37] px-4 py-2 rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                           >
                             <Printer className="w-3.5 h-3.5" />
                             Print Invoice
                           </button>
                           <button
-                            onClick={() => sendEmailInvoice(order)}
-                            disabled={sendingInvoice[order.id]}
-                            className="bg-white hover:bg-gray-50 text-[#45055B] border border-[#45055B]/20 px-3.5 py-2 rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer disabled:opacity-50"
-                          >
-                            <Mail className="w-3.5 h-3.5" />
-                            {sendingInvoice[order.id] ? "Sending..." : "Email Invoice"}
-                          </button>
-                          <button
                             onClick={() => notifyWhatsApp(order)}
-                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
                           >
                             <MessageCircle className="w-3.5 h-3.5" />
                             WA Update
-                          </button>
-                          <button
-                            onClick={() => sendInvoiceWhatsApp(order)}
-                            className="bg-teal-600 hover:bg-teal-700 text-white px-3.5 py-2 rounded-xl text-xs font-bold shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
-                          >
-                            <MessageCircle className="w-3.5 h-3.5" />
-                            WA Invoice
                           </button>
                         </div>
 
