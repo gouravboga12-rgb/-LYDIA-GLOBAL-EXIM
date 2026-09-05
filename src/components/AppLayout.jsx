@@ -4,6 +4,7 @@ import { BottomNav } from './BottomNav';
 import { Toast } from './Toast';
 import { Footer } from './Footer';
 import { ScrollRevealProvider } from './ScrollRevealProvider';
+import { WhatsAppFloatingButton } from './WhatsAppFloatingButton';
 
 export function AppLayout({ children }) {
   const { pathname } = useLocation();
@@ -30,6 +31,9 @@ export function AppLayout({ children }) {
           
           {/* Footer */}
           <Footer />
+
+          {/* Floating WhatsApp Support Button */}
+          <WhatsAppFloatingButton />
           
           {/* Bottom Navigation */}
           {showBottomNav && <BottomNav />}

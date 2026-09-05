@@ -102,7 +102,7 @@ export function PickupPage() {
     }
   }, { dependencies: [isPlacingOrder] });
 
-  const createOrder = async (pMethod) => {
+  const createOrder = async (pMethod, txnId) => {
     const endpoint = token ? `${BACKEND_URL}/auth/orders` : `${BACKEND_URL}/general/orders`;
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -114,11 +114,44 @@ export function PickupPage() {
         address: { name: details.name, mobile: details.mobile }, // Save name/mobile in address field for pickup
         total: finalTotal,
         coupon_code: couponCode,
-        payment_method: pMethod,
+        payment_method: pMethod || 'razorpay',
+        stripe_payment_intent_id: txnId,
+        razorpay_payment_id: txnId,
         order_type: 'pickup'
       })
     });
     return res.json();
+  };
+
+  const triggerOrderWhatsAppAlert = (orderData, txnId) => {
+    try {
+      const orderNum = orderData?.order?.order_number || orderData?.order_number || ('LGE-' + Math.floor(100000 + Math.random() * 900000));
+      const custName = details.name || user?.name || 'Customer';
+      const custPhone = details.mobile || user?.phone || 'N/A';
+      const orderTot = Number(finalTotal).toLocaleString('en-IN');
+      const itemsList = items.map(i => `• ${i.product?.name || i.name || 'Jewelry'} (Qty: ${i.qty || 1})`).join('\n');
+
+      const whatsappMessage = 
+`✨ *NEW PICKUP ORDER BOOKED - LYDIA GLOBAL EXIM* ✨
+━━━━━━━━━━━━━━━━━━━━━━━
+📦 *Order ID:* #${orderNum}
+👤 *Customer Name:* ${custName}
+📞 *Customer Phone:* ${custPhone}
+💰 *Total Paid:* ₹${orderTot}
+💳 *Payment Gateway:* Razorpay (Txn ID: ${txnId || 'Confirmed'})
+🚚 *Order Mode:* 🏬 Store Pickup (Aubrey, TX)
+
+🛍️ *Order Items (${items.length}):*
+${itemsList}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+🔔 *Admin Notification:*
+A new store pickup order has been placed. Please review in the Admin Panel:
+👉 https://lydiaglobalexim.com/admin/orders`;
+
+      const waUrl = `https://wa.me/919014863411?text=${encodeURIComponent(whatsappMessage)}`;
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+    } catch (e) {}
   };
 
   const handleProceedToPayment = () => {
@@ -136,44 +169,70 @@ export function PickupPage() {
   const handlePlaceOrder = async () => {
     setIsPlacingOrder(true);
     try {
-      const intentRes = await fetch(`${BACKEND_URL}/general/stripe/create-payment-intent`, {
+      // 1. Create Razorpay order
+      const rzpRes = await fetch(`${BACKEND_URL}/general/razorpay/create-order`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: finalTotal })
+        body: JSON.stringify({
+          amount: finalTotal,
+          currency: 'INR',
+          notes: {
+            customer_name: details.name,
+            order_type: 'pickup'
+          }
+        })
       });
-      const intentData = await intentRes.json();
-      if (!intentData.success) {
-        showToast('Failed to initialize payment', 'error');
+      const rzpData = await rzpRes.json();
+      if (!rzpData.success || !rzpData.order) {
+        showToast('Failed to initialize payment gateway', 'error');
         setIsPlacingOrder(false);
         return;
       }
 
-      const stripe = await stripePromise;
-      const { error, paymentIntent } = await stripe.confirmCardPayment(intentData.clientSecret, {
-        payment_method: {
-          card: stripeCardElement,
-          billing_details: { name: details.name }
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || rzpData.key_id || 'rzp_test_TYFF1ktIjHgfgu',
+        amount: rzpData.order.amount,
+        currency: rzpData.order.currency || 'INR',
+        name: 'LYDIA GLOBAL EXIM',
+        description: `Store Pickup Order (${items.length} item(s))`,
+        image: '/image.png',
+        order_id: rzpData.order.id,
+        prefill: {
+          name: details.name,
+          contact: details.mobile
+        },
+        theme: {
+          color: '#45055B'
+        },
+        handler: async function (response) {
+          try {
+            const txnRef = response.razorpay_payment_id || ('RZP-' + Date.now());
+            const createOrderData = await createOrder('razorpay', txnRef);
+            triggerOrderWhatsAppAlert(createOrderData, txnRef);
+            
+            setTimeout(() => {
+              clearCart();
+              if (user?.role === 'admin') {
+                navigate('/admin/orders');
+              } else {
+                navigate(`/order-tracking/${createOrderData?.order?.order_number || txnRef}`);
+              }
+            }, 2000);
+          } catch (e) {
+            showToast('Failed to save order details.', 'error');
+            setIsPlacingOrder(false);
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setIsPlacingOrder(false);
+            showToast('Payment window closed.', 'info');
+          }
         }
-      });
+      };
 
-      if (error) {
-        showToast(error.message || 'Payment failed', 'error');
-        setIsPlacingOrder(false);
-        return;
-      }
-
-      if (paymentIntent.status === 'succeeded') {
-        const createOrderData = await createOrder('stripe');
-        if (createOrderData.success) {
-          setTimeout(() => {
-            clearCart();
-            navigate(`/order-tracking/${createOrderData.order.order_number}`);
-          }, 2000);
-        } else {
-          showToast('Failed to place order after payment.', 'error');
-          setIsPlacingOrder(false);
-        }
-      }
+      const rzpInstance = new window.Razorpay(options);
+      rzpInstance.open();
     } catch (err) {
       console.error(err);
       showToast('Payment error. Please try again.', 'error');
@@ -361,11 +420,12 @@ export function PickupPage() {
                   Payment Method
                 </h2>
 
-                <div className="bg-white/80 p-5 rounded-2xl shadow-sm border border-brand-gold/20">
-                  <p className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-3">Card Details</p>
-                  <Elements stripe={stripePromise}>
-                    <StripeCardForm onReady={setStripeCardElement} />
-                  </Elements>
+                <div className="bg-white/80 p-5 rounded-2xl shadow-sm border border-brand-gold/20 space-y-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold text-gray-700">Razorpay Payment Gateway</span>
+                    <span className="text-[10px] font-bold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">Test Mode</span>
+                  </div>
+                  <p className="text-xs text-gray-500">Click below to pay securely via Razorpay (UPI, Credit/Debit Cards, NetBanking).</p>
                 </div>
               </div>
             )}

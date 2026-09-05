@@ -7,6 +7,8 @@ import bcrypt from 'bcryptjs';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import crypto from 'crypto';
+import Razorpay from 'razorpay';
 import { createClient } from '@supabase/supabase-js';
 
 dotenv.config();
@@ -17,6 +19,14 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'lydia_global_exim_771892348_purity_secure';
+
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TYFF1ktIjHgfgu';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'lAQw9WxurRqRefzvsuAQFUAg';
+
+const razorpayInstance = new Razorpay({
+  key_id: RAZORPAY_KEY_ID,
+  key_secret: RAZORPAY_KEY_SECRET,
+});
 
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || process.env.SUPABASE_URL || 'https://vcqvqlicendactenwtwy.supabase.co';
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || process.env.SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZjcXZxbGljZW5kYWN0ZW53dHd5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc5OTE0NzksImV4cCI6MjEwMzU2NzQ3OX0.sGlIuCzPc5z_bG_wuC08WKiSGNSjxyyy2yU7UD4ke88';
@@ -897,6 +907,66 @@ app.post('/api/general/validate-address', (req, res) => {
 });
 
 // ==========================================
+// RAZORPAY PAYMENT GATEWAY ENDPOINTS
+// ==========================================
+
+// 1. Create Razorpay Order
+app.post(['/api/general/razorpay/create-order', '/api/auth/razorpay/create-order'], async (req, res) => {
+  try {
+    const { amount, currency = 'INR', receipt, notes = {} } = req.body;
+    if (!amount || isNaN(Number(amount)) || Number(amount) <= 0) {
+      return res.status(400).json({ error: 'Valid payment amount is required.' });
+    }
+
+    const amountInPaise = Math.round(Number(amount) * 100);
+    const options = {
+      amount: amountInPaise,
+      currency: currency || 'INR',
+      receipt: receipt || `rcpt_${Date.now()}`,
+      notes: notes || {}
+    };
+
+    const razorpayOrder = await razorpayInstance.orders.create(options);
+
+    return res.json({
+      success: true,
+      order: razorpayOrder,
+      key_id: RAZORPAY_KEY_ID,
+      currency: options.currency,
+      amount: options.amount
+    });
+  } catch (err) {
+    console.error('Razorpay order creation error:', err);
+    return res.status(500).json({ error: 'Failed to initialize Razorpay payment', details: err.message });
+  }
+});
+
+// 2. Verify Razorpay Payment Signature
+app.post(['/api/general/razorpay/verify-payment', '/api/auth/razorpay/verify-payment'], (req, res) => {
+  try {
+    const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+    if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ error: 'Missing Razorpay signature parameters.' });
+    }
+
+    const hmac = crypto.createHmac('sha256', RAZORPAY_KEY_SECRET);
+    hmac.update(`${razorpay_order_id}|${razorpay_payment_id}`);
+    const generatedSignature = hmac.digest('hex');
+
+    const isMatch = generatedSignature === razorpay_signature;
+
+    if (isMatch) {
+      return res.json({ success: true, verified: true, payment_id: razorpay_payment_id });
+    } else {
+      return res.status(400).json({ success: false, verified: false, error: 'Invalid payment signature.' });
+    }
+  } catch (err) {
+    console.error('Razorpay verification error:', err);
+    return res.status(500).json({ error: 'Payment verification failed', details: err.message });
+  }
+});
+
+// ==========================================
 // ORDERS & ENQUIRIES API (CUSTOMER + ADMIN)
 // ==========================================
 
@@ -912,9 +982,11 @@ const handleOrderCreation = async (req, res) => {
       coupon_code = '',
       shipping_fee = 0,
       tax_amount = 0,
-      payment_method = 'stripe',
+      payment_method = 'razorpay',
       order_type = 'shipping',
       stripe_payment_intent_id = null,
+      razorpay_payment_id = null,
+      razorpay_order_id = null,
       status = 'paid',
       payment_status = 'paid'
     } = req.body;
@@ -922,6 +994,7 @@ const handleOrderCreation = async (req, res) => {
     const orderNumber = 'LGE-' + Math.floor(100000 + Math.random() * 900000);
     const orderId = Date.now().toString();
     const createdAt = new Date().toISOString();
+    const txnId = razorpay_payment_id || stripe_payment_intent_id || ('PAYPASS-' + Math.floor(100000 + Math.random() * 900000));
 
     const newOrder = {
       id: orderId,
@@ -940,7 +1013,9 @@ const handleOrderCreation = async (req, res) => {
       tax_amount: Number(tax_amount || 0),
       payment_method,
       order_type,
-      stripe_payment_intent_id,
+      stripe_payment_intent_id: txnId,
+      razorpay_payment_id,
+      razorpay_order_id,
       status,
       payment_status,
       created_at: createdAt

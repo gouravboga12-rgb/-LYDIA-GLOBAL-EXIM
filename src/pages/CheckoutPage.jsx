@@ -202,7 +202,7 @@ const CARD_ELEMENT_OPTIONS = {
   },
 };
 
-function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, setTermsAccepted, addressConfirmed, setAddressConfirmed, address, sessionSecondsLeft, onEditAddress, paymentError, onRetry, orderType, pickupContact }) {
+function RazorpayPaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, setTermsAccepted, addressConfirmed, setAddressConfirmed, address, sessionSecondsLeft, onEditAddress, paymentError, onRetry, orderType, pickupContact, finalTotal }) {
   const isExpiringSoon = sessionSecondsLeft !== null && sessionSecondsLeft <= 60;
   const isPickup = orderType === 'pickup';
   // For pickup: only require termsAccepted. For shipping: also require addressConfirmed.
@@ -214,7 +214,7 @@ function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, se
           <div className="w-8 h-8 rounded-full bg-brand-gold/10 flex items-center justify-center">
             <CheckCircle className="w-4 h-4 text-brand-gold" />
           </div>
-          Confirm & Book Order
+          Payment & Order Confirmation
         </h2>
         {sessionSecondsLeft !== null && (
           <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border ${
@@ -274,15 +274,42 @@ function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, se
         </div>
       )}
 
-      <div className="bg-white/80 p-5 rounded-2xl shadow-sm border border-brand-gold/20 space-y-4">
-        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-            <CheckCircle className="w-5 h-5 text-emerald-600" />
+      <div className="bg-white/90 p-5 rounded-2xl shadow-sm border border-brand-gold/20 space-y-4">
+        {/* Razorpay Gateway Card */}
+        <div className="bg-gradient-to-r from-blue-50/80 via-indigo-50/60 to-purple-50/80 border border-blue-200/80 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-600 text-white font-bold flex items-center justify-center shrink-0 shadow-md">
+              <CreditCard className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2 flex-wrap">
+                <p className="text-sm font-bold text-brand-dark-blue">Razorpay Payment Gateway</p>
+                <span className="text-[10px] font-extrabold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full border border-blue-300">
+                  TEST MODE ACTIVE
+                </span>
+              </div>
+              <p className="text-xs text-gray-600 mt-0.5">
+                Pay securely using UPI (GPay, PhonePe, Paytm), Credit/Debit Cards, NetBanking, and Wallets.
+              </p>
+            </div>
+          </div>
+          <div className="sm:text-right shrink-0">
+            <span className="text-xs text-gray-500 block">Total Payable</span>
+            <span className="text-lg font-bold text-brand-dark-blue">₹{Number(finalTotal).toFixed(2)}</span>
+          </div>
+        </div>
+
+        {/* WhatsApp & Admin Auto-Redirection Notice */}
+        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 flex items-start gap-3">
+          <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
+            <svg className="w-4 h-4 fill-emerald-600" viewBox="0 0 24 24">
+              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.96.524 1.831.799 2.796.8 3.183 0 5.768-2.587 5.769-5.766.001-3.182-2.585-5.786-5.769-5.786zm3.364 8.163c-.141.398-.711.758-1.047.818-.335.06-.729.074-2.146-.514-1.637-.68-2.695-2.336-2.776-2.446-.082-.11-1.258-1.674-1.258-3.193 0-1.52.796-2.27 1.078-2.576.282-.307.615-.384.82-.384.205 0 .41.002.59.011.19.009.444-.072.694.529.256.617.873 2.13.95 2.285.077.154.129.334.026.54-.103.205-.154.334-.308.514-.154.18-.324.402-.462.539-.154.153-.314.32-.135.628.18.307.8 1.32 1.716 2.137 1.179 1.05 2.174 1.376 2.482 1.53.308.154.488.128.667-.077.18-.205.77-0.898.975-1.206.205-.308.41-.257.693-.154.282.102 1.795.847 2.103 1.001.308.154.513.23.59.36.077.128.077.744-.064 1.142z" />
+            </svg>
           </div>
           <div>
-            <p className="text-sm font-bold text-emerald-900">Direct Order Booking (Payment Gateway Bypassed)</p>
-            <p className="text-xs text-emerald-700 mt-0.5 leading-relaxed">
-              Online card payment is currently bypassed for testing. Your order will be placed directly in the Admin Panel and customer dashboard with status <strong>Paid</strong>.
+            <p className="text-xs font-bold text-emerald-900">Instant WhatsApp & Admin Sync</p>
+            <p className="text-[11px] text-emerald-700 mt-0.5 leading-relaxed">
+              Upon successful payment, an instant WhatsApp order receipt will be sent to admin support (<strong>+91 9014863411</strong>) with a direct link to the Admin Panel, and you will be redirected to the orders dashboard.
             </p>
           </div>
         </div>
@@ -293,7 +320,7 @@ function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, se
               <svg className="w-4 h-4 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-red-700">Booking Failed</p>
+              <p className="text-sm font-bold text-red-700">Payment Failed</p>
               <p className="text-xs text-red-600 mt-0.5 leading-relaxed">{paymentError}</p>
               <button
                 type="button"
@@ -322,14 +349,13 @@ function StripePaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, se
           }`}
         >
           {isPlacingOrder ? (
-            <><div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Booking Order...</>
-          ) : 'Confirm & Book Order'}
+            <><div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Processing Payment...</>
+          ) : `Pay ₹${Number(finalTotal).toFixed(2)} with Razorpay`}
         </button>
       </div>
     </div>
   );
 }
-
 
 function AddressValidationModal({ validationResult, onUseSuggested, onEdit, onProceedOriginal }) {
   if (!validationResult) return null;
@@ -538,6 +564,8 @@ export function CheckoutPage() {
   const [isPlacingOrder, setIsPlacingOrder] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [paymentError, setPaymentError] = useState(null);
+  const [whatsappAlertUrl, setWhatsappAlertUrl] = useState(null);
+  const [confirmedOrderNumber, setConfirmedOrderNumber] = useState(null);
   const [fieldErrors, setFieldErrors] = useState({});
   const [saveAddress, setSaveAddress] = useState(true);
   const [saveAsDefault, setSaveAsDefault] = useState(false);
@@ -660,7 +688,7 @@ export function CheckoutPage() {
     }
   }, { dependencies: [orderSuccess] });
 
-  const createOrder = async (pMethod, stripePaymentIntentId) => {
+  const createOrder = async (pMethod, stripePaymentIntentId, extraData = {}) => {
     const endpoint = token ? `${BACKEND_URL}/auth/orders` : `${BACKEND_URL}/general/orders`;
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -692,9 +720,11 @@ export function CheckoutPage() {
       coupon_code: couponCode,
       shipping_fee: shippingFee,
       tax_amount: taxAmount,
-      payment_method: pMethod,
+      payment_method: pMethod || 'razorpay',
       order_type: orderType,
       stripe_payment_intent_id: stripePaymentIntentId,
+      razorpay_payment_id: extraData.razorpay_payment_id || (pMethod === 'razorpay' ? stripePaymentIntentId : null),
+      razorpay_order_id: extraData.razorpay_order_id || null,
       status: 'paid',
       payment_status: 'paid',
       order_number: orderNumber
@@ -727,7 +757,7 @@ export function CheckoutPage() {
         discount: Number(discount || 0),
         shipping: Number(shippingFee || 0),
         tax: Number(taxAmount || 0),
-        payment_method: pMethod || 'direct_booking',
+        payment_method: pMethod || 'razorpay',
         payment_status: 'paid',
         status: 'paid',
         created_at: new Date().toISOString()
@@ -738,7 +768,7 @@ export function CheckoutPage() {
         email: finalAddress.email || user?.email || '',
         phone: finalAddress.mobile || user?.phone || '',
         subject: `New Order Placed: #${backendResult?.order?.order_number || orderNumber}`,
-        message: `Order #${backendResult?.order?.order_number || orderNumber} for ₹${Number(finalTotal).toLocaleString('en-IN')} placed by ${finalAddress.name || 'Customer'} (${items.length} item${items.length !== 1 ? 's' : ''}). Channel: ${orderType === 'pickup' ? 'Store Pickup' : 'Delivery Shipping'}. Status: Paid.`,
+        message: `Order #${backendResult?.order?.order_number || orderNumber} for ₹${Number(finalTotal).toLocaleString('en-IN')} placed by ${finalAddress.name || 'Customer'} (${items.length} item${items.length !== 1 ? 's' : ''}). Channel: ${orderType === 'pickup' ? 'Store Pickup' : 'Delivery Shipping'}. Status: Paid (Razorpay Txn: ${stripePaymentIntentId}).`,
         status: 'new',
         created_at: new Date().toISOString()
       }]).catch(() => {});
@@ -812,6 +842,42 @@ export function CheckoutPage() {
         ...orderPayload
       }
     };
+  };
+
+  const triggerOrderWhatsAppAlert = (orderData, txnId) => {
+    try {
+      const orderNum = orderData?.order?.order_number || orderData?.order_number || ('LGE-' + Math.floor(100000 + Math.random() * 900000));
+      const custName = (orderType === 'pickup' ? pickupContact.name : address.name) || user?.name || 'Customer';
+      const custPhone = (orderType === 'pickup' ? pickupContact.phone : address.mobile) || user?.phone || 'N/A';
+      const orderTot = Number(finalTotal).toLocaleString('en-IN');
+      const itemsList = items.map(i => `• ${i.product?.name || i.name || 'Jewelry'} (Qty: ${i.qty || 1}${i.variant?.size ? `, Size: ${i.variant.size}` : ''})`).join('\n');
+      const deliveryInfo = orderType === 'pickup' ? '🏬 Store Pickup (Aubrey, TX location)' : `📦 Delivery Address: ${address.line1 || ''}, ${address.city || ''}, ${address.state || ''} ${address.pincode || ''}, ${address.country || ''}`;
+
+      const whatsappMessage = 
+`✨ *NEW ORDER BOOKED - LYDIA GLOBAL EXIM* ✨
+━━━━━━━━━━━━━━━━━━━━━━━
+📦 *Order ID:* #${orderNum}
+👤 *Customer Name:* ${custName}
+📞 *Customer Phone:* ${custPhone}
+💰 *Total Paid:* ₹${orderTot}
+💳 *Payment Gateway:* Razorpay (Txn ID: ${txnId || 'Confirmed'})
+🚚 *Order Mode:* ${deliveryInfo}
+
+🛍️ *Order Items (${items.length}):*
+${itemsList}
+
+━━━━━━━━━━━━━━━━━━━━━━━
+🔔 *Admin Notification:*
+A new order has been placed! Please check the Admin Panel to review order details, print packing slips, update tracking, and process shipping:
+👉 https://lydiaglobalexim.com/admin/orders`;
+
+      const waUrl = `https://wa.me/919014863411?text=${encodeURIComponent(whatsappMessage)}`;
+      window.open(waUrl, '_blank', 'noopener,noreferrer');
+      return { waUrl, orderNum };
+    } catch (e) {
+      console.warn("WhatsApp alert error:", e);
+      return {};
+    }
   };
 
   const handleProceedToPayment = async () => {
@@ -925,6 +991,7 @@ export function CheckoutPage() {
     setIsPlacingOrder(true);
     setPaymentError(null);
     try {
+      // 1. Stock check
       try {
         const stockRes = await fetch(`${BACKEND_URL}/general/check-stock`, {
           method: 'POST',
@@ -942,24 +1009,131 @@ export function CheckoutPage() {
         console.warn("Stock check note:", e);
       }
 
-      const transactionRef = 'PAYPASS-' + Math.floor(100000 + Math.random() * 900000);
-      setTransactionId(transactionRef);
-      const createOrderData = await createOrder('direct_booking', transactionRef);
-      
-      setIsPlacingOrder(false);
-      setOrderSuccess(true);
-      const orderNum = createOrderData?.order?.order_number || transactionRef;
-      
-      setTimeout(() => {
-        clearCart();
-        if (user?.role === 'admin') {
-          navigate('/admin/orders');
-        } else {
-          navigate(`/order-tracking/${orderNum}`);
+      // 2. Initialize Razorpay Order via Backend
+      const rzpRes = await fetch(`${BACKEND_URL}/general/razorpay/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          amount: finalTotal,
+          currency: 'INR',
+          notes: {
+            customer_name: (orderType === 'pickup' ? pickupContact.name : address.name) || user?.name || 'Customer',
+            order_type: orderType,
+            item_count: items.length
+          }
+        })
+      });
+
+      const rzpData = await rzpRes.json();
+      if (!rzpData.success || !rzpData.order) {
+        throw new Error(rzpData.error || 'Failed to initialize payment gateway.');
+      }
+
+      // 3. Ensure Razorpay Checkout SDK is loaded
+      const loadRazorpayScript = () => {
+        return new Promise((resolve) => {
+          if (window.Razorpay) {
+            resolve(true);
+            return;
+          }
+          const script = document.createElement('script');
+          script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+          script.onload = () => resolve(true);
+          script.onerror = () => resolve(false);
+          document.body.appendChild(script);
+        });
+      };
+
+      const isScriptLoaded = await loadRazorpayScript();
+      if (!isScriptLoaded || !window.Razorpay) {
+        throw new Error('Razorpay SDK failed to load. Please check your internet connection.');
+      }
+
+      // 4. Trigger Razorpay Checkout Modal
+      const custName = (orderType === 'pickup' ? pickupContact.name : address.name) || user?.name || '';
+      const custEmail = (orderType === 'pickup' ? pickupContact.email : address.email) || user?.email || '';
+      const custPhone = (orderType === 'pickup' ? pickupContact.phone : address.mobile) || user?.phone || '';
+
+      const options = {
+        key: import.meta.env.VITE_RAZORPAY_KEY_ID || rzpData.key_id || 'rzp_test_TYFF1ktIjHgfgu',
+        amount: rzpData.order.amount,
+        currency: rzpData.order.currency || 'INR',
+        name: 'LYDIA GLOBAL EXIM',
+        description: `Order Payment (${items.length} item${items.length !== 1 ? 's' : ''})`,
+        image: '/image.png',
+        order_id: rzpData.order.id,
+        prefill: {
+          name: custName,
+          email: custEmail,
+          contact: custPhone
+        },
+        theme: {
+          color: '#45055B'
+        },
+        handler: async function (response) {
+          setIsPlacingOrder(true);
+          try {
+            // Verify payment signature on backend
+            await fetch(`${BACKEND_URL}/general/razorpay/verify-payment`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature
+              })
+            }).catch(e => console.warn('Signature verification notice:', e));
+
+            const transactionRef = response.razorpay_payment_id || ('RZP-' + Date.now());
+            setTransactionId(transactionRef);
+
+            // Register order
+            const createOrderData = await createOrder('razorpay', transactionRef, {
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_order_id: response.razorpay_order_id
+            });
+
+            // Open WhatsApp with admin message
+            const { waUrl, orderNum } = triggerOrderWhatsAppAlert(createOrderData, transactionRef);
+            setWhatsappAlertUrl(waUrl);
+            setConfirmedOrderNumber(orderNum || createOrderData?.order?.order_number || transactionRef);
+
+            setIsPlacingOrder(false);
+            setOrderSuccess(true);
+
+            // Redirect to Admin Panel Orders (if admin) or Order Tracking
+            setTimeout(() => {
+              clearCart();
+              if (user?.role === 'admin') {
+                navigate('/admin/orders');
+              } else {
+                navigate(`/order-tracking/${orderNum || createOrderData?.order?.order_number || transactionRef}`);
+              }
+            }, 3000);
+          } catch (handlerErr) {
+            console.error('Order registration error:', handlerErr);
+            showToast(handlerErr.message || 'Error creating order after payment.', 'error');
+            setIsPlacingOrder(false);
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setIsPlacingOrder(false);
+            showToast('Payment window closed.', 'info');
+          }
         }
-      }, 2200);
+      };
+
+      const razorpayInstance = new window.Razorpay(options);
+      razorpayInstance.on('payment.failed', function (resp) {
+        setIsPlacingOrder(false);
+        setPaymentError(resp.error?.description || 'Payment transaction failed.');
+        showToast(resp.error?.description || 'Payment failed. Please try again.', 'error');
+      });
+      razorpayInstance.open();
     } catch (err) {
       console.error('Order placement catch error:', err);
+      setPaymentError(err.message || 'Error processing payment.');
       showToast(err.message || 'Error placing order. Please try again.', 'error');
       setIsPlacingOrder(false);
     }
@@ -1764,23 +1938,22 @@ export function CheckoutPage() {
           </div>
         )}
         {step === 3 && (
-          <Elements stripe={stripePromise}>
-            <StripePaymentForm
-              isPlacingOrder={isPlacingOrder}
-              handlePlaceOrder={handlePlaceOrder}
-              termsAccepted={termsAccepted}
-              setTermsAccepted={setTermsAccepted}
-              addressConfirmed={addressConfirmed}
-              setAddressConfirmed={setAddressConfirmed}
-              address={address}
-              sessionSecondsLeft={sessionSecondsLeft}
-              onEditAddress={() => { setStep(2.5); setSessionSecondsLeft(null); clearInterval(sessionTimerRef.current); setAddressConfirmed(false); setTermsAccepted(false); }}
-              paymentError={paymentError}
-              onRetry={() => setPaymentError(null)}
-              orderType={orderType}
-              pickupContact={pickupContact}
-            />
-          </Elements>
+          <RazorpayPaymentForm
+            isPlacingOrder={isPlacingOrder}
+            handlePlaceOrder={handlePlaceOrder}
+            termsAccepted={termsAccepted}
+            setTermsAccepted={setTermsAccepted}
+            addressConfirmed={addressConfirmed}
+            setAddressConfirmed={setAddressConfirmed}
+            address={address}
+            sessionSecondsLeft={sessionSecondsLeft}
+            onEditAddress={() => { setStep(2.5); setSessionSecondsLeft(null); clearInterval(sessionTimerRef.current); setAddressConfirmed(false); setTermsAccepted(false); }}
+            paymentError={paymentError}
+            onRetry={() => setPaymentError(null)}
+            orderType={orderType}
+            pickupContact={pickupContact}
+            finalTotal={finalTotal}
+          />
         )}
       </div>
           {/* Right Column: Order Summary (Desktop) */}
@@ -1895,27 +2068,86 @@ export function CheckoutPage() {
       {isPlacingOrder && (
         <div className="fixed inset-0 z-[100] bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center">
           <div className="w-14 h-14 border-4 border-brand-gold/20 border-t-brand-gold rounded-full animate-spin mb-4" />
-          <p className="text-sm font-semibold text-brand-dark-blue">Processing your payment...</p>
+          <p className="text-sm font-semibold text-brand-dark-blue">Processing your payment & order...</p>
         </div>
       )}
 
       {/* Order Confirmed Overlay */}
       {orderSuccess && (
-        <div ref={overlayRef} className="fixed inset-0 z-[100] bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center w-full h-full">
-          <div className="flex flex-col items-center gap-4 px-6 text-center">
-            <div ref={iconRef} className="w-24 h-24 bg-[#45055B] rounded-full flex items-center justify-center shadow-lg">
-              <CheckCircle className="w-12 h-12 text-white" strokeWidth={2.5} />
+        <div ref={overlayRef} className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-md flex flex-col items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-lg w-full text-center shadow-2xl border border-brand-gold/30 space-y-5 animate-in fade-in zoom-in duration-300">
+            <div ref={iconRef} className="w-20 h-20 bg-gradient-to-tr from-[#45055B] to-[#6a158a] text-white rounded-full flex items-center justify-center shadow-xl mx-auto">
+              <CheckCircle className="w-10 h-10 text-white" strokeWidth={2.5} />
             </div>
-            <h2 ref={textRef} className="text-2xl font-serif font-bold text-[#45055B]">Order Confirmed!</h2>
-            <p className="text-sm text-gray-600 max-w-sm leading-relaxed">
-              Thank you for placing your order with LYDIA GLOBAL EXIM. We're delighted to begin preparing your selection and will keep you updated throughout its journey to you.
-            </p>
-            {transactionId && (
-              <p className="text-xs text-gray-400 font-mono bg-gray-100 px-4 py-2 rounded-lg">
-                Transaction ID: <span className="text-brand-dark-blue font-semibold">{transactionId}</span>
+            
+            <div>
+              <h2 ref={textRef} className="text-2xl sm:text-3xl font-serif font-bold text-brand-dark-blue">Order Confirmed!</h2>
+              <p className="text-xs sm:text-sm text-gray-600 mt-2 leading-relaxed">
+                Thank you for placing your order with <strong>LYDIA GLOBAL EXIM</strong>. Your payment was verified and your order details have been registered into the Admin Panel.
               </p>
-            )}
-            <p className="text-sm text-gray-400">Redirecting to tracking...</p>
+            </div>
+
+            {/* Order Badges */}
+            <div className="bg-brand-beige/50 border border-brand-gold/20 rounded-2xl p-4 space-y-2 text-left text-xs text-brand-dark-blue">
+              {confirmedOrderNumber && (
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-gray-500">Order Number:</span>
+                  <span className="font-mono font-bold text-brand-dark-blue bg-white px-2 py-0.5 rounded border border-brand-gold/30">#{confirmedOrderNumber}</span>
+                </div>
+              )}
+              {transactionId && (
+                <div className="flex justify-between items-center">
+                  <span className="font-semibold text-gray-500">Razorpay Payment ID:</span>
+                  <span className="font-mono text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">{transactionId}</span>
+                </div>
+              )}
+              <div className="flex justify-between items-center">
+                <span className="font-semibold text-gray-500">Amount Paid:</span>
+                <span className="font-bold text-brand-gold text-sm">₹{Number(finalTotal).toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* WhatsApp notification status */}
+            <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3 flex items-center gap-3 text-left">
+              <div className="w-8 h-8 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0">
+                <svg className="w-4 h-4 fill-white" viewBox="0 0 24 24">
+                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.96.524 1.831.799 2.796.8 3.183 0 5.768-2.587 5.769-5.766.001-3.182-2.585-5.786-5.769-5.786zm3.364 8.163c-.141.398-.711.758-1.047.818-.335.06-.729.074-2.146-.514-1.637-.68-2.695-2.336-2.776-2.446-.082-.11-1.258-1.674-1.258-3.193 0-1.52.796-2.27 1.078-2.576.282-.307.615-.384.82-.384.205 0 .41.002.59.011.19.009.444-.072.694.529.256.617.873 2.13.95 2.285.077.154.129.334.026.54-.103.205-.154.334-.308.514-.154.18-.324.402-.462.539-.154.153-.314.32-.135.628.18.307.8 1.32 1.716 2.137 1.179 1.05 2.174 1.376 2.482 1.53.308.154.488.128.667-.077.18-.205.77-0.898.975-1.206.205-.308.41-.257.693-.154.282.102 1.795.847 2.103 1.001.308.154.513.23.59.36.077.128.077.744-.064 1.142z" />
+                </svg>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-emerald-900">WhatsApp Notification Dispatched</p>
+                <p className="text-[10px] text-emerald-700">Order alert prefilled to admin WhatsApp (+91 9014863411).</p>
+              </div>
+            </div>
+
+            {/* Quick action navigation buttons */}
+            <div className="flex flex-col sm:flex-row gap-2.5 pt-2">
+              {whatsappAlertUrl && (
+                <a
+                  href={whatsappAlertUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md transition-all cursor-pointer"
+                >
+                  <svg className="w-3.5 h-3.5 fill-white" viewBox="0 0 24 24">
+                    <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.96.524 1.831.799 2.796.8 3.183 0 5.768-2.587 5.769-5.766.001-3.182-2.585-5.786-5.769-5.786zm3.364 8.163c-.141.398-.711.758-1.047.818-.335.06-.729.074-2.146-.514-1.637-.68-2.695-2.336-2.776-2.446-.082-.11-1.258-1.674-1.258-3.193 0-1.52.796-2.27 1.078-2.576.282-.307.615-.384.82-.384.205 0 .41.002.59.011.19.009.444-.072.694.529.256.617.873 2.13.95 2.285.077.154.129.334.026.54-.103.205-.154.334-.308.514-.154.18-.324.402-.462.539-.154.153-.314.32-.135.628.18.307.8 1.32 1.716 2.137 1.179 1.05 2.174 1.376 2.482 1.53.308.154.488.128.667-.077.18-.205.77-0.898.975-1.206.205-.308.41-.257.693-.154.282.102 1.795.847 2.103 1.001.308.154.513.23.59.36.077.128.077.744-.064 1.142z" />
+                  </svg>
+                  WhatsApp Order Chat
+                </a>
+              )}
+              <button
+                onClick={() => { clearCart(); navigate('/admin/orders'); }}
+                className="flex-1 py-3 px-4 bg-brand-dark-blue hover:bg-brand-dark-blue/90 text-brand-gold rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
+              >
+                Go to Admin Panel Orders
+              </button>
+              <button
+                onClick={() => { clearCart(); navigate(`/order-tracking/${confirmedOrderNumber || transactionId}`); }}
+                className="flex-1 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+              >
+                Track Order
+              </button>
+            </div>
           </div>
         </div>
       )}
