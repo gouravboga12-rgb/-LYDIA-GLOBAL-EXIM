@@ -1117,6 +1117,54 @@ app.get(['/api/admin/orders', '/api/general/orders'], async (req, res) => {
   return res.json({ orders });
 });
 
+app.get(['/api/general/order/:id', '/api/auth/order/:id', '/api/orders/:id', '/api/order/:id'], async (req, res) => {
+  const id = req.params.id;
+  let order = null;
+  try {
+    const numId = Number(id);
+    let query = supabase.from('orders').select('*');
+    if (!isNaN(numId)) {
+      query = query.or(`id.eq.${numId},order_number.eq.${id}`);
+    } else {
+      query = query.or(`order_number.eq.${id},razorpay_order_id.eq.${id},razorpay_payment_id.eq.${id},stripe_payment_intent_id.eq.${id}`);
+    }
+    const { data: sbOrders, error } = await query.limit(1);
+    if (!error && sbOrders && sbOrders.length > 0) {
+      order = sbOrders[0];
+    }
+  } catch (e) {
+    console.warn('Supabase single order load note:', e);
+  }
+
+  if (!order) {
+    const orders = loadStoreData('orders', 'src/data/orders.json');
+    order = orders.find(o => 
+      String(o.id) === String(id) || 
+      String(o.order_number) === String(id) || 
+      String(o.razorpay_payment_id) === String(id) ||
+      String(o.razorpay_order_id) === String(id) ||
+      String(o.stripe_payment_intent_id) === String(id)
+    ) || null;
+  }
+
+  if (!order) {
+    return res.status(404).json({ success: false, message: 'Order not found' });
+  }
+
+  // Parse items and address if stringified
+  if (order.items && typeof order.items === 'string') {
+    try { order.items = JSON.parse(order.items); } catch {}
+  }
+  if (order.shipping_address && typeof order.shipping_address === 'string') {
+    try { order.shipping_address = JSON.parse(order.shipping_address); } catch {}
+  }
+  if (order.address && typeof order.address === 'string') {
+    try { order.address = JSON.parse(order.address); } catch {}
+  }
+
+  return res.json({ success: true, order });
+});
+
 app.put(['/api/admin/orders/:id', '/api/admin/orders/:id/tracking'], async (req, res) => {
   const id = req.params.id;
   const updateData = req.body || {};

@@ -2135,15 +2135,24 @@ A new order has been placed! Please check the Admin Panel to review order detail
                   WhatsApp Order Chat
                 </a>
               )}
-              <button
-                onClick={() => { clearCart(); navigate('/admin/orders'); }}
-                className="flex-1 py-3 px-4 bg-brand-dark-blue hover:bg-brand-dark-blue/90 text-brand-gold rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
-              >
-                Go to Admin Panel Orders
-              </button>
+              {user?.role === 'admin' ? (
+                <button
+                  onClick={() => { clearCart(); navigate('/admin/orders'); }}
+                  className="flex-1 py-3 px-4 bg-brand-dark-blue hover:bg-brand-dark-blue/90 text-brand-gold rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
+                >
+                  Admin Orders
+                </button>
+              ) : (
+                <button
+                  onClick={() => { clearCart(); navigate('/my-orders'); }}
+                  className="flex-1 py-3 px-4 bg-brand-dark-blue hover:bg-brand-dark-blue/90 text-brand-gold rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
+                >
+                  View My Orders
+                </button>
+              )}
               <button
                 onClick={() => { clearCart(); navigate(`/order-tracking/${confirmedOrderNumber || transactionId}`); }}
-                className="flex-1 py-3 px-4 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                className="flex-1 py-3 px-4 bg-[#D4AF37] hover:bg-[#b89528] text-[#45055B] rounded-xl text-xs font-bold transition-all shadow-md cursor-pointer"
               >
                 Track Order
               </button>

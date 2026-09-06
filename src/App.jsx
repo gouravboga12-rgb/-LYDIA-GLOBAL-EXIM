@@ -116,6 +116,7 @@ function InnerApp() {
                 <Route path="/wishlist" element={<WishlistPage />} />
                 <Route path="/account-settings" element={<AccountSettingsPage />} />
                 <Route path="/order-tracking" element={<OrderTrackingPage />} />
+                <Route path="/order-tracking/:orderId" element={<OrderTrackingPage />} />
                 <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
                 <Route path="/returns-policy" element={<ReturnsPolicyPage />} />
                 <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
