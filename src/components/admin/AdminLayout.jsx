@@ -24,6 +24,13 @@ const NAV = [
   { href: "/admin/enquiries", label: "Enquiries", icon: <MessageSquare className="w-4 h-4" /> },
 ];
 
+function isAuthorizedAdmin(user) {
+  if (!user || user.role !== 'admin') return false;
+  const email = (user.email || '').toLowerCase().trim();
+  const phone = (user.phone || '').replace(/\D/g, '');
+  return email === 'lydiaglobalexim@gmail.com' || phone.endsWith('9985563411') || user.id === 'admin_master';
+}
+
 function AdminAuthModal({ onAuthenticated }) {
   const [adminId, setAdminId] = useState("");
   const [password, setPassword] = useState("");
@@ -36,73 +43,25 @@ function AdminAuthModal({ onAuthenticated }) {
     setError("");
     setLoading(true);
 
-    const cleanId = adminId.trim().replace(/\s+/g, '');
-    const cleanPass = password.trim();
-    const cleanPassNoSpace = cleanPass.replace(/\s+/g, '');
-
-    const validIds = ['9985563411', 'admin@lydiaglobalexim.com', 'admin', 'gouravboga12@gmail.com', 'lydiaglobalexim@gmail.com'];
-    const validPass = ['99855 63@411', '9985563@411', 'admin123', 'admin'];
-
-    // Direct match check
-    const isDirectMatch = (validIds.includes(cleanId) || adminId.trim() === "99855 63411") &&
-                          (validPass.includes(cleanPass) || validPass.includes(cleanPassNoSpace));
-
     try {
-      // Attempt backend login first
-      const res = await fetch(`${BACKEND_URL}/auth/login`, {
+      const res = await fetch(`${BACKEND_URL}/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: adminId.trim(), password: password.trim() })
+        body: JSON.stringify({ id: adminId.trim(), password: password.trim() })
       });
 
       const data = await res.json();
 
-      if (res.ok && data.success && (data.user?.role === "admin" || isDirectMatch)) {
-        localStorage.setItem("token", data.token || "admin_session_token_" + Date.now());
-        const adminUser = data.user || {
-          id: "admin_master",
-          name: "Admin Administrator",
-          email: "99855 63411",
-          phone: "99855 63411",
-          role: "admin"
-        };
-        useAuthStore.setState({ token: data.token, user: adminUser });
-        onAuthenticated(adminUser);
+      if (res.ok && data.success && isAuthorizedAdmin(data.user)) {
+        localStorage.setItem("token", data.token);
+        useAuthStore.setState({ token: data.token, user: data.user });
+        onAuthenticated(data.user);
         return;
       }
 
-      if (isDirectMatch) {
-        const dummyToken = "admin_session_token_" + Date.now();
-        localStorage.setItem("token", dummyToken);
-        const adminUser = {
-          id: "admin_master",
-          name: "Admin Administrator",
-          email: "99855 63411",
-          phone: "99855 63411",
-          role: "admin"
-        };
-        useAuthStore.setState({ token: dummyToken, user: adminUser });
-        onAuthenticated(adminUser);
-        return;
-      }
-
-      setError(data.error || "Invalid Admin ID or Password. Please verify your credentials.");
+      setError(data.error || "Access Denied: Invalid Admin credentials.");
     } catch (err) {
-      if (isDirectMatch) {
-        const dummyToken = "admin_session_token_" + Date.now();
-        localStorage.setItem("token", dummyToken);
-        const adminUser = {
-          id: "admin_master",
-          name: "Admin Administrator",
-          email: "99855 63411",
-          phone: "99855 63411",
-          role: "admin"
-        };
-        useAuthStore.setState({ token: dummyToken, user: adminUser });
-        onAuthenticated(adminUser);
-      } else {
-        setError("Invalid Admin ID or Password. Please try again.");
-      }
+      setError("Authentication service unavailable. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -137,14 +96,14 @@ function AdminAuthModal({ onAuthenticated }) {
           <form onSubmit={handleLogin} className="space-y-5">
             <div>
               <label className="block text-xs font-bold text-[#45055B] uppercase tracking-wider mb-2">
-                Admin ID / Username
+                Admin Email or Phone
               </label>
               <div className="relative">
                 <input
                   type="text"
                   value={adminId}
                   onChange={(e) => setAdminId(e.target.value)}
-                  placeholder="e.g. 99855 63411"
+                  placeholder="lydiaglobalexim@gmail.com or 9985563411"
                   required
                   className="w-full bg-[#FAF6F0]/60 border border-[#45055B]/20 rounded-xl px-4 py-3.5 text-sm text-[#45055B] placeholder:text-[#45055B]/40 focus:outline-none focus:ring-2 focus:ring-[#45055B]/30 focus:border-[#45055B] transition-all"
                 />
@@ -229,7 +188,15 @@ export function AdminLayout({ children }) {
 
     const safetyTimer = setTimeout(() => {
       setCheckingAuth(false);
-    }, 800);
+    }, 600);
+
+    // If customer user is logged in, restrict access and redirect immediately
+    if (storedUser && storedUser.role !== "admin") {
+      clearTimeout(safetyTimer);
+      setCheckingAuth(false);
+      navigate("/", { replace: true });
+      return;
+    }
 
     if (!token) {
       clearTimeout(safetyTimer);
@@ -237,33 +204,27 @@ export function AdminLayout({ children }) {
       return;
     }
 
-    if (token.startsWith("admin_") || (storedUser && storedUser.role === "admin")) {
-      clearTimeout(safetyTimer);
-      const adminUser = storedUser?.role === "admin" ? storedUser : {
-        id: "admin_master",
-        name: "Admin Administrator",
-        email: "99855 63411",
-        phone: "99855 63411",
-        role: "admin"
-      };
-      setAdmin(adminUser);
-      useAuthStore.setState({ user: adminUser, token });
-      setCheckingAuth(false);
-      return;
-    }
-
+    // Verify token with backend
     fetch(`${BACKEND_URL}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
       .then((r) => r.json())
       .then((d) => {
-        if (d.user && d.user.role === "admin") {
+        if (d.user && isAuthorizedAdmin(d.user)) {
           setAdmin(d.user);
           useAuthStore.setState({ user: d.user, token });
         } else {
+          // If the token belongs to a customer or invalid account, redirect out
           setAdmin(null);
+          if (d.user && d.user.role !== "admin") {
+            navigate("/", { replace: true });
+          }
         }
       })
       .catch(() => {
-        setAdmin(null);
+        if (storedUser && isAuthorizedAdmin(storedUser)) {
+          setAdmin(storedUser);
+        } else {
+          setAdmin(null);
+        }
       })
       .finally(() => {
         clearTimeout(safetyTimer);
@@ -271,8 +232,7 @@ export function AdminLayout({ children }) {
       });
 
     return () => clearTimeout(safetyTimer);
-  }, []);
-
+  }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");

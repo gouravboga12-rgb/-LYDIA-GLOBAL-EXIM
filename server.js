@@ -197,6 +197,7 @@ async function sendForgotPasswordOTPEmail(email, otp, name = 'Customer') {
 }
 
 // Authentication Middleware
+// Authentication Middleware
 function authMiddleware(req, res, next) {
   const authHeader = req.headers.authorization;
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
@@ -212,39 +213,59 @@ function authMiddleware(req, res, next) {
   }
 }
 
-// Helper: Check Admin Credentials
+// Strict Admin Verification Helper: Only lydiaglobalexim@gmail.com or 9985563411 with password 9985563@411
 function verifyAdminCredentials(identifier, password) {
-  const cleanId = (identifier || '').toString().trim().replace(/\s+/g, '').toLowerCase();
+  const cleanId = (identifier || '').toString().trim().toLowerCase();
+  const cleanPhone = cleanId.replace(/\D/g, '');
   const cleanPass = (password || '').toString().trim();
   const cleanPassNoSpace = cleanPass.replace(/\s+/g, '');
 
-  const validIds = [
-    '9985563411',
-    '9985563411',
-    'admin@lydiaglobalexim.com',
-    'admin',
-    'gouravboga12@gmail.com',
-    'lydiaglobalexim@gmail.com'
-  ];
+  const isEmailMatch = cleanId === 'lydiaglobalexim@gmail.com';
+  const isPhoneMatch = cleanPhone === '9985563411' || cleanPhone.endsWith('9985563411');
+  const isPassMatch = cleanPass === '9985563@411' || cleanPassNoSpace === '9985563@411' || cleanPass === '99855 63@411';
 
-  const validPasswords = [
-    '99855 63@411',
-    '9985563@411',
-    'admin123',
-    'admin'
-  ];
-
-  const isIdValid = validIds.includes(cleanId) || (identifier || '').toString().trim() === '99855 63411';
-  const isPassValid = validPasswords.includes(cleanPass) || validPasswords.includes(cleanPassNoSpace);
-
-  return isIdValid && isPassValid;
+  return (isEmailMatch || isPhoneMatch) && isPassMatch;
 }
+
+// Strict Backend Admin Authorization Middleware
+function adminAuthMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({ error: 'Unauthorized: Admin authentication token required.' });
+  }
+  const token = authHeader.split(' ')[1];
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const cleanEmail = (decoded.email || '').toString().trim().toLowerCase();
+    const cleanPhone = (decoded.phone || '').toString().replace(/\D/g, '');
+
+    const isAuthorized = 
+      decoded.role === 'admin' &&
+      (cleanEmail === 'lydiaglobalexim@gmail.com' || cleanPhone.endsWith('9985563411') || decoded.id === 'admin_master');
+
+    if (!isAuthorized) {
+      return res.status(403).json({ error: 'Forbidden: Access restricted to authorized administrator only.' });
+    }
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: 'Admin session is expired or invalid.' });
+  }
+}
+
+// Protect all /api/admin/* routes (except /api/admin/login)
+app.use('/api/admin', (req, res, next) => {
+  if (req.path === '/login' || req.path === '/login/') {
+    return next();
+  }
+  return adminAuthMiddleware(req, res, next);
+});
 
 // ==========================================
 // AUTH ROUTES
 // ==========================================
 
-// 1. Unified Login (Supports Admin ID: 99855 63411 & Password: 99855 63@411 as well as Customer Login)
+// 1. Unified Login (Supports Admin & Customer Login)
 app.post('/api/auth/login', async (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) {
@@ -254,7 +275,7 @@ app.post('/api/auth/login', async (req, res) => {
   // Check if Admin Login credentials matched
   if (verifyAdminCredentials(email, password)) {
     const token = jwt.sign(
-      { id: 'admin_master', email: 'admin@lydiaglobalexim.com', name: 'Admin Administrator', role: 'admin', phone: '99855 63411' },
+      { id: 'admin_master', email: 'lydiaglobalexim@gmail.com', name: 'Lydia Admin', role: 'admin', phone: '9985563411' },
       JWT_SECRET,
       { expiresIn: '30d' }
     );
@@ -263,9 +284,9 @@ app.post('/api/auth/login', async (req, res) => {
       token,
       user: {
         id: 'admin_master',
-        email: '99855 63411',
-        name: 'Admin Administrator',
-        phone: '99855 63411',
+        email: 'lydiaglobalexim@gmail.com',
+        name: 'Lydia Admin',
+        phone: '9985563411',
         role: 'admin',
         country: 'India'
       }
@@ -310,14 +331,15 @@ app.post('/api/auth/login', async (req, res) => {
 
 // 2. Direct Admin Login Endpoint
 app.post('/api/admin/login', (req, res) => {
-  const { id, password } = req.body;
-  if (!id || !password) {
+  const { id, email, password } = req.body;
+  const adminIdentifier = id || email;
+  if (!adminIdentifier || !password) {
     return res.status(400).json({ error: 'Admin ID and password are required.' });
   }
 
-  if (verifyAdminCredentials(id, password)) {
+  if (verifyAdminCredentials(adminIdentifier, password)) {
     const token = jwt.sign(
-      { id: 'admin_master', email: 'admin@lydiaglobalexim.com', name: 'Admin Administrator', role: 'admin', phone: '99855 63411' },
+      { id: 'admin_master', email: 'lydiaglobalexim@gmail.com', name: 'Lydia Admin', role: 'admin', phone: '9985563411' },
       JWT_SECRET,
       { expiresIn: '30d' }
     );
@@ -326,9 +348,9 @@ app.post('/api/admin/login', (req, res) => {
       token,
       user: {
         id: 'admin_master',
-        email: '99855 63411',
-        name: 'Admin Administrator',
-        phone: '99855 63411',
+        email: 'lydiaglobalexim@gmail.com',
+        name: 'Lydia Admin',
+        phone: '9985563411',
         role: 'admin',
         country: 'India'
       }
@@ -378,7 +400,7 @@ app.post('/api/auth/signup', async (req, res) => {
       phone: phone || '',
       password: hashedPassword,
       country: country || 'India',
-      role: ['gouravboga12@gmail.com', 'lydiaglobalexim@gmail.com'].includes(email.toLowerCase()) ? 'admin' : 'customer',
+      role: 'customer',
       addresses: [],
       orders: [],
       created_at: new Date().toISOString(),
@@ -514,7 +536,7 @@ app.post('/api/auth/google', async (req, res) => {
         phone: phone || '',
         country: country || 'India',
         password: '',
-        role: ['gouravboga12@gmail.com', 'lydiaglobalexim@gmail.com'].includes(email) ? 'admin' : 'customer',
+        role: 'customer',
         addresses: [],
         orders: [],
         created_at: new Date().toISOString(),
@@ -624,7 +646,7 @@ app.post('/api/auth/reset-password', async (req, res) => {
 app.get('/api/auth/profile', authMiddleware, (req, res) => {
   if (req.user.role === 'admin') {
     return res.json({
-      user: { id: 'admin_master', email: '99855 63411', name: 'Admin Administrator', phone: '99855 63411', role: 'admin' },
+      user: { id: 'admin_master', email: 'lydiaglobalexim@gmail.com', name: 'Lydia Admin', phone: '9985563411', role: 'admin' },
       addresses: [],
       orders: []
     });

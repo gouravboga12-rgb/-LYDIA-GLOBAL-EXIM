@@ -184,7 +184,8 @@ export function LoginPage() {
 
   useEffect(() => {
     if (token) {
-      navigate(user?.role === 'admin' ? '/admin' : redirect, { replace: true });
+      const targetPath = user?.role === 'admin' ? '/admin' : (redirect.startsWith('/admin') ? '/' : redirect);
+      navigate(targetPath, { replace: true });
     }
   }, [token, user, redirect, navigate]);
 
@@ -194,8 +195,12 @@ export function LoginPage() {
     e.preventDefault();
     setLocalError('');
     const res = await login(form.email, form.password);
-    if (res.success) navigate(res.role === 'admin' ? '/admin' : redirect, { replace: true });
-    else setLocalError(res.error);
+    if (res.success) {
+      const targetPath = res.role === 'admin' ? '/admin' : (redirect.startsWith('/admin') ? '/' : redirect);
+      navigate(targetPath, { replace: true });
+    } else {
+      setLocalError(res.error);
+    }
   };
 
   const loginWithGoogle = useGoogleLogin({
@@ -204,7 +209,8 @@ export function LoginPage() {
       try {
         const res = await googleLogin(tokenResponse.access_token);
         if (res.success) {
-          window.location.href = res.role === 'admin' ? '/admin' : redirect;
+          const targetPath = res.role === 'admin' ? '/admin' : (redirect.startsWith('/admin') ? '/' : redirect);
+          window.location.href = targetPath;
         } else {
           setLocalError(res.error || 'Google Login failed');
         }

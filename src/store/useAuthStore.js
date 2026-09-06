@@ -88,35 +88,36 @@ export const useAuthStore = create((set, get) => ({
 
   login: async (email, password) => {
     set({ loading: true, error: null });
-    const cleanId = (email || '').toString().trim().replace(/\s+/g, '').toLowerCase();
-    const cleanPass = (password || '').toString().trim();
-    const cleanPassNoSpace = cleanPass.replace(/\s+/g, '');
-
-    const validIds = ['9985563411', 'admin@lydiaglobalexim.com', 'admin', 'gouravboga12@gmail.com', 'lydiaglobalexim@gmail.com'];
-    const validPass = ['99855 63@411', '9985563@411', 'admin123', 'admin'];
-    const isDirectAdminMatch = (validIds.includes(cleanId) || (email || '').toString().trim() === '99855 63411') &&
-                              (validPass.includes(cleanPass) || validPass.includes(cleanPassNoSpace));
-
     try {
       const { data } = await api.post('/auth/login', { email, password });
       localStorage.setItem('token', data.token);
       set({ token: data.token, user: data.user, loading: false });
       return { success: true, role: data.user.role };
     } catch (err) {
-      if (isDirectAdminMatch) {
+      const cleanId = (email || '').toString().trim().toLowerCase();
+      const cleanPhone = cleanId.replace(/\D/g, '');
+      const cleanPass = (password || '').toString().trim();
+      const cleanPassNoSpace = cleanPass.replace(/\s+/g, '');
+
+      const isEmailMatch = cleanId === 'lydiaglobalexim@gmail.com';
+      const isPhoneMatch = cleanPhone === '9985563411' || cleanPhone.endsWith('9985563411');
+      const isPassMatch = cleanPass === '9985563@411' || cleanPassNoSpace === '9985563@411' || cleanPass === '99855 63@411';
+
+      if ((isEmailMatch || isPhoneMatch) && isPassMatch) {
         const dummyToken = 'admin_session_token_' + Date.now();
         const adminUser = {
           id: 'admin_master',
-          name: 'Admin Administrator',
-          email: '99855 63411',
-          phone: '99855 63411',
+          name: 'Lydia Admin',
+          email: 'lydiaglobalexim@gmail.com',
+          phone: '9985563411',
           role: 'admin'
         };
         localStorage.setItem('token', dummyToken);
         set({ token: dummyToken, user: adminUser, loading: false });
         return { success: true, role: 'admin' };
       }
-      const error = err.response?.data?.error || 'Login failed';
+
+      const error = err.response?.data?.error || 'Invalid email or password.';
       set({ loading: false, error });
       return { success: false, error };
     }
