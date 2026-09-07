@@ -364,16 +364,20 @@ export function ReturnsPolicyPage() {
               <h3 className="font-bold text-brand-dark-blue text-base">Contact Details</h3>
               <div className="space-y-3">
                 <div>
+                  <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Office Address</p>
+                  <p className="text-brand-dark-blue/80 text-xs mt-0.5 leading-relaxed">H.No. 3-6-555/7, 1st Floor, Nizampet Road, Kukatpally, Hyderabad - 500072, Telangana, India.</p>
+                </div>
+                <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Email</p>
                   <p className="text-brand-dark-blue/80 text-sm mt-0.5">lydiaglobalexim@gmail.com</p>
                 </div>
                 <div>
-                  <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">WhatsApp</p>
+                  <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">WhatsApp / Phone</p>
                   <p className="text-brand-dark-blue/80 text-sm mt-0.5">+91 9014863411</p>
                 </div>
                 <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Hours</p>
-                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">Mon–Sat, 9AM – 6PM CST</p>
+                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">Mon–Sat, 9AM – 6PM IST</p>
                 </div>
               </div>
             </motion.div>

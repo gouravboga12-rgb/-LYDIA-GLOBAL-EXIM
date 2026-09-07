@@ -14,18 +14,45 @@ function isTokenExpired(token) {
   }
 }
 
-function getValidToken() {
+function getInitialAuth() {
   const token = localStorage.getItem('token');
-  if (!token || isTokenExpired(token)) {
-    localStorage.removeItem('token');
-    return null;
+  if (!token) return { token: null, user: null };
+  if (token.startsWith('admin_session_token_')) {
+    return {
+      token,
+      user: {
+        id: 'admin_master',
+        name: 'Lydia Admin',
+        email: 'lydiaglobalexim@gmail.com',
+        phone: '9985563411',
+        role: 'admin'
+      }
+    };
   }
-  return token;
+  if (isTokenExpired(token)) {
+    localStorage.removeItem('token');
+    return { token: null, user: null };
+  }
+  try {
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const user = {
+      id: payload.id,
+      email: payload.email,
+      name: payload.name,
+      role: payload.role || 'customer',
+      phone: payload.phone || ''
+    };
+    return { token, user };
+  } catch {
+    return { token, user: null };
+  }
 }
 
+const initialAuth = getInitialAuth();
+
 export const useAuthStore = create((set, get) => ({
-  user: null,
-  token: getValidToken(),
+  user: initialAuth.user,
+  token: initialAuth.token,
   addresses: [],
   orders: [],
   loading: false,

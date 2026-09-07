@@ -11,89 +11,74 @@ const sections = [
     badge: '1–3 Business Days',
     badgeColor: 'bg-emerald-100 text-emerald-700',
     content: [
-      'All orders are processed within 1–3 business days (Monday through Saturday, excluding public holidays).',
+      'All orders are processed and packed within 1–3 business days (Monday through Saturday, excluding public holidays).',
       'You will receive an order confirmation email immediately after placing your order.',
-      'A shipping confirmation email with your tracking number is sent once your order has been dispatched.',
-      'Orders placed after 5:00 PM CST will be processed the next business day.',
+      'A shipping confirmation email with your live tracking number is sent once your parcel has been dispatched.',
+      'Orders placed after 5:00 PM IST will begin processing the next business day.',
     ],
   },
   {
     id: 'delivery',
     icon: <Truck className="w-6 h-6 text-brand-gold" />,
     title: 'Delivery Timeline',
-    badge: '1-3 Business Days',
+    badge: '3–7 Business Days',
     badgeColor: 'bg-blue-100 text-blue-700',
     content: [
-      'Standard delivery takes 1-3 business days after dispatch, depending on your location within USA.',
-      'Remote or rural areas may require an additional 1-3 business days beyond the standard timeline.',
-      'We do not currently offer express shipping, but we are actively working to bring faster options.',
-      'Delivery timelines may vary during peak seasons or festival periods.',
-      'Once an order has been handed over to the shipping carrier, carrier-related delays may be outside LYDIA GLOBAL EXIM\'s control.',
+      'Standard delivery typically takes 3–7 business days after dispatch, depending on your delivery location and PIN code.',
+      'Remote or rural locations may require an additional 1–2 business days beyond the standard timeline.',
+      'International shipments typically arrive within 7–14 business days depending on customs clearance.',
+      'Delivery timelines may vary during peak festival seasons or national holidays.',
+      'Once an order has been handed over to the shipping carrier, carrier-related delays due to weather or transit disruptions are outside LYDIA GLOBAL EXIM\'s direct control.',
     ],
   },
   {
     id: 'coverage',
     icon: <MapPin className="w-6 h-6 text-brand-gold" />,
     title: 'Shipping Coverage',
-    badge: 'Pan USA + Select International',
+    badge: 'Pan India & Worldwide',
     badgeColor: 'bg-purple-100 text-purple-700',
     content: [
-      'We ship to all zip codes across USA through our trusted logistics partners.',
-      'International shipping is available to select countries — please contact us before placing your international order.',
-      'For international orders, additional customs duties or import taxes may apply depending on your country.',
-      'Contact us at lydiaglobalexim@gmail.com or WhatsApp +91 9014863411 for international shipping rates.',
+      'We ship across all PIN codes in India through our premier express courier and logistics partners.',
+      'International shipping is available to select destinations worldwide — please contact us before placing international orders for shipping assistance.',
+      'For international orders, destination customs duties or import taxes may apply depending on your local regulations.',
+      'Contact us at lydiaglobalexim@gmail.com or WhatsApp +91 9014863411 for international delivery inquiries.',
     ],
   },
   {
     id: 'packaging',
     icon: <Package className="w-6 h-6 text-brand-gold" />,
-    title: 'Premium Packaging',
+    title: 'Export-Grade Premium Packaging',
     badge: 'Gift-Ready',
     badgeColor: 'bg-amber-100 text-amber-700',
     content: [
-      'Every LYDIA GLOBAL EXIM order is packed in premium, branded packaging designed to protect your items during transit.',
-      'Our packaging is eco-friendly and gift-ready — perfect for gifting a loved one right out of the box.',
-      'We use extra cushioning for delicate pieces to ensure they arrive in perfect condition.',
-      'A beautiful thank-you card is included with every order.',
+      'Every LYDIA GLOBAL EXIM order is securely packed in premium, tamper-evident branded packaging engineered to protect delicate jewelry during transit.',
+      'Our packaging is elegant and gift-ready — perfect for personal enjoyment or gifting.',
+      'We use multi-layer shock cushioning for fragile and stone-studded jewelry pieces.',
+      'A jewelry care guide is included with every order to help keep your items shining.',
     ],
   },
   {
     id: 'tracking',
     icon: <ShieldCheck className="w-6 h-6 text-brand-gold" />,
-    title: 'Order Tracking',
-    badge: 'Real-Time Updates',
+    title: 'Real-Time Order Tracking',
+    badge: 'Live Updates',
     badgeColor: 'bg-rose-100 text-rose-700',
     content: [
-      'Once shipped, you will receive a tracking number via email and/or SMS to monitor your order in real time.',
-      'You can also track your order directly from "My Orders" in your account dashboard.',
-      'If your shipment is delayed beyond 7 business days, please contact us immediately for assistance.',
-      'We are happy to coordinate with our logistics partners to resolve any delivery issues promptly.',
-    ],
-  },
-  {
-    id: 'signature',
-    icon: <ShieldCheck className="w-6 h-6 text-brand-gold" />,
-    title: 'Signature Confirmation',
-    badge: 'Optional',
-    badgeColor: 'bg-indigo-100 text-indigo-700',
-    content: [
-      'Customers may choose Signature Confirmation at checkout for an additional fee, where available. This service requires a signature upon delivery and may provide additional security for the shipment.',
-      'If Signature Confirmation is not selected, the order will be shipped using the standard delivery service without a signature requirement. The carrier may leave the package at the delivery address or in another location according to its delivery procedures.',
-      'Once a package is marked as successfully delivered by the carrier, LYDIA GLOBAL EXIM is not responsible for packages that are lost, stolen, or misplaced after delivery. We recommend selecting Signature Confirmation for higher-value orders or locations where packages may be left unattended.',
-      'Signature requirements and delivery procedures are subject to the selected carrier’s terms and conditions.',
+      'Once dispatched, tracking details with carrier link will be sent to your registered email and/or SMS/WhatsApp.',
+      'You can also track your shipment live directly under "My Orders" from your account dashboard.',
+      'If your parcel experiences unexpected transit delays, our support team will actively coordinate with the courier partner to expedite delivery.',
     ],
   },
   {
     id: 'insurance',
     icon: <ShieldCheck className="w-6 h-6 text-brand-gold" />,
-    title: 'Shipping Insurance & Claims',
-    badge: 'Recommended',
+    title: 'Transit Safety & Damage Claims',
+    badge: 'Protected',
     badgeColor: 'bg-teal-100 text-teal-700',
     content: [
-      'Additional shipping insurance may be available at checkout for an additional fee. If additional insurance is not selected, default carrier liability will apply, subject to the carrier’s terms and conditions.',
-      '1. Default Carrier Liability: Most eligible shipping services include limited carrier liability coverage, generally up to $100. For a package confirmed lost or damaged, the customer is responsible for filing the claim with the carrier. LYDIA GLOBAL EXIM will assist by providing relevant order information.',
-      '2. Additional Shipping Insurance: May provide broader protection for eligible shipments, including loss, damage, or theft. Protection beyond standard carrier liability is subject to the provider’s terms and exclusions.',
-      'Important: All insurance claims are subject to the applicable carrier or insurance provider’s terms. LYDIA GLOBAL EXIM is not responsible for losses or damages beyond the applicable carrier liability or insurance coverage.',
+      'All shipments are dispatched via verified logistics providers with standard transit protection.',
+      'In the rare event of transit damage or missing items, LYDIA GLOBAL EXIM provides full replacement or refund support when verified with a mandatory unboxing video.',
+      'To file a transit damage or missing item claim, record a single uncut unboxing video upon delivery and contact us within 7 days.',
     ],
   },
 ];
@@ -172,7 +157,7 @@ export function ShippingPolicyPage() {
           {[
             { label: 'Processing', value: '1–3 Days' },
             { label: 'Delivery', value: '3–7 Days' },
-            { label: 'Coverage', value: 'Pan USA' },
+            { label: 'Coverage', value: 'India & Global' },
             { label: 'Packaging', value: 'Gift-Ready' },
           ].map((s, i) => (
             <motion.div
@@ -228,7 +213,7 @@ export function ShippingPolicyPage() {
                 </svg>
               </div>
               <h3 className="font-bold text-white text-lg mb-2">Got a Question?</h3>
-              <p className="text-white/50 text-sm mb-5 leading-relaxed">We're here to help with any shipping concerns.</p>
+              <p className="text-white/50 text-sm mb-5 leading-relaxed">We're here to help with any shipping or tracking questions.</p>
               <a href="https://wa.me/919014863411" target="_blank" rel="noopener noreferrer"
                 className="block w-full bg-brand-gold text-brand-dark-blue font-bold py-3 rounded-xl text-sm hover:bg-brand-gold/80 transition-all">
                 Chat on WhatsApp
@@ -246,16 +231,20 @@ export function ShippingPolicyPage() {
               <h3 className="font-bold text-brand-dark-blue text-lg">Contact Details</h3>
               <div className="space-y-3">
                 <div>
+                  <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Office Address</p>
+                  <p className="text-brand-dark-blue/80 text-xs mt-0.5 leading-relaxed">H.No. 3-6-555/7, 1st Floor, Nizampet Road, Kukatpally, Hyderabad - 500072, Telangana, India.</p>
+                </div>
+                <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Email</p>
                   <p className="text-brand-dark-blue/80 text-sm mt-0.5">lydiaglobalexim@gmail.com</p>
                 </div>
                 <div>
-                  <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">WhatsApp</p>
+                  <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">WhatsApp / Phone</p>
                   <p className="text-brand-dark-blue/80 text-sm mt-0.5">+91 9014863411</p>
                 </div>
                 <div>
                   <p className="text-xs text-brand-dark-blue/40 font-semibold uppercase tracking-widest">Hours</p>
-                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">Mon–Sat, 9AM – 6PM CST</p>
+                  <p className="text-brand-dark-blue/80 text-sm mt-0.5">Mon–Sat, 9AM – 6PM IST</p>
                 </div>
               </div>
             </motion.div>
@@ -271,6 +260,9 @@ export function ShippingPolicyPage() {
               <h3 className="font-bold text-brand-dark-blue text-base mb-4">Related Policies</h3>
               <a href="/returns-policy" className="flex items-center justify-between py-3 border-b border-brand-gold/10 text-sm text-brand-dark-blue/70 hover:text-brand-gold transition-colors">
                 Returns & Exchanges <span>→</span>
+              </a>
+              <a href="/terms-of-service" className="flex items-center justify-between py-3 border-b border-brand-gold/10 text-sm text-brand-dark-blue/70 hover:text-brand-gold transition-colors">
+                Terms & Conditions <span>→</span>
               </a>
               <a href="/contact#faq-section" className="flex items-center justify-between pt-3 text-sm text-brand-dark-blue/70 hover:text-brand-gold transition-colors">
                 FAQs <span>→</span>
