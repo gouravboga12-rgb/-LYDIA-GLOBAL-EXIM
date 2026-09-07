@@ -70,41 +70,21 @@ export function AdminOrdersPage() {
 
   const fetchOrders = async () => {
     setLoading(true);
-    let allOrders = [];
     try {
-      // 1. Supabase
+      // SUPABASE ONLY — no backend API, no local JSON
       const { data: sbData, error } = await supabase
         .from("orders")
         .select("*")
         .order("id", { ascending: false });
 
-      if (!error && sbData && sbData.length > 0) {
-        allOrders = sbData;
+      if (error) {
+        console.error("Supabase fetch orders error:", error);
+        setLoading(false);
+        return;
       }
-    } catch (e) {
-      console.warn("Supabase load note:", e);
-    }
 
-    try {
-      // 2. Backend REST API
-      const token = localStorage.getItem("token");
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await fetch(`${BACKEND_URL}/admin/orders`, { headers }).catch(() => null);
-      const data = res ? await res.json().catch(() => ({})) : {};
+      const allOrders = sbData || [];
 
-      if (data && data.orders && data.orders.length > 0) {
-        const existingNos = new Set(allOrders.map(o => String(o.order_number || o.id)));
-        for (const o of data.orders) {
-          if (!existingNos.has(String(o.order_number || o.id))) {
-            allOrders.push(o);
-          }
-        }
-      }
-    } catch (err) {
-      console.error("Error loading orders:", err);
-    }
-
-    try {
       const normalized = allOrders.map(o => {
         let address = {};
         if (o.shipping_address) {
@@ -125,7 +105,6 @@ export function AdminOrdersPage() {
         const shipping_fee = Number(o.shipping ?? o.shipping_fee ?? 0);
         const total = Math.max(0, subtotal - discount_amount + shipping_fee);
 
-        // Normalize status display
         let currentStatus = o.status || 'Received';
         const stLow = currentStatus.toLowerCase();
         if (stLow === 'pending' || stLow === 'paid') currentStatus = 'Received';
@@ -157,12 +136,13 @@ export function AdminOrdersPage() {
       });
 
       setOrders(normalized);
-    } catch (normErr) {
-      console.error("Error normalizing orders:", normErr);
+    } catch (err) {
+      console.error("Error fetching orders:", err);
     } finally {
       setLoading(false);
     }
   };
+
 
   const handleDeleteOrder = async (order) => {
     const orderNum = order.order_number || order.id;
