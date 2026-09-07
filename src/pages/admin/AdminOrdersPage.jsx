@@ -244,6 +244,13 @@ export function AdminOrdersPage() {
       cleanAddress.tracking_number = tracking_id;
       cleanAddress.tracking_url = tracking_link;
 
+      const updateData = {
+        tracking_id,
+        tracking_link,
+        tracking_number: tracking_id,
+        tracking_url: tracking_link
+      };
+
       // 1. Update in Supabase with valid columns: tracking_number and JSON stringified shipping_address
       const numId = Number(order?.id);
       const sbPayload = {
@@ -258,16 +265,18 @@ export function AdminOrdersPage() {
         await supabase.from("orders").update(sbPayload).eq("order_number", order.order_number);
       }
 
-      // 2. Update Backend REST API
-      const token = localStorage.getItem("token");
-      await fetch(`${BACKEND_URL}/admin/orders/${order?.order_number || orderId}/tracking`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(updateData),
-      }).catch(() => null);
+      // 2. Update Backend REST API (if available)
+      try {
+        const token = localStorage.getItem("token");
+        await fetch(`${BACKEND_URL}/admin/orders/${order?.order_number || orderId}/tracking`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json", ...(token ? { Authorization: `Bearer ${token}` } : {}) },
+          body: JSON.stringify(updateData),
+        }).catch(() => null);
+      } catch (e) {}
 
       // 3. Update local state
-      setOrders(prev => prev.map(o => (String(o.id) === String(orderId) || String(o.order_number) === String(orderId)) ? { ...o, ...updateData, tracking_id, tracking_link } : o));
+      setOrders(prev => prev.map(o => (String(o.id) === String(orderId) || String(o.order_number) === String(orderId)) ? { ...o, ...updateData, shipping_address: cleanAddress } : o));
       setTrackingInputs(prev => ({
         ...prev,
         [orderId]: { tracking_id, tracking_link }
@@ -276,7 +285,7 @@ export function AdminOrdersPage() {
       alert("Tracking details saved successfully! It is now live on the customer side.");
     } catch (err) {
       console.error("Save tracking error:", err);
-      alert("Failed to save tracking details");
+      alert("Failed to save tracking details: " + (err.message || err));
     } finally {
       setSavingTracking(prev => ({ ...prev, [orderId]: false }));
     }
