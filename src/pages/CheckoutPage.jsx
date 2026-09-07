@@ -826,29 +826,7 @@ export function CheckoutPage() {
   const triggerOrderWhatsAppAlert = (orderData, txnId) => {
     try {
       const orderNum = orderData?.order?.order_number || orderData?.order_number || ('LGE-' + Math.floor(100000 + Math.random() * 900000));
-      const custName = (orderType === 'pickup' ? pickupContact.name : address.name) || user?.name || 'Customer';
-      const custPhone = (orderType === 'pickup' ? pickupContact.phone : address.mobile) || user?.phone || 'N/A';
-      const orderTot = Number(finalTotal).toLocaleString('en-IN');
-      const itemsList = items.map(i => `• ${i.product?.name || i.name || 'Jewelry'} (Qty: ${i.qty || 1}${i.variant?.size ? `, Size: ${i.variant.size}` : ''})`).join('\n');
-      const deliveryInfo = orderType === 'pickup' ? '🏬 Store Pickup (Aubrey, TX location)' : `📦 Delivery Address: ${address.line1 || ''}, ${address.city || ''}, ${address.state || ''} ${address.pincode || ''}, ${address.country || ''}`;
-
-      const whatsappMessage = 
-`✨ *NEW ORDER BOOKED - LYDIA GLOBAL EXIM* ✨
-━━━━━━━━━━━━━━━━━━━━━━━
-📦 *Order ID:* #${orderNum}
-👤 *Customer Name:* ${custName}
-📞 *Customer Phone:* ${custPhone}
-💰 *Total Paid:* ₹${orderTot}
-💳 *Payment Gateway:* Razorpay (Txn ID: ${txnId || 'Confirmed'})
-🚚 *Order Mode:* ${deliveryInfo}
-
-🛍️ *Order Items (${items.length}):*
-${itemsList}
-
-━━━━━━━━━━━━━━━━━━━━━━━
-🔔 *Admin Notification:*
-A new order has been placed! Please check the Admin Panel to review order details, print packing slips, update tracking, and process shipping:
-👉 https://lydiaglobalexim.com/admin/orders`;
+      const whatsappMessage = "New order booked. Please check the control Panel account for the details.";
 
       const waUrl = `https://wa.me/919014863411?text=${encodeURIComponent(whatsappMessage)}`;
       window.open(waUrl, '_blank', 'noopener,noreferrer');
