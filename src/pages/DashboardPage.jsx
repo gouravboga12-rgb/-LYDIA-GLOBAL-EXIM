@@ -328,7 +328,7 @@ export function DashboardPage() {
               <div className="text-center py-16">
                 <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                 <p className="text-sm font-semibold text-gray-500">No orders yet</p>
-                <Link to="/" className="mt-3 inline-block text-xs text-brand-gold font-bold">Start Shopping →</Link>
+                <Link to="/category/all" className="mt-3 inline-block text-xs text-brand-gold font-bold">Start Shopping →</Link>
               </div>
             ) : (
               (sbOrders.length > 0 ? sbOrders : orders).map((order) => {

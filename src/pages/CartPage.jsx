@@ -171,7 +171,7 @@ export function CartPage() {
           <h2 className="text-xl font-serif font-bold text-gray-900 mb-2">Your cart is empty</h2>
           <p className="text-gray-500 mb-8 text-center text-sm">Looks like you haven't added anything to your cart yet. Discover our latest collections.</p>
           <button 
-            onClick={() => navigate('/')} 
+            onClick={() => navigate('/category/all')} 
             className="w-full bg-brand-dark-blue text-brand-gold px-6 py-3.5 rounded-xl font-bold shadow-lg shadow-brand-dark-blue/20 hover:shadow-xl hover:-translate-y-0.5 transition-all"
           >
             Start Shopping

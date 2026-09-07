@@ -357,7 +357,7 @@ export function MyOrdersPage() {
             </div>
             <p className="text-[#45055B] font-bold text-lg">No orders yet</p>
             <p className="text-sm text-[#45055B]/50 text-center max-w-sm">Looks like you haven't made your first order. Explore our spiritual collection today!</p>
-            <Link to="/" className="mt-4 bg-gradient-to-r from-[#45055B] to-[#D4AF37] text-white text-sm font-bold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
+            <Link to="/category/all" className="mt-4 bg-gradient-to-r from-[#45055B] to-[#D4AF37] text-white text-sm font-bold px-8 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-0.5">
               Start Shopping
             </Link>
           </div>
