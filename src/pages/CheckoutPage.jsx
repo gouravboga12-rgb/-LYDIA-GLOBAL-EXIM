@@ -205,8 +205,8 @@ const CARD_ELEMENT_OPTIONS = {
 function RazorpayPaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, setTermsAccepted, addressConfirmed, setAddressConfirmed, address, sessionSecondsLeft, onEditAddress, paymentError, onRetry, orderType, pickupContact, finalTotal }) {
   const isExpiringSoon = sessionSecondsLeft !== null && sessionSecondsLeft <= 60;
   const isPickup = orderType === 'pickup';
-  // For pickup: only require termsAccepted. For shipping: also require addressConfirmed.
-  const canPay = isPickup ? (termsAccepted && !isPlacingOrder) : (termsAccepted && addressConfirmed && !isPlacingOrder);
+  // For pickup: no address confirmation needed. For shipping: require addressConfirmed.
+  const canPay = isPickup ? !isPlacingOrder : (addressConfirmed && !isPlacingOrder);
   return (
     <div className="space-y-4 max-w-3xl mx-auto">
       <div className="flex items-center justify-between mb-2">
@@ -284,9 +284,6 @@ function RazorpayPaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, 
             <div>
               <div className="flex items-center gap-2 flex-wrap">
                 <p className="text-sm font-bold text-brand-dark-blue">Razorpay Payment Gateway</p>
-                <span className="text-[10px] font-extrabold bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full border border-blue-300">
-                  TEST MODE ACTIVE
-                </span>
               </div>
               <p className="text-xs text-gray-600 mt-0.5">
                 Pay securely using UPI (GPay, PhonePe, Paytm), Credit/Debit Cards, NetBanking, and Wallets.
@@ -296,21 +293,6 @@ function RazorpayPaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, 
           <div className="sm:text-right shrink-0">
             <span className="text-xs text-gray-500 block">Total Payable</span>
             <span className="text-lg font-bold text-brand-dark-blue">₹{Number(finalTotal).toFixed(2)}</span>
-          </div>
-        </div>
-
-        {/* WhatsApp & Admin Auto-Redirection Notice */}
-        <div className="bg-emerald-50 border border-emerald-200 rounded-xl p-3.5 flex items-start gap-3">
-          <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0 mt-0.5">
-            <svg className="w-4 h-4 fill-emerald-600" viewBox="0 0 24 24">
-              <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.711 2.598 2.664-.699c.96.524 1.831.799 2.796.8 3.183 0 5.768-2.587 5.769-5.766.001-3.182-2.585-5.786-5.769-5.786zm3.364 8.163c-.141.398-.711.758-1.047.818-.335.06-.729.074-2.146-.514-1.637-.68-2.695-2.336-2.776-2.446-.082-.11-1.258-1.674-1.258-3.193 0-1.52.796-2.27 1.078-2.576.282-.307.615-.384.82-.384.205 0 .41.002.59.011.19.009.444-.072.694.529.256.617.873 2.13.95 2.285.077.154.129.334.026.54-.103.205-.154.334-.308.514-.154.18-.324.402-.462.539-.154.153-.314.32-.135.628.18.307.8 1.32 1.716 2.137 1.179 1.05 2.174 1.376 2.482 1.53.308.154.488.128.667-.077.18-.205.77-0.898.975-1.206.205-.308.41-.257.693-.154.282.102 1.795.847 2.103 1.001.308.154.513.23.59.36.077.128.077.744-.064 1.142z" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-xs font-bold text-emerald-900">Instant WhatsApp & Admin Sync</p>
-            <p className="text-[11px] text-emerald-700 mt-0.5 leading-relaxed">
-              Upon successful payment, an instant WhatsApp order receipt will be sent to admin support (<strong>+91 9014863411</strong>) with a direct link to the Admin Panel, and you will be redirected to the orders dashboard.
-            </p>
           </div>
         </div>
 
@@ -332,13 +314,6 @@ function RazorpayPaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, 
             </div>
           </div>
         )}
-        <label className="flex items-start gap-2.5 cursor-pointer">
-          <input type="checkbox" checked={termsAccepted} onChange={e => setTermsAccepted(e.target.checked)}
-            className="mt-0.5 w-4 h-4 accent-brand-dark-blue shrink-0" />
-          <span className="text-[11px] text-gray-500 leading-relaxed">
-            I agree to the LYDIA GLOBAL EXIM <Link to="/terms-of-service" target="_blank" className="text-brand-dark-blue font-bold underline">Terms & Conditions</Link> and <Link to="/privacy-policy" target="_blank" className="text-brand-dark-blue font-bold underline">Privacy Policy</Link>, understand that all sales are final—no returns or exchanges—as stated in the <Link to="/shipping-policy" target="_blank" className="text-brand-dark-blue font-bold underline">Shipping Policy</Link> and <Link to="/returns-policy" target="_blank" className="text-brand-dark-blue font-bold underline">Exchange & Return Policy</Link>, and agree to contact LYDIA GLOBAL EXIM first regarding any billing issue before initiating a payment dispute or chargeback, except where permitted or required by applicable law or payment-network rules.
-          </span>
-        </label>
         <button
           onClick={() => handlePlaceOrder()}
           disabled={!canPay}
@@ -352,6 +327,10 @@ function RazorpayPaymentForm({ isPlacingOrder, handlePlaceOrder, termsAccepted, 
             <><div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" /> Processing Payment...</>
           ) : `Pay ₹${Number(finalTotal).toFixed(2)} with Razorpay`}
         </button>
+
+        <p className="text-[11px] text-gray-400 text-center leading-relaxed">
+          By placing your order, you agree to our <Link to="/terms-of-service" target="_blank" className="text-brand-dark-blue font-medium underline">Terms & Conditions</Link>, <Link to="/privacy-policy" target="_blank" className="text-brand-dark-blue font-medium underline">Privacy Policy</Link>, and <Link to="/returns-policy" target="_blank" className="text-brand-dark-blue font-medium underline">Return Policy</Link>.
+        </p>
       </div>
     </div>
   );
@@ -959,8 +938,8 @@ A new order has been placed! Please check the Admin Panel to review order detail
       const rawMobile = finalAddress.mobile || '';
       const fullMobile = rawMobile.startsWith('+') ? rawMobile : `${dialCode}${rawMobile}`;
 
-      if (token && showNewAddressForm && saveAddress) {
-        addAddress({ ...finalAddress, mobile: fullMobile, is_default: saveAsDefault }).catch(() => {});
+      if (token && showNewAddressForm) {
+        addAddress({ ...finalAddress, mobile: fullMobile, is_default: addresses.length === 0 }).catch(() => {});
       } else if (token && !showNewAddressForm && selectedSavedAddress && shouldUpdateSaved) {
         updateAddress(selectedSavedAddress, { ...finalAddress, mobile: fullMobile }).catch(() => {});
       }
@@ -985,7 +964,6 @@ A new order has been placed! Please check the Admin Panel to review order detail
   }, [sessionSecondsLeft]);
 
   const handlePlaceOrder = async () => {
-    if (orderType !== 'pickup' && !termsAccepted) { showToast('Please accept the Terms & Conditions to proceed.', 'error'); return; }
     if (orderType !== 'pickup' && !addressConfirmed) { showToast('Please confirm your shipping address is correct.', 'error'); return; }
     if (orderType === 'pickup' && !pickupTermsAccepted) { showToast('Please accept the Pickup Terms & Conditions to proceed.', 'error'); return; }
     setIsPlacingOrder(true);
@@ -1731,24 +1709,6 @@ A new order has been placed! Please check the Admin Panel to review order detail
                     If your country is not listed above, shipping to your region is currently unavailable through the website. Please <Link to="/contact" target="_blank" className="text-brand-dark-blue font-bold underline hover:text-brand-gold">contact our Support Team</Link> to place your order.
                   </p>
                 </div>
-
-                {/* Save address checkboxes */}
-                {token && (
-                  <div className="space-y-2 pt-1">
-                    <label className="flex items-center gap-2.5 cursor-pointer">
-                      <input type="checkbox" checked={saveAddress} onChange={e => setSaveAddress(e.target.checked)}
-                        className="w-4 h-4 accent-brand-dark-blue rounded" />
-                      <span className="text-xs text-gray-600 font-medium">Save this address for future orders</span>
-                    </label>
-                    {saveAddress && (
-                      <label className="flex items-center gap-2.5 cursor-pointer pl-6">
-                        <input type="checkbox" checked={saveAsDefault} onChange={e => setSaveAsDefault(e.target.checked)}
-                          className="w-4 h-4 accent-brand-dark-blue rounded" />
-                        <span className="text-xs text-gray-600">Set as default address</span>
-                      </label>
-                    )}
-                  </div>
-                )}
               </div>
             </div>
             )}
