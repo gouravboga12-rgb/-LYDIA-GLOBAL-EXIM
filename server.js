@@ -642,10 +642,14 @@ app.post('/api/auth/reset-password', async (req, res) => {
   return res.json({ success: true, message: 'Password has been reset successfully.' });
 });
 
-// 10. Profile & Address CRUD
+// 10. Profile & Address CRUD (Supabase Online)
 app.get('/api/auth/profile', authMiddleware, async (req, res) => {
   if (req.user.role === 'admin') {
-    const allOrders = loadStoreData('orders', 'src/data/orders.json') || [];
+    let allOrders = [];
+    try {
+      const { data: sbOrders } = await supabase.from('orders').select('*').order('id', { ascending: false });
+      if (sbOrders) allOrders = sbOrders;
+    } catch (e) {}
     return res.json({
       user: { id: 'admin_master', email: 'lydiaglobalexim@gmail.com', name: 'Lydia Admin', phone: '9985563411', role: 'admin' },
       addresses: [],
@@ -653,85 +657,84 @@ app.get('/api/auth/profile', authMiddleware, async (req, res) => {
     });
   }
 
-  const users = loadStoreData('users', 'src/data/users.json');
-  let user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  const cleanEmail = (req.user.email || '').toLowerCase().trim();
+  let profile = null;
 
-  // Fallback: look up in Supabase profiles if not found locally
-  if (!user) {
-    try {
-      const { data: sbProfile } = await supabase
-        .from('profiles')
-        .select('*')
-        .or(`id.eq.${req.user.id},email.eq.${req.user.email}`)
-        .single();
-      if (sbProfile) {
-        user = {
-          id: sbProfile.id || req.user.id,
-          email: sbProfile.email || req.user.email,
-          name: sbProfile.full_name || req.user.name || '',
-          phone: sbProfile.mobile || req.user.phone || '',
-          country: sbProfile.country || '',
-          role: sbProfile.role || 'customer',
-          addresses: sbProfile.addresses || [],
-          password: null,
-        };
-        // Persist to local store so future calls are faster
-        users.push(user);
-        saveStoreData('users', users);
-      }
-    } catch (sbErr) {
-      console.warn('Supabase profile fallback failed:', sbErr.message);
-    }
+  try {
+    const { data } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('email', cleanEmail)
+      .maybeSingle();
+    profile = data;
+  } catch (sbErr) {
+    console.warn('Supabase profile lookup error:', sbErr.message);
   }
 
-  if (!user) return res.status(404).json({ error: 'User profile not found.' });
-
-  // Dynamically query orders for this user
-  const allOrders = loadStoreData('orders', 'src/data/orders.json') || [];
-  const cleanEmail = (user.email || '').toLowerCase().trim();
-  const cleanPhone = (user.phone || '').replace(/\D/g, '').slice(-10);
-
-  const matchedOrders = allOrders.filter(o => {
-    if (user.id && (o.user_id === user.id || o.userId === user.id)) return true;
-    const oEmail = (o.user_email || o.customer_email || o.email || '').toLowerCase().trim();
-    const oPhone = (o.user_phone || o.customer_phone || o.phone || '').replace(/\D/g, '').slice(-10);
-    let addrEmail = '', addrPhone = '';
+  if (!profile) {
+    // If not found in Supabase profiles, auto-provision profile in Supabase
     try {
-      const addr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || o.address || {});
-      addrEmail = (addr.email || '').toLowerCase().trim();
-      addrPhone = (addr.mobile || addr.phone || '').replace(/\D/g, '').slice(-10);
-    } catch {}
-    return (cleanEmail && (oEmail === cleanEmail || addrEmail === cleanEmail)) ||
-           (cleanPhone && (oPhone === cleanPhone || addrPhone === cleanPhone));
-  });
+      const newProf = {
+        email: cleanEmail,
+        full_name: req.user.name || '',
+        mobile: req.user.phone || '',
+        role: req.user.role || 'customer',
+        addresses: []
+      };
+      const { data } = await supabase.from('profiles').insert(newProf).select().maybeSingle();
+      profile = data || newProf;
+    } catch (e) {}
+  }
+
+  // Load orders directly from Supabase online
+  let matchedOrders = [];
+  try {
+    const { data: sbOrders } = await supabase.from('orders').select('*').order('id', { ascending: false });
+    if (sbOrders && sbOrders.length > 0) {
+      const cleanPhone = (req.user.phone || profile?.mobile || '').replace(/\D/g, '').slice(-10);
+      matchedOrders = sbOrders.filter(o => {
+        const oEmail = (o.customer_email || o.user_email || '').toLowerCase().trim();
+        const oPhone = (o.customer_phone || o.user_phone || '').replace(/\D/g, '').slice(-10);
+        let addrEmail = '', addrPhone = '';
+        try {
+          const addr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || o.address || {});
+          addrEmail = (addr.email || '').toLowerCase().trim();
+          addrPhone = (addr.mobile || addr.phone || '').replace(/\D/g, '').slice(-10);
+        } catch {}
+        return (cleanEmail && (oEmail === cleanEmail || addrEmail === cleanEmail)) ||
+               (cleanPhone && (oPhone === cleanPhone || addrPhone === cleanPhone)) ||
+               (o.user_id && (o.user_id === req.user.id || o.user_id === profile?.id));
+      });
+    }
+  } catch (e) {}
 
   return res.json({
     user: {
-      id: user.id,
-      email: user.email,
-      name: user.name,
-      phone: user.phone,
-      country: user.country,
-      role: user.role,
+      id: profile?.id || req.user.id,
+      email: cleanEmail,
+      name: profile?.full_name || req.user.name || '',
+      phone: profile?.mobile || req.user.phone || '',
+      role: profile?.role || req.user.role || 'customer',
     },
-    addresses: user.addresses || [],
+    addresses: profile?.addresses || [],
     orders: matchedOrders,
   });
 });
 
+app.put('/api/auth/profile', authMiddleware, async (req, res) => {
+  const { name, phone } = req.body;
+  const cleanEmail = (req.user.email || '').toLowerCase().trim();
+  const updates = {};
+  if (name) updates.full_name = name;
+  if (phone) updates.mobile = phone;
 
-app.put('/api/auth/profile', authMiddleware, (req, res) => {
-  const { name, phone, country } = req.body;
-  const users = loadStoreData('users', 'src/data/users.json');
-  const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
-  if (!user) return res.status(404).json({ error: 'User not found.' });
+  try {
+    await supabase.from('profiles').update(updates).eq('email', cleanEmail);
+  } catch (e) {
+    console.warn('Supabase update profile error:', e.message);
+  }
 
-  if (name) user.name = name;
-  if (phone) user.phone = phone;
-  if (country) user.country = country;
-
-  saveStoreData('users', users);
-  return res.json({ success: true, user });
+  return res.json({ success: true, user: { ...req.user, ...updates } });
 });
 
 app.put('/api/auth/change-password', authMiddleware, async (req, res) => {
@@ -742,21 +745,16 @@ app.put('/api/auth/change-password', authMiddleware, async (req, res) => {
 
   const users = loadStoreData('users', 'src/data/users.json');
   const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
-  if (!user) return res.status(404).json({ error: 'User not found.' });
-
-  // If user has an existing password, verify current password
-  if (user.password) {
-    if (!currentPassword) {
-      return res.status(400).json({ error: 'Current password is required.' });
+  if (user) {
+    if (user.password && currentPassword) {
+      const isMatch = await bcrypt.compare(currentPassword, user.password);
+      if (!isMatch) {
+        return res.status(400).json({ error: 'Current password is incorrect.' });
+      }
     }
-    const isMatch = await bcrypt.compare(currentPassword, user.password);
-    if (!isMatch) {
-      return res.status(400).json({ error: 'Current password is incorrect.' });
-    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    saveStoreData('users', users);
   }
-
-  user.password = await bcrypt.hash(newPassword, 10);
-  saveStoreData('users', users);
 
   return res.json({ success: true, message: 'Password changed successfully.' });
 });
@@ -772,119 +770,84 @@ app.post('/api/auth/logout-all', authMiddleware, async (req, res) => {
 });
 
 app.post('/api/auth/address', authMiddleware, async (req, res) => {
-  const users = loadStoreData('users', 'src/data/users.json');
-  let user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  const cleanEmail = (req.user.email || '').toLowerCase().trim();
+  let profile = null;
 
-  // Fallback: try Supabase profiles if user not in local JSON
-  if (!user) {
-    try {
-      const { data: sbProfile } = await supabase
-        .from('profiles')
-        .select('*')
-        .or(`id.eq.${req.user.id},email.eq.${req.user.email}`)
-        .single();
-      if (sbProfile) {
-        // Create local user entry from Supabase profile
-        user = {
-          id: sbProfile.id || req.user.id,
-          email: sbProfile.email || req.user.email,
-          name: sbProfile.full_name || req.user.name || '',
-          phone: sbProfile.mobile || req.user.phone || '',
-          role: sbProfile.role || 'customer',
-          addresses: sbProfile.addresses || [],
-          password: null,
-        };
-        users.push(user);
-        saveStoreData('users', users);
-      }
-    } catch (sbErr) {
-      console.warn('Supabase profile lookup failed:', sbErr.message);
-    }
-  }
-
-  if (!user) return res.status(404).json({ error: 'User not found.' });
-
-  const newAddress = { id: 'addr_' + Date.now(), ...req.body };
-  user.addresses = user.addresses || [];
-  if (newAddress.is_default) {
-    user.addresses = user.addresses.map(a => ({ ...a, is_default: false }));
-  }
-  user.addresses.push(newAddress);
-  saveStoreData('users', users);
-
-  // Also sync addresses to Supabase profiles
   try {
-    await supabase.from('profiles').upsert({
-      id: user.id,
-      email: user.email,
-      full_name: user.name,
-      mobile: user.phone,
-      addresses: user.addresses,
-      role: user.role || 'customer',
-    });
+    const { data } = await supabase.from('profiles').select('*').eq('email', cleanEmail).maybeSingle();
+    profile = data;
   } catch (e) {}
+
+  if (!profile) {
+    try {
+      const newProf = {
+        email: cleanEmail,
+        full_name: req.user.name || '',
+        mobile: req.user.phone || '',
+        role: req.user.role || 'customer',
+        addresses: []
+      };
+      const { data } = await supabase.from('profiles').insert(newProf).select().maybeSingle();
+      profile = data || newProf;
+    } catch (e) {}
+  }
+
+  const newAddress = { id: 'addr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4), ...req.body };
+  let addresses = Array.isArray(profile?.addresses) ? [...profile.addresses] : [];
+  if (newAddress.is_default) {
+    addresses = addresses.map(a => ({ ...a, is_default: false }));
+  }
+  addresses.push(newAddress);
+
+  try {
+    await supabase.from('profiles').update({ addresses }).eq('email', cleanEmail);
+  } catch (e) {
+    console.warn('Supabase address save error:', e.message);
+  }
 
   return res.json({ success: true, address: newAddress });
 });
 
 app.put('/api/auth/address/:id', authMiddleware, async (req, res) => {
-  const users = loadStoreData('users', 'src/data/users.json');
-  let user = users.find(u => u.id === req.user.id || u.email === req.user.email);
-
-  if (!user) {
-    try {
-      const { data: sbProfile } = await supabase
-        .from('profiles')
-        .select('*')
-        .or(`id.eq.${req.user.id},email.eq.${req.user.email}`)
-        .single();
-      if (sbProfile) {
-        user = { id: sbProfile.id || req.user.id, email: sbProfile.email || req.user.email, name: sbProfile.full_name || '', phone: sbProfile.mobile || '', role: sbProfile.role || 'customer', addresses: sbProfile.addresses || [] };
-        users.push(user);
-        saveStoreData('users', users);
-      }
-    } catch (e) {}
-  }
-
-  if (!user) return res.status(404).json({ error: 'User not found.' });
-
+  const cleanEmail = (req.user.email || '').toLowerCase().trim();
   const id = req.params.id;
-  user.addresses = (user.addresses || []).map(a => {
+  let addresses = [];
+
+  try {
+    const { data: profile } = await supabase.from('profiles').select('addresses').eq('email', cleanEmail).maybeSingle();
+    addresses = Array.isArray(profile?.addresses) ? profile.addresses : [];
+  } catch (e) {}
+
+  addresses = addresses.map(a => {
     if (a.id === id) return { ...a, ...req.body };
     if (req.body.is_default) return { ...a, is_default: false };
     return a;
   });
 
-  saveStoreData('users', users);
-  try { await supabase.from('profiles').upsert({ id: user.id, email: user.email, addresses: user.addresses }); } catch (e) {}
-  const updated = user.addresses.find(a => a.id === id);
+  try {
+    await supabase.from('profiles').update({ addresses }).eq('email', cleanEmail);
+  } catch (e) {}
+
+  const updated = addresses.find(a => a.id === id);
   return res.json({ success: true, address: updated });
 });
 
 app.delete('/api/auth/address/:id', authMiddleware, async (req, res) => {
-  const users = loadStoreData('users', 'src/data/users.json');
-  let user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  const cleanEmail = (req.user.email || '').toLowerCase().trim();
+  const id = req.params.id;
+  let addresses = [];
 
-  if (!user) {
-    try {
-      const { data: sbProfile } = await supabase
-        .from('profiles')
-        .select('*')
-        .or(`id.eq.${req.user.id},email.eq.${req.user.email}`)
-        .single();
-      if (sbProfile) {
-        user = { id: sbProfile.id || req.user.id, email: sbProfile.email || req.user.email, name: sbProfile.full_name || '', phone: sbProfile.mobile || '', role: sbProfile.role || 'customer', addresses: sbProfile.addresses || [] };
-        users.push(user);
-        saveStoreData('users', users);
-      }
-    } catch (e) {}
-  }
+  try {
+    const { data: profile } = await supabase.from('profiles').select('addresses').eq('email', cleanEmail).maybeSingle();
+    addresses = Array.isArray(profile?.addresses) ? profile.addresses : [];
+  } catch (e) {}
 
-  if (!user) return res.status(404).json({ error: 'User not found.' });
+  addresses = addresses.filter(a => a.id !== id);
 
-  user.addresses = (user.addresses || []).filter(a => a.id !== req.params.id);
-  saveStoreData('users', users);
-  try { await supabase.from('profiles').upsert({ id: user.id, email: user.email, addresses: user.addresses }); } catch (e) {}
+  try {
+    await supabase.from('profiles').update({ addresses }).eq('email', cleanEmail);
+  } catch (e) {}
+
   return res.json({ success: true });
 });
 

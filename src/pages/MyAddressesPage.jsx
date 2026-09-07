@@ -293,12 +293,17 @@ export function MyAddressesPage() {
 
   const handleSave = async (data) => {
     setSaving(true);
+    let res;
     if (editingAddress) {
-      await updateAddress(editingAddress.id, data);
+      res = await updateAddress(editingAddress.id, data);
     } else {
-      await addAddress(data);
+      res = await addAddress(data);
     }
     setSaving(false);
+    if (res && res.success === false) {
+      alert(res.error || 'Failed to save address');
+      return;
+    }
     setShowForm(false);
     setEditingAddress(null);
   };

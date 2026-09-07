@@ -227,6 +227,7 @@ export function DashboardPage() {
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
+    { id: 'orders', label: 'Orders', desktopOnly: true },
     { id: 'addresses', label: 'Addresses' },
   ];
 
@@ -257,7 +258,7 @@ export function DashboardPage() {
         <div className="flex gap-2 px-4 mt-6 bg-white mx-4 rounded-xl shadow-sm p-1.5">
           {tabs.map((tab) => (
             <button key={tab.id} onClick={() => setActiveTab(tab.id)}
-              className={`flex-1 py-2.5 text-xs md:text-sm font-bold rounded-lg transition-colors ${
+              className={`${tab.desktopOnly ? 'hidden md:block' : ''} flex-1 py-2.5 text-xs md:text-sm font-bold rounded-lg transition-colors ${
                 activeTab === tab.id ? 'bg-brand-gold text-white shadow-sm' : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
               }`}>
               {tab.label}
@@ -272,7 +273,7 @@ export function DashboardPage() {
             {/* Stats */}
             <div className="grid grid-cols-3 gap-3">
               {[
-                { label: 'Orders', value: orders.length, color: 'bg-gray-50 text-brand-gold' },
+                { label: 'Orders', value: (sbOrders.length > 0 ? sbOrders : orders).length, color: 'bg-gray-50 text-brand-gold' },
                 { label: 'Addresses', value: addresses.length, color: 'bg-blue-50 text-blue-600' },
                 { label: 'Wishlist', value: 0, color: 'bg-pink-50 text-pink-600' },
               ].map((stat) => (

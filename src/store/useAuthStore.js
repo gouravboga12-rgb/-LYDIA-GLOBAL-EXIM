@@ -179,63 +179,91 @@ export const useAuthStore = create((set, get) => ({
 
   fetchProfile: async () => {
     if (!get().token) return;
-    // Re-check token expiry before making the call
     if (isTokenExpired(get().token)) {
       localStorage.removeItem('token');
       set({ user: null, token: null, addresses: [], orders: [] });
       return;
     }
     set({ loading: true });
-    try {
-      const { data } = await api.get('/auth/profile');
-      if (data.user?.email?.startsWith('deleted_') || data.user?.is_deleted) {
-        get().logout();
-        return;
-      }
-      
-      let customerOrders = data.orders || [];
 
-      // Also pull directly from Supabase to guarantee active orders are synchronized
+    const currentUser = get().user;
+    const cleanEmail = (currentUser?.email || '').toLowerCase().trim();
+
+    // 1. Fetch Profile & Addresses directly from Supabase online
+    let profile = null;
+    if (cleanEmail) {
       try {
-        const u = data.user || get().user;
-        const cleanEmail = (u?.email || '').toLowerCase().trim();
-        const cleanPhone = (u?.phone || '').replace(/\D/g, '').slice(-10);
-
-        const { data: sbOrders } = await supabase
-          .from('orders')
+        const { data, error } = await supabase
+          .from('profiles')
           .select('*')
-          .order('id', { ascending: false });
-
-        if (sbOrders && sbOrders.length > 0) {
-          const matched = sbOrders.filter(o => {
-            const oEmail = (o.customer_email || o.user_email || '').toLowerCase().trim();
-            const oPhone = (o.customer_phone || o.user_phone || '').replace(/\D/g, '').slice(-10);
-            let addrEmail = '', addrPhone = '';
-            try {
-              const addr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || o.address || {});
-              addrEmail = (addr.email || '').toLowerCase().trim();
-              addrPhone = (addr.mobile || addr.phone || '').replace(/\D/g, '').slice(-10);
-            } catch {}
-            return (cleanEmail && (oEmail === cleanEmail || addrEmail === cleanEmail)) ||
-                   (cleanPhone && (oPhone === cleanPhone || addrPhone === cleanPhone)) ||
-                   (o.user_id && o.user_id === u?.id);
-          });
-
-          if (matched.length > 0) {
-            customerOrders = matched;
-          }
+          .eq('email', cleanEmail)
+          .maybeSingle();
+        if (!error && data) {
+          profile = data;
         }
-      } catch (sbErr) {
-        console.warn('Supabase profile orders note:', sbErr);
+      } catch (e) {
+        console.warn('Supabase profile fetch error:', e);
       }
+    }
 
-      set({ user: data.user, addresses: data.addresses, orders: customerOrders, loading: false });
-    } catch (err) {
-      set({ loading: false });
-      // 401 = token expired or invalid on server side
-      if (err.response?.status === 401) {
-        localStorage.removeItem('token');
-        set({ user: null, token: null, addresses: [], orders: [] });
+    // 2. Fetch Orders directly from Supabase online
+    let customerOrders = [];
+    try {
+      const { data: sbOrders } = await supabase
+        .from('orders')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (sbOrders && sbOrders.length > 0) {
+        const cleanPhone = (currentUser?.phone || profile?.mobile || '').replace(/\D/g, '').slice(-10);
+        customerOrders = sbOrders.filter(o => {
+          const oEmail = (o.customer_email || o.user_email || '').toLowerCase().trim();
+          const oPhone = (o.customer_phone || o.user_phone || '').replace(/\D/g, '').slice(-10);
+          let addrEmail = '', addrPhone = '';
+          try {
+            const addr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || o.address || {});
+            addrEmail = (addr.email || '').toLowerCase().trim();
+            addrPhone = (addr.mobile || addr.phone || '').replace(/\D/g, '').slice(-10);
+          } catch {}
+          return (cleanEmail && (oEmail === cleanEmail || addrEmail === cleanEmail)) ||
+                 (cleanPhone && (oPhone === cleanPhone || addrPhone === cleanPhone)) ||
+                 (o.user_id && (o.user_id === currentUser?.id || o.user_id === profile?.id));
+        });
+      }
+    } catch (e) {
+      console.warn('Supabase orders fetch error:', e);
+    }
+
+    if (profile) {
+      set({
+        user: {
+          ...(currentUser || {}),
+          id: profile.id || currentUser?.id,
+          email: profile.email || currentUser?.email,
+          name: profile.full_name || currentUser?.name || '',
+          phone: profile.mobile || currentUser?.phone || '',
+          role: profile.role || currentUser?.role || 'customer',
+        },
+        addresses: Array.isArray(profile.addresses) ? profile.addresses : [],
+        orders: customerOrders,
+        loading: false,
+      });
+    } else {
+      // Fallback: call backend api
+      try {
+        const { data } = await api.get('/auth/profile');
+        set({
+          user: data.user || currentUser,
+          addresses: data.addresses || [],
+          orders: customerOrders.length > 0 ? customerOrders : (data.orders || []),
+          loading: false,
+        });
+      } catch (err) {
+        set({ loading: false });
+        if (err.response?.status === 401) {
+          localStorage.removeItem('token');
+          set({ user: null, token: null, addresses: [], orders: [] });
+        }
       }
     }
   },
@@ -243,25 +271,29 @@ export const useAuthStore = create((set, get) => ({
   updateProfile: async (name, phone, country) => {
     set({ loading: true, error: null });
     try {
-      const { data } = await api.put('/auth/profile', { name, phone, country });
-      set(state => ({ user: { ...state.user, ...data.user, name, phone, country }, loading: false }));
+      const currentUser = get().user;
+      const cleanEmail = (currentUser?.email || '').toLowerCase().trim();
 
-      const current = get().user;
-      if (current?.id) {
+      if (cleanEmail) {
+        const updateData = {};
+        if (name) updateData.full_name = name;
+        if (phone) updateData.mobile = phone;
         try {
-          await supabase.from('profiles').upsert({
-            id: current.id,
-            email: current.email,
-            full_name: name || current.name,
-            mobile: phone || current.phone,
-            role: current.role || 'customer'
-          });
-        } catch (e) {}
+          await supabase.from('profiles').update(updateData).eq('email', cleanEmail);
+        } catch (e) {
+          console.warn('Supabase update profile error:', e);
+        }
       }
 
+      set(state => ({
+        user: { ...state.user, name: name || state.user?.name, phone: phone || state.user?.phone },
+        loading: false
+      }));
+
+      api.put('/auth/profile', { name, phone, country }).catch(() => {});
       return { success: true };
     } catch (err) {
-      const error = err.response?.data?.error || 'Update failed';
+      const error = err.message || 'Update failed';
       set({ loading: false, error });
       return { success: false, error };
     }
@@ -269,37 +301,114 @@ export const useAuthStore = create((set, get) => ({
 
   addAddress: async (addressData) => {
     try {
-      const { data } = await api.post('/auth/address', addressData);
-      set((state) => ({
-        addresses: addressData.is_default
-          ? [...state.addresses.map(a => ({ ...a, is_default: false })), data.address]
-          : [...state.addresses, data.address]
-      }));
-      return { success: true };
+      const currentUser = get().user;
+      const cleanEmail = (currentUser?.email || '').toLowerCase().trim();
+      const newAddress = {
+        id: 'addr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+        ...addressData,
+      };
+
+      // Get existing addresses from state or Supabase
+      let currentAddresses = get().addresses || [];
+      if (cleanEmail) {
+        try {
+          const { data: prof } = await supabase.from('profiles').select('addresses').eq('email', cleanEmail).maybeSingle();
+          if (prof && Array.isArray(prof.addresses)) {
+            currentAddresses = prof.addresses;
+          }
+        } catch (e) {}
+      }
+
+      let updatedAddresses = [];
+      if (newAddress.is_default) {
+        updatedAddresses = [...currentAddresses.map(a => ({ ...a, is_default: false })), newAddress];
+      } else {
+        if (currentAddresses.length === 0) newAddress.is_default = true;
+        updatedAddresses = [...currentAddresses, newAddress];
+      }
+
+      // Save directly to Supabase online
+      if (cleanEmail) {
+        try {
+          const { error: sbErr } = await supabase
+            .from('profiles')
+            .update({ addresses: updatedAddresses })
+            .eq('email', cleanEmail);
+          if (sbErr) console.warn('Supabase address save error:', sbErr);
+        } catch (e) {
+          console.warn('Supabase address save catch:', e);
+        }
+      }
+
+      // Update Zustand state immediately so UI updates without waiting
+      set({ addresses: updatedAddresses });
+
+      // Notify backend asynchronously
+      api.post('/auth/address', newAddress).catch(() => {});
+
+      return { success: true, address: newAddress };
     } catch (err) {
-      return { success: false, error: err.response?.data?.error || 'Failed to add address' };
+      console.error('addAddress error:', err);
+      return { success: false, error: err.message || 'Failed to add address' };
     }
   },
 
   updateAddress: async (id, addressData) => {
     try {
-      const { data } = await api.put(`/auth/address/${id}`, addressData);
-      set((state) => ({
-        addresses: state.addresses.map(a =>
-          addressData.is_default ? { ...a, is_default: a.id === id ? true : false } : a.id === id ? data.address : a
-        ).map(a => a.id === id ? data.address : a)
-      }));
+      const currentUser = get().user;
+      const cleanEmail = (currentUser?.email || '').toLowerCase().trim();
+
+      let currentAddresses = get().addresses || [];
+      if (cleanEmail) {
+        try {
+          const { data: prof } = await supabase.from('profiles').select('addresses').eq('email', cleanEmail).maybeSingle();
+          if (prof && Array.isArray(prof.addresses)) {
+            currentAddresses = prof.addresses;
+          }
+        } catch (e) {}
+      }
+
+      const updatedAddresses = currentAddresses.map(a => {
+        if (a.id === id) return { ...a, ...addressData };
+        if (addressData.is_default) return { ...a, is_default: false };
+        return a;
+      });
+
+      if (cleanEmail) {
+        try {
+          await supabase.from('profiles').update({ addresses: updatedAddresses }).eq('email', cleanEmail);
+        } catch (e) {}
+      }
+
+      set({ addresses: updatedAddresses });
+      api.put(`/auth/address/${id}`, addressData).catch(() => {});
       return { success: true };
     } catch (err) {
-      return { success: false, error: err.response?.data?.error || 'Failed to update address' };
+      return { success: false, error: err.message || 'Failed to update address' };
     }
   },
 
   deleteAddress: async (id) => {
     try {
-      await api.delete(`/auth/address/${id}`);
-      set((state) => ({ addresses: state.addresses.filter((a) => a.id !== id) }));
-    } catch {}
+      const currentUser = get().user;
+      const cleanEmail = (currentUser?.email || '').toLowerCase().trim();
+
+      const currentAddresses = get().addresses || [];
+      const updatedAddresses = currentAddresses.filter(a => a.id !== id);
+
+      if (cleanEmail) {
+        try {
+          await supabase.from('profiles').update({ addresses: updatedAddresses }).eq('email', cleanEmail);
+        } catch (e) {}
+      }
+
+      set({ addresses: updatedAddresses });
+      api.delete(`/auth/address/${id}`).catch(() => {});
+      return { success: true };
+    } catch (err) {
+      console.error('deleteAddress error:', err);
+      return { success: false, error: err.message || 'Failed to delete address' };
+    }
   },
 
   logout: () => {
