@@ -42,29 +42,21 @@ export function AdminDashboardPage() {
       console.warn("Supabase dashboard fetch note:", e);
     }
 
-    // 2. Backend REST API fallback / merge
+    // 2. Fallback for users/products if Supabase returned empty
     try {
-      const token = localStorage.getItem("token");
-      const h = token ? { Authorization: `Bearer ${token}` } : {};
-      const [od, ud, pd] = await Promise.all([
-        fetch(`${BACKEND_URL}/admin/orders`, { headers: h }).then((r) => r.json()).catch(() => ({})),
-        fetch(`${BACKEND_URL}/admin/users`, { headers: h }).then((r) => r.json()).catch(() => ({})),
-        fetch(`${BACKEND_URL}/admin/products`, { headers: h }).then((r) => r.json()).catch(() => ({})),
-      ]);
-
-      if (od && od.orders && od.orders.length > 0) {
-        const existingNos = new Set(allOrders.map(o => String(o.order_number || o.id)));
-        for (const o of od.orders) {
-          if (!existingNos.has(String(o.order_number || o.id))) {
-            allOrders.push(o);
-          }
+      if (allUsers.length === 0 || productsCount === 0) {
+        const token = localStorage.getItem("token");
+        const h = token ? { Authorization: `Bearer ${token}` } : {};
+        const [ud, pd] = await Promise.all([
+          fetch(`${BACKEND_URL}/admin/users`, { headers: h }).then((r) => r.json()).catch(() => ({})),
+          fetch(`${BACKEND_URL}/admin/products`, { headers: h }).then((r) => r.json()).catch(() => ({})),
+        ]);
+        if (ud && ud.users && ud.users.length > 0 && allUsers.length === 0) {
+          allUsers = ud.users;
         }
-      }
-      if (ud && ud.users && ud.users.length > 0 && allUsers.length === 0) {
-        allUsers = ud.users;
-      }
-      if (pd && pd.products && pd.products.length > 0) {
-        setProductsCount(pd.products.length);
+        if (pd && pd.products && pd.products.length > 0 && productsCount === 0) {
+          setProductsCount(pd.products.length);
+        }
       }
     } catch (err) {
       console.warn("Backend API fetch note:", err);

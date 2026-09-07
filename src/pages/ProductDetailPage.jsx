@@ -208,12 +208,6 @@ export function ProductDetailPage() {
           userOrders = sbOrders;
         }
 
-        // 2. Fallback to local storage orders if empty
-        if (userOrders.length === 0) {
-          const localOrders = JSON.parse(localStorage.getItem('lydia_orders') || '[]');
-          userOrders = localOrders.filter(o => o.user_id === user.id || o.customer_email?.toLowerCase() === user.email?.toLowerCase());
-        }
-
         // Check if any order contains this product
         let foundDelivered = false;
         let foundOther = null;

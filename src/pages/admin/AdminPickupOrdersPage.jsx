@@ -4,6 +4,7 @@ import { MessageCircle, ChevronDown, Printer, FileText, ExternalLink, X, AlertTr
 import { Link } from "react-router-dom";
 import logoUrl from '../../assets/logo.png';
 import AddressAutocomplete from '../../components/AddressAutocomplete';
+import { supabase } from '../../utils/supabase';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 const FROM_ADDRESS = {
@@ -783,23 +784,22 @@ export function AdminPickupOrdersPage() {
   const [sendingInvoice, setSendingInvoice] = useState({}); // tracking email sending state
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setLoading(false);
-      return;
-    }
-    fetch(`${BACKEND_URL}/admin/orders`, { headers: { Authorization: `Bearer ${token}` } })
-      .then((r) => r.json())
-      .then((d) => {
-        if (d.orders) {
-          setOrders(d.orders);
+    async function loadOrders() {
+      try {
+        const { data: sbOrders, error } = await supabase.from("orders").select("*").order("id", { ascending: false });
+        if (!error && sbOrders) {
+          setOrders(sbOrders);
           const t = {};
-          d.orders.forEach(o => { t[o.id] = { id: o.tracking_id || "", link: o.tracking_link || "" }; });
+          sbOrders.forEach(o => { t[o.id] = { id: o.tracking_id || "", link: o.tracking_link || "" }; });
           setTracking(t);
         }
-      })
-      .catch(() => {})
-      .finally(() => setLoading(false));
+      } catch (err) {
+        console.warn("Failed to fetch orders from Supabase:", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadOrders();
   }, []);
 
   useEffect(() => { setCurrentPage(1); }, [search, statusFilter]);

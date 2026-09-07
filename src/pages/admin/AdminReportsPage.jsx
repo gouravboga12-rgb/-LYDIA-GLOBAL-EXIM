@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Download, TrendingUp, DollarSign, ShoppingBag, Users, Tag, FileText, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { supabase } from "../../utils/supabase";
+
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 export function AdminReportsPage() {
@@ -68,39 +70,41 @@ export function AdminReportsPage() {
       else if (type === 'customers') endpoint = '/admin/users';
       else if (type === 'coupons') endpoint = '/admin/coupons';
 
-      const res = await fetch(`${BACKEND_URL}${endpoint}`, { headers: { Authorization: `Bearer ${token}` } });
-      const data = await res.json();
-      
-      const safeParse = (str) => { try { return typeof str === 'string' ? JSON.parse(str) : (str || {}); } catch { return {}; } };
-      const parseArray = (str) => { try { return typeof str === 'string' ? JSON.parse(str) : (Array.isArray(str) ? str : []); } catch { return []; } };
-
       let arr = [];
       if (type === 'revenue' || type === 'orders') {
-        if (data.orders) {
-          arr = data.orders.map(o => {
-            const addr = safeParse(o.address);
-            const items = parseArray(o.items);
-            return {
-              'Order ID': o.id,
-              'Order Number': o.order_number || '',
-              'Date': new Date(o.created_at).toLocaleString(),
-              'Customer Name': o.user_name || (addr.firstName ? addr.firstName + ' ' + (addr.lastName || '') : ''),
-              'Customer Email': o.user_email || addr.email || '',
-              'Customer Phone': addr.mobile || '',
-              'Status': o.status,
-              'Order Type': o.order_type,
-              'Total Amount': o.total,
-              'Discount Amount': o.discount_amount || 0,
-              'Coupon Code': o.coupon_code || '',
-              'Shipping Fee': o.shipping_fee || 0,
-              'Tax Amount': o.tax_amount || 0,
-              'Payment Method': o.payment_method || '',
-              'Address': addr.address ? `${addr.address}, ${addr.city}, ${addr.state}, ${addr.zipCode}, ${addr.country}` : '',
-              'Item Count': items.length
-            };
-          });
-        }
-      } else if (type === 'products') {
+        const { data: sbOrders } = await supabase.from('orders').select('*').order('id', { ascending: false });
+        const ordersList = sbOrders || [];
+        arr = ordersList.map(o => {
+          let addr = {};
+          if (o.shipping_address) {
+            addr = safeParse(o.shipping_address);
+          } else if (o.address) {
+            addr = safeParse(o.address);
+          }
+          const items = parseArray(o.items);
+          return {
+            'Order ID': o.id,
+            'Order Number': o.order_number || '',
+            'Date': new Date(o.created_at).toLocaleString(),
+            'Customer Name': o.customer_name || o.user_name || (addr.firstName ? addr.firstName + ' ' + (addr.lastName || '') : ''),
+            'Customer Email': o.customer_email || o.user_email || addr.email || '',
+            'Customer Phone': o.customer_phone || addr.mobile || '',
+            'Status': o.status,
+            'Order Type': o.order_type || 'shipping',
+            'Total Amount': o.total,
+            'Discount Amount': o.discount || o.discount_amount || 0,
+            'Coupon Code': o.coupon_code || '',
+            'Shipping Fee': o.shipping || o.shipping_fee || 0,
+            'Tax Amount': o.tax || o.tax_amount || 0,
+            'Payment Method': o.payment_method || '',
+            'Address': addr.address ? `${addr.address}, ${addr.city}, ${addr.state}, ${addr.zipCode}, ${addr.country}` : '',
+            'Item Count': items.length
+          };
+        });
+      } else {
+        const res = await fetch(`${BACKEND_URL}${endpoint}`, { headers: { Authorization: `Bearer ${token}` } });
+        const data = await res.json();
+        if (type === 'products') {
         if (data.products) {
           arr = [];
           data.products.forEach(p => {

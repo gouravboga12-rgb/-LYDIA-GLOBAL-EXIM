@@ -29,36 +29,17 @@ export function AdminRevenuePage() {
     setLoading(true);
     let allOrders = [];
     try {
-      // 1. Try Supabase
+      // Fetch exclusively from Supabase
       const { data: sbData, error } = await supabase
         .from("orders")
         .select("*")
         .order("id", { ascending: false });
 
-      if (!error && sbData && sbData.length > 0) {
+      if (!error && sbData) {
         allOrders = sbData;
       }
     } catch (e) {
       console.warn("Supabase load note:", e);
-    }
-
-    try {
-      // 2. Try Backend REST API
-      const token = localStorage.getItem("token");
-      const headers = token ? { Authorization: `Bearer ${token}` } : {};
-      const res = await fetch(`${BACKEND_URL}/admin/orders`, { headers }).catch(() => null);
-      const data = res ? await res.json().catch(() => ({})) : {};
-
-      if (data && data.orders && data.orders.length > 0) {
-        const existingNos = new Set(allOrders.map(o => String(o.order_number || o.id)));
-        for (const o of data.orders) {
-          if (!existingNos.has(String(o.order_number || o.id))) {
-            allOrders.push(o);
-          }
-        }
-      }
-    } catch (err) {
-      console.error("Error loading orders for revenue calculation:", err);
     }
 
     const normalized = allOrders.map(o => {

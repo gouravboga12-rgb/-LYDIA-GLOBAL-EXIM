@@ -871,15 +871,25 @@ app.delete('/api/auth/address/:id', authMiddleware, async (req, res) => {
 // ADMIN DASHBOARD & STATS
 // ==========================================
 
-app.get(['/api/admin/dashboard/stats', '/api/admin/stats'], (req, res) => {
-  const orders = loadStoreData('orders', 'src/data/orders.js');
-  const users = loadStoreData('users', 'src/data/users.json');
-  const products = loadStoreData('products', 'src/data/products.json');
+app.get(['/api/admin/dashboard/stats', '/api/admin/stats'], async (req, res) => {
+  let orders = [];
+  let usersCount = 0;
+  try {
+    const [sbOrders, sbUsers] = await Promise.all([
+      supabase.from('orders').select('*').order('id', { ascending: false }),
+      supabase.from('profiles').select('id', { count: 'exact' })
+    ]);
+    if (sbOrders.data) orders = sbOrders.data;
+    if (sbUsers.count !== null && sbUsers.count !== undefined) usersCount = sbUsers.count;
+  } catch (e) {
+    console.warn('Supabase stats calculation error:', e);
+  }
 
+  const products = loadStoreData('products', 'src/data/products.json');
   const totalOrders = orders.length;
-  const totalRevenue = orders.filter(o => o.status !== 'cancelled').reduce((acc, o) => acc + Number(o.total || 0), 0);
-  const totalUsers = users.length;
-  const pendingOrders = orders.filter(o => ['paid', 'processing', 'pending'].includes(o.status)).length;
+  const totalRevenue = orders.filter(o => (o.status || '').toLowerCase() !== 'cancelled').reduce((acc, o) => acc + Number(o.total || 0), 0);
+  const totalUsers = usersCount || loadStoreData('users', 'src/data/users.json').length;
+  const pendingOrders = orders.filter(o => ['paid', 'processing', 'pending'].includes((o.status || '').toLowerCase())).length;
   const totalProducts = products.length;
 
   return res.json({
@@ -1267,18 +1277,15 @@ const handleOrderCreation = async (req, res) => {
 app.post(['/api/general/orders', '/api/auth/orders', '/api/admin/orders'], handleOrderCreation);
 
 app.get(['/api/admin/orders', '/api/general/orders'], async (req, res) => {
-  let orders = [];
   try {
     const { data: sbOrders, error } = await supabase.from('orders').select('*').order('id', { ascending: false });
-    if (!error && sbOrders && sbOrders.length > 0) {
-      orders = sbOrders;
+    if (!error && sbOrders) {
+      return res.json({ orders: sbOrders });
     }
-  } catch (e) {}
-
-  if (orders.length === 0) {
-    orders = loadStoreData('orders', 'src/data/orders.json');
+  } catch (e) {
+    console.warn('Supabase fetch orders note:', e);
   }
-  return res.json({ orders });
+  return res.json({ orders: [] });
 });
 
 app.get(['/api/general/order/:id', '/api/auth/order/:id', '/api/orders/:id', '/api/order/:id'], async (req, res) => {
