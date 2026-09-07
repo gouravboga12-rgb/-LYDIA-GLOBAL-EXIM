@@ -171,51 +171,51 @@ export function AdminOrdersPage() {
       return;
     }
 
-    // Optimistic UI delete
+    // Remove from UI immediately
     setOrders(prev => prev.filter(o => String(o.id) !== String(order.id) && String(o.order_number) !== String(order.order_number)));
 
-    let backendSuccess = false;
+    let sbDeleteOk = false;
+
+    // Step 1: Delete directly from Supabase (primary method on Vercel)
+    try {
+      if (!isNaN(numericId) && numericId > 0) {
+        const { error: e1 } = await supabase.from("orders").delete().eq("id", numericId);
+        if (!e1) sbDeleteOk = true;
+        else console.error("Supabase delete by id error:", e1.message, e1);
+      }
+      if (order.order_number) {
+        const { error: e2 } = await supabase.from("orders").delete().eq("order_number", String(order.order_number));
+        if (!e2) sbDeleteOk = true;
+        else console.error("Supabase delete by order_number error:", e2.message, e2);
+        // Clean up enquiries
+        await supabase.from("enquiries").delete().ilike("subject", `%${order.order_number}%`);
+      }
+    } catch (sbErr) {
+      console.error("Supabase delete exception:", sbErr);
+    }
+
+    // Step 2: Also call backend REST API (works locally/server environments)
     try {
       const token = localStorage.getItem("token");
-
-      // Use numeric Supabase id first if available, otherwise use order_number
       const deleteId = (!isNaN(numericId) && numericId > 0) ? numericId : orderNum;
-
-      const res = await fetch(`${BACKEND_URL}/admin/orders/${deleteId}`, {
+      await fetch(`${BACKEND_URL}/admin/orders/${deleteId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` }
       }).catch(() => null);
-
-      if (res && res.ok) {
-        backendSuccess = true;
-      } else {
-        // Fallback: delete by order_number if numeric id delete failed
-        const res2 = await fetch(`${BACKEND_URL}/admin/orders/${orderNum}`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` }
-        }).catch(() => null);
-        backendSuccess = !!(res2 && res2.ok);
-      }
+      await fetch(`${BACKEND_URL}/admin/orders/${orderNum}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` }
+      }).catch(() => null);
     } catch (err) {
       console.warn("Backend delete note:", err);
     }
 
-    // Also directly delete from Supabase as safety net
-    try {
-      if (!isNaN(numericId) && numericId > 0) {
-        await supabase.from("orders").delete().eq("id", numericId);
-      }
-      if (order.order_number) {
-        await supabase.from("orders").delete().eq("order_number", order.order_number);
-        // Also clean up related enquiries from Supabase
-        await supabase.from("enquiries").delete().ilike("subject", `%${order.order_number}%`);
-      }
-    } catch (sbErr) {
-      console.warn("Supabase direct delete note:", sbErr);
+    if (sbDeleteOk) {
+      alert(`Order #${orderNum} has been permanently deleted.`);
+    } else {
+      alert(`Order #${orderNum} removed from view. If it reappears, please check the browser console for errors and try again.`);
     }
-
-    // Show confirmation and refresh
-    alert(`Order #${orderNum} has been permanently deleted.`);
+    // Refresh list
     fetchOrders();
   };
 
