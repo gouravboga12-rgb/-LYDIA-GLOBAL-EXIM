@@ -21,23 +21,15 @@ export function AdminEnquiriesPage() {
   const fetchEnquiries = async () => {
     setLoading(true);
     try {
-      // 1. Try fetching from Supabase first
+      // Fetch exclusively from Supabase
       let data = [];
       try {
         const { data: sbData, error } = await supabase.from('enquiries').select('*').order('created_at', { ascending: false });
-        if (!error && sbData && sbData.length > 0) {
+        if (!error && sbData) {
           data = sbData;
         }
-      } catch (e) {}
-
-      // 2. Fallback / merge with backend API
-      if (data.length === 0) {
-        const token = localStorage.getItem("token");
-        const res = await fetch(`${BACKEND_URL}/admin/enquiries`, {
-          headers: token ? { Authorization: `Bearer ${token}` } : {}
-        }).catch(() => null);
-        const resData = res ? await res.json().catch(() => ({})) : {};
-        if (resData.enquiries) data = resData.enquiries;
+      } catch (e) {
+        console.warn('Supabase enquiries fetch note:', e);
       }
 
       setEnquiries(data);

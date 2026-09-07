@@ -31,14 +31,18 @@ export function AdminCustomersPage() {
   }, []);
 
   const fetchCustomers = async () => {
+    setLoading(true);
     try {
-      let combined = [];
+      // Fetch exclusively from online Supabase profiles
+      const { data: profiles, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-      // 1. Fetch from Supabase profiles
-      try {
-        const { data: profiles, error } = await supabase.from('profiles').select('*');
-        if (!error && profiles && profiles.length > 0) {
-          combined = profiles.map(p => ({
+      if (!error && profiles) {
+        const validCustomers = profiles
+          .filter(p => p && !p.email?.startsWith('deleted_') && !p.is_deleted)
+          .map(p => ({
             id: p.id,
             name: p.full_name || p.name || 'Customer',
             email: p.email || '',
@@ -49,45 +53,12 @@ export function AdminCustomersPage() {
             is_email_verified: true,
             is_phone_verified: !!(p.phone || p.mobile)
           }));
-        }
-      } catch (e) {}
-
-      // 2. Fetch from Backend API
-      try {
-        const token = localStorage.getItem("token");
-        const h = token ? { Authorization: `Bearer ${token}` } : {};
-        const res = await fetch(`${BACKEND_URL}/admin/users`, { headers: h }).catch(() => null);
-        const data = res ? await res.json().catch(() => ({})) : {};
-
-        if (data && data.users && data.users.length > 0) {
-          const existingEmails = new Set(combined.map(u => (u.email || '').toLowerCase()));
-          const existingIds = new Set(combined.map(u => String(u.id)));
-
-          for (const u of data.users) {
-            const emailKey = (u.email || '').toLowerCase();
-            const idKey = String(u.id || '');
-            if ((!emailKey || !existingEmails.has(emailKey)) && (!idKey || !existingIds.has(idKey))) {
-              combined.push({
-                id: u.id,
-                name: u.name || u.full_name || 'Customer',
-                email: u.email || '',
-                phone: u.phone || u.mobile || '',
-                country: u.country || 'India',
-                role: u.role || 'customer',
-                created_at: u.created_at,
-                is_email_verified: u.is_email_verified ?? true,
-                is_phone_verified: u.is_phone_verified ?? !!(u.phone || u.mobile)
-              });
-            }
-          }
-        }
-      } catch (e) {}
-
-      // Filter out deleted / dummy users if any
-      const validCustomers = combined.filter(c => c && !c.email?.startsWith('deleted_') && !c.is_deleted);
-      setCustomers(validCustomers);
+        setCustomers(validCustomers);
+      } else {
+        setCustomers([]);
+      }
     } catch (err) {
-      console.error("Failed to load customers:", err);
+      console.error("Failed to load customers from Supabase:", err);
       setCustomers([]);
     } finally {
       setLoading(false);
@@ -99,22 +70,41 @@ export function AdminCustomersPage() {
     const customer = deleteTarget;
     setIsDeleting(true);
     try {
-      const token = localStorage.getItem("token");
-      await fetch(`${BACKEND_URL}/admin/users/${customer.id}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` },
-      }).catch(() => null);
+      const isValidUuid = (val) => typeof val === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(val);
 
-      // Also remove from Supabase profiles if exists
+      // 1. Delete customer profile from Supabase profiles
+      if (isValidUuid(customer.id)) {
+        await supabase.from('profiles').delete().eq('id', customer.id);
+      }
+      if (customer.email) {
+        await supabase.from('profiles').delete().eq('email', customer.email);
+        await supabase.from('profiles').delete().ilike('email', customer.email);
+      }
+
+      // 2. Delete ALL orders associated with this customer from Supabase orders
+      // (This automatically clears them from Orders page, Revenue calculation, and Dashboard)
+      if (customer.email) {
+        await supabase.from('orders').delete().ilike('customer_email', customer.email);
+      }
+      if (isValidUuid(customer.id)) {
+        await supabase.from('orders').delete().eq('user_id', customer.id);
+      }
+
+      // 3. Delete ALL enquiries associated with this customer from Supabase enquiries
+      if (customer.email) {
+        await supabase.from('enquiries').delete().ilike('email', customer.email);
+      }
+
+      // 4. Also call backend endpoint to clear from any server cache
       try {
-        if (customer.id) {
-          await supabase.from('profiles').delete().eq('id', customer.id);
-        }
-        if (customer.email) {
-          await supabase.from('profiles').delete().eq('email', customer.email);
-        }
+        const token = localStorage.getItem("token");
+        await fetch(`${BACKEND_URL}/admin/users/${customer.id}?email=${encodeURIComponent(customer.email || '')}`, {
+          method: "DELETE",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+        }).catch(() => null);
       } catch (e) {}
 
+      // 5. Update local state
       setCustomers(prev => prev.filter(c => c.id !== customer.id && c.email !== customer.email));
       setDeleteTarget(null);
     } catch (err) {

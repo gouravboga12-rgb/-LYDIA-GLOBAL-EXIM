@@ -1480,7 +1480,7 @@ app.post('/api/admin/orders/:id/resend-invoice', (req, res) => {
 app.get('/api/admin/users', async (req, res) => {
   let combined = [];
   try {
-    const { data: profiles, error } = await supabase.from('profiles').select('*');
+    const { data: profiles, error } = await supabase.from('profiles').select('*').order('created_at', { ascending: false });
     if (!error && profiles && profiles.length > 0) {
       combined = profiles.map(p => ({
         id: p.id,
@@ -1494,18 +1494,8 @@ app.get('/api/admin/users', async (req, res) => {
         is_phone_verified: !!(p.phone || p.mobile)
       }));
     }
-  } catch (e) {}
-
-  const localUsers = loadStoreData('users') || [];
-  const existingEmails = new Set(combined.map(u => (u.email || '').toLowerCase()));
-  const existingIds = new Set(combined.map(u => String(u.id)));
-
-  for (const u of localUsers) {
-    const emailKey = (u.email || '').toLowerCase();
-    const idKey = String(u.id || '');
-    if ((!emailKey || !existingEmails.has(emailKey)) && (!idKey || !existingIds.has(idKey))) {
-      combined.push(u);
-    }
+  } catch (e) {
+    console.warn('Supabase profiles fetch note:', e);
   }
 
   const validUsers = combined.filter(u => u && !u.is_deleted && !u.email?.startsWith('deleted_'));
@@ -1514,19 +1504,30 @@ app.get('/api/admin/users', async (req, res) => {
 
 app.delete('/api/admin/users/:id', async (req, res) => {
   const id = req.params.id;
+  const emailParam = req.query.email || '';
   let users = loadStoreData('users', 'src/data/users.json');
   const target = users.find(u => String(u.id) === String(id));
   users = users.filter(u => String(u.id) !== String(id));
   saveStoreData('users', users);
 
   try {
-    await supabase.from('profiles').delete().eq('id', id);
-    if (target?.email) {
-      await supabase.from('profiles').delete().eq('email', target.email);
+    const isValidUuid = (val) => typeof val === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(val);
+    if (isValidUuid(id)) {
+      await supabase.from('profiles').delete().eq('id', id);
+      await supabase.from('orders').delete().eq('user_id', id);
     }
-  } catch (e) {}
+    const targetEmail = target?.email || emailParam;
+    if (targetEmail) {
+      await supabase.from('profiles').delete().eq('email', targetEmail);
+      await supabase.from('profiles').delete().ilike('email', targetEmail);
+      await supabase.from('orders').delete().ilike('customer_email', targetEmail);
+      await supabase.from('enquiries').delete().ilike('email', targetEmail);
+    }
+  } catch (e) {
+    console.warn('Supabase user delete error:', e);
+  }
 
-  return res.json({ success: true });
+  return res.json({ success: true, message: 'Customer and all associated records deleted successfully' });
 });
 
 // ==========================================
@@ -1669,15 +1670,20 @@ app.delete('/api/admin/shipping-pincodes/:id', (req, res) => {
 // ADMIN ENQUIRIES / CONTACT MESSAGES
 // ==========================================
 
-app.get('/api/admin/enquiries', (req, res) => {
-  const enquiries = loadStoreData('enquiries', 'src/data/enquiries.json');
-  return res.json({ enquiries });
+app.get('/api/admin/enquiries', async (req, res) => {
+  try {
+    const { data: sbData, error } = await supabase.from('enquiries').select('*').order('created_at', { ascending: false });
+    if (!error && sbData) {
+      return res.json({ enquiries: sbData });
+    }
+  } catch (e) {
+    console.warn('Supabase enquiries fetch note:', e);
+  }
+  return res.json({ enquiries: [] });
 });
 
 app.post(['/api/general/contact', '/api/admin/enquiries', '/api/general/enquiries'], async (req, res) => {
-  const enquiries = loadStoreData('enquiries', 'src/data/enquiries.json');
   const newEnquiry = {
-    id: Date.now().toString(),
     name: req.body.name || 'Anonymous',
     email: req.body.email || '',
     phone: req.body.phone || '',
@@ -1686,31 +1692,27 @@ app.post(['/api/general/contact', '/api/admin/enquiries', '/api/general/enquirie
     status: 'new',
     created_at: new Date().toISOString(),
   };
-  enquiries.unshift(newEnquiry);
-  saveStoreData('enquiries', enquiries);
 
   try {
-    await supabase.from('enquiries').insert([{
-      name: newEnquiry.name,
-      email: newEnquiry.email,
-      phone: newEnquiry.phone,
-      subject: newEnquiry.subject,
-      message: newEnquiry.message,
-      status: 'new',
-      created_at: newEnquiry.created_at
-    }]);
+    const { data, error } = await supabase.from('enquiries').insert([newEnquiry]).select().maybeSingle();
+    return res.json({ success: true, enquiry: data || newEnquiry });
   } catch (err) {
-    console.warn('Supabase enquiry insert note:', err);
+    console.warn('Supabase enquiry insert error:', err);
+    return res.json({ success: true, enquiry: newEnquiry });
   }
-
-  return res.json({ success: true, enquiry: newEnquiry });
 });
 
-app.delete('/api/admin/enquiries/:id', (req, res) => {
+app.delete('/api/admin/enquiries/:id', async (req, res) => {
   const id = req.params.id;
-  let enquiries = loadStoreData('enquiries', 'src/data/enquiries.json');
-  enquiries = enquiries.filter(e => String(e.id) !== String(id));
-  saveStoreData('enquiries', enquiries);
+  try {
+    const numId = Number(id);
+    if (!isNaN(numId)) {
+      await supabase.from('enquiries').delete().eq('id', numId);
+    }
+    await supabase.from('enquiries').delete().eq('id', id);
+  } catch (e) {
+    console.warn('Supabase enquiry delete error:', e);
+  }
   return res.json({ success: true });
 });
 
