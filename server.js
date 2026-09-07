@@ -645,16 +645,36 @@ app.post('/api/auth/reset-password', async (req, res) => {
 // 10. Profile & Address CRUD
 app.get('/api/auth/profile', authMiddleware, (req, res) => {
   if (req.user.role === 'admin') {
+    const allOrders = loadStoreData('orders', 'src/data/orders.json') || [];
     return res.json({
       user: { id: 'admin_master', email: 'lydiaglobalexim@gmail.com', name: 'Lydia Admin', phone: '9985563411', role: 'admin' },
       addresses: [],
-      orders: []
+      orders: allOrders
     });
   }
 
   const users = loadStoreData('users', 'src/data/users.json');
   const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
   if (!user) return res.status(404).json({ error: 'User profile not found.' });
+
+  // Dynamically query orders for this user
+  const allOrders = loadStoreData('orders', 'src/data/orders.json') || [];
+  const cleanEmail = (user.email || '').toLowerCase().trim();
+  const cleanPhone = (user.phone || '').replace(/\D/g, '').slice(-10);
+
+  const matchedOrders = allOrders.filter(o => {
+    if (user.id && (o.user_id === user.id || o.userId === user.id)) return true;
+    const oEmail = (o.user_email || o.customer_email || o.email || '').toLowerCase().trim();
+    const oPhone = (o.user_phone || o.customer_phone || o.phone || '').replace(/\D/g, '').slice(-10);
+    let addrEmail = '', addrPhone = '';
+    try {
+      const addr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || o.address || {});
+      addrEmail = (addr.email || '').toLowerCase().trim();
+      addrPhone = (addr.mobile || addr.phone || '').replace(/\D/g, '').slice(-10);
+    } catch {}
+    return (cleanEmail && (oEmail === cleanEmail || addrEmail === cleanEmail)) ||
+           (cleanPhone && (oPhone === cleanPhone || addrPhone === cleanPhone));
+  });
 
   return res.json({
     user: {
@@ -666,7 +686,7 @@ app.get('/api/auth/profile', authMiddleware, (req, res) => {
       role: user.role,
     },
     addresses: user.addresses || [],
-    orders: user.orders || [],
+    orders: matchedOrders,
   });
 });
 
@@ -682,6 +702,43 @@ app.put('/api/auth/profile', authMiddleware, (req, res) => {
 
   saveStoreData('users', users);
   return res.json({ success: true, user });
+});
+
+app.put('/api/auth/change-password', authMiddleware, async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
+  if (!newPassword || newPassword.length < 8) {
+    return res.status(400).json({ error: 'New password must be at least 8 characters long.' });
+  }
+
+  const users = loadStoreData('users', 'src/data/users.json');
+  const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  if (!user) return res.status(404).json({ error: 'User not found.' });
+
+  // If user has an existing password, verify current password
+  if (user.password) {
+    if (!currentPassword) {
+      return res.status(400).json({ error: 'Current password is required.' });
+    }
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+    if (!isMatch) {
+      return res.status(400).json({ error: 'Current password is incorrect.' });
+    }
+  }
+
+  user.password = await bcrypt.hash(newPassword, 10);
+  saveStoreData('users', users);
+
+  return res.json({ success: true, message: 'Password changed successfully.' });
+});
+
+app.post('/api/auth/logout-all', authMiddleware, async (req, res) => {
+  const users = loadStoreData('users', 'src/data/users.json');
+  const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  if (user) {
+    user.token_version = (user.token_version || 0) + 1;
+    saveStoreData('users', users);
+  }
+  return res.json({ success: true, message: 'Successfully logged out from all devices.' });
 });
 
 app.post('/api/auth/address', authMiddleware, (req, res) => {

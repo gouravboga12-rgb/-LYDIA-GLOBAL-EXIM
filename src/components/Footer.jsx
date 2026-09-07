@@ -190,6 +190,17 @@ export function Footer() {
               <Link to="/terms-of-service" className="hover:text-[#45055B] transition-colors">Terms & Conditions</Link>
             </div>
           </div>
+          {/* Developer Credit */}
+          <div className="mt-4 flex justify-center">
+            <a
+              href="https://www.codtechitsolutions.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[10px] text-[#45055B]/40 hover:text-[#B38827] transition-colors font-medium"
+            >
+              Developed by CODTECH IT SOLUTIONS
+            </a>
+          </div>
         </div>
       </div>
     </footer>

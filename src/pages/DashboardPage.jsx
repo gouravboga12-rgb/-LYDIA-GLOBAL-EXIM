@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import {
-  Package, Heart, MapPin, Wallet, Tag, Bell, Settings,
+import { Package, Heart, MapPin, Wallet, Tag, Bell, Settings,
   LogOut, ChevronRight, User, Plus, Trash2, Edit2, X, Check, Ticket
 } from 'lucide-react';
 import { useAuthStore } from '../store/useAuthStore';
@@ -9,14 +8,24 @@ import { BottomNav } from '../components/BottomNav';
 import { Header } from '../components/Header';
 import { COUNTRIES } from '../data/countries';
 import { getStatesForCountry } from '../data/states';
+import { supabase } from '../utils/supabase';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
 function AddressModal({ onClose, onSave, shippingConfig }) {
-  const [form, setForm] = useState({ name: '', line1: '', line2: '', city: '', state: '', pincode: '', country: '', mobile: '', is_default: false });
+  const [form, setForm] = useState({ name: '', line1: '', line2: '', city: '', state: '', pincode: '', country: 'India', mobile: '', is_default: false });
+  const [saving, setSaving] = useState(false);
   const handleChange = (e) => {
     const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setForm({ ...form, [e.target.name]: val });
+  };
+  const handleSave = async () => {
+    if (!form.name || !form.line1 || !form.city || !form.pincode || !form.mobile || !form.country) {
+      return;
+    }
+    setSaving(true);
+    await onSave(form);
+    setSaving(false);
   };
 
   const allowedCountries = shippingConfig?.settings?.allowed_countries || [];
@@ -74,9 +83,9 @@ function AddressModal({ onClose, onSave, shippingConfig }) {
             Set as default address
           </label>
         </div>
-        <button onClick={() => onSave(form)}
-          className="w-full mt-5 bg-[#45055B] text-[#D4AF37] font-bold py-3.5 rounded-xl text-sm hover:bg-[#45055B]/90 shadow-md transition-all shrink-0">
-          Save Address
+        <button onClick={handleSave} disabled={saving}
+          className="w-full mt-5 bg-[#45055B] text-[#D4AF37] font-bold py-3.5 rounded-xl text-sm hover:bg-[#45055B]/90 shadow-md transition-all shrink-0 disabled:opacity-60">
+          {saving ? 'Saving...' : 'Save Address'}
         </button>
       </div>
     </div>
@@ -128,6 +137,35 @@ export function DashboardPage() {
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [shippingConfig, setShippingConfig] = useState(null);
+  const [sbOrders, setSbOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+
+  const loadOrdersFromSupabase = async (u) => {
+    if (!u) return;
+    setOrdersLoading(true);
+    try {
+      const cleanEmail = (u.email || '').toLowerCase().trim();
+      const cleanPhone = (u.phone || '').replace(/\D/g, '').slice(-10);
+      const { data } = await supabase.from('orders').select('*').order('id', { ascending: false });
+      if (data && data.length > 0) {
+        const matched = data.filter(o => {
+          const oEmail = (o.customer_email || o.user_email || '').toLowerCase().trim();
+          const oPhone = (o.customer_phone || o.user_phone || '').replace(/\D/g, '').slice(-10);
+          let addrEmail = '', addrPhone = '';
+          try {
+            const addr = typeof o.shipping_address === 'string' ? JSON.parse(o.shipping_address) : (o.shipping_address || {});
+            addrEmail = (addr.email || '').toLowerCase().trim();
+            addrPhone = (addr.mobile || addr.phone || '').replace(/\D/g, '').slice(-10);
+          } catch {}
+          return (cleanEmail && (oEmail === cleanEmail || addrEmail === cleanEmail)) ||
+                 (cleanPhone && (oPhone === cleanPhone || addrPhone === cleanPhone)) ||
+                 (o.user_id && o.user_id === u.id);
+        });
+        setSbOrders(matched);
+      }
+    } catch (e) { console.warn('DashboardPage supabase orders:', e); }
+    setOrdersLoading(false);
+  };
 
   useEffect(() => {
     fetch(`${BACKEND_URL}/general/shipping`)
@@ -141,11 +179,16 @@ export function DashboardPage() {
     fetchProfile();
   }, [token]);
 
+  useEffect(() => {
+    if (user) loadOrdersFromSupabase(user);
+  }, [user?.id]);
+
   const handleLogout = () => { logout(); navigate('/'); };
 
   const handleSaveAddress = async (data) => {
     await addAddress(data);
     setShowAddressModal(false);
+    fetchProfile();
   };
 
   const handleSaveProfile = async (name, phone) => {
@@ -247,14 +290,19 @@ export function DashboardPage() {
         {/* Orders Tab */}
         {activeTab === 'orders' && (
           <div className="space-y-3">
-            {orders.length === 0 ? (
+            {ordersLoading ? (
+              <div className="text-center py-16">
+                <div className="w-8 h-8 border-2 border-brand-gold border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+                <p className="text-xs text-gray-400">Loading orders...</p>
+              </div>
+            ) : (sbOrders.length > 0 ? sbOrders : orders).length === 0 ? (
               <div className="text-center py-16">
                 <Package className="w-12 h-12 text-gray-300 mx-auto mb-3" />
                 <p className="text-sm font-semibold text-gray-500">No orders yet</p>
                 <Link to="/" className="mt-3 inline-block text-xs text-brand-gold font-bold">Start Shopping →</Link>
               </div>
             ) : (
-              orders.map((order) => {
+              (sbOrders.length > 0 ? sbOrders : orders).map((order) => {
                 let items = [];
                 try { items = typeof order.items === 'string' ? JSON.parse(order.items) : (order.items || []); } catch {}
                 const itemsCount = items.reduce((sum, it) => sum + (it.qty || 1), 0) || items.length || 1;
