@@ -176,37 +176,34 @@ export function AdminOrdersPage() {
       String(o.id) !== String(order.id)
     ));
 
-    let deleted = false;
-
-    // SUPABASE ONLY — delete by order_number first (UNIQUE TEXT column, most reliable)
+    // SUPABASE ONLY — delete by order_number (UNIQUE column)
     if (order.order_number) {
-      const { data: d1, error: e1 } = await supabase
+      const { error: e1 } = await supabase
         .from("orders")
         .delete()
-        .eq("order_number", String(order.order_number))
-        .select();
-      if (e1) {
-        console.error("Supabase delete by order_number failed:", e1);
-      } else if (d1 && d1.length > 0) {
-        deleted = true;
-      }
+        .eq("order_number", String(order.order_number));
+      if (e1) console.error("Delete by order_number error:", e1);
     }
 
-    // Fallback: delete by numeric Supabase id
-    if (!deleted && !isNaN(numericId) && numericId > 0) {
-      const { data: d2, error: e2 } = await supabase
+    // Also delete by numeric id as safety net
+    if (!isNaN(numericId) && numericId > 0) {
+      const { error: e2 } = await supabase
         .from("orders")
         .delete()
-        .eq("id", numericId)
-        .select();
-      if (e2) {
-        console.error("Supabase delete by id failed:", e2);
-      } else if (d2 && d2.length > 0) {
-        deleted = true;
-      }
+        .eq("id", numericId);
+      if (e2) console.error("Delete by id error:", e2);
     }
 
-    // Clean up related enquiries from Supabase
+    // Verify deletion by SELECT — if row is gone, it was deleted
+    const { data: check } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("order_number", String(orderNum))
+      .maybeSingle();
+
+    const deleted = !check; // null = row gone = success
+
+    // Clean up related enquiries
     if (order.order_number) {
       await supabase.from("enquiries").delete().ilike("subject", `%${order.order_number}%`);
     }
@@ -214,7 +211,7 @@ export function AdminOrdersPage() {
     if (deleted) {
       alert(`Order #${orderNum} has been permanently deleted.`);
     } else {
-      alert(`Delete failed for Order #${orderNum}.\n\nPlease run this SQL in Supabase Dashboard:\n\nDELETE FROM orders WHERE order_number = '${orderNum}';`);
+      alert(`Could not delete Order #${orderNum}. Please try again or contact support.`);
     }
     fetchOrders();
   };
