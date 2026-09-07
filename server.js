@@ -792,12 +792,28 @@ app.post('/api/auth/address', authMiddleware, async (req, res) => {
     } catch (e) {}
   }
 
-  const newAddress = { id: 'addr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4), ...req.body };
   let addresses = Array.isArray(profile?.addresses) ? [...profile.addresses] : [];
-  if (newAddress.is_default) {
+
+  // Deduplicate: check if this address already exists by id or identical content
+  const existingIndex = addresses.findIndex(a => 
+    (req.body.id && a.id === req.body.id) ||
+    ((a.line1 || '').trim().toLowerCase() === (req.body.line1 || '').trim().toLowerCase() &&
+     (a.pincode || '').trim() === (req.body.pincode || '').trim() &&
+     (a.name || '').trim().toLowerCase() === (req.body.name || '').trim().toLowerCase())
+  );
+
+  const addressId = req.body.id || 'addr_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
+  const targetAddress = { ...req.body, id: addressId };
+
+  if (targetAddress.is_default) {
     addresses = addresses.map(a => ({ ...a, is_default: false }));
   }
-  addresses.push(newAddress);
+
+  if (existingIndex >= 0) {
+    addresses[existingIndex] = { ...addresses[existingIndex], ...targetAddress };
+  } else {
+    addresses.push(targetAddress);
+  }
 
   try {
     await supabase.from('profiles').update({ addresses }).eq('email', cleanEmail);
@@ -805,7 +821,7 @@ app.post('/api/auth/address', authMiddleware, async (req, res) => {
     console.warn('Supabase address save error:', e.message);
   }
 
-  return res.json({ success: true, address: newAddress });
+  return res.json({ success: true, address: targetAddress });
 });
 
 app.put('/api/auth/address/:id', authMiddleware, async (req, res) => {

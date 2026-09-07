@@ -235,6 +235,24 @@ export const useAuthStore = create((set, get) => ({
     }
 
     if (profile) {
+      // Deduplicate addresses (in case any duplicate was saved previously)
+      const rawAddrs = Array.isArray(profile.addresses) ? profile.addresses : [];
+      const cleanAddrs = [];
+      const seenAddrs = new Set();
+      for (const a of rawAddrs) {
+        const key = a.id || `${(a.line1 || '').trim().toLowerCase()}_${(a.pincode || '').trim()}_${(a.name || '').trim().toLowerCase()}`;
+        const contentKey = `${(a.line1 || '').trim().toLowerCase()}_${(a.pincode || '').trim()}_${(a.name || '').trim().toLowerCase()}`;
+        if (!seenAddrs.has(contentKey)) {
+          seenAddrs.add(contentKey);
+          cleanAddrs.push(a);
+        }
+      }
+
+      // If duplicates were cleaned up, sync the clean array back to Supabase silently
+      if (cleanAddrs.length < rawAddrs.length && cleanEmail) {
+        supabase.from('profiles').update({ addresses: cleanAddrs }).eq('email', cleanEmail).then(() => {}).catch(() => {});
+      }
+
       set({
         user: {
           ...(currentUser || {}),
@@ -244,7 +262,7 @@ export const useAuthStore = create((set, get) => ({
           phone: profile.mobile || currentUser?.phone || '',
           role: profile.role || currentUser?.role || 'customer',
         },
-        addresses: Array.isArray(profile.addresses) ? profile.addresses : [],
+        addresses: cleanAddrs,
         orders: customerOrders,
         loading: false,
       });
@@ -290,7 +308,6 @@ export const useAuthStore = create((set, get) => ({
         loading: false
       }));
 
-      api.put('/auth/profile', { name, phone, country }).catch(() => {});
       return { success: true };
     } catch (err) {
       const error = err.message || 'Update failed';
@@ -308,7 +325,7 @@ export const useAuthStore = create((set, get) => ({
         ...addressData,
       };
 
-      // Get existing addresses from state or Supabase
+      // 1. Fetch latest addresses directly from Supabase
       let currentAddresses = get().addresses || [];
       if (cleanEmail) {
         try {
@@ -319,15 +336,36 @@ export const useAuthStore = create((set, get) => ({
         } catch (e) {}
       }
 
+      // 2. Check if identical address already exists (deduplication)
+      const existingIdx = currentAddresses.findIndex(a => 
+        (a.id && a.id === newAddress.id) ||
+        ((a.line1 || '').trim().toLowerCase() === (newAddress.line1 || '').trim().toLowerCase() &&
+         (a.pincode || '').trim() === (newAddress.pincode || '').trim() &&
+         (a.name || '').trim().toLowerCase() === (newAddress.name || '').trim().toLowerCase())
+      );
+
       let updatedAddresses = [];
-      if (newAddress.is_default) {
-        updatedAddresses = [...currentAddresses.map(a => ({ ...a, is_default: false })), newAddress];
+      const shouldBeDefault = newAddress.is_default || currentAddresses.length === 0;
+
+      if (existingIdx >= 0) {
+        // Update existing rather than creating duplicate
+        updatedAddresses = currentAddresses.map((a, idx) => {
+          if (idx === existingIdx) {
+            return { ...a, ...newAddress, is_default: shouldBeDefault };
+          }
+          return shouldBeDefault ? { ...a, is_default: false } : a;
+        });
       } else {
-        if (currentAddresses.length === 0) newAddress.is_default = true;
-        updatedAddresses = [...currentAddresses, newAddress];
+        // Append new
+        const finalAddress = { ...newAddress, is_default: shouldBeDefault };
+        if (shouldBeDefault) {
+          updatedAddresses = [...currentAddresses.map(a => ({ ...a, is_default: false })), finalAddress];
+        } else {
+          updatedAddresses = [...currentAddresses, finalAddress];
+        }
       }
 
-      // Save directly to Supabase online
+      // 3. Save directly to Supabase online (Single Source of Truth)
       if (cleanEmail) {
         try {
           const { error: sbErr } = await supabase
@@ -340,11 +378,8 @@ export const useAuthStore = create((set, get) => ({
         }
       }
 
-      // Update Zustand state immediately so UI updates without waiting
+      // 4. Update Zustand state immediately
       set({ addresses: updatedAddresses });
-
-      // Notify backend asynchronously
-      api.post('/auth/address', newAddress).catch(() => {});
 
       return { success: true, address: newAddress };
     } catch (err) {
@@ -381,7 +416,6 @@ export const useAuthStore = create((set, get) => ({
       }
 
       set({ addresses: updatedAddresses });
-      api.put(`/auth/address/${id}`, addressData).catch(() => {});
       return { success: true };
     } catch (err) {
       return { success: false, error: err.message || 'Failed to update address' };
@@ -394,7 +428,12 @@ export const useAuthStore = create((set, get) => ({
       const cleanEmail = (currentUser?.email || '').toLowerCase().trim();
 
       const currentAddresses = get().addresses || [];
-      const updatedAddresses = currentAddresses.filter(a => a.id !== id);
+      let updatedAddresses = currentAddresses.filter(a => a.id !== id);
+
+      // If the deleted address was default and there are remaining addresses, ensure one is default
+      if (updatedAddresses.length > 0 && !updatedAddresses.some(a => a.is_default)) {
+        updatedAddresses[0] = { ...updatedAddresses[0], is_default: true };
+      }
 
       if (cleanEmail) {
         try {
@@ -403,7 +442,6 @@ export const useAuthStore = create((set, get) => ({
       }
 
       set({ addresses: updatedAddresses });
-      api.delete(`/auth/address/${id}`).catch(() => {});
       return { success: true };
     } catch (err) {
       console.error('deleteAddress error:', err);
