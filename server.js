@@ -1153,15 +1153,17 @@ const handleOrderCreation = async (req, res) => {
       payment_status = 'paid'
     } = req.body;
 
-    const orderNumber = 'LGE-' + Math.floor(100000 + Math.random() * 900000);
+    const orderNumber = req.body.order_number || ('LGE-' + Math.floor(100000 + Math.random() * 900000));
     const orderId = Date.now().toString();
     const createdAt = new Date().toISOString();
     const txnId = razorpay_payment_id || stripe_payment_intent_id || ('PAYPASS-' + Math.floor(100000 + Math.random() * 900000));
 
+    const isValidUuid = (val) => typeof val === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(val);
+
     const newOrder = {
       id: orderId,
       order_number: orderNumber,
-      user_id: req.user?.id || null,
+      user_id: isValidUuid(req.user?.id) ? req.user.id : null,
       user_name: address.name || req.user?.name || 'Customer',
       user_email: address.email || req.user?.email || '',
       user_phone: address.mobile || address.phone || '',
@@ -1204,7 +1206,7 @@ const handleOrderCreation = async (req, res) => {
     try {
       await supabase.from('orders').insert([{
         order_number: orderNumber,
-        user_id: req.user?.id || null,
+        user_id: isValidUuid(req.user?.id) ? req.user.id : null,
         customer_name: newOrder.user_name,
         customer_email: newOrder.user_email,
         customer_phone: newOrder.user_phone,
@@ -1288,7 +1290,7 @@ app.get(['/api/general/order/:id', '/api/auth/order/:id', '/api/orders/:id', '/a
     if (!isNaN(numId)) {
       query = query.or(`id.eq.${numId},order_number.eq.${id}`);
     } else {
-      query = query.or(`order_number.eq.${id},razorpay_order_id.eq.${id},razorpay_payment_id.eq.${id},stripe_payment_intent_id.eq.${id}`);
+      query = query.eq('order_number', id);
     }
     const { data: sbOrders, error } = await query.limit(1);
     if (!error && sbOrders && sbOrders.length > 0) {
@@ -1322,6 +1324,12 @@ app.get(['/api/general/order/:id', '/api/auth/order/:id', '/api/orders/:id', '/a
   }
   if (order.address && typeof order.address === 'string') {
     try { order.address = JSON.parse(order.address); } catch {}
+  }
+  if (!order.address && order.shipping_address) {
+    order.address = order.shipping_address;
+  }
+  if (!order.shipping_address && order.address) {
+    order.shipping_address = order.address;
   }
 
   return res.json({ success: true, order });

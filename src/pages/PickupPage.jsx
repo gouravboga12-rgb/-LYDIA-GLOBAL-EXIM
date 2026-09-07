@@ -106,10 +106,12 @@ export function PickupPage() {
     const endpoint = token ? `${BACKEND_URL}/auth/orders` : `${BACKEND_URL}/general/orders`;
     const headers = { 'Content-Type': 'application/json' };
     if (token) headers['Authorization'] = `Bearer ${token}`;
+    const orderNumber = 'LGE-' + Math.floor(100000 + Math.random() * 900000);
     const res = await fetch(endpoint, {
       method: 'POST',
       headers,
       body: JSON.stringify({
+        order_number: orderNumber,
         items,
         address: { name: details.name, mobile: details.mobile }, // Save name/mobile in address field for pickup
         total: finalTotal,
@@ -126,32 +128,14 @@ export function PickupPage() {
   const triggerOrderWhatsAppAlert = (orderData, txnId) => {
     try {
       const orderNum = orderData?.order?.order_number || orderData?.order_number || ('LGE-' + Math.floor(100000 + Math.random() * 900000));
-      const custName = details.name || user?.name || 'Customer';
-      const custPhone = details.mobile || user?.phone || 'N/A';
-      const orderTot = Number(finalTotal).toLocaleString('en-IN');
-      const itemsList = items.map(i => `• ${i.product?.name || i.name || 'Jewelry'} (Qty: ${i.qty || 1})`).join('\n');
+      const whatsappMessage = "New order booked. Please check the control Panel account for the details.";
 
-      const whatsappMessage = 
-`✨ *NEW PICKUP ORDER BOOKED - LYDIA GLOBAL EXIM* ✨
-━━━━━━━━━━━━━━━━━━━━━━━
-📦 *Order ID:* #${orderNum}
-👤 *Customer Name:* ${custName}
-📞 *Customer Phone:* ${custPhone}
-💰 *Total Paid:* ₹${orderTot}
-💳 *Payment Gateway:* Razorpay (Txn ID: ${txnId || 'Confirmed'})
-🚚 *Order Mode:* 🏬 Store Pickup (Aubrey, TX)
-
-🛍️ *Order Items (${items.length}):*
-${itemsList}
-
-━━━━━━━━━━━━━━━━━━━━━━━
-🔔 *Admin Notification:*
-A new store pickup order has been placed. Please review in the Admin Panel:
-👉 https://lydiaglobalexim.com/admin/orders`;
-
-      const waUrl = `https://wa.me/919014863411?text=${encodeURIComponent(whatsappMessage)}`;
-      window.open(waUrl, '_blank', 'noopener,noreferrer');
-    } catch (e) {}
+      const waUrl = `https://api.whatsapp.com/send?phone=919014863411&text=${encodeURIComponent(whatsappMessage)}`;
+      try { window.open(waUrl, '_blank', 'noopener,noreferrer'); } catch (e) {}
+      return { waUrl, orderNum };
+    } catch (e) {
+      return {};
+    }
   };
 
   const handleProceedToPayment = () => {
@@ -208,16 +192,34 @@ A new store pickup order has been placed. Please review in the Admin Panel:
           try {
             const txnRef = response.razorpay_payment_id || ('RZP-' + Date.now());
             const createOrderData = await createOrder('razorpay', txnRef);
-            triggerOrderWhatsAppAlert(createOrderData, txnRef);
-            
-            setTimeout(() => {
-              clearCart();
-              if (user?.role === 'admin') {
-                navigate('/admin/orders');
-              } else {
-                navigate(`/order-tracking/${createOrderData?.order?.order_number || txnRef}`);
-              }
-            }, 2000);
+            const { waUrl, orderNum } = triggerOrderWhatsAppAlert(createOrderData, txnRef);
+            const resolvedOrderNum = orderNum || createOrderData?.order?.order_number || ('LGE-' + Math.floor(100000 + Math.random() * 900000));
+
+            const placedOrder = createOrderData?.order || {
+              order_number: resolvedOrderNum,
+              total: Number(finalTotal),
+              subtotal: Number(subtotal || finalTotal),
+              items: items,
+              shipping_address: details,
+              address: details,
+              created_at: new Date().toISOString(),
+              payment_method: 'Online Payment',
+              order_type: 'pickup',
+              razorpay_payment_id: response.razorpay_payment_id
+            };
+
+            try {
+              sessionStorage.setItem(`lge_order_${resolvedOrderNum}`, JSON.stringify(placedOrder));
+              sessionStorage.setItem('lge_auto_wa_redirect', '1');
+            } catch {}
+
+            clearCart();
+            setIsPlacingOrder(false);
+
+            navigate(`/order-tracking/${resolvedOrderNum}?redirect_wa=true`, {
+              replace: true,
+              state: { order: placedOrder, autoWa: true }
+            });
           } catch (e) {
             showToast('Failed to save order details.', 'error');
             setIsPlacingOrder(false);

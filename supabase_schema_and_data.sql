@@ -108,6 +108,9 @@ CREATE TABLE orders (
   notes TEXT,
   created_at TIMESTAMPTZ DEFAULT timezone('utc'::text, now()) NOT NULL
 );
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS razorpay_payment_id TEXT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS razorpay_order_id TEXT;
+ALTER TABLE orders ADD COLUMN IF NOT EXISTS stripe_payment_intent_id TEXT;
 
 -- 9. Create Customer Reviews Table
 CREATE TABLE reviews (

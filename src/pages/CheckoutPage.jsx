@@ -18,6 +18,7 @@ const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY);
 
 import { COUNTRIES } from '../data/countries';
 import { getStatesForCountry } from '../data/states';
+import { supabase } from '../utils/supabase';
 
 function extractPhone10Digits(raw) {
   if (!raw) return '';
@@ -723,9 +724,10 @@ export function CheckoutPage() {
 
     // Direct Supabase sync for redundancy
     try {
+      const isValidUuid = (val) => typeof val === 'string' && /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(val);
       await supabase.from('orders').insert([{
         order_number: backendResult?.order?.order_number || orderNumber,
-        user_id: user?.id || null,
+        user_id: isValidUuid(user?.id) ? user.id : null,
         customer_name: finalAddress.name || user?.name || 'Customer',
         customer_email: finalAddress.email || user?.email || '',
         customer_phone: finalAddress.mobile || user?.phone || '',
@@ -828,8 +830,8 @@ export function CheckoutPage() {
       const orderNum = orderData?.order?.order_number || orderData?.order_number || ('LGE-' + Math.floor(100000 + Math.random() * 900000));
       const whatsappMessage = "New order booked. Please check the control Panel account for the details.";
 
-      const waUrl = `https://wa.me/919014863411?text=${encodeURIComponent(whatsappMessage)}`;
-      window.open(waUrl, '_blank', 'noopener,noreferrer');
+      const waUrl = `https://api.whatsapp.com/send?phone=919014863411&text=${encodeURIComponent(whatsappMessage)}`;
+      try { window.open(waUrl, '_blank', 'noopener,noreferrer'); } catch (e) {}
       return { waUrl, orderNum };
     } catch (e) {
       console.warn("WhatsApp alert error:", e);
@@ -1049,23 +1051,43 @@ export function CheckoutPage() {
               razorpay_order_id: response.razorpay_order_id
             });
 
-            // Open WhatsApp with admin message
+            // Trigger WhatsApp alert
             const { waUrl, orderNum } = triggerOrderWhatsAppAlert(createOrderData, transactionRef);
+            const resolvedOrderNum = orderNum || createOrderData?.order?.order_number || ('LGE-' + Math.floor(100000 + Math.random() * 900000));
             setWhatsappAlertUrl(waUrl);
-            setConfirmedOrderNumber(orderNum || createOrderData?.order?.order_number || transactionRef);
+            setConfirmedOrderNumber(resolvedOrderNum);
 
+            const placedOrder = createOrderData?.order || {
+              order_number: resolvedOrderNum,
+              total: Number(finalTotal),
+              subtotal: Number(subtotal || finalTotal),
+              discount: Number(discount || 0),
+              shipping: Number(shippingFee || 0),
+              tax: Number(taxAmount || 0),
+              items: items,
+              shipping_address: orderType === 'pickup' ? pickupContact : address,
+              address: orderType === 'pickup' ? pickupContact : address,
+              created_at: new Date().toISOString(),
+              payment_method: 'Online Payment',
+              order_type: orderType,
+              razorpay_payment_id: response.razorpay_payment_id
+            };
+
+            // Store in session storage for immediate and reliable offline/client retrieval
+            try {
+              sessionStorage.setItem(`lge_order_${resolvedOrderNum}`, JSON.stringify(placedOrder));
+              sessionStorage.setItem('lge_auto_wa_redirect', '1');
+            } catch {}
+
+            clearCart();
             setIsPlacingOrder(false);
             setOrderSuccess(true);
 
-            // Redirect to Admin Panel Orders (if admin) or Order Tracking
-            setTimeout(() => {
-              clearCart();
-              if (user?.role === 'admin') {
-                navigate('/admin/orders');
-              } else {
-                navigate(`/order-tracking/${orderNum || createOrderData?.order?.order_number || transactionRef}`);
-              }
-            }, 3000);
+            // Redirect to Order Tracking with autoWa flag for seamless customer WhatsApp handoff
+            navigate(`/order-tracking/${resolvedOrderNum}?redirect_wa=true`, {
+              replace: true,
+              state: { order: placedOrder, autoWa: true }
+            });
           } catch (handlerErr) {
             console.error('Order registration error:', handlerErr);
             showToast(handlerErr.message || 'Error creating order after payment.', 'error');

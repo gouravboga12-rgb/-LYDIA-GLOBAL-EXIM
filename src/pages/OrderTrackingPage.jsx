@@ -1,32 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { CheckCircle2, Package, ArrowRight, ShoppingBag, Store, Truck, MapPin, MessageCircle, ExternalLink, ListOrdered } from 'lucide-react';
+import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
+import { CheckCircle2, Package, ArrowRight, ShoppingBag, Store, Truck, MapPin, MessageCircle, ExternalLink, ListOrdered, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Header } from '../components/Header';
 import confetti from 'canvas-confetti';
+import { supabase } from '../utils/supabase';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || '/api';
+const WA_ADMIN_NUMBER = '919014863411';
+const WA_MESSAGE = "New order booked. Please check the control Panel account for the details.";
 
 export function OrderTrackingPage() {
   const { orderId } = useParams();
   const navigate = useNavigate();
-  const [order, setOrder] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
 
+  // 1. Initialize order instantly from location state or sessionStorage
+  const [order, setOrder] = useState(() => {
+    if (location.state?.order) return location.state.order;
+    try {
+      if (orderId) {
+        const cached = sessionStorage.getItem(`lge_order_${orderId}`);
+        if (cached) return JSON.parse(cached);
+      }
+    } catch {}
+    return null;
+  });
+
+  const [loading, setLoading] = useState(!order);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+
+  const waUrl = `https://api.whatsapp.com/send?phone=${WA_ADMIN_NUMBER}&text=${encodeURIComponent(WA_MESSAGE)}`;
+
+  // 2. Automatic WhatsApp redirection
+  useEffect(() => {
+    const shouldRedirect = 
+      location.state?.autoWa || 
+      searchParams.get('redirect_wa') === 'true' || 
+      sessionStorage.getItem('lge_auto_wa_redirect') === '1';
+
+    if (shouldRedirect) {
+      sessionStorage.removeItem('lge_auto_wa_redirect');
+      setIsRedirecting(true);
+
+      const timer = setTimeout(() => {
+        window.location.href = waUrl;
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
+
+  // 3. Fetch order details from Backend and Supabase
   useEffect(() => {
     if (!orderId) {
       setLoading(false);
       return;
     }
 
-    // Fetch order details
-    const token = localStorage.getItem('token');
-    const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    
-    fetch(`${BACKEND_URL}/general/order/${encodeURIComponent(orderId)}`, { headers })
-      .then(r => r.json())
-      .then(d => {
-        if (d.order) {
+    let isMounted = true;
+    const fetchOrder = async () => {
+      // Step A: Backend API
+      try {
+        const token = localStorage.getItem('token');
+        const headers = token ? { Authorization: `Bearer ${token}` } : {};
+        const res = await fetch(`${BACKEND_URL}/general/order/${encodeURIComponent(orderId)}`, { headers });
+        const d = await res.json();
+        if (d?.order && isMounted) {
           let orderData = { ...d.order };
           if (typeof orderData.items === 'string') {
             try { orderData.items = JSON.parse(orderData.items); } catch {}
@@ -38,13 +79,44 @@ export function OrderTrackingPage() {
             try { orderData.address = JSON.parse(orderData.address); } catch {}
           }
           setOrder(orderData);
+          setLoading(false);
+          return;
         }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.warn('Error fetching order details:', err);
-        setLoading(false);
-      });
+      } catch (err) {
+        console.warn('Backend order fetch note:', err);
+      }
+
+      // Step B: Direct Supabase query fallback
+      try {
+        const numId = Number(orderId);
+        let query = supabase.from('orders').select('*');
+        if (!isNaN(numId)) {
+          query = query.or(`id.eq.${numId},order_number.eq.${orderId}`);
+        } else {
+          query = query.eq('order_number', orderId);
+        }
+        const { data: sbOrders, error } = await query.limit(1);
+        if (!error && sbOrders && sbOrders.length > 0 && isMounted) {
+          let orderData = { ...sbOrders[0] };
+          if (typeof orderData.items === 'string') {
+            try { orderData.items = JSON.parse(orderData.items); } catch {}
+          }
+          if (typeof orderData.shipping_address === 'string') {
+            try { orderData.shipping_address = JSON.parse(orderData.shipping_address); } catch {}
+          }
+          if (typeof orderData.address === 'string') {
+            try { orderData.address = JSON.parse(orderData.address); } catch {}
+          }
+          setOrder(orderData);
+        }
+      } catch (sbErr) {
+        console.warn('Supabase fallback order fetch note:', sbErr);
+      }
+
+      if (isMounted) setLoading(false);
+    };
+
+    fetchOrder();
 
     // Fire confetti
     const end = Date.now() + 1.5 * 1000;
@@ -70,10 +142,29 @@ export function OrderTrackingPage() {
         requestAnimationFrame(frame);
       }
     }());
+
+    return () => { isMounted = false; };
   }, [orderId]);
 
   const trackingNumber = order?.tracking_number || order?.tracking_id || order?.shipping_address?.tracking_number || order?.address?.tracking_number;
   const trackingUrl = order?.tracking_url || order?.tracking_link || order?.shipping_address?.tracking_url || order?.address?.tracking_url;
+
+  // Safe total calculation
+  const itemsTotal = Array.isArray(order?.items) && order.items.length > 0
+    ? order.items.reduce((sum, it) => {
+        const price = Number(it.variant?.price || it.product?.price || it.price || 0);
+        const qty = Number(it.qty || it.quantity || 1);
+        return sum + (price * qty);
+      }, 0)
+    : 0;
+
+  const totalPaid = Number(
+    order?.total ?? 
+    order?.total_amount ?? 
+    order?.grand_total ?? 
+    order?.subtotal ?? 
+    itemsTotal
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20 font-sans flex flex-col">
@@ -95,11 +186,36 @@ export function OrderTrackingPage() {
           initial={{ y: 20, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.5, delay: 0.3 }}
-          className="text-center space-y-3 mb-10"
+          className="text-center space-y-3 mb-6"
         >
           <h1 className="text-3xl md:text-4xl font-serif font-bold text-gray-900">Order Placed Successfully!</h1>
           <p className="text-gray-500 text-sm md:text-base">Thank you for placing your order with LYDIA GLOBAL EXIM. We're delighted to begin preparing your selection and will keep you updated throughout its journey to you.</p>
         </motion.div>
+
+        {/* WhatsApp Auto-Redirect Alert Banner */}
+        {isRedirecting && (
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full bg-emerald-50 border border-emerald-300 text-emerald-900 rounded-2xl p-4 mb-6 shadow-sm flex items-center justify-between gap-4"
+          >
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-emerald-500 text-white flex items-center justify-center shrink-0 shadow-md animate-pulse">
+                <MessageCircle className="w-5 h-5 fill-white" />
+              </div>
+              <div>
+                <p className="font-bold text-sm text-emerald-950">Redirecting to WhatsApp to send message...</p>
+                <p className="text-xs text-emerald-700">Notifying admin support (+91 9014863411)</p>
+              </div>
+            </div>
+            <a 
+              href={waUrl}
+              className="shrink-0 px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow transition-all cursor-pointer flex items-center gap-1.5"
+            >
+              Open Now <Send className="w-3.5 h-3.5" />
+            </a>
+          </motion.div>
+        )}
 
         <motion.div 
           initial={{ y: 20, opacity: 0 }}
@@ -136,7 +252,9 @@ export function OrderTrackingPage() {
               )}
               <div>
                 <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Total Paid</p>
-                <p className="text-sm font-bold text-brand-gold">₹{parseFloat(order?.total || 0).toFixed(2)}</p>
+                <p className="text-base font-extrabold text-[#D4AF37]">
+                  ₹{totalPaid.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </p>
               </div>
             </div>
 
@@ -244,6 +362,16 @@ export function OrderTrackingPage() {
           transition={{ duration: 0.5, delay: 0.7 }}
           className="w-full space-y-3"
         >
+          <a 
+            href={waUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-base rounded-2xl py-4 shadow-lg shadow-[#25D366]/25 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider text-center"
+          >
+            <MessageCircle className="w-5 h-5 fill-white" />
+            Send WhatsApp Order Notice to Admin
+          </a>
+
           <button 
             onClick={() => navigate('/my-orders')}
             className="w-full bg-[#45055B] hover:bg-[#5a0e72] text-[#D4AF37] font-bold text-base rounded-2xl py-4 shadow-lg shadow-[#45055B]/20 hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 cursor-pointer uppercase tracking-wider"
