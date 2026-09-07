@@ -643,7 +643,7 @@ app.post('/api/auth/reset-password', async (req, res) => {
 });
 
 // 10. Profile & Address CRUD
-app.get('/api/auth/profile', authMiddleware, (req, res) => {
+app.get('/api/auth/profile', authMiddleware, async (req, res) => {
   if (req.user.role === 'admin') {
     const allOrders = loadStoreData('orders', 'src/data/orders.json') || [];
     return res.json({
@@ -654,7 +654,36 @@ app.get('/api/auth/profile', authMiddleware, (req, res) => {
   }
 
   const users = loadStoreData('users', 'src/data/users.json');
-  const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  let user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+
+  // Fallback: look up in Supabase profiles if not found locally
+  if (!user) {
+    try {
+      const { data: sbProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .or(`id.eq.${req.user.id},email.eq.${req.user.email}`)
+        .single();
+      if (sbProfile) {
+        user = {
+          id: sbProfile.id || req.user.id,
+          email: sbProfile.email || req.user.email,
+          name: sbProfile.full_name || req.user.name || '',
+          phone: sbProfile.mobile || req.user.phone || '',
+          country: sbProfile.country || '',
+          role: sbProfile.role || 'customer',
+          addresses: sbProfile.addresses || [],
+          password: null,
+        };
+        // Persist to local store so future calls are faster
+        users.push(user);
+        saveStoreData('users', users);
+      }
+    } catch (sbErr) {
+      console.warn('Supabase profile fallback failed:', sbErr.message);
+    }
+  }
+
   if (!user) return res.status(404).json({ error: 'User profile not found.' });
 
   // Dynamically query orders for this user
@@ -689,6 +718,7 @@ app.get('/api/auth/profile', authMiddleware, (req, res) => {
     orders: matchedOrders,
   });
 });
+
 
 app.put('/api/auth/profile', authMiddleware, (req, res) => {
   const { name, phone, country } = req.body;
@@ -741,9 +771,37 @@ app.post('/api/auth/logout-all', authMiddleware, async (req, res) => {
   return res.json({ success: true, message: 'Successfully logged out from all devices.' });
 });
 
-app.post('/api/auth/address', authMiddleware, (req, res) => {
+app.post('/api/auth/address', authMiddleware, async (req, res) => {
   const users = loadStoreData('users', 'src/data/users.json');
-  const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  let user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+
+  // Fallback: try Supabase profiles if user not in local JSON
+  if (!user) {
+    try {
+      const { data: sbProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .or(`id.eq.${req.user.id},email.eq.${req.user.email}`)
+        .single();
+      if (sbProfile) {
+        // Create local user entry from Supabase profile
+        user = {
+          id: sbProfile.id || req.user.id,
+          email: sbProfile.email || req.user.email,
+          name: sbProfile.full_name || req.user.name || '',
+          phone: sbProfile.mobile || req.user.phone || '',
+          role: sbProfile.role || 'customer',
+          addresses: sbProfile.addresses || [],
+          password: null,
+        };
+        users.push(user);
+        saveStoreData('users', users);
+      }
+    } catch (sbErr) {
+      console.warn('Supabase profile lookup failed:', sbErr.message);
+    }
+  }
+
   if (!user) return res.status(404).json({ error: 'User not found.' });
 
   const newAddress = { id: 'addr_' + Date.now(), ...req.body };
@@ -754,12 +812,40 @@ app.post('/api/auth/address', authMiddleware, (req, res) => {
   user.addresses.push(newAddress);
   saveStoreData('users', users);
 
+  // Also sync addresses to Supabase profiles
+  try {
+    await supabase.from('profiles').upsert({
+      id: user.id,
+      email: user.email,
+      full_name: user.name,
+      mobile: user.phone,
+      addresses: user.addresses,
+      role: user.role || 'customer',
+    });
+  } catch (e) {}
+
   return res.json({ success: true, address: newAddress });
 });
 
-app.put('/api/auth/address/:id', authMiddleware, (req, res) => {
+app.put('/api/auth/address/:id', authMiddleware, async (req, res) => {
   const users = loadStoreData('users', 'src/data/users.json');
-  const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  let user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+
+  if (!user) {
+    try {
+      const { data: sbProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .or(`id.eq.${req.user.id},email.eq.${req.user.email}`)
+        .single();
+      if (sbProfile) {
+        user = { id: sbProfile.id || req.user.id, email: sbProfile.email || req.user.email, name: sbProfile.full_name || '', phone: sbProfile.mobile || '', role: sbProfile.role || 'customer', addresses: sbProfile.addresses || [] };
+        users.push(user);
+        saveStoreData('users', users);
+      }
+    } catch (e) {}
+  }
+
   if (!user) return res.status(404).json({ error: 'User not found.' });
 
   const id = req.params.id;
@@ -770,17 +856,35 @@ app.put('/api/auth/address/:id', authMiddleware, (req, res) => {
   });
 
   saveStoreData('users', users);
+  try { await supabase.from('profiles').upsert({ id: user.id, email: user.email, addresses: user.addresses }); } catch (e) {}
   const updated = user.addresses.find(a => a.id === id);
   return res.json({ success: true, address: updated });
 });
 
-app.delete('/api/auth/address/:id', authMiddleware, (req, res) => {
+app.delete('/api/auth/address/:id', authMiddleware, async (req, res) => {
   const users = loadStoreData('users', 'src/data/users.json');
-  const user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+  let user = users.find(u => u.id === req.user.id || u.email === req.user.email);
+
+  if (!user) {
+    try {
+      const { data: sbProfile } = await supabase
+        .from('profiles')
+        .select('*')
+        .or(`id.eq.${req.user.id},email.eq.${req.user.email}`)
+        .single();
+      if (sbProfile) {
+        user = { id: sbProfile.id || req.user.id, email: sbProfile.email || req.user.email, name: sbProfile.full_name || '', phone: sbProfile.mobile || '', role: sbProfile.role || 'customer', addresses: sbProfile.addresses || [] };
+        users.push(user);
+        saveStoreData('users', users);
+      }
+    } catch (e) {}
+  }
+
   if (!user) return res.status(404).json({ error: 'User not found.' });
 
   user.addresses = (user.addresses || []).filter(a => a.id !== req.params.id);
   saveStoreData('users', users);
+  try { await supabase.from('profiles').upsert({ id: user.id, email: user.email, addresses: user.addresses }); } catch (e) {}
   return res.json({ success: true });
 });
 
