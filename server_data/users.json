@@ -32,7 +32,20 @@
     "country": "India",
     "password": "",
     "role": "customer",
-    "addresses": [],
+    "addresses": [
+      {
+        "id": "addr_1788776529288",
+        "name": "Gourav Boga",
+        "line1": "Hyderabad",
+        "line2": "",
+        "city": "Hyderabad",
+        "state": "Telangana",
+        "pincode": "500060",
+        "country": "India",
+        "mobile": "07337401590",
+        "is_default": true
+      }
+    ],
     "orders": [],
     "created_at": "2026-09-07T09:11:22.538Z"
   }

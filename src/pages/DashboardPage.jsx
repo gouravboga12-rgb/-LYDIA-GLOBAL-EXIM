@@ -15,16 +15,33 @@ const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 function AddressModal({ onClose, onSave, shippingConfig }) {
   const [form, setForm] = useState({ name: '', line1: '', line2: '', city: '', state: '', pincode: '', country: 'India', mobile: '', is_default: false });
   const [saving, setSaving] = useState(false);
+  const [formError, setFormError] = useState('');
   const handleChange = (e) => {
     const val = e.target.type === 'checkbox' ? e.target.checked : e.target.value;
     setForm({ ...form, [e.target.name]: val });
+    setFormError('');
   };
   const handleSave = async () => {
-    if (!form.name || !form.line1 || !form.city || !form.pincode || !form.mobile || !form.country) {
+    // Validate required fields
+    const missing = [];
+    if (!form.name.trim()) missing.push('Full Name');
+    if (!form.line1.trim()) missing.push('Address Line 1');
+    if (!form.city.trim()) missing.push('City');
+    if (!form.pincode.trim()) missing.push('PIN Code');
+    if (!form.mobile.trim()) missing.push('Mobile');
+    if (!form.country) missing.push('Country');
+    if (missing.length > 0) {
+      setFormError(`Please fill: ${missing.join(', ')}`);
       return;
     }
     setSaving(true);
-    await onSave(form);
+    setFormError('');
+    const result = await onSave(form);
+    if (result && result.success === false) {
+      setFormError(result.error || 'Failed to save address. Please try again.');
+      setSaving(false);
+      return;
+    }
     setSaving(false);
   };
 
@@ -83,9 +100,16 @@ function AddressModal({ onClose, onSave, shippingConfig }) {
             Set as default address
           </label>
         </div>
+        {formError && (
+          <div className="mt-3 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
+            <p className="text-xs text-red-600 font-semibold">{formError}</p>
+          </div>
+        )}
         <button onClick={handleSave} disabled={saving}
-          className="w-full mt-5 bg-[#45055B] text-[#D4AF37] font-bold py-3.5 rounded-xl text-sm hover:bg-[#45055B]/90 shadow-md transition-all shrink-0 disabled:opacity-60">
-          {saving ? 'Saving...' : 'Save Address'}
+          className="w-full mt-4 bg-[#45055B] text-[#D4AF37] font-bold py-3.5 rounded-xl text-sm hover:bg-[#45055B]/90 shadow-md transition-all shrink-0 disabled:opacity-60 flex items-center justify-center gap-2">
+          {saving ? (
+            <><div className="w-4 h-4 border-2 border-[#D4AF37]/40 border-t-[#D4AF37] rounded-full animate-spin" /> Saving...</>
+          ) : 'Save Address'}
         </button>
       </div>
     </div>
@@ -186,9 +210,14 @@ export function DashboardPage() {
   const handleLogout = () => { logout(); navigate('/'); };
 
   const handleSaveAddress = async (data) => {
-    await addAddress(data);
+    const result = await addAddress(data);
+    if (result && result.success === false) {
+      // Return error so AddressModal can display it
+      return result;
+    }
     setShowAddressModal(false);
-    fetchProfile();
+    await fetchProfile();
+    return { success: true };
   };
 
   const handleSaveProfile = async (name, phone) => {
@@ -198,7 +227,6 @@ export function DashboardPage() {
 
   const tabs = [
     { id: 'overview', label: 'Overview' },
-    { id: 'orders', label: 'Orders' },
     { id: 'addresses', label: 'Addresses' },
   ];
 
