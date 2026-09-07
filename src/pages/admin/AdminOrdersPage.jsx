@@ -167,55 +167,55 @@ export function AdminOrdersPage() {
   const handleDeleteOrder = async (order) => {
     const orderNum = order.order_number || order.id;
     const numericId = Number(order.id);
-    if (!window.confirm(`Are you sure you want to delete Order #${orderNum}?\n\nThis will permanently remove the order and clear all its data from Revenue and Reports pages.`)) {
-      return;
-    }
 
-    // Remove from UI immediately
-    setOrders(prev => prev.filter(o => String(o.id) !== String(order.id) && String(o.order_number) !== String(order.order_number)));
+    if (!window.confirm(`Delete Order #${orderNum}?\n\nThis cannot be undone.`)) return;
 
-    let sbDeleteOk = false;
+    // Remove from UI immediately (optimistic)
+    setOrders(prev => prev.filter(o =>
+      String(o.order_number) !== String(orderNum) &&
+      String(o.id) !== String(order.id)
+    ));
 
-    // Step 1: Delete directly from Supabase (primary method on Vercel)
-    try {
-      if (!isNaN(numericId) && numericId > 0) {
-        const { error: e1 } = await supabase.from("orders").delete().eq("id", numericId);
-        if (!e1) sbDeleteOk = true;
-        else console.error("Supabase delete by id error:", e1.message, e1);
+    let deleted = false;
+
+    // SUPABASE ONLY — delete by order_number first (UNIQUE TEXT column, most reliable)
+    if (order.order_number) {
+      const { data: d1, error: e1 } = await supabase
+        .from("orders")
+        .delete()
+        .eq("order_number", String(order.order_number))
+        .select();
+      if (e1) {
+        console.error("Supabase delete by order_number failed:", e1);
+      } else if (d1 && d1.length > 0) {
+        deleted = true;
       }
-      if (order.order_number) {
-        const { error: e2 } = await supabase.from("orders").delete().eq("order_number", String(order.order_number));
-        if (!e2) sbDeleteOk = true;
-        else console.error("Supabase delete by order_number error:", e2.message, e2);
-        // Clean up enquiries
-        await supabase.from("enquiries").delete().ilike("subject", `%${order.order_number}%`);
+    }
+
+    // Fallback: delete by numeric Supabase id
+    if (!deleted && !isNaN(numericId) && numericId > 0) {
+      const { data: d2, error: e2 } = await supabase
+        .from("orders")
+        .delete()
+        .eq("id", numericId)
+        .select();
+      if (e2) {
+        console.error("Supabase delete by id failed:", e2);
+      } else if (d2 && d2.length > 0) {
+        deleted = true;
       }
-    } catch (sbErr) {
-      console.error("Supabase delete exception:", sbErr);
     }
 
-    // Step 2: Also call backend REST API (works locally/server environments)
-    try {
-      const token = localStorage.getItem("token");
-      const deleteId = (!isNaN(numericId) && numericId > 0) ? numericId : orderNum;
-      await fetch(`${BACKEND_URL}/admin/orders/${deleteId}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
-      }).catch(() => null);
-      await fetch(`${BACKEND_URL}/admin/orders/${orderNum}`, {
-        method: "DELETE",
-        headers: { Authorization: `Bearer ${token}` }
-      }).catch(() => null);
-    } catch (err) {
-      console.warn("Backend delete note:", err);
+    // Clean up related enquiries from Supabase
+    if (order.order_number) {
+      await supabase.from("enquiries").delete().ilike("subject", `%${order.order_number}%`);
     }
 
-    if (sbDeleteOk) {
+    if (deleted) {
       alert(`Order #${orderNum} has been permanently deleted.`);
     } else {
-      alert(`Order #${orderNum} removed from view. If it reappears, please check the browser console for errors and try again.`);
+      alert(`Delete failed for Order #${orderNum}.\n\nPlease run this SQL in Supabase Dashboard:\n\nDELETE FROM orders WHERE order_number = '${orderNum}';`);
     }
-    // Refresh list
     fetchOrders();
   };
 
