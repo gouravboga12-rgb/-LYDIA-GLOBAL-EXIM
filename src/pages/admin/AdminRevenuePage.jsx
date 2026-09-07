@@ -278,7 +278,7 @@ export function AdminRevenuePage() {
       const items = parseItems(o.items);
       return {
         "Order ID": o.order_number || o.id,
-        "Date": new Date(o.created_at || o.date || Date.now()).toLocaleString(),
+        "Date": new Date(o.created_at || o.date || Date.now()).toLocaleString('en-IN', { timeZone: 'Asia/Kolkata', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: true }) + ' IST',
         "Customer Name": o.user_name || o.customer_name || addr.name || `${addr.firstName || ""} ${addr.lastName || ""}`.trim(),
         "Customer Email": o.user_email || o.customer_email || addr.email || "",
         "Customer Phone": o.user_phone || addr.mobile || addr.phone || "",
@@ -574,13 +574,15 @@ export function AdminRevenuePage() {
                         #{order.order_number || order.id}
                       </td>
                       <td className="px-4 py-3.5 text-gray-500 whitespace-nowrap">
-                        {new Date(order.created_at || order.date || Date.now()).toLocaleDateString("en-IN", {
+                        {new Date(order.created_at || order.date || Date.now()).toLocaleString("en-IN", {
+                          timeZone: "Asia/Kolkata",
                           year: "numeric",
                           month: "short",
                           day: "numeric",
                           hour: "2-digit",
-                          minute: "2-digit"
-                        })}
+                          minute: "2-digit",
+                          hour12: true
+                        })} IST
                       </td>
                       <td className="px-4 py-3.5">
                         <p className="font-semibold text-[#45055B]">{order.user_name || order.customer_name || addr.name || `${addr.firstName || ""} ${addr.lastName || ""}`.trim() || "Customer"}</p>

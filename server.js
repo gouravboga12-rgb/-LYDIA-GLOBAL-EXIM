@@ -1361,18 +1361,47 @@ app.put(['/api/admin/orders/:id', '/api/admin/orders/:id/tracking'], async (req,
 
 app.delete('/api/admin/orders/:id', async (req, res) => {
   const id = req.params.id;
-  let orders = loadStoreData('orders', 'src/data/orders.json');
-  orders = orders.filter(o => String(o.id) !== String(id) && String(o.order_number) !== String(id));
-  saveStoreData('orders', orders);
 
+  // 1. Remove from local JSON store (by both id and order_number)
+  const allOrders = loadStoreData('orders', 'src/data/orders.json');
+  const targetOrder = allOrders.find(o => String(o.id) === String(id) || String(o.order_number) === String(id));
+  const orderNumToDelete = targetOrder?.order_number || id;
+  const filteredOrders = allOrders.filter(o => String(o.id) !== String(id) && String(o.order_number) !== String(id));
+  saveStoreData('orders', filteredOrders);
+
+  // 2. Remove from local enquiries store
+  try {
+    const enquiries = loadStoreData('enquiries', 'src/data/enquiries.json');
+    const filteredEnquiries = enquiries.filter(e =>
+      !String(e.order_number || '').includes(orderNumToDelete) &&
+      !String(e.subject || '').includes(orderNumToDelete)
+    );
+    saveStoreData('enquiries', filteredEnquiries);
+  } catch (enqErr) {
+    console.warn('Enquiry cleanup note:', enqErr);
+  }
+
+  // 3. Delete from Supabase orders table
   try {
     const numId = Number(id);
     if (!isNaN(numId)) {
       await supabase.from('orders').delete().eq('id', numId);
     }
+    if (orderNumToDelete && orderNumToDelete !== id) {
+      await supabase.from('orders').delete().eq('order_number', orderNumToDelete);
+    }
     await supabase.from('orders').delete().eq('order_number', id);
   } catch (e) {
     console.warn('Supabase order delete note:', e);
+  }
+
+  // 4. Delete related enquiries from Supabase
+  try {
+    if (orderNumToDelete) {
+      await supabase.from('enquiries').delete().ilike('subject', `%${orderNumToDelete}%`);
+    }
+  } catch (e) {
+    console.warn('Supabase enquiry delete note:', e);
   }
 
   return res.json({ success: true, message: 'Order deleted successfully' });
