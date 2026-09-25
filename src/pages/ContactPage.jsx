@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 import { Mail, Phone, MapPin, Send } from 'lucide-react';
 
 function CountUp({ end, suffix = '', duration = 1800 }) {
@@ -174,8 +175,61 @@ export function ContactPage() {
     }
   }, [hash]);
 
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What materials are used in your imitation jewelry?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Our imitation jewelry is crafted with jeweler-grade brass and copper alloys, finished with 18K/22K micro gold electroplating, antique matte polish, and sealed with a protective anti-tarnish lacquer. We use high-grade AAA+ Cubic Zirconia, authentic Kundan, synthetic pearls, and faceted crystals."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is your imitation jewelry safe for sensitive skin?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes, 100%! All our imitation jewelry is completely lead-free, nickel-free, and hypoallergenic. It is safe for sensitive skin and will not cause irritation or green discoloration when worn."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I care for and maintain my imitation jewelry?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Always put your jewelry on after applying perfumes, lotions, and makeup. Avoid direct contact with water, chemical sprays, and sweat. After wearing, gently wipe with a dry, soft microfiber cloth and store individually in airtight zip-lock pouches."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How long does shipping take?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "We securely box and dispatch all orders within 1–2 business days. Standard delivery across India takes 3–5 business days, while international export shipping typically arrives in 5–9 business days."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Do you offer bridal sets, wholesale, or export bulk orders?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes! As Lydia Global Exim, we specialize in worldwide export shipments, boutique supplies, and bridal collections. Contact us directly via WhatsApp (+91 9014863411) for wholesale pricing and catalog access."
+        }
+      }
+    ]
+  };
+
   return (
     <div className="bg-brand-beige min-h-screen pb-20 md:pb-12 font-sans">
+      <SEO 
+        title="Contact Us & FAQs | Lydia Global Exim Customer Support"
+        description="Have questions about our handcrafted jewelry or international shipping? Contact Lydia Global Exim support via WhatsApp, phone, or email. Read our FAQs."
+        canonicalUrl="https://lydiaglobalexim.com/contact"
+        schema={faqSchema}
+      />
       <Header title="Contact Us" />
 
       {/* Hero Banner */}

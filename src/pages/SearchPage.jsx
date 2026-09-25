@@ -5,6 +5,7 @@ import { useStoreData } from '../store/useStoreData';
 import { ProductCard } from '../components/ProductCard';
 import { Header } from '../components/Header';
 import { BottomNav } from '../components/BottomNav';
+import { SEO } from '../components/SEO';
 
 export function SearchPage() {
   const navigate = useNavigate();
@@ -74,6 +75,10 @@ export function SearchPage() {
 
   return (
     <div className="min-h-screen bg-brand-beige pb-24 font-sans">
+      <SEO 
+        title={query ? `Search: "${query}" | Lydia Global Exim` : "Search Products | Lydia Global Exim"}
+        noIndex={true}
+      />
       <Header />
 
       <div className="max-w-3xl mx-auto px-4 pt-12 pb-6">

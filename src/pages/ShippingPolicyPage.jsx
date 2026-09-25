@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 import { Truck, Clock, MapPin, Package, ShieldCheck, ChevronDown } from 'lucide-react';
 
 const sections = [
@@ -127,6 +128,11 @@ export function ShippingPolicyPage() {
 
   return (
     <div className="bg-brand-beige min-h-screen pb-20 md:pb-12 font-sans">
+      <SEO 
+        title="Shipping Policy & International Export Delivery | Lydia Global Exim"
+        description="Read Lydia Global Exim's comprehensive shipping policy. Learn about processing times, nationwide delivery, international export transit, and secure packaging."
+        canonicalUrl="https://lydiaglobalexim.com/shipping-policy"
+      />
       <Header title="Shipping Policy" />
 
       {/* Hero */}

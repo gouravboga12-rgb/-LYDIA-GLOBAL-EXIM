@@ -1,9 +1,15 @@
 import React from 'react';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 
 export function CareTipsPage() {
   return (
     <div className="bg-[#FAF6F0] min-h-screen flex flex-col">
+      <SEO 
+        title="Jewelry Care Tips | How to Care for Anti-Tarnish Jewelry | Lydia Global Exim"
+        description="Learn essential care tips for your imitation, gold-plated, and anti-tarnish jewelry from Lydia Global Exim. Keep your pieces sparkling and durable for years."
+        canonicalUrl="https://lydiaglobalexim.com/jewelry-care"
+      />
       <Header />
       <div className="flex-grow max-w-4xl mx-auto w-full px-6 py-12 md:py-20 flex flex-col items-center">
         <h1 className="reveal-on-scroll font-serif text-3xl md:text-5xl text-[#45055B] font-bold mb-6 text-center">

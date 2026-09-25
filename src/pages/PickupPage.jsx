@@ -4,6 +4,7 @@ import { ShieldCheck, Store, CheckCircle, CreditCard, ChevronLeft, UserCircle2, 
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useElements } from '@stripe/react-stripe-js';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useToastStore } from '../store/useToastStore';
@@ -277,6 +278,11 @@ export function PickupPage() {
 
   return (
     <div className="min-h-screen bg-brand-beige pb-36">
+      <SEO 
+        title="Store Pickup & Boutique Collection | Lydia Global Exim"
+        description="Schedule a direct store pickup for your handcrafted jewelry order at Lydia Global Exim."
+        canonicalUrl="https://lydiaglobalexim.com/pickup"
+      />
       <Header title="Store Pickup Checkout" />
       
       <div className="p-4 md:p-8 md:max-w-7xl mx-auto mt-6">

@@ -1,10 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 
 export function TermsOfServicePage() {
   return (
     <div className="bg-[#FAF6F0] min-h-screen font-sans text-gray-800">
+      <SEO 
+        title="Terms of Service & Conditions | Lydia Global Exim"
+        description="Read Lydia Global Exim's Terms & Conditions governing website access, online orders, international export shipments, and store policies."
+        canonicalUrl="https://lydiaglobalexim.com/terms-of-service"
+      />
       <Header />
       <div className="max-w-4xl mx-auto px-6 py-12 md:py-20">
         <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#45055B] mb-4">Terms & Conditions</h1>

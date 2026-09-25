@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 import { XCircle, Package, AlertTriangle, Video, Clock, ChevronDown, ShieldCheck } from 'lucide-react';
 
 const claimSteps = [
@@ -76,6 +77,11 @@ function FaqItem({ faq }) {
 export function ReturnsPolicyPage() {
   return (
     <div className="bg-brand-beige min-h-screen pb-20 md:pb-12 font-sans">
+      <SEO 
+        title="Returns & Refund Policy | Lydia Global Exim"
+        description="Learn about Lydia Global Exim's returns and replacement policies for transit damages and missing items. Transparent, customer-first resolution."
+        canonicalUrl="https://lydiaglobalexim.com/returns-policy"
+      />
       <Header title="Returns & Exchanges" />
 
       {/* Hero */}

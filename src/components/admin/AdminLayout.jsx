@@ -8,6 +8,7 @@ import {
 import { motion } from "framer-motion";
 import image from '../../assets/logo.png';
 import { useAuthStore } from '../../store/useAuthStore';
+import { SEO } from '../SEO';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "/api";
 
@@ -254,6 +255,7 @@ export function AdminLayout({ children }) {
 
   return (
     <div className="min-h-screen bg-[#FAF6F0] flex">
+      <SEO title="Admin Control Center" noIndex={true} />
       {/* Mobile Header */}
       <div className="md:hidden fixed top-0 left-0 right-0 bg-white border-b border-[#45055B]/10 px-4 py-3 flex items-center justify-between z-50">
         <div className="flex items-center gap-2">

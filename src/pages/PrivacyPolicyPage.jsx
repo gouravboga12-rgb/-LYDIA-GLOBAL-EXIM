@@ -1,10 +1,16 @@
 import React from 'react';
 import { Header } from '../components/Header';
 import { Link } from 'react-router-dom';
+import { SEO } from '../components/SEO';
 
 export function PrivacyPolicyPage() {
   return (
     <div className="bg-[#FAF6F0] min-h-screen font-sans text-gray-800">
+      <SEO 
+        title="Privacy Policy | Lydia Global Exim"
+        description="Review Lydia Global Exim's Privacy Policy. Understand how we collect, protect, and handle your data and privacy."
+        canonicalUrl="https://lydiaglobalexim.com/privacy-policy"
+      />
       <Header />
       <div className="max-w-4xl mx-auto px-6 py-12 md:py-20">
         <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#45055B] mb-4">Privacy Policy</h1>

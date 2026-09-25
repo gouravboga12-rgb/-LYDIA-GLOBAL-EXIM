@@ -4,6 +4,7 @@ import { ShieldCheck, Truck, CheckCircle, MapPin, CreditCard, ChevronLeft, Shopp
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useToastStore } from '../store/useToastStore';
@@ -1157,6 +1158,7 @@ export function CheckoutPage() {
 
   return (
     <div className="min-h-screen bg-brand-beige pb-36 font-sans">
+      <SEO title="Secure Checkout | Lydia Global Exim" noIndex={true} />
       <Header title="Checkout" />
       
       <div className="p-4 md:p-8 space-y-4 md:space-y-8 md:max-w-7xl mx-auto">

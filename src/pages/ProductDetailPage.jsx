@@ -8,6 +8,7 @@ import {
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
 import { ImageZoom } from '../components/ImageZoom';
+import { SEO } from '../components/SEO';
 import { useAuthStore } from '../store/useAuthStore';
 import { useCartStore } from '../store/useCartStore';
 import { useWishlistStore } from '../store/useWishlistStore';
@@ -528,8 +529,83 @@ export function ProductDetailPage() {
     reviewCount = reviews.length;
   }
 
+  const primaryImage = productImages[0] || (product.image_url ? product.image_url : 'https://lydiaglobalexim.com/image.png');
+  const fullPrimaryImage = primaryImage.startsWith('http') ? primaryImage : `https://lydiaglobalexim.com${primaryImage}`;
+
+  const productSchema = {
+    "@context": "https://schema.org/",
+    "@graph": [
+      {
+        "@type": "Product",
+        "@id": `https://lydiaglobalexim.com/product/${product.id}#product`,
+        "name": product.name,
+        "image": productImages.map(img => img.startsWith('http') ? img : `https://lydiaglobalexim.com${img}`),
+        "description": product.description || `Exquisite handcrafted ${product.name} from Lydia Global Exim. Premium quality, waterproof and anti-tarnish jewelry.`,
+        "sku": product.product_code || `LGE-${product.id}`,
+        "mpn": `LGE-${product.id}`,
+        "category": product.category || 'Jewelry',
+        "brand": {
+          "@type": "Brand",
+          "name": "Lydia Global Exim"
+        },
+        "offers": {
+          "@type": "Offer",
+          "url": `https://lydiaglobalexim.com/product/${product.id}`,
+          "priceCurrency": "INR",
+          "price": displayPrice || currentOurPrice || 0,
+          "priceValidUntil": "2027-12-31",
+          "itemCondition": "https://schema.org/NewCondition",
+          "availability": isOutOfStock ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+          "seller": {
+            "@type": "Organization",
+            "name": "Lydia Global Exim"
+          }
+        },
+        ...(reviewCount > 0 ? {
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": avgRating,
+            "reviewCount": reviewCount
+          }
+        } : {})
+      },
+      {
+        "@type": "BreadcrumbList",
+        "@id": `https://lydiaglobalexim.com/product/${product.id}#breadcrumb`,
+        "itemListElement": [
+          {
+            "@type": "ListItem",
+            "position": 1,
+            "name": "Home",
+            "item": "https://lydiaglobalexim.com/"
+          },
+          {
+            "@type": "ListItem",
+            "position": 2,
+            "name": product.category || "Collections",
+            "item": `https://lydiaglobalexim.com/category/${product.category_id || 'all'}`
+          },
+          {
+            "@type": "ListItem",
+            "position": 3,
+            "name": product.name,
+            "item": `https://lydiaglobalexim.com/product/${product.id}`
+          }
+        ]
+      }
+    ]
+  };
+
   return (
     <div ref={container} className="min-h-screen bg-brand-beige font-sans pb-28 md:pb-12">
+      <SEO 
+        title={`${product.name} | Premium ${product.category || 'Jewelry'} | Lydia Global Exim`}
+        description={product.description ? product.description.slice(0, 160) : `Shop ${product.name} at Lydia Global Exim. High quality handcrafted, anti-tarnish jewelry with worldwide shipping.`}
+        image={fullPrimaryImage}
+        type="product"
+        canonicalUrl={`https://lydiaglobalexim.com/product/${product.id}`}
+        schema={productSchema}
+      />
       <Header showShare={true} />
       
       {/* Breadcrumbs */}

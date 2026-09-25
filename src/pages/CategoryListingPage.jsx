@@ -4,6 +4,7 @@ import { Search, SlidersHorizontal, ArrowLeft, Filter, X, ChevronDown, Check } f
 import { Header } from '../components/Header';
 import { BottomNav } from '../components/BottomNav';
 import { ProductCard } from '../components/ProductCard';
+import { SEO } from '../components/SEO';
 import { useStoreData } from '../store/useStoreData';
 import banner1Velvet from '../assets/banner_1_velvet_necklace.jpg';
 
@@ -294,8 +295,33 @@ export function CategoryListingPage() {
     </div>
   );
 
+  const categorySchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://lydiaglobalexim.com/"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": categoryName,
+        "item": `https://lydiaglobalexim.com/category/${categoryId}`
+      }
+    ]
+  };
+
   return (
     <div className="bg-[#FAF6F0] min-h-screen pb-20">
+      <SEO 
+        title={`${categoryName} Collection | Lydia Global Exim`}
+        description={`Explore our luxury collection of handcrafted ${categoryName}. Premium quality, anti-tarnish finish, and worldwide export shipping at Lydia Global Exim.`}
+        canonicalUrl={`https://lydiaglobalexim.com/category/${categoryId}`}
+        schema={categorySchema}
+      />
       <Header title={categoryName} showShare={true} />
       
       {/* Category Banner */}

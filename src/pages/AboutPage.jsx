@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 
 export function AboutPage() {
   const slideshowImages = [
@@ -18,6 +19,11 @@ export function AboutPage() {
 
   return (
     <div className="bg-brand-beige min-h-screen pb-20 md:pb-12 font-sans">
+      <SEO 
+        title="About Us | Heritage & Global Jewelry Craftsmanship | Lydia Global Exim"
+        description="Learn about Lydia Global Exim's decade of jewelry craftsmanship, international export standards, and commitment to authentic, anti-tarnish luxury designs."
+        canonicalUrl="https://lydiaglobalexim.com/about"
+      />
       <Header title="Our Story" />
       
       <div className="px-4 md:px-24 py-12 md:py-20">

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { Trash2, Plus, Minus, ShoppingCart, Store, Truck, X } from 'lucide-react';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 import { useCartStore } from '../store/useCartStore';
 import { useAuthStore } from '../store/useAuthStore';
 import { useToastStore } from '../store/useToastStore';
@@ -161,6 +162,7 @@ export function CartPage() {
 
   return (
     <div ref={container} className="min-h-screen bg-brand-beige pb-36">
+      <SEO title="Shopping Cart | Lydia Global Exim" noIndex={true} />
       <Header title={`My Cart (${items.length})`} />
       
       {items.length === 0 ? (

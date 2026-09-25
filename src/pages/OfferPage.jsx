@@ -4,6 +4,7 @@ import { ChevronRight, ArrowLeft, Tag, Sparkles, Percent } from 'lucide-react';
 import { Header } from '../components/Header';
 import { BottomNav } from '../components/BottomNav';
 import { ProductCard } from '../components/ProductCard';
+import { SEO } from '../components/SEO';
 import { useStoreData } from '../store/useStoreData';
 
 export function OfferPage() {
@@ -79,6 +80,11 @@ export function OfferPage() {
 
   return (
     <div className="bg-[#FAF6F0] min-h-screen pb-20">
+      <SEO 
+        title={`${pageTitle} | Exclusive Jewelry Offers | Lydia Global Exim`}
+        description={`Save big with Lydia Global Exim's special promotional deals: ${pageTitle}. Handcrafted anti-tarnish jewelry, bridal pieces, and festive collections.`}
+        canonicalUrl={`https://lydiaglobalexim.com/sale`}
+      />
       <Header title={`Sale: ${pageTitle}`} showShare={true} />
       
       {/* Offer Banner */}

@@ -36,9 +36,36 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
+// Static SEO files handler
+app.get(['/robots.txt', '/api/robots.txt'], (req, res) => {
+  const robotsPath = path.join(__dirname, 'public', 'robots.txt');
+  if (fs.existsSync(robotsPath)) {
+    res.setHeader('Content-Type', 'text/plain');
+    return res.sendFile(robotsPath);
+  }
+  res.setHeader('Content-Type', 'text/plain');
+  res.send("User-agent: *\nAllow: /\nSitemap: https://lydiaglobalexim.com/sitemap.xml\n");
+});
+
+app.get(['/sitemap.xml', '/api/sitemap.xml'], (req, res) => {
+  const sitemapPath = path.join(__dirname, 'public', 'sitemap.xml');
+  if (fs.existsSync(sitemapPath)) {
+    res.setHeader('Content-Type', 'application/xml');
+    return res.sendFile(sitemapPath);
+  }
+  res.status(404).send('Sitemap not found');
+});
+
 // Normalize URLs to handle both /api/* and /* uniformly across Vercel and local
 app.use((req, res, next) => {
-  if (!req.url.startsWith('/api') && req.url !== '/' && !req.url.startsWith('/assets') && !req.url.startsWith('/static')) {
+  if (
+    !req.url.startsWith('/api') &&
+    req.url !== '/' &&
+    !req.url.startsWith('/assets') &&
+    !req.url.startsWith('/static') &&
+    !req.url.startsWith('/robots.txt') &&
+    !req.url.startsWith('/sitemap.xml')
+  ) {
     req.url = '/api' + req.url;
   }
   next();

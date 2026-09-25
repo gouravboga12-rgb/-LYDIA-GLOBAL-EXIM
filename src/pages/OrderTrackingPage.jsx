@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link, useLocation } from 'react-router-dom';
 import { CheckCircle2, Package, ArrowRight, ShoppingBag, Store, Truck, MapPin, MessageCircle, ExternalLink, ListOrdered, Send } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Header } from '../components/Header';
+import { SEO } from '../components/SEO';
 import confetti from 'canvas-confetti';
 import { supabase } from '../utils/supabase';
 
@@ -168,6 +169,7 @@ export function OrderTrackingPage() {
 
   return (
     <div className="min-h-screen bg-gray-50 pb-20 font-sans flex flex-col">
+      <SEO title="Order Status & Confirmation | Lydia Global Exim" noIndex={true} />
       <Header title="Order Confirmation" />
       
       <div className="flex-1 flex flex-col items-center justify-center p-4 md:p-8 mt-8 max-w-2xl mx-auto w-full">

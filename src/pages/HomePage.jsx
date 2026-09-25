@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Search, Heart, ShoppingCart, Star, Flame, Sparkles, Circle, Gift, Wind, Bell, Droplet, Flower2, Cloud, Grid, Package, MapPin, Globe, Users, Store, ShieldCheck, Gem, Quote, CheckCircle2, Award, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Header } from '../components/Header';
 import { ProductCard } from '../components/ProductCard';
+import { SEO } from '../components/SEO';
 import { useStoreData } from '../store/useStoreData';
 import { supabase } from '../utils/supabase';
 
@@ -326,6 +327,11 @@ const HERO_ASSET_MAP = {
 
   return (
     <div ref={container} className="bg-brand-beige flex-grow w-full flex flex-col pb-8">
+      <SEO 
+        title="Lydia Global Exim | Premium Handcrafted Indian Jewelry & Global Export"
+        description="Discover exquisite handcrafted Indian jewelry, anti-tarnish gold collections, bridal kundan, necklaces, bangles, and luxury accessories at Lydia Global Exim. Worldwide shipping with trusted export quality."
+        canonicalUrl="https://lydiaglobalexim.com/"
+      />
       <Header variant="home" />
 
       {/* Hero Banner Section matching WhatsApp Reference */}
