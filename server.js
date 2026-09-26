@@ -20,8 +20,8 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const JWT_SECRET = process.env.JWT_SECRET || 'lydia_global_exim_771892348_purity_secure';
 
-const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_TYFF1ktIjHgfgu';
-const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || 'lAQw9WxurRqRefzvsuAQFUAg';
+const RAZORPAY_KEY_ID = process.env.RAZORPAY_KEY_ID || process.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_TgeVpaVgH1QbAW';
+const RAZORPAY_KEY_SECRET = process.env.RAZORPAY_KEY_SECRET || '';
 
 const razorpayInstance = new Razorpay({
   key_id: RAZORPAY_KEY_ID,

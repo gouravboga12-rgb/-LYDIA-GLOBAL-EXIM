@@ -1014,7 +1014,7 @@ export function CheckoutPage() {
       const custPhone = (orderType === 'pickup' ? pickupContact.phone : address.mobile) || user?.phone || '';
 
       const options = {
-        key: import.meta.env.VITE_RAZORPAY_KEY_ID || rzpData.key_id || 'rzp_test_TYFF1ktIjHgfgu',
+        key: rzpData.key_id || import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_TgeVpaVgH1QbAW',
         amount: rzpData.order.amount,
         currency: rzpData.order.currency || 'INR',
         name: 'LYDIA GLOBAL EXIM',
